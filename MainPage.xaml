@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PowerPad.MainPage">
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="250,*,250">
+
+        <!-- Sidebar Izquierdo -->
+        <VerticalStackLayout Grid.Column="0" BackgroundColor="#F5F5F5" Padding="10">
+            <Label Text="Notas" FontSize="18" FontAttributes="Bold"/>
+            <CollectionView ItemsSource="{Binding Notas}" SelectionMode="Single" SelectedItem="{Binding NotaActual, Mode=TwoWay}" SelectionChanged="OnTabChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" Margin="5" BorderColor="Gray">
+                            <Label Text="{Binding Nombre}" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <!-- Área Central de Chat/Notas -->
+        <VerticalStackLayout Grid.Column="1" Padding="10">
+            <ScrollView>
+                <Editor Text="{Binding NotaActual.Texto, Mode=TwoWay}" AutoSize="TextChanges" HeightRequest="400" />
+            </ScrollView>
+            <HorizontalStackLayout>
+                <Entry Placeholder="Escribe un mensaje..." WidthRequest="300" />
+                <Button Text="Enviar" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>
