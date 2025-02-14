@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Shell.NavBarIsVisible="False" 
              x:Class="PowerPad.MainPage">
 
-    <Grid RowDefinitions="Auto,*" ColumnDefinitions="250,*,250">
+    <Grid RowDefinitions="*, Auto" ColumnDefinitions="250,*">
 
         <!-- Sidebar Izquierdo -->
-        <VerticalStackLayout Grid.Column="0" BackgroundColor="#F5F5F5" Padding="10">
-            <Label Text="Notas" FontSize="18" FontAttributes="Bold"/>
+        <VerticalStackLayout Grid.Column="0" Padding="10">
             <CollectionView ItemsSource="{Binding Notas}" SelectionMode="Single" SelectedItem="{Binding NotaActual, Mode=TwoWay}" SelectionChanged="OnTabChanged">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -18,17 +18,18 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </VerticalStackLayout>
+        <Button Margin="10" Grid.Row="1" Grid.Column="0" Text="Nueva nota" Clicked="OnNewNoteClicked" />
 
         <!-- Área Central de Chat/Notas -->
-        <VerticalStackLayout Grid.Column="1" Padding="10">
+        <Grid Grid.Column="1" Padding="10 10 0">
             <ScrollView>
-                <Editor Text="{Binding NotaActual.Texto, Mode=TwoWay}" AutoSize="TextChanges" HeightRequest="400" />
+                <Editor Text="{Binding NotaActual.Texto, Mode=TwoWay}" AutoSize="TextChanges" />
             </ScrollView>
-            <HorizontalStackLayout>
-                <Entry Placeholder="Escribe un mensaje..." WidthRequest="300" />
-                <Button Text="Enviar" />
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="1" Padding="10" ColumnDefinitions="*, auto">
+            <Entry Placeholder="Escribe un mensaje..." Grid.Column="0"/>
+            <Button Text="Enviar" Grid.Column="1" HorizontalOptions="End" />
+        </Grid>
 
     </Grid>
 </ContentPage>
