@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PowerPad.WinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PowerPad.WinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

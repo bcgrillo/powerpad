@@ -1,0 +1,10 @@
+<UserControl
+    x:Class="PowerPad.WinUI.Components.EditorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PowerPad.WinUI.Components"
+    xmlns:editor="using:WinUIEditor">
+    <Grid>
+        <editor:CodeEditorControl x:Name="MyEditor" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<winuiex:WindowEx
+    x:Class="PowerPad.WinUI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PowerPad.WinUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:winuiex="using:WinUIEx"
+    Width="1280"
+    MinWidth="640"
+    MinHeight="480"
+    mc:Ignorable="d"
+    Title="PowerPad">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!--  TitleBar  -->
+            <RowDefinition Height="*" />
+            <!--  NavView  -->
+        </Grid.RowDefinitions>
+
+        <Border
+            x:Name="AppTitleBar"
+            Grid.Column="1"
+            Height="48"
+            Margin="48,0,0,0"
+            VerticalAlignment="Stretch"
+            Canvas.ZIndex="1"
+            IsHitTestVisible="True">    
+            <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
+                <Image
+                    Width="18"
+                    VerticalAlignment="Center"
+                    Source="ms-appx:///Assets/notepad.ico" />
+                <TextBlock
+                    x:Name="AppTitle"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="Titulo" /><!--Style="{StaticResource CaptionTextBlockStyle}"-->
+            </StackPanel>
+        </Border>
+        
+        <NavigationView
+            x:Name="NavView"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Canvas.ZIndex="0"
+            IsTabStop="False"
+            IsTitleBarAutoPaddingEnabled="True"
+            IsPaneToggleButtonVisible="False"
+            IsSettingsVisible="True"
+            PaneDisplayMode="LeftCompact"
+            SelectionChanged="NavView_SelectionChanged">
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+            </NavigationView.Resources>
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                     Content="Notas"
+                     Icon="{ui:FontIcon Glyph=&#xE70B;}"
+                     Tag="Notas" />
+                <NavigationViewItem
+                     Content="Modelos"
+                     Icon="{ui:FontIcon Glyph=&#xF158;}"
+                     Tag="Modelos" />
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+            </NavigationView.FooterMenuItems>
+            <Frame x:Name="NavFrame" Margin="0 39 0 0" />
+        </NavigationView>
+
+    </Grid>
+</winuiex:WindowEx>
