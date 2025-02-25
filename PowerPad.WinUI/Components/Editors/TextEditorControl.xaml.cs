@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PowerPad.Core.Models;
 using WinUIEditor;
+using CommunityToolkit.Mvvm.ComponentModel;
+using PowerPad.WinUI.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -22,44 +24,50 @@ namespace PowerPad.WinUI.Components.Editors
 {
     public sealed partial class TextEditorControl : EditorControl
     {
-        private FileStatus _fileStatus = FileStatus.Unloaded;
-        private string _autoSavePath => FileItem.Path + ".autosave";
+        public TextContent TextContent { get; set; }
 
+        private string _autoSavePath => FileItem.Path + ".autosave";
 
         public TextEditorControl(FileItem fileItem) : base(fileItem)
         {
             this.InitializeComponent();
 
-            MyEditor.Editor.WrapMode = Wrap.WhiteSpace;
+            TextContent = new TextContent();
+            this.DataContext = TextContent;
 
             Load();
         }
 
         public override void AutoSave()
         {
-            File.WriteAllText(_autoSavePath, MyEditor.Editor.GetText(MyEditor.Editor.Length));
-            _fileStatus = FileStatus.AutoSaved;
+            File.WriteAllText(_autoSavePath, TextContent.Content);
+            TextContent.Status = FileStatus.AutoSaved;
         }
 
         public override void Save()
         {
-            File.WriteAllText(FileItem.Path, MyEditor.Editor.GetText(MyEditor.Editor.Length));
+            File.WriteAllText(FileItem.Path, TextContent.Content);
             if (File.Exists(_autoSavePath)) File.Delete(_autoSavePath);
-            _fileStatus = FileStatus.Saved;
+            TextContent.Status = FileStatus.Saved;
         }
 
         private void Load()
         {
             if (File.Exists(_autoSavePath))
             {
-                MyEditor.Editor.SetText(File.ReadAllText(_autoSavePath));
-                _fileStatus = FileStatus.AutoSaved;
+                TextContent.Content = File.ReadAllText(_autoSavePath);
+                TextContent.Status = FileStatus.AutoSaved;
             }
             else
             {
-                MyEditor.Editor.SetText(File.ReadAllText(FileItem.Path));
-                _fileStatus = FileStatus.Saved;
+                TextContent.Content = File.ReadAllText(FileItem.Path);
+                TextContent.Status = FileStatus.Saved;
             }
+        }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
         }
     }
 }

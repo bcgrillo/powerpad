@@ -41,6 +41,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="CommunityToolkit.WinUI.Animations" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.1.240916" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
@@ -52,7 +53,6 @@
     <Folder Include="Helpers\" />
     <Folder Include="Styles\" />
 	<Folder Include="Pages\" />
-	<Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerPad.Core\PowerPad.Core.csproj" />

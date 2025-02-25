@@ -8,7 +8,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:editor="using:WinUIEditor"
     mc:Ignorable="d">
-    <Grid>
-        <editor:CodeEditorControl x:Name="MyEditor" />
+    <Grid RowDefinitions="auto, *">
+        <!--<editor:CodeEditorControl x:Name="MyEditor" />-->
+        <CommandBar Grid.Row="0">
+            <AppBarElementContainer>
+                <TextBox
+                    x:Name="FileNameTextBox"
+                    Text="{Binding FileItem.Name, Mode=TwoWay}"
+                    PlaceholderText="File Name"
+                    Width="200"
+                    Margin="10"/>
+            </AppBarElementContainer>
+            <AppBarButton Icon="Save" Label="Save" Click="AppBarButton_Click"
+                IsEnabled="{Binding SaveCommand.CanExecute, Mode=OneWay}"
+                Command="{Binding SaveCommand}" />
+        </CommandBar>
+        <TextBox Grid.Row="1"
+            x:Name="TextBox"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            ScrollViewer.VerticalScrollBarVisibility ="Auto"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            FontFamily="Consolas"
+            FontSize="14"
+            Padding="10"
+            Text="{Binding Content, Mode=TwoWay}" />
     </Grid>
 </local:EditorControl>
