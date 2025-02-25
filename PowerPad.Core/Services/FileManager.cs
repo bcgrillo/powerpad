@@ -1,18 +1,45 @@
 ﻿using PowerPad.Core.Models;
+using System.Collections.ObjectModel;
 
 namespace PowerPad.Core.Services
 {
     public class FileManager
     {
-        private readonly string workspacePath;
-        private readonly string hiddenFolder;
+        private static FileManager? instance;
+        private static readonly object lockObj = new();
 
-        public FileManager(string workspacePath)
+        private string workspacePath;
+        private string hiddenFolder;
+
+        public ObservableCollection<FileItem> WorkspaceItems { get; set; }
+
+        private FileManager()
         {
-            this.workspacePath = workspacePath;
-            this.hiddenFolder = Path.Combine(workspacePath, ".powerpad");
+        }
+
+        public static FileManager GetInstance()
+        {
+            if (instance == null)
+            {
+                lock (lockObj)
+                {
+                    if (instance == null)
+                    {
+                        instance = new FileManager();
+                    }
+                }
+            }
+            return instance;
+        }
+
+        public void SetWorkspace(string path)
+        {
+            workspacePath = path;
+            hiddenFolder = Path.Combine(workspacePath, ".powerpad");
 
             EnsureDirectories();
+
+            WorkspaceItems = new ObservableCollection<FileItem>(GetFilesAndFoldersRecursive(workspacePath));
         }
 
         private void EnsureDirectories()
@@ -21,10 +48,6 @@ namespace PowerPad.Core.Services
                 Directory.CreateDirectory(hiddenFolder);
         }
 
-        public List<FileItem> GetFilesAndFoldersHierarchy()
-        {
-            return GetFilesAndFoldersRecursive(workspacePath);
-        }
 
         private List<FileItem> GetFilesAndFoldersRecursive(string path)
         {

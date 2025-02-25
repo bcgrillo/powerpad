@@ -1,10 +1,10 @@
 <UserControl
-    x:Class="PowerPad.WinUI.Components.EditorView"
+    x:Class="PowerPad.WinUI.Components.EditorManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Components"
     xmlns:editor="using:WinUIEditor">
-    <Grid>
-        <editor:CodeEditorControl x:Name="MyEditor" />
+    <Grid x:Name="EditorGrid">
+        <!-- Editors will be dynamically added from the code behind -->
     </Grid>
 </UserControl>

@@ -4,40 +4,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Pages"
-    xmlns:model="using:PowerPad.Core.Models"
     xmlns:components="using:PowerPad.WinUI.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
-    <Page.Resources>
-        <local:MenuItemTemplateSelector x:Key="selector">
-            <local:MenuItemTemplateSelector.ItemTemplate>
-                <DataTemplate x:DataType="model:FileItem">
-                    <NavigationViewItem 
-                        Content="{x:Bind Name}" 
-                        ToolTipService.ToolTip="{x:Bind Path}"
-                        Icon="{ui:FontIcon Glyph=&#xE70B;}">
-                        <!--<NavigationViewItem.MenuItemsSource>
-                            <x:Bind Path="Children" />
-                        </NavigationViewItem.MenuItemsSource>-->
-                    </NavigationViewItem>
-                </DataTemplate>
-            </local:MenuItemTemplateSelector.ItemTemplate>
-        </local:MenuItemTemplateSelector>
-    </Page.Resources>
-    <Grid>
-        <NavigationView x:Name="nvSample"
-                
-                MenuItemTemplateSelector="{StaticResource selector}"
-                MenuItemsSource="{x:Bind FilesAndFolders, Mode=OneWay}"
-                IsBackButtonVisible="Collapsed"
-                IsPaneToggleButtonVisible="False"
-                IsSettingsVisible="False"
-                ItemInvoked="nvSample_ItemInvoked">
-            <NavigationView.Content>
-                <components:EditorView x:Name="EditorView"/>
-            </NavigationView.Content>
-        </NavigationView>
+    <Grid ColumnDefinitions="auto, *">
+        <components:WorkspaceControl x:Name="WorkspaceControl" Grid.Column="0" ItemInvoked="WorkspaceControl_ItemInvoked"/>
+        <components:EditorManager x:Name="EditorManager" Grid.Column="1"/>
     </Grid>
 </Page>
