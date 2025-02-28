@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using PowerPad.Core.Models;
 using PowerPad.WinUI.Components.Editors;
+using PowerPad.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,18 +14,18 @@ namespace PowerPad.WinUI.Components
     public sealed partial class EditorManager : UserControl
     {
         private EditorControl? _currentEditor;
-        private Dictionary<FileItem, EditorControl> _editors;
+        private Dictionary<FolderEntryViewModel, EditorControl> _editors;
 
         public EditorManager()
         {
             this.InitializeComponent();
 
-            _editors = new Dictionary<FileItem, EditorControl>();
+            _editors = new Dictionary<FolderEntryViewModel, EditorControl>();
         }
 
-        public void OpenFile(FileItem fileItem)
+        public void OpenFile(FolderEntryViewModel document)
         {
-            if(_currentEditor?.FileItem == fileItem)
+            if(_currentEditor?.DataContext == document)
             {
                 return;
             }
@@ -35,14 +36,14 @@ namespace PowerPad.WinUI.Components
                     _currentEditor.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
                 }
 
-                if (_editors.ContainsKey(fileItem))
+                if (_editors.ContainsKey(document))
                 {
-                    _editors[fileItem].Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-                    _currentEditor = _editors[fileItem];
+                    _editors[document].Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+                    _currentEditor = _editors[document];
                 }
                 else {
-                    var newEditor = new TextEditorControl(fileItem);
-                    _editors.Add(fileItem, newEditor);
+                    var newEditor = new TextEditorControl(document);
+                    _editors.Add(document, newEditor);
                     EditorGrid.Children.Add(newEditor);
                     _currentEditor = newEditor;
                 }

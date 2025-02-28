@@ -1,0 +1,18 @@
+﻿namespace PowerPad.Core.Models
+{
+    public class Document : IFolderEntry
+    {
+        public string Name => System.IO.Path.GetDirectoryName(Path)!;
+
+        public EntryType Type => EntryType.Document;
+
+        public DocumentStatus Status { get; set; } = DocumentStatus.Unloaded;
+
+        public string Path { get; set; }
+
+        public Document(string path)
+        {
+            Path = path;
+        }
+    }
+}

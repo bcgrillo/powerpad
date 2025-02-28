@@ -6,12 +6,12 @@
     xmlns:local="using:PowerPad.WinUI.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:model="using:PowerPad.Core.Models"
+    xmlns:vm="using:PowerPad.WinUI.ViewModels"
     mc:Ignorable="d">
     <Grid>
-        <TreeView Name="TreeView" ItemsSource="{x:Bind FileManager.WorkspaceItems}" ItemInvoked="TreeView_ItemInvoked">
+        <TreeView Name="TreeView" ItemsSource="{x:Bind ViewModel.Root.Children}" ItemInvoked="TreeView_ItemInvoked">
             <TreeView.ItemTemplate>
-                <DataTemplate x:DataType="model:FileItem">
+                <DataTemplate x:DataType="vm:FolderEntryViewModel">
                     <TreeViewItem ItemsSource="{x:Bind Children}" Content="{x:Bind Name}" Padding="0 0 10 0"/>
                 </DataTemplate>
             </TreeView.ItemTemplate>

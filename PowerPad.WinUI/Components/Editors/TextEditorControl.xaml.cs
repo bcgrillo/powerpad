@@ -24,50 +24,27 @@ namespace PowerPad.WinUI.Components.Editors
 {
     public sealed partial class TextEditorControl : EditorControl
     {
-        public TextContent TextContent { get; set; }
-
-        private string _autoSavePath => FileItem.Path + ".autosave";
-
-        public TextEditorControl(FileItem fileItem) : base(fileItem)
+        public TextEditorControl(FolderEntryViewModel documentEntry)
         {
             this.InitializeComponent();
 
-            TextContent = new TextContent();
-            this.DataContext = TextContent;
-
-            Load();
+            this.DataContext = documentEntry.ToDocumentViewModel(this);
         }
 
-        public override void AutoSave()
+        public override string GetContent()
         {
-            File.WriteAllText(_autoSavePath, TextContent.Content);
-            TextContent.Status = FileStatus.AutoSaved;
+            return TextBox.Text;
         }
 
-        public override void Save()
+        public override void SetContent(string content)
         {
-            File.WriteAllText(FileItem.Path, TextContent.Content);
-            if (File.Exists(_autoSavePath)) File.Delete(_autoSavePath);
-            TextContent.Status = FileStatus.Saved;
+            TextBox.Text = content;
         }
 
-        private void Load()
+        private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
         {
-            if (File.Exists(_autoSavePath))
-            {
-                TextContent.Content = File.ReadAllText(_autoSavePath);
-                TextContent.Status = FileStatus.AutoSaved;
-            }
-            else
-            {
-                TextContent.Content = File.ReadAllText(FileItem.Path);
-                TextContent.Status = FileStatus.Saved;
-            }
-        }
-
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            Save();
+            if (DataContext != null)
+                ((DocumentViewModel)DataContext).Status = DocumentStatus.Dirty;
         }
     }
 }

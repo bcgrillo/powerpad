@@ -15,6 +15,10 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using PowerPad.Core.Services;
+using Microsoft.Extensions.DependencyInjection;
+using PowerPad.WinUI.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,6 +37,14 @@ namespace PowerPad.WinUI
         public App()
         {
             this.InitializeComponent();
+
+            Ioc.Default.ConfigureServices(
+                new ServiceCollection()
+                    .AddSingleton<IWorkspaceService, WorkspaceService>()
+                    .AddSingleton<IDocumentService, DocumentService>()
+                    .AddTransient<WorkspaceViewModel>()
+                    .BuildServiceProvider()
+            );
         }
 
         /// <summary>

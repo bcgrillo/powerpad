@@ -1,6 +1,6 @@
 ﻿namespace PowerPad.Core.Models
 {
-    public enum FileStatus
+    public enum DocumentStatus
     {
         Unloaded,
         Dirty,

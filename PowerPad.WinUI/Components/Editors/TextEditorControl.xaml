@@ -19,7 +19,7 @@
                     Width="200"
                     Margin="10"/>
             </AppBarElementContainer>
-            <AppBarButton Icon="Save" Label="Save" Click="AppBarButton_Click"
+            <AppBarButton Icon="Save" Label="Save"
                 IsEnabled="{Binding SaveCommand.CanExecute, Mode=OneWay}"
                 Command="{Binding SaveCommand}" />
         </CommandBar>
@@ -31,7 +31,6 @@
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             FontFamily="Consolas"
             FontSize="14"
-            Padding="10"
-            Text="{Binding Content, Mode=TwoWay}" />
+            Padding="10" TextChanging="TextBox_TextChanging" />
     </Grid>
 </local:EditorControl>

@@ -12,18 +12,14 @@ namespace PowerPad.WinUI.Pages
 {
     internal sealed partial class NotesPage : Page
     {
-        public FileManager FileManager { get; set; } = FileManager.GetInstance();
-
         public NotesPage()
         {
             this.InitializeComponent();
-
-            FileManager.SetWorkspace("D:\\OneDrive\\Escritorio\\Universidad\\PruebasTFG");
         }
 
-        private void WorkspaceControl_ItemInvoked(object sender, TreeViewItemInvokedEventArgs e)
+        private void WorkspaceControl_ItemInvoked(object sender, WorkspaceControlItemInvokedEventArgs e)
         {
-            EditorManager.OpenFile(WorkspaceControl.SelectedFile!);
+            EditorManager.OpenFile(e.SelectedFile);
         }
     }
 }
