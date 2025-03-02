@@ -34,7 +34,8 @@ namespace PowerPad.Core.Services
             List<Document> documents = new();
             foreach (var file in Directory.GetFiles(path))
             {
-                documents.Add(new Document(file));
+                if (!file.EndsWith(".autosave"))
+                    documents.Add(new Document(file));
             }
             return documents;
         }

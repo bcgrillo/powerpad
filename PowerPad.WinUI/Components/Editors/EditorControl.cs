@@ -11,10 +11,6 @@ namespace PowerPad.WinUI.Components.Editors
 {
     public abstract class EditorControl : UserControl, IEditorControl
     {
-        public EditorControl()
-        {
-        }
-
         public abstract string GetContent();
         public abstract void SetContent(string content);
     }

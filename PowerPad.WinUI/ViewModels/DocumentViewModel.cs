@@ -21,6 +21,19 @@ namespace PowerPad.WinUI.ViewModels
         private readonly Document _document;
         private readonly IEditorControl _editorControl;
 
+        public string Name
+        {
+            get => _document.Name;
+            set
+            {
+                if (_document.Name != value)
+                {
+                    _documentService.RenameDocument(_document, value);
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
         public DocumentStatus Status
         {
             get => _document.Status;
@@ -53,6 +66,7 @@ namespace PowerPad.WinUI.ViewModels
         private void Save()
         {
             _documentService.SaveDocument(_document, _editorControl);
+            SaveCommand.NotifyCanExecuteChanged();
         }
     }
 }

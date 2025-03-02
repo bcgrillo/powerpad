@@ -2,7 +2,7 @@
 {
     public class Folder : IFolderEntry
     {
-        public string Name => System.IO.Path.GetDirectoryName(Path)!;
+        public string Name => System.IO.Path.GetFileName(Path)!;
 
         public EntryType Type => EntryType.Folder;
 

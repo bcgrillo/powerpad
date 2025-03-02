@@ -34,14 +34,22 @@ namespace PowerPad.WinUI.ViewModels
             Glyph = "&#xE8B7;";
             Type = EntryType.Folder;
 
+            Children = new ObservableCollection<FolderEntryViewModel>();
+
             if (folder.Folders != null)
             {
-                Children = [.. folder.Folders.Select(f => new FolderEntryViewModel(f))];
+                foreach (var f in folder.Folders)
+                {
+                    Children.Add(new FolderEntryViewModel(f));
+                }
             }
 
             if (folder.Documents != null)
             {
-                Children = [.. folder.Documents.Select(d => new FolderEntryViewModel(d))];
+                foreach (var d in folder.Documents)
+                {
+                    Children.Add(new FolderEntryViewModel(d));
+                }
             }
         }
 

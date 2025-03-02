@@ -14,53 +14,51 @@
     mc:Ignorable="d"
     Title="PowerPad">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <!--  TitleBar  -->
+            <RowDefinition Height="38" />
             <RowDefinition Height="*" />
-            <!--  NavView  -->
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="48" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <Border
             x:Name="AppTitleBar"
-            Grid.Column="1"
-            Height="48"
-            Margin="48,0,0,0"
-            VerticalAlignment="Stretch"
+            Height="38"
+            Width="48"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
             Canvas.ZIndex="1"
-            IsHitTestVisible="True">    
-            <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
+            IsHitTestVisible="True">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Image
-                    Width="18"
+                    Width="22"
                     VerticalAlignment="Center"
-                    Source="ms-appx:///Assets/notepad.ico" />
+                    HorizontalAlignment="Center"
+                    Source="/Assets/notepad.ico"
+                    Margin="0,6,0,0"/>
                 <TextBlock
-                    x:Name="AppTitle"
-                    Margin="12,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="Titulo" /><!--Style="{StaticResource CaptionTextBlockStyle}"-->
+                    Text="✨"
+                    FontSize="14"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Center"
+                    Margin="4,-20,0,0"/>
             </StackPanel>
         </Border>
-        
+
         <NavigationView
             x:Name="NavView"
-            Grid.RowSpan="2"
-            Grid.Column="1"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
             Canvas.ZIndex="0"
             IsTabStop="False"
             IsTitleBarAutoPaddingEnabled="True"
             IsPaneToggleButtonVisible="False"
+            IsBackButtonVisible="Collapsed"
             IsSettingsVisible="True"
             PaneDisplayMode="LeftCompact"
             SelectionChanged="NavView_SelectionChanged">
-            <NavigationView.Resources>
-                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
-            </NavigationView.Resources>
             <NavigationView.MenuItems>
                 <NavigationViewItem
                      Content="Notas"
@@ -73,8 +71,19 @@
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
             </NavigationView.FooterMenuItems>
-            <Frame x:Name="NavFrame" Margin="0 39 0 0" />
-        </NavigationView>
 
+            <!--  Custom TitleBar with NavigationView L-Pattern Overwriting resources  -->
+            <NavigationView.Resources>
+                <!--  This top margin is the height of the custom titleBar  -->
+                <Thickness x:Key="NavigationViewContentMargin">0,-38,0,0</Thickness>
+                <Thickness x:Key="NavigationViewMinimalContentMargin">0,-38,0,0</Thickness>
+                <Thickness x:Key="NavigationViewContentGridBorderThickness">1,0,0,0</Thickness>
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                <!--  This is the rounded corner on the Top left of the L Pattern  -->
+                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
+            </NavigationView.Resources>
+
+            <Frame x:Name="NavFrame"/>
+        </NavigationView>
     </Grid>
 </winuiex:WindowEx>

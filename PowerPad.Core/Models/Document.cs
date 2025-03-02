@@ -2,7 +2,7 @@
 {
     public class Document : IFolderEntry
     {
-        public string Name => System.IO.Path.GetDirectoryName(Path)!;
+        public string Name => System.IO.Path.GetFileNameWithoutExtension(Path)!;
 
         public EntryType Type => EntryType.Document;
 

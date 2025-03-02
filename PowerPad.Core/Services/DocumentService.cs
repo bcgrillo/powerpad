@@ -9,6 +9,7 @@ namespace PowerPad.Core.Services
         void LoadDocument(Document document, IEditorControl output);
         void AutosaveDocument(Document document, IEditorControl control);
         void SaveDocument(Document document, IEditorControl control);
+        void RenameDocument(Document document, string newName);
     }
 
     public class DocumentService : IDocumentService
@@ -44,6 +45,16 @@ namespace PowerPad.Core.Services
             {
                 File.Delete(AutosavePath(document.Path));
             }
+        }
+
+        public void RenameDocument(Document document, string newName)
+        {
+            var directory = Path.GetDirectoryName(document.Path)!;
+            var extension = Path.GetExtension(document.Path);
+            var newPath = Path.Combine(directory, newName + extension);
+
+            File.Move(document.Path, newPath);
+            document.Path = newPath;
         }
 
         private string AutosavePath(string path) => path + ".autosave";

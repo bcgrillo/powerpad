@@ -8,13 +8,28 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:editor="using:WinUIEditor"
     mc:Ignorable="d">
-    <Grid RowDefinitions="auto, *">
+    <local:EditorControl.Resources>
+        <Style TargetType="TextBox" x:Key="TransparentTextBoxStyle" BasedOn="{StaticResource DefaultTextBoxStyle}">
+            <!-- Fondo y borde siempre transparentes -->
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+
+            <!-- Quitar el foco visual (la raya y otros efectos) -->
+            <Setter Property="FocusVisualPrimaryBrush" Value="Transparent"/>
+            <Setter Property="FocusVisualSecondaryBrush" Value="Transparent"/>
+        </Style>
+    </local:EditorControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <!--<editor:CodeEditorControl x:Name="MyEditor" />-->
         <CommandBar Grid.Row="0">
             <AppBarElementContainer>
                 <TextBox
                     x:Name="FileNameTextBox"
-                    Text="{Binding FileItem.Name, Mode=TwoWay}"
+                    Text="{Binding Name, Mode=TwoWay}"
                     PlaceholderText="File Name"
                     Width="200"
                     Margin="10"/>
@@ -31,6 +46,7 @@
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             FontFamily="Consolas"
             FontSize="14"
-            Padding="10" TextChanging="TextBox_TextChanging" />
+            Padding="10" TextChanging="TextBox_TextChanging"
+            Style="{StaticResource TransparentTextBoxStyle}" />
     </Grid>
 </local:EditorControl>

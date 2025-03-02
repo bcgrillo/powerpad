@@ -11,6 +11,11 @@
     mc:Ignorable="d">
     <Grid ColumnDefinitions="auto, *">
         <components:WorkspaceControl x:Name="WorkspaceControl" Grid.Column="0" ItemInvoked="WorkspaceControl_ItemInvoked"/>
-        <components:EditorManager x:Name="EditorManager" Grid.Column="1"/>
+
+        <Border
+            Grid.Column="1"
+            Background="{ThemeResource SmokeFillColorDefaultBrush}">
+            <components:EditorManager x:Name="EditorManager"/>
+        </Border>
     </Grid>
 </Page>
