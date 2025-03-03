@@ -8,45 +8,26 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:editor="using:WinUIEditor"
     mc:Ignorable="d">
-    <local:EditorControl.Resources>
-        <Style TargetType="TextBox" x:Key="TransparentTextBoxStyle" BasedOn="{StaticResource DefaultTextBoxStyle}">
-            <!-- Fondo y borde siempre transparentes -->
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-
-            <!-- Quitar el foco visual (la raya y otros efectos) -->
-            <Setter Property="FocusVisualPrimaryBrush" Value="Transparent"/>
-            <Setter Property="FocusVisualSecondaryBrush" Value="Transparent"/>
-        </Style>
-    </local:EditorControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <!--<editor:CodeEditorControl x:Name="MyEditor" />-->
-        <CommandBar Grid.Row="0">
-            <AppBarElementContainer>
-                <TextBox
-                    x:Name="FileNameTextBox"
-                    Text="{Binding Name, Mode=TwoWay}"
-                    PlaceholderText="File Name"
-                    Width="200"
-                    Margin="10"/>
-            </AppBarElementContainer>
+        <TextBlock
+            AutomationProperties.AutomationId="PageHeader"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="{Binding Name}"
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="NoWrap"
+            Margin="36,24,36,0"/>
+        <CommandBar Grid.Row="1">
             <AppBarButton Icon="Save" Label="Save"
                 IsEnabled="{Binding SaveCommand.CanExecute, Mode=OneWay}"
                 Command="{Binding SaveCommand}" />
         </CommandBar>
-        <TextBox Grid.Row="1"
-            x:Name="TextBox"
-            AcceptsReturn="True"
-            TextWrapping="Wrap"
-            ScrollViewer.VerticalScrollBarVisibility ="Auto"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            FontFamily="Consolas"
-            FontSize="14"
-            Padding="10" TextChanging="TextBox_TextChanging"
-            Style="{StaticResource TransparentTextBoxStyle}" />
+        <editor:CodeEditorControl
+            x:Name="TextEditor" 
+            Grid.Row="2"/>
     </Grid>
 </local:EditorControl>

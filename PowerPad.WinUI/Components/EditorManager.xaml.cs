@@ -42,10 +42,15 @@ namespace PowerPad.WinUI.Components
                     _currentEditor = _editors[document];
                 }
                 else {
-                    var newEditor = new TextEditorControl(document);
+                    var newEditor = new TextEditorControl(document)
+                    {
+                        Visibility = Microsoft.UI.Xaml.Visibility.Collapsed
+                    };
                     _editors.Add(document, newEditor);
                     EditorGrid.Children.Add(newEditor);
                     _currentEditor = newEditor;
+
+                    newEditor.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
                 }
             }
         }

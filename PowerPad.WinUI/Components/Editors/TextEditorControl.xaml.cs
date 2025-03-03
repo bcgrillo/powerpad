@@ -28,23 +28,21 @@ namespace PowerPad.WinUI.Components.Editors
         {
             this.InitializeComponent();
 
+            TextEditor.Editor.WrapMode = Wrap.WhiteSpace;
+
             this.DataContext = documentEntry.ToDocumentViewModel(this);
+
+            TextEditor.Editor.Modified += (s, e) => ((DocumentViewModel)DataContext).Status = DocumentStatus.Dirty;
         }
 
         public override string GetContent()
         {
-            return TextBox.Text;
+            return TextEditor.Editor.GetText(TextEditor.Editor.Length);
         }
 
         public override void SetContent(string content)
         {
-            TextBox.Text = content;
-        }
-
-        private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
-        {
-            if (DataContext != null)
-                ((DocumentViewModel)DataContext).Status = DocumentStatus.Dirty;
+            TextEditor.Editor.SetText(content);
         }
     }
 }
