@@ -8,26 +8,74 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:editor="using:WinUIEditor"
     mc:Ignorable="d">
+    <local:EditorControl.Resources>
+        <Style TargetType="TextBox" x:Key="TransparentTextBoxStyle" BasedOn="{StaticResource DefaultTextBoxStyle}">
+            <Setter Property="FontSize" Value="27.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </local:EditorControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <TextBlock
-            AutomationProperties.AutomationId="PageHeader"
+            x:Name="EditableTextBlock"
             Style="{StaticResource TitleTextBlockStyle}"
             Text="{Binding Name}"
             TextTrimming="CharacterEllipsis"
             TextWrapping="NoWrap"
-            Margin="36,24,36,0"/>
-        <CommandBar Grid.Row="1">
-            <AppBarButton Icon="Save" Label="Save"
-                IsEnabled="{Binding SaveCommand.CanExecute, Mode=OneWay}"
-                Command="{Binding SaveCommand}" />
-        </CommandBar>
+            Margin="36,24,36,0"
+            PointerPressed="EditableTextBlock_PointerPressed"/>
+        <TextBox
+            x:Name="EditableTextBox"
+            Style="{StaticResource TransparentTextBoxStyle}"
+            Text="{Binding Name}"
+            Visibility="Collapsed"
+            Margin="32,24,36,0"
+            Padding="0"
+            KeyDown="EditableTextBox_KeyDown"
+            LostFocus="EditableTextBox_LostFocus"/>
+        <Grid Grid.Row="1" Margin="12">
+            <StackPanel
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="CopyBtn"
+                    Height="32"
+                    ToolTipService.ToolTip="Copiar"
+                    Click="CopyBtn_Click"
+                    Margin="0,0,12,0">
+                    <Button.Content>
+                        <FontIcon FontSize="16" Glyph="&#xE8C8;" />
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="SaveBtn"
+                    Height="32"
+                    ToolTipService.ToolTip="Guardar"
+                    IsEnabled="{Binding SaveCommand.CanExecute, Mode=OneWay}"
+                    Command="{Binding SaveCommand}">
+                    <Button.Content>
+                        <FontIcon FontSize="16" Glyph="&#xE74E;" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <InfoBar
+            x:Name="InfoBar"
+            Grid.Row="2"
+            IsOpen="False"
+            Severity="Error"
+            Visibility="Collapsed"
+            Margin="12,0,12,12" Closing="InfoBar_Closing"/>
         <editor:CodeEditorControl
             x:Name="TextEditor" 
-            Grid.Row="2"/>
+            Grid.Row="3"/>
+        <Grid Grid.Row="4" Margin="0,12,0,12">
+        </Grid>
     </Grid>
 </local:EditorControl>

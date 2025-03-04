@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Components.Editors
 {
-    public interface IEditorControl
+    public interface IEditorContract
     {
         string GetContent();
         void SetContent(string content);

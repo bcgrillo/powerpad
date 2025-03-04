@@ -6,15 +6,15 @@ namespace PowerPad.Core.Services
 {
     public interface IDocumentService
     {
-        void LoadDocument(Document document, IEditorControl output);
-        void AutosaveDocument(Document document, IEditorControl control);
-        void SaveDocument(Document document, IEditorControl control);
-        void RenameDocument(Document document, string newName);
+        void LoadDocument(Document document, IEditorContract output);
+        void AutosaveDocument(Document document, IEditorContract control);
+        void SaveDocument(Document document, IEditorContract control);
+        void RenameDocument(Document document, IEditorContract control, string newName);
     }
 
     public class DocumentService : IDocumentService
     {
-        public void LoadDocument(Document document, IEditorControl control)
+        public void LoadDocument(Document document, IEditorContract control)
         {
             var autosaveExists = File.Exists(AutosavePath(document.Path));
 
@@ -30,13 +30,13 @@ namespace PowerPad.Core.Services
             }
         }
 
-        public void AutosaveDocument(Document document, IEditorControl control)
+        public void AutosaveDocument(Document document, IEditorContract control)
         {
             File.WriteAllText(AutosavePath(document.Path), control.GetContent());
             document.Status = DocumentStatus.AutoSaved;
         }
 
-        public void SaveDocument(Document document, IEditorControl control)
+        public void SaveDocument(Document document, IEditorContract control)
         {
             File.WriteAllText(document.Path, control.GetContent());
             document.Status = DocumentStatus.Saved;
@@ -47,8 +47,10 @@ namespace PowerPad.Core.Services
             }
         }
 
-        public void RenameDocument(Document document, string newName)
+        public void RenameDocument(Document document, IEditorContract control, string newName)
         {
+            SaveDocument(document, control);
+
             var directory = Path.GetDirectoryName(document.Path)!;
             var extension = Path.GetExtension(document.Path);
             var newPath = Path.Combine(directory, newName + extension);

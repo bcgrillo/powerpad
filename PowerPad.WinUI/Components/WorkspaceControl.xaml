@@ -9,7 +9,12 @@
     xmlns:vm="using:PowerPad.WinUI.ViewModels"
     mc:Ignorable="d">
     <Grid>
-        <TreeView Name="TreeView" ItemsSource="{x:Bind ViewModel.Root.Children}" ItemInvoked="TreeView_ItemInvoked">
+        <TreeView 
+            Name="TreeView" 
+            ItemsSource="{x:Bind ViewModel.Root.Children}" 
+            ItemInvoked="TreeView_ItemInvoked"
+            AllowDrop="False"
+            Margin="0,2">
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="vm:FolderEntryViewModel">
                     <TreeViewItem ItemsSource="{x:Bind Children}" Content="{x:Bind Name}" Padding="0 0 10 0"/>

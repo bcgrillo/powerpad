@@ -62,7 +62,7 @@ namespace PowerPad.WinUI.ViewModels
             Type = EntryType.Document;
         }
 
-        public DocumentViewModel ToDocumentViewModel(IEditorControl editorControl)
+        public DocumentViewModel ToDocumentViewModel(IEditorContract editorControl)
         {
             return new DocumentViewModel((Document)_entry, editorControl);
         }
