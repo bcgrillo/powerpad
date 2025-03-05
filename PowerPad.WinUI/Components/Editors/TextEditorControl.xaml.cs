@@ -18,6 +18,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.WinUI.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using CommunityToolkit.WinUI;
+using PowerPad.Core.Services;
+using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -130,6 +132,16 @@ namespace PowerPad.WinUI.Components.Editors
         {
             DataContext = null;
             TextEditor = null;
+        }
+
+        private async void SendBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await OllamaTestClass.GetResponseAsync(
+                "llama3.2:latest",
+                InputBox.Text,
+                TextEditor.Editor.GetText(TextEditor.Editor.Length));
+
+            TextEditor.Editor.SetText(result);
         }
     }
 }
