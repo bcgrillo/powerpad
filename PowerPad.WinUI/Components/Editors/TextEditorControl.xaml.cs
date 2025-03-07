@@ -20,6 +20,7 @@ using Windows.ApplicationModel.DataTransfer;
 using CommunityToolkit.WinUI;
 using PowerPad.Core.Services;
 using System.Threading.Tasks;
+using Microsoft.Extensions.AI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -101,23 +102,6 @@ namespace PowerPad.WinUI.Components.Editors
             Clipboard.SetContent(dataPackage);
         }
 
-        private Microsoft.UI.Xaml.DependencyObject? FindChildElementByName(Microsoft.UI.Xaml.DependencyObject tree, string sName)
-        {
-            for (int i = 0; i < Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(tree); i++)
-            {
-                Microsoft.UI.Xaml.DependencyObject child = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(tree, i);
-                if (child != null && ((Microsoft.UI.Xaml.FrameworkElement)child).Name == sName)
-                    return child;
-                else
-                {
-                    Microsoft.UI.Xaml.DependencyObject? childInSubtree = FindChildElementByName(child, sName);
-                    if (childInSubtree != null)
-                        return childInSubtree;
-                }
-            }
-            return null;
-        }
-
         private void InfoBar_Closing(InfoBar sender, InfoBarClosingEventArgs args)
         {
             InfoBar.Visibility = Visibility.Collapsed;
@@ -138,10 +122,31 @@ namespace PowerPad.WinUI.Components.Editors
         {
             var result = await OllamaTestClass.GetResponseAsync(
                 "llama3.2:latest",
-                InputBox.Text,
+                $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}",
                 TextEditor.Editor.GetText(TextEditor.Editor.Length));
 
             TextEditor.Editor.SetText(result);
+        }
+    }
+
+    internal partial class ChatTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate UserTemplate { get; set; } = null!;
+
+        public DataTemplate AssistantTemplate { get; set; } = null!;
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            MessageViewModel? selectedObject = item as MessageViewModel;
+
+            if (selectedObject?.Role == ChatRole.User)
+            {
+                return UserTemplate;
+            }
+            else
+            {
+                return AssistantTemplate;
+            }
         }
     }
 }

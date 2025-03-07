@@ -7,12 +7,20 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PowerPad.WinUI.ViewModels
 {
+    public enum DocumentTypes
+    {
+        Text,
+        Chat
+    }
+
     public partial class FolderEntryViewModel : ObservableObject
     {
         private readonly IFolderEntry _entry;
+        private readonly DocumentTypes? _documentType;
 
         [ObservableProperty]
         public string _name;
@@ -25,6 +33,8 @@ namespace PowerPad.WinUI.ViewModels
 
         [ObservableProperty]
         public ObservableCollection<FolderEntryViewModel> _children;
+
+        public DocumentTypes? DocumentType => _documentType;
 
         public FolderEntryViewModel(Folder folder)
         {
@@ -58,8 +68,18 @@ namespace PowerPad.WinUI.ViewModels
             _entry = document;
 
             Name = document.Name;
-            Glyph = "&#xE70B;";
             Type = EntryType.Document;
+
+            if (document.Path.EndsWith(".chat"))
+            {
+                _documentType = DocumentTypes.Chat;
+                Glyph = "&#xE717;"; //&#xE71C; //&#xE90A;
+            }
+            else
+            {
+                _documentType = DocumentTypes.Text;
+                Glyph = "&#xE8A6;";//"&#xE70B;";
+            }
         }
 
         public DocumentViewModel ToDocumentViewModel(IEditorContract editorControl)

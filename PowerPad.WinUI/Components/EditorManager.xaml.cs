@@ -32,7 +32,10 @@ namespace PowerPad.WinUI.Components
 
         public void OpenFile(FolderEntryViewModel document)
         {
-            if(_currentEditor?.DataContext == document)
+            EditorControl? _requestedEditor;
+            _editors.TryGetValue(document, out _requestedEditor);
+
+            if (_currentEditor != null && _currentEditor == _requestedEditor)
             {
                 return;
             }
@@ -43,16 +46,25 @@ namespace PowerPad.WinUI.Components
                     _currentEditor.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
                 }
 
-                if (_editors.ContainsKey(document))
+                if (_requestedEditor != null)
                 {
-                    _editors[document].Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-                    _currentEditor = _editors[document];
+                    _requestedEditor.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+                    _currentEditor = _requestedEditor;
                 }
                 else {
-                    var newEditor = new TextEditorControl(document)
+                    EditorControl newEditor;
+
+                    if (document.DocumentType == DocumentTypes.Chat)
                     {
-                        Visibility = Microsoft.UI.Xaml.Visibility.Collapsed
-                    };
+                        newEditor = new ChatEditorControl(document);
+                    }
+                    else
+                    {
+                        newEditor = new TextEditorControl(document);
+                    }
+
+                    newEditor.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+
                     _editors.Add(document, newEditor);
                     EditorGrid.Children.Add(newEditor);
                     _currentEditor = newEditor;

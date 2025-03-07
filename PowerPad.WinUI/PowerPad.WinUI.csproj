@@ -13,6 +13,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Components\Editors\ChatEditorControl.xaml" />
     <None Remove="Components\Editors\TextEditorControl.xaml" />
     <None Remove="Components\WorkspaceControl.xaml" />
   </ItemGroup>
@@ -55,6 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerPad.Core\PowerPad.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Components\Editors\ChatEditorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Components\Editors\TextEditorControl.xaml">
