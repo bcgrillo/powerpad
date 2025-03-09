@@ -17,6 +17,11 @@ namespace PowerPad.WinUI.Pages
             this.InitializeComponent();
         }
 
+        public void ShowWorkspaceControl()
+        {
+            WorkspaceControl.Visibility = Visibility.Visible;
+        }
+
         private void WorkspaceControl_ItemInvoked(object sender, WorkspaceControlItemInvokedEventArgs e)
         {
             EditorManager.OpenFile(e.SelectedFile);

@@ -16,6 +16,7 @@ using WinUIEx;
 using Microsoft.UI.Composition.SystemBackdrops;
 using WinRT;
 using Microsoft.UI.Composition;
+using PowerPad.WinUI.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,7 +34,7 @@ namespace PowerPad.WinUI
         public MainWindow(object? obj = null)
         {
             this.InitializeComponent();
-            SetTitleBar();
+            this.ExtendsContentIntoTitleBar = true;
 
             NavView.SelectedItem = NavView.MenuItems[0];
             NavFrame.Navigate(typeof(Pages.NotesPage));
@@ -68,18 +69,18 @@ namespace PowerPad.WinUI
                 switch (selectedItem.Tag)
                 {
                     case "Notas":
-                        NavFrame.Navigate(typeof(Pages.NotesPage));
+                        NavFrame.Navigate(typeof(NotesPage));
                         break;
                     case "Modelos":
-                        NavFrame.Navigate(typeof(Pages.NotesPage));
+                        NavFrame.Navigate(typeof(NotesPage));
                         break;
                 }
             }
         }
 
-        private void SetTitleBar()
+        private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            this.ExtendsContentIntoTitleBar = true;
+            ((NotesPage)NavFrame.Content).ShowWorkspaceControl();
         }
     }
 }

@@ -59,6 +59,6 @@ namespace PowerPad.Core.Services
             document.Path = newPath;
         }
 
-        private string AutosavePath(string path) => path + ".autosave";
+        private string AutosavePath(string path) => path + WorkspaceService.AUTO_SAVE_EXTENSION;
     }
 }

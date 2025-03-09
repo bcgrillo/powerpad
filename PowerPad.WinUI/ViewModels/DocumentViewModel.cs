@@ -58,7 +58,7 @@ namespace PowerPad.WinUI.ViewModels
 
             SaveCommand = new RelayCommand(Save, CanSave);
             AutosaveCommand = new RelayCommand(Autosave);
-            RenameCommand = new RelayCommand(Rename);
+            RenameCommand = new RelayCommand<string>(Rename);
         }
 
         private bool CanSave() => Status != DocumentStatus.Saved;
@@ -76,9 +76,11 @@ namespace PowerPad.WinUI.ViewModels
             _lastSaveTime = DateTime.Now;
         }
 
-        private void Rename()
+        private void Rename(string? newName)
         {
-            _documentService.RenameDocument(_document, _editorControl, Name);
+            ArgumentException.ThrowIfNullOrWhiteSpace(newName, nameof(newName));
+
+            _documentService.RenameDocument(_document, _editorControl, newName);
             OnPropertyChanged(nameof(Name));
         }
     }

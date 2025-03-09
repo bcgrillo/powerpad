@@ -8,11 +8,14 @@
 
         public DocumentStatus Status { get; set; } = DocumentStatus.Unloaded;
 
+        public IFolderEntry? Parent { get; set; }
+
         public string Path { get; set; }
 
-        public Document(string path)
+        public Document(string path, IFolderEntry parent)
         {
             Path = path;
+            Parent = parent;
         }
     }
 }

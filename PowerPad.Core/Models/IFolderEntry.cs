@@ -10,8 +10,12 @@ namespace PowerPad.Core.Models
     {
         string Name { get; }
 
+        string Path { get; }
+
         EntryType Type { get; }
 
         DocumentStatus Status { get; }
+
+        IFolderEntry? Parent { get; }
     }
 }

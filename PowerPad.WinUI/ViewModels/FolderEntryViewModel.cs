@@ -14,7 +14,10 @@ namespace PowerPad.WinUI.ViewModels
     public enum DocumentTypes
     {
         Text,
-        Chat
+        Chat,
+        Markdown,
+        ToDo,
+        Search
     }
 
     public partial class FolderEntryViewModel : ObservableObject
@@ -26,7 +29,7 @@ namespace PowerPad.WinUI.ViewModels
         public string _name;
 
         [ObservableProperty]
-        public string _glyph;
+        public string? _glyph;
 
         [ObservableProperty]
         public EntryType _type;
@@ -36,12 +39,13 @@ namespace PowerPad.WinUI.ViewModels
 
         public DocumentTypes? DocumentType => _documentType;
 
+        public IFolderEntry ModelEntry => _entry;
+
         public FolderEntryViewModel(Folder folder)
         {
             _entry = folder;
 
             Name = folder.Name;
-            Glyph = "&#xE8B7;";
             Type = EntryType.Folder;
 
             Children = new ObservableCollection<FolderEntryViewModel>();
@@ -73,12 +77,12 @@ namespace PowerPad.WinUI.ViewModels
             if (document.Path.EndsWith(".chat"))
             {
                 _documentType = DocumentTypes.Chat;
-                Glyph = "&#xE717;"; //&#xE71C; //&#xE90A;
+                Glyph = "\U0000E15F"; //&#xE71C; //&#xE90A; //&#xE717;E90A
             }
             else
             {
                 _documentType = DocumentTypes.Text;
-                Glyph = "&#xE8A6;";//"&#xE70B;";
+                Glyph = "\U0000E70B";//"&#x;"; //&#xE8A6;
             }
         }
 

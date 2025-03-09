@@ -61,13 +61,14 @@
             SelectionChanged="NavView_SelectionChanged">
             <NavigationView.MenuItems>
                 <NavigationViewItem
-                     Content="Notas"
-                     Icon="{ui:FontIcon Glyph=&#xE70B;}"
-                     Tag="Notas" />
+                    Content="Notas"
+                    Icon="{ui:FontIcon Glyph=&#xE70B;}"
+                    Tag="Notas"
+                    PointerPressed="NavigationViewItem_PointerPressed"/>
                 <NavigationViewItem
-                     Content="Modelos"
-                     Icon="{ui:FontIcon Glyph=&#xF158;}"
-                     Tag="Modelos" />
+                    Content="Modelos"
+                    Icon="{ui:FontIcon Glyph=&#xF158;}"
+                    Tag="Modelos" />
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
             </NavigationView.FooterMenuItems>

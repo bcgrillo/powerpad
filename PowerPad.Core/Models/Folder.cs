@@ -1,4 +1,6 @@
-﻿namespace PowerPad.Core.Models
+﻿using System.Collections.ObjectModel;
+
+namespace PowerPad.Core.Models
 {
     public class Folder : IFolderEntry
     {
@@ -8,17 +10,18 @@
 
         public DocumentStatus Status => DocumentStatus.Saved;
 
+        public IFolderEntry? Parent { get; set; }
+
         public string Path { get; set; }
 
-        public IEnumerable<Folder> Folders { get; set; }
+        public Collection<Folder>? Folders { get; set; }
 
-        public IEnumerable<Document> Documents { get; set; }
+        public Collection<Document>? Documents { get; set; }
 
-        public Folder(string path, IEnumerable<Folder> folders, IEnumerable<Document> documents)
+        public Folder(string path, IFolderEntry? parent)
         {
             Path = path;
-            Folders = folders;
-            Documents = documents;
+            Parent = parent;
         }
     }
 }
