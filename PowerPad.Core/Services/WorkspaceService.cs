@@ -10,6 +10,10 @@ namespace PowerPad.Core.Services
         void MoveDocument(Document document, Folder targetFolder);
 
         void MoveFolder(Folder folder, Folder targetFolder);
+
+        void CreateDocument(Folder parent, Document document);
+
+        void CreateFolder(Folder parent, Folder folder);
     }
 
     public class WorkspaceService : IWorkspaceService
@@ -29,7 +33,7 @@ namespace PowerPad.Core.Services
             return root;
         }
 
-        private Collection<Folder> GetFoldersRecursive(string path, IFolderEntry? parent)
+        private Collection<Folder> GetFoldersRecursive(string path, Folder parent)
         {
             Collection<Folder> folders = [];
             foreach (var directory in Directory.GetDirectories(path))
@@ -42,7 +46,7 @@ namespace PowerPad.Core.Services
             return folders;
         }
 
-        private Collection<Document>GetDocuments(string path, IFolderEntry parent)
+        private Collection<Document>GetDocuments(string path, Folder parent)
         {
             Collection<Document> documents = new();
             foreach (var file in Directory.GetFiles(path))
@@ -82,6 +86,20 @@ namespace PowerPad.Core.Services
 
         public void CreateDocument(Folder parent, Document document)
         {
+            if (File.Exists(document.Path)) throw new InvalidOperationException("Document already exists");
+
+            parent.Documents!.Add(document);
+
+            File.WriteAllText(document.Path, string.Empty);
+        }
+
+        public void CreateFolder(Folder parent, Folder folder)
+        {
+            if (Directory.Exists(folder.Path)) throw new InvalidOperationException("Folder already exists");
+
+            parent.Folders!.Add(folder);
+
+            Directory.CreateDirectory(folder.Path);
         }
 
         private string AutosavePath(string path) => path + AUTO_SAVE_EXTENSION;

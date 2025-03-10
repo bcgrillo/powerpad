@@ -59,7 +59,7 @@
         <TreeView 
             Name="TreeView" 
             Grid.Row="1"
-            ItemsSource="{x:Bind ViewModel.Root.Children}" 
+            ItemsSource="{x:Bind Workspace.Root.Children}" 
             ItemInvoked="TreeView_ItemInvoked"
             AllowDrop="False"
             CanDrag="False"
@@ -69,8 +69,7 @@
                 <DataTemplate x:DataType="vm:FolderEntryViewModel">
                     <TreeViewItem 
                         ItemsSource="{x:Bind Children}" 
-                        Padding="0,0,8,0"
-                        DropCompleted="TreeViewItem_DropCompleted">
+                        Padding="0,0,8,0">
                         <StackPanel Orientation="Horizontal">
                             <FontIcon Glyph="{x:Bind Glyph}" Margin="-22,0,10,0" Visibility="{x:Bind Glyph, Converter={StaticResource NullOrEmptyToCollapsedConverter}}" />
                             <TextBlock Margin="0,1,8,-1" Text="{x:Bind Name}"/>

@@ -18,7 +18,7 @@ namespace PowerPad.Core.Models
 
         public Collection<Document>? Documents { get; set; }
 
-        public Folder(string path, IFolderEntry? parent)
+        public Folder(string path, Folder parent)
         {
             Path = path;
             Parent = parent;

@@ -9,7 +9,7 @@ namespace PowerPad.WinUI.Components
 {
     public sealed partial class WorkspaceControl : UserControl
     {
-        public WorkspaceViewModel ViewModel => (WorkspaceViewModel)DataContext;
+        public WorkspaceViewModel Workspace => (WorkspaceViewModel)DataContext;
 
         public WorkspaceControl()
         {
@@ -48,12 +48,16 @@ namespace PowerPad.WinUI.Components
 
         private void NewChatButton_Click(object sender, RoutedEventArgs e)
         {
+            var parent = TreeView.SelectedItem as FolderEntryViewModel;
 
+            if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
+
+            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Chat, "Nuevo chat"));
         }
 
         private void NewSplitButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
         {
-
+            
         }
     }
 

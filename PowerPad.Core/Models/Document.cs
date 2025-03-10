@@ -12,7 +12,7 @@
 
         public string Path { get; set; }
 
-        public Document(string path, IFolderEntry parent)
+        public Document(string path, Folder parent)
         {
             Path = path;
             Parent = parent;

@@ -23,6 +23,8 @@ namespace PowerPad.WinUI.ViewModels
             Root = new FolderEntryViewModel(_workspaceService.OpenWorkspace(@"D:\OneDrive\Escritorio\Universidad\PruebasTFG"));
 
             MoveEntryCommand = new RelayCommand<(FolderEntryViewModel, FolderEntryViewModel?)>(MoveEntry);
+
+            NewEntryCommand = new RelayCommand<NewEntryParameters>(NewEntry);
         }
 
         private void MoveEntry((FolderEntryViewModel entry, FolderEntryViewModel? newParent) parameters)
@@ -43,21 +45,24 @@ namespace PowerPad.WinUI.ViewModels
             }
         }
 
-        private void NewEntry((FolderEntryViewModel? parent, EntryType type, DocumentTypes? documentType, string name) parameters)
+        private void NewEntry(NewEntryParameters parameters)
         {
-            IFolderEntry newEntry;
-            FolderEntryViewModel parent = parameters.parent ?? Root;
-            var newPath = parent.ModelEntry.Path + "\\" + parameters.name;
+            FolderEntryViewModel parent = parameters.Parent ?? Root;
+            var newPath = parent.ModelEntry.Path + "\\" + parameters.Name;
 
-            if (parameters.type == EntryType.Folder)
+            if (parameters.Type == EntryType.Folder)
             {
-                newEntry = new Folder(newPath, (parameters.parent ?? Root).ModelEntry);
+                var folderModel = (Folder)parent.ModelEntry;
 
-                parent.Children.Add(new FolderEntryViewModel((Folder)newEntry));
+                var newFolderModel = new Folder(newPath, folderModel);
+
+                parent.Children.Add(new FolderEntryViewModel(newFolderModel));
+
+                _workspaceService.CreateFolder(folderModel, newFolderModel);
             }
             else
             {
-                switch(parameters.documentType)
+                switch(parameters.DocumentType)
                 {
                     case DocumentTypes.Markdown:
                         newPath += ".md";
@@ -76,10 +81,44 @@ namespace PowerPad.WinUI.ViewModels
                         break;
                 }
 
-                newEntry = new Document(newPath, (parameters.parent ?? Root).ModelEntry);
+                var folderModel = (Folder)parent.ModelEntry;
+                var newDocumentModel = new Document(newPath, folderModel);
 
-                parent.Children.Add(new FolderEntryViewModel((Document)newEntry));
+                parent.Children.Add(new FolderEntryViewModel(newDocumentModel));
+
+                _workspaceService.CreateDocument(folderModel, newDocumentModel);
             }
+        }
+    }
+
+    public class NewEntryParameters
+    {
+        public FolderEntryViewModel? Parent { get; set; }
+        public EntryType Type { get; set; }
+        public DocumentTypes? DocumentType { get; set; }
+        public string? Name { get; set; }
+
+        private NewEntryParameters() { }
+
+        public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentTypes documentType, string name)
+        {
+            return new NewEntryParameters
+            {
+                Parent = parent,
+                Type = EntryType.Document,
+                DocumentType = documentType,
+                Name = name
+            };
+        }
+
+        public static NewEntryParameters NewFolder(FolderEntryViewModel? parent, string name)
+        {
+            return new NewEntryParameters
+            {
+                Parent = parent,
+                Type = EntryType.Folder,
+                Name = name
+            };
         }
     }
 }
