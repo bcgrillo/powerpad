@@ -1,6 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Models;
+using PowerPad.Core.Services;
 using PowerPad.WinUI.Components.Editors;
+using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,15 +15,6 @@ using System.Xml.Linq;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public enum DocumentTypes
-    {
-        Text,
-        Chat,
-        Markdown,
-        ToDo,
-        Search
-    }
-
     public partial class FolderEntryViewModel : ObservableObject
     {
         private readonly IFolderEntry _entry;
@@ -37,9 +32,19 @@ namespace PowerPad.WinUI.ViewModels
         [ObservableProperty]
         public ObservableCollection<FolderEntryViewModel> _children;
 
+        [ObservableProperty]
+        public bool _renameStarted;
+
+        [ObservableProperty]
+        public bool _notRenameStarted = true;
+
         public DocumentTypes? DocumentType => _documentType;
 
         public IFolderEntry ModelEntry => _entry;
+
+        public IRelayCommand StartRenameCommand { get; }
+
+        public IRelayCommand DeleteCommand { get; }
 
         public FolderEntryViewModel(Folder folder)
         {
@@ -65,6 +70,9 @@ namespace PowerPad.WinUI.ViewModels
                     Children.Add(new FolderEntryViewModel(d));
                 }
             }
+
+            StartRenameCommand = new RelayCommand(StartRename);
+            DeleteCommand = new RelayCommand(Delete);
         }
 
         public FolderEntryViewModel(Document document)
@@ -74,21 +82,38 @@ namespace PowerPad.WinUI.ViewModels
             Name = document.Name;
             Type = EntryType.Document;
 
-            if (document.Path.EndsWith(".chat"))
-            {
-                _documentType = DocumentTypes.Chat;
-                Glyph = "\U0000E15F"; //&#xE71C; //&#xE90A; //&#xE717;E90A
-            }
-            else
-            {
-                _documentType = DocumentTypes.Text;
-                Glyph = "\U0000E70B";//"&#x;"; //&#xE8A6;
-            }
+            var documentType = DocumentTypeResolver.FromFilePath(document.Path);
+
+            _documentType = documentType;
+            Glyph = documentType.ToGlyph();
+
+            StartRenameCommand = new RelayCommand(StartRename);
+            DeleteCommand = new RelayCommand(Delete);
         }
 
         public DocumentViewModel ToDocumentViewModel(IEditorContract editorControl)
         {
             return new DocumentViewModel((Document)_entry, editorControl);
+        }
+
+        private void StartRename()
+        {
+            RenameStarted = true;
+            NotRenameStarted = false;
+        }
+
+        private void Delete()
+        {
+            var workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
+
+            if (Type == EntryType.Folder)
+            {
+                workspaceService.DeleteFolder((Folder)_entry);
+            }
+            else
+            {
+                workspaceService.DeleteDocument((Document)_entry);
+            }
         }
     }
 }

@@ -72,8 +72,15 @@
                         Padding="0,0,8,0">
                         <StackPanel Orientation="Horizontal">
                             <FontIcon Glyph="{x:Bind Glyph}" Margin="-22,0,10,0" Visibility="{x:Bind Glyph, Converter={StaticResource NullOrEmptyToCollapsedConverter}}" />
-                            <TextBlock Margin="0,1,8,-1" Text="{x:Bind Name}"/>
+                            <TextBlock Margin="0,1,8,-1" Text="{x:Bind Name}" Visibility="{x:Bind NotRenameStarted}"/>
+                            <TextBox Margin="0,1,8,-1" Text="{x:Bind Name}" Visibility="{x:Bind RenameStarted}"/>
                         </StackPanel>
+                        <TreeViewItem.ContextFlyout>
+                            <MenuFlyout Placement="Bottom">
+                                <MenuFlyoutItem Text="Renombrar" Command="{x:Bind StartRenameCommand}"/>
+                                <MenuFlyoutItem Text="Eliminar" Command="{x:Bind DeleteCommand}"/>
+                            </MenuFlyout>
+                        </TreeViewItem.ContextFlyout>
                     </TreeViewItem>
                 </DataTemplate>
             </TreeView.ItemTemplate>
@@ -91,9 +98,16 @@
                 Nueva nota
                 <SplitButton.Flyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem Text="Nuevo markdown"/>
-                        <MenuFlyoutItem Text="Nueva lista"/>
-                        <MenuFlyoutItem Text="Nueva búsqueda"/>
+                        <MenuFlyoutItem Text="Nuevo markdown" Click="MenuFlyoutItem_Click">
+                            <MenuFlyoutItem.Tag><vm:DocumentTypes>Markdown</vm:DocumentTypes></MenuFlyoutItem.Tag>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Nueva lista" Click="MenuFlyoutItem_Click">
+                            <MenuFlyoutItem.Tag><vm:DocumentTypes>ToDo</vm:DocumentTypes></MenuFlyoutItem.Tag>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Nueva búsqueda" Click="MenuFlyoutItem_Click">
+                            <MenuFlyoutItem.Tag><vm:DocumentTypes>Search</vm:DocumentTypes></MenuFlyoutItem.Tag>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Nueva carpeta" Click="MenuFlyoutItem_Click"/>
                     </MenuFlyout>
                 </SplitButton.Flyout>
             </SplitButton>

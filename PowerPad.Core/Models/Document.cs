@@ -8,14 +8,13 @@
 
         public DocumentStatus Status { get; set; } = DocumentStatus.Unloaded;
 
-        public IFolderEntry? Parent { get; set; }
+        public Folder? Parent { get; internal set; }
 
         public string Path { get; set; }
 
-        public Document(string path, Folder parent)
+        public Document(string path)
         {
             Path = path;
-            Parent = parent;
         }
     }
 }

@@ -57,7 +57,29 @@ namespace PowerPad.WinUI.Components
 
         private void NewSplitButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
         {
-            
+            var parent = TreeView.SelectedItem as FolderEntryViewModel;
+
+            if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
+
+            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Text, "Nueva nota"));
+        }
+
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var parent = TreeView.SelectedItem as FolderEntryViewModel;
+
+            if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
+
+            var tag = ((MenuFlyoutItem)sender).Tag;
+
+            if (tag == null)
+            {
+                Workspace.NewEntryCommand.Execute(NewEntryParameters.NewFolder(parent, "Nueva carpeta"));
+            }
+            else
+            {
+                Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentTypes)tag, "Nuevo elemento"));
+            }
         }
     }
 
@@ -89,5 +111,11 @@ namespace PowerPad.WinUI.Components
                 return FileTemplate;
             }
         }
+    }
+
+    public enum ContextMenuOptions
+    {
+        Rename,
+        Delete
     }
 }

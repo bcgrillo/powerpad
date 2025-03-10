@@ -16,6 +16,6 @@ namespace PowerPad.Core.Models
 
         DocumentStatus Status { get; }
 
-        IFolderEntry? Parent { get; }
+        Folder? Parent { get; }
     }
 }

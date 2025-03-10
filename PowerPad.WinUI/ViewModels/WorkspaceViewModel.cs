@@ -54,39 +54,22 @@ namespace PowerPad.WinUI.ViewModels
             {
                 var folderModel = (Folder)parent.ModelEntry;
 
-                var newFolderModel = new Folder(newPath, folderModel);
-
-                parent.Children.Add(new FolderEntryViewModel(newFolderModel));
+                var newFolderModel = new Folder(newPath);
 
                 _workspaceService.CreateFolder(folderModel, newFolderModel);
+
+                parent.Children.Add(new FolderEntryViewModel(newFolderModel));
             }
             else
             {
-                switch(parameters.DocumentType)
-                {
-                    case DocumentTypes.Markdown:
-                        newPath += ".md";
-                        break;
-                    case DocumentTypes.ToDo:
-                        newPath += ".todo";
-                        break;
-                    case DocumentTypes.Search:
-                        newPath += ".search";
-                        break;
-                    case DocumentTypes.Chat:
-                        newPath += ".chat";
-                        break;
-                    default:
-                        newPath += ".txt";
-                        break;
-                }
+                newPath += parameters.DocumentType!.Value.ToFileExtension();
 
                 var folderModel = (Folder)parent.ModelEntry;
-                var newDocumentModel = new Document(newPath, folderModel);
-
-                parent.Children.Add(new FolderEntryViewModel(newDocumentModel));
+                var newDocumentModel = new Document(newPath);
 
                 _workspaceService.CreateDocument(folderModel, newDocumentModel);
+
+                parent.Children.Add(new FolderEntryViewModel(newDocumentModel));
             }
         }
     }

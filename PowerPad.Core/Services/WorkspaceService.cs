@@ -14,6 +14,10 @@ namespace PowerPad.Core.Services
         void CreateDocument(Folder parent, Document document);
 
         void CreateFolder(Folder parent, Folder folder);
+
+        void DeleteDocument(Document document);
+
+        void DeleteFolder(Folder folder);
     }
 
     public class WorkspaceService : IWorkspaceService
@@ -26,33 +30,33 @@ namespace PowerPad.Core.Services
 
             //if (!Directory.Exists(hiddenFolder)) Directory.CreateDirectory(hiddenFolder);
 
-            var root = new Folder(path, null);
-            root.Folders = GetFoldersRecursive(path, root);
-            root.Documents = GetDocuments(path, root);
+            var root = new Folder(path);
+            root.AddFolders(GetFoldersRecursive(path, root));
+            root.AddDocuments(GetDocuments(path));
 
             return root;
         }
 
-        private Collection<Folder> GetFoldersRecursive(string path, Folder parent)
+        private IEnumerable<Folder> GetFoldersRecursive(string path, Folder parent)
         {
             Collection<Folder> folders = [];
             foreach (var directory in Directory.GetDirectories(path))
             {
-                var folder = new Folder(directory, parent);
-                folder.Folders = GetFoldersRecursive(directory, folder);
-                folder.Documents = GetDocuments(directory, folder);
+                var folder = new Folder(directory);
+                folder.AddFolders(GetFoldersRecursive(directory, folder));
+                folder.AddDocuments(GetDocuments(directory));
                 folders.Add(folder);
             }
             return folders;
         }
 
-        private Collection<Document>GetDocuments(string path, Folder parent)
+        private IEnumerable<Document>GetDocuments(string directory)
         {
             Collection<Document> documents = new();
-            foreach (var file in Directory.GetFiles(path))
+            foreach (var file in Directory.GetFiles(directory))
             {
                 if (!file.EndsWith(AUTO_SAVE_EXTENSION))
-                    documents.Add(new Document(file, parent));
+                    documents.Add(new Document(file));
             }
             return documents;
         }
@@ -69,9 +73,8 @@ namespace PowerPad.Core.Services
                 File.Move(AutosavePath(document.Path), newPath);
             }
 
-            ((Folder)document.Parent!).Documents!.Remove(document);
-            targetFolder.Documents!.Add(document);
-            document.Parent = targetFolder;
+            document.Parent?.RemoveDocument(document);
+            targetFolder.AddDocument(document);
         }
 
         public void MoveFolder(Folder folder, Folder targetFolder)
@@ -79,27 +82,41 @@ namespace PowerPad.Core.Services
             var newPath = Path.Combine(targetFolder.Path, Path.GetFileName(folder.Path));
             Directory.Move(folder.Path, newPath);
 
-            ((Folder)folder.Parent!).Folders!.Remove(folder);
-            targetFolder.Folders!.Add(folder);
-            folder.Parent = targetFolder;
+            folder.Parent?.RemoveFolder(folder);
+            targetFolder.AddFolder(folder);
         }
 
         public void CreateDocument(Folder parent, Document document)
         {
             if (File.Exists(document.Path)) throw new InvalidOperationException("Document already exists");
 
-            parent.Documents!.Add(document);
-
             File.WriteAllText(document.Path, string.Empty);
+
+            parent.AddDocument(document);
         }
 
         public void CreateFolder(Folder parent, Folder folder)
         {
             if (Directory.Exists(folder.Path)) throw new InvalidOperationException("Folder already exists");
 
-            parent.Folders!.Add(folder);
-
             Directory.CreateDirectory(folder.Path);
+
+            parent.AddFolder(folder);
+        }
+
+        public void DeleteDocument(Document document)
+        {
+            File.Delete(document.Path);
+            if (File.Exists(AutosavePath(document.Path))) File.Delete(AutosavePath(document.Path));
+
+            document.Parent?.RemoveDocument(document);
+        }
+
+        public void DeleteFolder(Folder folder)
+        {
+            Directory.Delete(folder.Path, true);
+
+            folder.Parent?.RemoveFolder(folder);
         }
 
         private string AutosavePath(string path) => path + AUTO_SAVE_EXTENSION;
