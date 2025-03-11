@@ -8,11 +8,28 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Converters
 {
-    public class NullOrEmptyToCollapsedConverter : IValueConverter
+    public class FalseToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value == null || (value is string str && string.IsNullOrEmpty(str)))
+            if (value == null || !(bool)value)
+            {
+                return Visibility.Collapsed;
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TrueToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value != null && (bool)value)
             {
                 return Visibility.Collapsed;
             }

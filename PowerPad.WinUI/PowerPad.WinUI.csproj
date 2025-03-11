@@ -16,6 +16,7 @@
     <None Remove="Components\Editors\ChatEditorControl.xaml" />
     <None Remove="Components\Editors\TextEditorControl.xaml" />
     <None Remove="Components\WorkspaceControl.xaml" />
+    <None Remove="Dialogs\InputDialog.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,9 +54,15 @@
   <ItemGroup>
     <Folder Include="Styles\" />
 	<Folder Include="Pages\" />
+	<Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerPad.Core\PowerPad.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Dialogs\InputDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Components\Editors\ChatEditorControl.xaml">

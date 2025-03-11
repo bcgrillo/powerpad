@@ -1,20 +1,28 @@
-﻿namespace PowerPad.Core.Models
+﻿using PowerPad.Core.Contracts;
+using PowerPad.Core.Services;
+
+namespace PowerPad.Core.Models
 {
     public class Document : IFolderEntry
     {
-        public string Name => System.IO.Path.GetFileNameWithoutExtension(Path)!;
+        public string Name { get; set; }
+
+        public string Extension { get; set; }
 
         public EntryType Type => EntryType.Document;
 
-        public DocumentStatus Status { get; set; } = DocumentStatus.Unloaded;
+        public DocumentStatus? Status { get; set; } = DocumentStatus.Unloaded;
 
         public Folder? Parent { get; internal set; }
 
-        public string Path { get; set; }
+        public string Path => $"{Parent?.Path}\\{Name}{Extension}";
 
-        public Document(string path)
+        public string AutosavePath => AutosaveConventions.AutosavePath(Path);
+
+        public Document(string name, string extension)
         {
-            Path = path;
+            Name = name;
+            Extension = extension;
         }
     }
 }

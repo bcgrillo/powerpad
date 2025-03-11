@@ -1,5 +1,6 @@
 ﻿using PowerPad.Core.Models;
 using System.Collections.ObjectModel;
+using static PowerPad.Core.Services.AutosaveConventions;
 
 namespace PowerPad.Core.Services
 {
@@ -18,19 +19,21 @@ namespace PowerPad.Core.Services
         void DeleteDocument(Document document);
 
         void DeleteFolder(Folder folder);
+
+        void RenameDocument(Document document, string newName);
+
+        void RenameFolder(Folder folder, string newName);
     }
 
     public class WorkspaceService : IWorkspaceService
     {
-        public const string AUTO_SAVE_EXTENSION = ".autosave";
-
         public Folder OpenWorkspace(string path)
         {
             //var hiddenFolder = Path.Combine(path, ".powerpad");
 
             //if (!Directory.Exists(hiddenFolder)) Directory.CreateDirectory(hiddenFolder);
 
-            var root = new Folder(path);
+            var root = Folder.CreateRoot(path);
             root.AddFolders(GetFoldersRecursive(path, root));
             root.AddDocuments(GetDocuments(path));
 
@@ -42,7 +45,7 @@ namespace PowerPad.Core.Services
             Collection<Folder> folders = [];
             foreach (var directory in Directory.GetDirectories(path))
             {
-                var folder = new Folder(directory);
+                var folder = new Folder(Path.GetFileName(directory));
                 folder.AddFolders(GetFoldersRecursive(directory, folder));
                 folder.AddDocuments(GetDocuments(directory));
                 folders.Add(folder);
@@ -56,24 +59,21 @@ namespace PowerPad.Core.Services
             foreach (var file in Directory.GetFiles(directory))
             {
                 if (!file.EndsWith(AUTO_SAVE_EXTENSION))
-                    documents.Add(new Document(file));
+                    documents.Add(new Document(Path.GetFileNameWithoutExtension(file), Path.GetExtension(file)));
             }
             return documents;
         }
 
         public void MoveDocument(Document document, Folder targetFolder)
         {
-            var newPath = Path.Combine(targetFolder.Path, Path.GetFileName(document.Path));
+            var newPath = $"{targetFolder.Path}\\{document.Name}{document.Extension}";
+
             File.Move(document.Path, newPath);
-            document.Path = newPath;
 
-            if (File.Exists(AutosavePath(document.Path)))
-            {
-                newPath = Path.Combine(targetFolder.Path, Path.GetFileName(AutosavePath(document.Path)));
-                File.Move(AutosavePath(document.Path), newPath);
-            }
+            if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
 
-            document.Parent?.RemoveDocument(document);
+            document.Parent!.RemoveDocument(document);
+
             targetFolder.AddDocument(document);
         }
 
@@ -82,43 +82,66 @@ namespace PowerPad.Core.Services
             var newPath = Path.Combine(targetFolder.Path, Path.GetFileName(folder.Path));
             Directory.Move(folder.Path, newPath);
 
-            folder.Parent?.RemoveFolder(folder);
+            folder.Parent!.RemoveFolder(folder);
             targetFolder.AddFolder(folder);
         }
 
-        public void CreateDocument(Folder parent, Document document)
+        public void CreateDocument(Folder parent, Document newDocument)
         {
-            if (File.Exists(document.Path)) throw new InvalidOperationException("Document already exists");
+            var newPath = $"{parent.Path}\\{newDocument.Name}{newDocument.Extension}";
 
-            File.WriteAllText(document.Path, string.Empty);
+            if (File.Exists(newPath)) throw new InvalidOperationException("Document already exists");
 
-            parent.AddDocument(document);
+            File.WriteAllText(newPath, string.Empty);
+
+            parent.AddDocument(newDocument);
         }
 
-        public void CreateFolder(Folder parent, Folder folder)
+        public void CreateFolder(Folder parent, Folder newFolder)
         {
-            if (Directory.Exists(folder.Path)) throw new InvalidOperationException("Folder already exists");
+            var newPath = Path.Combine(parent.Path, newFolder.Name);
 
-            Directory.CreateDirectory(folder.Path);
+            if (Directory.Exists(newPath)) throw new InvalidOperationException("Folder already exists");
 
-            parent.AddFolder(folder);
+            Directory.CreateDirectory(newPath);
+
+            parent.AddFolder(newFolder);
         }
 
         public void DeleteDocument(Document document)
         {
             File.Delete(document.Path);
-            if (File.Exists(AutosavePath(document.Path))) File.Delete(AutosavePath(document.Path));
 
-            document.Parent?.RemoveDocument(document);
+            if (File.Exists(document.AutosavePath)) File.Delete(document.AutosavePath);
+
+            document.Parent!.RemoveDocument(document);
         }
 
         public void DeleteFolder(Folder folder)
         {
             Directory.Delete(folder.Path, true);
 
-            folder.Parent?.RemoveFolder(folder);
+            folder.Parent!.RemoveFolder(folder);
         }
 
-        private string AutosavePath(string path) => path + AUTO_SAVE_EXTENSION;
+        public void RenameDocument(Document document, string newName)
+        {
+            var newPath = $"{document.Parent!.Path}\\{newName}{document.Extension}";
+
+            File.Move(document.Path, newPath);
+
+            if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
+
+            document.Name = newName;
+        }
+
+        public void RenameFolder(Folder folder, string newName)
+        {
+            var newPath = Path.Combine(folder.Parent!.Path, newName);
+
+            Directory.Move(folder.Path, newPath);
+
+            folder.Name = newName;
+        }
     }
 }

@@ -1,32 +1,40 @@
-﻿using System.Collections.ObjectModel;
+﻿using PowerPad.Core.Contracts;
+using System.Collections.ObjectModel;
 
 namespace PowerPad.Core.Models
 {
     public class Folder : IFolderEntry
     {
+        private string? _rootPath;
+
         private Collection<Folder>? _folders;
         private Collection<Document>? _documents;
 
-        public string Name => System.IO.Path.GetFileName(Path)!;
+        public string Name { get; set; }
 
         public EntryType Type => EntryType.Folder;
 
-        public DocumentStatus Status => DocumentStatus.Saved;
+        public DocumentStatus? Status => null;
 
         public Folder? Parent { get; internal set; }
 
-        public string Path { get; set; }
+        public string Path => _rootPath ?? $"{Parent?.Path}\\{Name}";
 
         public ReadOnlyCollection<Folder>? Folders => _folders?.AsReadOnly();
 
         public ReadOnlyCollection<Document>? Documents => _documents?.AsReadOnly();
 
-        public Folder(string path)
+        private Folder()
         {
-            Path = path;
+            Name = null!;
         }
 
-        public void AddFolder(Folder folder)
+        public Folder(string name)
+        {
+            Name = name;
+        }
+
+        internal void AddFolder(Folder folder)
         {
             if (_folders == null) _folders = new Collection<Folder>();
 
@@ -35,7 +43,7 @@ namespace PowerPad.Core.Models
             _folders.Add(folder);
         }
 
-        public void AddDocument(Document document)
+        internal void AddDocument(Document document)
         {
             if (_documents == null) _documents = new Collection<Document>();
 
@@ -44,19 +52,19 @@ namespace PowerPad.Core.Models
             _documents.Add(document);
         }
 
-        public void RemoveFolder(Folder folder)
+        internal void RemoveFolder(Folder folder)
         {
             folder.Parent = null;
             _folders!.Remove(folder);
         }
 
-        public void RemoveDocument(Document document)
+        internal void RemoveDocument(Document document)
         {
             document.Parent = null;
             _documents!.Remove(document);
         }
 
-        public void AddFolders(IEnumerable<Folder> folders)
+        internal void AddFolders(IEnumerable<Folder> folders)
         {
             if (_folders == null) _folders = new Collection<Folder>();
             foreach (var folder in folders)
@@ -66,7 +74,7 @@ namespace PowerPad.Core.Models
             }
         }
 
-        public void AddDocuments(IEnumerable<Document> documents)
+        internal void AddDocuments(IEnumerable<Document> documents)
         {
             if (_documents == null) _documents = new Collection<Document>();
             foreach (var document in documents)
@@ -74,6 +82,13 @@ namespace PowerPad.Core.Models
                 document.Parent = this;
                 _documents.Add(document);
             }
+        }
+
+        public static Folder CreateRoot(string rootPath)
+        {
+            var root = new Folder();
+            root._rootPath = rootPath;
+            return root;
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OllamaSharp.Models.Chat;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
+using System;
 
 namespace PowerPad.WinUI.ViewModels
 {
@@ -20,56 +22,56 @@ namespace PowerPad.WinUI.ViewModels
         {
             _workspaceService = workspaceService;
 
-            Root = new FolderEntryViewModel(_workspaceService.OpenWorkspace(@"D:\OneDrive\Escritorio\Universidad\PruebasTFG"));
+            Root = new FolderEntryViewModel(_workspaceService.OpenWorkspace(@"D:\OneDrive\Escritorio\Universidad\PruebasTFG"), null);
 
-            MoveEntryCommand = new RelayCommand<(FolderEntryViewModel, FolderEntryViewModel?)>(MoveEntry);
+            MoveEntryCommand = new RelayCommand<MoveEntryParameters>(MoveEntry);
 
             NewEntryCommand = new RelayCommand<NewEntryParameters>(NewEntry);
         }
 
-        private void MoveEntry((FolderEntryViewModel entry, FolderEntryViewModel? newParent) parameters)
+        private void MoveEntry(MoveEntryParameters parameters)
         {
-            parameters.newParent ??= Root;
+            parameters.NewParent ??= Root;
 
-            if (parameters.entry.Type == EntryType.Document)
+            if (parameters.Entry.Type == EntryType.Document)
             {
-                var document = (Document)parameters.entry.ModelEntry;
-                var targetFolder = (Folder)parameters.newParent.ModelEntry;
+                var document = (Document)parameters.Entry.ModelEntry;
+                var targetFolder = (Folder)parameters.NewParent.ModelEntry;
                 _workspaceService.MoveDocument(document, targetFolder);
             }
             else
             {
-                var folder = (Folder)parameters.entry.ModelEntry;
-                var targetFolder = (Folder)parameters.newParent.ModelEntry;
+                var folder = (Folder)parameters.Entry.ModelEntry;
+                var targetFolder = (Folder)parameters.NewParent.ModelEntry;
                 _workspaceService.MoveFolder(folder, targetFolder);
             }
         }
 
         private void NewEntry(NewEntryParameters parameters)
         {
+            ArgumentException.ThrowIfNullOrEmpty(parameters.Name, nameof(parameters.Name));
+
             FolderEntryViewModel parent = parameters.Parent ?? Root;
-            var newPath = parent.ModelEntry.Path + "\\" + parameters.Name;
 
             if (parameters.Type == EntryType.Folder)
             {
                 var folderModel = (Folder)parent.ModelEntry;
 
-                var newFolderModel = new Folder(newPath);
+                var newFolderModel = new Folder(parameters.Name);
 
                 _workspaceService.CreateFolder(folderModel, newFolderModel);
 
-                parent.Children.Add(new FolderEntryViewModel(newFolderModel));
+                parent.Children!.Add(new FolderEntryViewModel(newFolderModel, parent));
             }
             else
             {
-                newPath += parameters.DocumentType!.Value.ToFileExtension();
-
                 var folderModel = (Folder)parent.ModelEntry;
-                var newDocumentModel = new Document(newPath);
+
+                var newDocumentModel = new Document(parameters.Name, parameters.DocumentType!.Value.ToFileExtension());
 
                 _workspaceService.CreateDocument(folderModel, newDocumentModel);
 
-                parent.Children.Add(new FolderEntryViewModel(newDocumentModel));
+                parent.Children!.Add(new FolderEntryViewModel(newDocumentModel, parent));
             }
         }
     }
@@ -103,5 +105,11 @@ namespace PowerPad.WinUI.ViewModels
                 Name = name
             };
         }
+    }
+
+    public class MoveEntryParameters
+    {
+        public FolderEntryViewModel Entry { get; set; }
+        public FolderEntryViewModel? NewParent { get; set; }
     }
 }

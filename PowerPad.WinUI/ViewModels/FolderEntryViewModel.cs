@@ -1,17 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
-using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace PowerPad.WinUI.ViewModels
 {
@@ -20,8 +15,9 @@ namespace PowerPad.WinUI.ViewModels
         private readonly IFolderEntry _entry;
         private readonly DocumentTypes? _documentType;
 
-        [ObservableProperty]
-        public string _name;
+        private FolderEntryViewModel? _parent;
+
+        public string Name { get => _entry.Name; }
 
         [ObservableProperty]
         public string? _glyph;
@@ -30,27 +26,23 @@ namespace PowerPad.WinUI.ViewModels
         public EntryType _type;
 
         [ObservableProperty]
-        public ObservableCollection<FolderEntryViewModel> _children;
+        public ObservableCollection<FolderEntryViewModel>? _children;
 
-        [ObservableProperty]
-        public bool _renameStarted;
-
-        [ObservableProperty]
-        public bool _notRenameStarted = true;
+        public bool IsFolder => Type == EntryType.Folder;
 
         public DocumentTypes? DocumentType => _documentType;
 
         public IFolderEntry ModelEntry => _entry;
 
-        public IRelayCommand StartRenameCommand { get; }
-
         public IRelayCommand DeleteCommand { get; }
 
-        public FolderEntryViewModel(Folder folder)
+        public IRelayCommand RenameCommand { get; }
+
+        public FolderEntryViewModel(Folder folder, FolderEntryViewModel? parent)
         {
             _entry = folder;
+            _parent = parent;
 
-            Name = folder.Name;
             Type = EntryType.Folder;
 
             Children = new ObservableCollection<FolderEntryViewModel>();
@@ -59,7 +51,7 @@ namespace PowerPad.WinUI.ViewModels
             {
                 foreach (var f in folder.Folders)
                 {
-                    Children.Add(new FolderEntryViewModel(f));
+                    Children.Add(new FolderEntryViewModel(f, this));
                 }
             }
 
@@ -67,19 +59,19 @@ namespace PowerPad.WinUI.ViewModels
             {
                 foreach (var d in folder.Documents)
                 {
-                    Children.Add(new FolderEntryViewModel(d));
+                    Children.Add(new FolderEntryViewModel(d, this));
                 }
             }
 
-            StartRenameCommand = new RelayCommand(StartRename);
             DeleteCommand = new RelayCommand(Delete);
+            RenameCommand = new RelayCommand<string>(Rename);
         }
 
-        public FolderEntryViewModel(Document document)
+        public FolderEntryViewModel(Document document, FolderEntryViewModel? parent)
         {
             _entry = document;
+            _parent = parent;
 
-            Name = document.Name;
             Type = EntryType.Document;
 
             var documentType = DocumentTypeResolver.FromFilePath(document.Path);
@@ -87,19 +79,13 @@ namespace PowerPad.WinUI.ViewModels
             _documentType = documentType;
             Glyph = documentType.ToGlyph();
 
-            StartRenameCommand = new RelayCommand(StartRename);
             DeleteCommand = new RelayCommand(Delete);
+            RenameCommand = new RelayCommand<string>(Rename);
         }
 
         public DocumentViewModel ToDocumentViewModel(IEditorContract editorControl)
         {
             return new DocumentViewModel((Document)_entry, editorControl);
-        }
-
-        private void StartRename()
-        {
-            RenameStarted = true;
-            NotRenameStarted = false;
         }
 
         private void Delete()
@@ -114,6 +100,26 @@ namespace PowerPad.WinUI.ViewModels
             {
                 workspaceService.DeleteDocument((Document)_entry);
             }
+
+            _parent?.Children!.Remove(this);
+        }
+
+        private void Rename(string? newName)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(newName, nameof(newName));
+
+            var workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
+
+            if (Type == EntryType.Document)
+            {
+                workspaceService.RenameDocument((Document)_entry, newName);
+            }
+            else
+            {
+                workspaceService.RenameFolder((Folder)_entry, newName);
+            }
+
+            OnPropertyChanged(nameof(Name));
         }
     }
 }

@@ -4,6 +4,7 @@ using PowerPad.Core.Models;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using PowerPad.WinUI.ViewModels;
 using Microsoft.UI.Xaml;
+using PowerPad.WinUI.Dialogs;
 
 namespace PowerPad.WinUI.Components
 {
@@ -79,6 +80,27 @@ namespace PowerPad.WinUI.Components
             else
             {
                 Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentTypes)tag, "Nuevo elemento"));
+            }
+        }
+
+        private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
+
+            var renameDialog = new InputDialog(this.XamlRoot);
+            var result = await renameDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                var newName = renameDialog.Text;
+            }
+
+            try
+            {
+                entry.RenameCommand.Execute(renameDialog.Text);
+            }
+            catch (Exception ex)
+            {
             }
         }
     }

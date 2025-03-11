@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PowerPad.WinUI.Components.Editors
+﻿namespace PowerPad.Core.Contracts
 {
     public interface IEditorContract
     {

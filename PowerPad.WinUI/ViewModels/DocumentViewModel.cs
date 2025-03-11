@@ -1,17 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml.Data;
+using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
-using PowerPad.WinUI.Components.Editors;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels
 {
@@ -26,7 +19,7 @@ namespace PowerPad.WinUI.ViewModels
 
         public DocumentStatus Status
         {
-            get => _document.Status;
+            get => _document.Status!.Value;
             set
             {
                 if (_document.Status != value)
@@ -80,7 +73,10 @@ namespace PowerPad.WinUI.ViewModels
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(newName, nameof(newName));
 
-            _documentService.RenameDocument(_document, _editorControl, newName);
+            var workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
+
+            workspaceService.RenameDocument(_document, newName);
+
             OnPropertyChanged(nameof(Name));
         }
     }

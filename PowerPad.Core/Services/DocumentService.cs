@@ -1,6 +1,5 @@
-﻿
+﻿using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
-using PowerPad.WinUI.Components.Editors;
 
 namespace PowerPad.Core.Services
 {
@@ -9,18 +8,17 @@ namespace PowerPad.Core.Services
         void LoadDocument(Document document, IEditorContract output);
         void AutosaveDocument(Document document, IEditorContract control);
         void SaveDocument(Document document, IEditorContract control);
-        void RenameDocument(Document document, IEditorContract control, string newName);
     }
 
     public class DocumentService : IDocumentService
     {
         public void LoadDocument(Document document, IEditorContract control)
         {
-            var autosaveExists = File.Exists(AutosavePath(document.Path));
+            var autosaveExists = File.Exists(document.AutosavePath);
 
             if (autosaveExists)
             {
-                control.SetContent(File.ReadAllText(AutosavePath(document.Path)));
+                control.SetContent(File.ReadAllText(document.AutosavePath));
                 document.Status = DocumentStatus.AutoSaved;
             }
             else
@@ -32,7 +30,7 @@ namespace PowerPad.Core.Services
 
         public void AutosaveDocument(Document document, IEditorContract control)
         {
-            File.WriteAllText(AutosavePath(document.Path), control.GetContent());
+            File.WriteAllText(document.AutosavePath, control.GetContent());
             document.Status = DocumentStatus.AutoSaved;
         }
 
@@ -41,24 +39,7 @@ namespace PowerPad.Core.Services
             File.WriteAllText(document.Path, control.GetContent());
             document.Status = DocumentStatus.Saved;
 
-            if (File.Exists(AutosavePath(document.Path)))
-            {
-                File.Delete(AutosavePath(document.Path));
-            }
+            if (File.Exists(document.AutosavePath)) File.Delete(document.AutosavePath);
         }
-
-        public void RenameDocument(Document document, IEditorContract control, string newName)
-        {
-            SaveDocument(document, control);
-
-            var directory = Path.GetDirectoryName(document.Path)!;
-            var extension = Path.GetExtension(document.Path);
-            var newPath = Path.Combine(directory, newName + extension);
-
-            File.Move(document.Path, newPath);
-            document.Path = newPath;
-        }
-
-        private string AutosavePath(string path) => path + WorkspaceService.AUTO_SAVE_EXTENSION;
     }
 }

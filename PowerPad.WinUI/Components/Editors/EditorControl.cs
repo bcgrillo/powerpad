@@ -1,11 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
-using PowerPad.Core.Models;
-using PowerPad.WinUI.ViewModels;
+using PowerPad.Core.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Components.Editors
 {
