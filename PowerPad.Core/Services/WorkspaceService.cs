@@ -1,6 +1,8 @@
 ﻿using PowerPad.Core.Models;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 using static PowerPad.Core.Services.AutosaveConventions;
+using Timer = System.Timers.Timer;
 
 namespace PowerPad.Core.Services
 {
@@ -23,15 +25,32 @@ namespace PowerPad.Core.Services
         void RenameDocument(Document document, string newName);
 
         void RenameFolder(Folder folder, string newName);
+
+        void SaveConfig<T>(string key, T config);
+
+        T? GetConfig<T>(string key);
     }
 
     public class WorkspaceService : IWorkspaceService
     {
+        private string _configFolder;
+        private Dictionary<string, (object? value, bool dirty)> _configStore = [];
+        private Timer _timer;
+
+        public WorkspaceService()
+        {
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) => StoreConfig();
+
+            _timer = new Timer(2000);
+            _timer.Elapsed += (sender, e) => StoreConfig();
+            _timer.Start();
+        }
+
         public Folder OpenWorkspace(string path)
         {
-            //var hiddenFolder = Path.Combine(path, ".powerpad");
+            _configFolder = Path.Combine(path, ".powerpad");
 
-            //if (!Directory.Exists(hiddenFolder)) Directory.CreateDirectory(hiddenFolder);
+            if (!Directory.Exists(_configFolder)) Directory.CreateDirectory(_configFolder);
 
             var root = Folder.CreateRoot(path);
             root.AddFolders(GetFoldersRecursive(path, root));
@@ -45,10 +64,13 @@ namespace PowerPad.Core.Services
             Collection<Folder> folders = [];
             foreach (var directory in Directory.GetDirectories(path))
             {
-                var folder = new Folder(Path.GetFileName(directory));
-                folder.AddFolders(GetFoldersRecursive(directory, folder));
-                folder.AddDocuments(GetDocuments(directory));
-                folders.Add(folder);
+                if (directory != _configFolder)
+                {
+                    var folder = new Folder(Path.GetFileName(directory));
+                    folder.AddFolders(GetFoldersRecursive(directory, folder));
+                    folder.AddDocuments(GetDocuments(directory));
+                    folders.Add(folder);
+                }
             }
             return folders;
         }
@@ -89,8 +111,15 @@ namespace PowerPad.Core.Services
         public void CreateDocument(Folder parent, Document newDocument)
         {
             var newPath = $"{parent.Path}\\{newDocument.Name}{newDocument.Extension}";
+            var originalName = newDocument.Name;
 
-            if (File.Exists(newPath)) throw new InvalidOperationException("Document already exists");
+            int counter = 1;
+            while (File.Exists(newPath))
+            {
+                newDocument.Name = $"{originalName} ({counter})";
+                newPath = $"{parent.Path}\\{newDocument.Name}{newDocument.Extension}";
+                counter++;
+            }
 
             File.WriteAllText(newPath, string.Empty);
 
@@ -100,8 +129,15 @@ namespace PowerPad.Core.Services
         public void CreateFolder(Folder parent, Folder newFolder)
         {
             var newPath = Path.Combine(parent.Path, newFolder.Name);
+            var originalName = newFolder.Name;
 
-            if (Directory.Exists(newPath)) throw new InvalidOperationException("Folder already exists");
+            int counter = 1;
+            while (Directory.Exists(newPath))
+            {
+                newFolder.Name = $"{originalName} ({counter})";
+                newPath = Path.Combine(parent.Path, newFolder.Name);
+                counter++;
+            }
 
             Directory.CreateDirectory(newPath);
 
@@ -142,6 +178,35 @@ namespace PowerPad.Core.Services
             Directory.Move(folder.Path, newPath);
 
             folder.Name = newName;
+        }
+
+        public void SaveConfig<T>(string key, T config)
+        {
+            _configStore[key] = (config, true);
+        }
+
+        public T? GetConfig<T>(string key)
+        {
+            if (_configStore.TryGetValue(key, out var config))
+            {
+                return (T?)config.value;
+            }
+            return default;
+        }
+
+        private void StoreConfig()
+        {
+            for(var i = 0; i < _configStore.Count; i++)
+            {
+                var (key, value) = _configStore.ElementAt(i);
+                if (value.dirty)
+                {
+                    var path = Path.Combine(_configFolder, $"{key}.json");
+                    var jsonConfig = JsonSerializer.Serialize(value.value);
+                    File.WriteAllText(path, jsonConfig);
+                    value.dirty = false;
+                }
+            }
         }
     }
 }

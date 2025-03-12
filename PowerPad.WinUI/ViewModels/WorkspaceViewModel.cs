@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using OllamaSharp.Models.Chat;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
+using PowerPad.WinUI.Helpers;
 using System;
+using System.Xml.Linq;
 
 namespace PowerPad.WinUI.ViewModels
 {
@@ -81,28 +83,28 @@ namespace PowerPad.WinUI.ViewModels
         public FolderEntryViewModel? Parent { get; set; }
         public EntryType Type { get; set; }
         public DocumentTypes? DocumentType { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         private NewEntryParameters() { }
 
-        public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentTypes documentType, string name)
+        public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentTypes documentType, string? name = null)
         {
             return new NewEntryParameters
             {
                 Parent = parent,
                 Type = EntryType.Document,
                 DocumentType = documentType,
-                Name = name
+                Name = name ?? NewEntryNameHelper.NewDocumentName(documentType)
             };
         }
 
-        public static NewEntryParameters NewFolder(FolderEntryViewModel? parent, string name)
+        public static NewEntryParameters NewFolder(FolderEntryViewModel? parent, string? name = null)
         {
             return new NewEntryParameters
             {
                 Parent = parent,
                 Type = EntryType.Folder,
-                Name = name
+                Name = name ?? NewEntryNameHelper.NewFolderName()
             };
         }
     }

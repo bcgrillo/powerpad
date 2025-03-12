@@ -53,7 +53,7 @@ namespace PowerPad.WinUI.Components
 
             if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
 
-            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Chat, "Nuevo chat"));
+            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Chat));
         }
 
         private void NewSplitButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
@@ -62,7 +62,7 @@ namespace PowerPad.WinUI.Components
 
             if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
 
-            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Text, "Nueva nota"));
+            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Text));
         }
 
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
@@ -79,7 +79,7 @@ namespace PowerPad.WinUI.Components
             }
             else
             {
-                Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentTypes)tag, "Nuevo elemento"));
+                Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentTypes)tag));
             }
         }
 
@@ -87,20 +87,19 @@ namespace PowerPad.WinUI.Components
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
 
-            var renameDialog = new InputDialog(this.XamlRoot);
-            var result = await renameDialog.ShowAsync();
+            var result = await InputDialog.ShowAsync(this.XamlRoot, "Renombrar", entry.Name);
 
-            if (result == ContentDialogResult.Primary)
+            if (result != null)
             {
-                var newName = renameDialog.Text;
-            }
+                var newName = result;
 
-            try
-            {
-                entry.RenameCommand.Execute(renameDialog.Text);
-            }
-            catch (Exception ex)
-            {
+                try
+                {
+                    entry.RenameCommand.Execute(newName);
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
     }
