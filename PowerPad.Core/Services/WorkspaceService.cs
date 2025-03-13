@@ -33,7 +33,11 @@ namespace PowerPad.Core.Services
 
     public class WorkspaceService : IWorkspaceService
     {
+        private const string CONFIG_FOLDER_NAME = ".powerpad";
+        private const string TRASH_FOLDER_NAME = ".trash";
+
         private string _configFolder;
+        private string _trashFolder;
         private Dictionary<string, (object? value, bool dirty)> _configStore = [];
         private Timer _timer;
 
@@ -48,9 +52,11 @@ namespace PowerPad.Core.Services
 
         public Folder OpenWorkspace(string path)
         {
-            _configFolder = Path.Combine(path, ".powerpad");
+            _configFolder = Path.Combine(path, CONFIG_FOLDER_NAME);
+            _trashFolder = Path.Combine(path, TRASH_FOLDER_NAME);
 
             if (!Directory.Exists(_configFolder)) Directory.CreateDirectory(_configFolder);
+            if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
 
             var root = Folder.CreateRoot(path);
             root.AddFolders(GetFoldersRecursive(path, root));
@@ -62,15 +68,16 @@ namespace PowerPad.Core.Services
         private IEnumerable<Folder> GetFoldersRecursive(string path, Folder parent)
         {
             Collection<Folder> folders = [];
-            foreach (var directory in Directory.GetDirectories(path))
+
+            var directories = Directory.GetDirectories(path)
+                .Where(d => d != _configFolder && d != _trashFolder);
+
+            foreach (var directory in directories)
             {
-                if (directory != _configFolder)
-                {
-                    var folder = new Folder(Path.GetFileName(directory));
-                    folder.AddFolders(GetFoldersRecursive(directory, folder));
-                    folder.AddDocuments(GetDocuments(directory));
-                    folders.Add(folder);
-                }
+                var folder = new Folder(Path.GetFileName(directory));
+                folder.AddFolders(GetFoldersRecursive(directory, folder));
+                folder.AddDocuments(GetDocuments(directory));
+                folders.Add(folder);
             }
             return folders;
         }
@@ -146,16 +153,19 @@ namespace PowerPad.Core.Services
 
         public void DeleteDocument(Document document)
         {
-            File.Delete(document.Path);
+            var newPath = $"{_trashFolder}\\{document.Name}{document.Extension}";
 
-            if (File.Exists(document.AutosavePath)) File.Delete(document.AutosavePath);
+            File.Move(document.Path, newPath);
+
+            if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
 
             document.Parent!.RemoveDocument(document);
         }
 
         public void DeleteFolder(Folder folder)
         {
-            Directory.Delete(folder.Path, true);
+            var newPath = Path.Combine(_trashFolder, Path.GetFileName(folder.Path));
+            Directory.Move(folder.Path, newPath);
 
             folder.Parent!.RemoveFolder(folder);
         }

@@ -34,7 +34,6 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
-                x:Name="EditableTextBlock"
                 Style="{StaticResource WSTitleStyle}"
                 Text="Workspace"
                 TextTrimming="CharacterEllipsis"

@@ -17,6 +17,7 @@
     <None Remove="Components\Editors\TextEditorControl.xaml" />
     <None Remove="Components\WorkspaceControl.xaml" />
     <None Remove="Dialogs\InputDialog.xaml" />
+    <None Remove="Pages\AIServicesPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,11 +54,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Styles\" />
-	<Folder Include="Pages\" />
 	<Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerPad.Core\PowerPad.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\AIServicesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Dialogs\InputDialog.xaml">

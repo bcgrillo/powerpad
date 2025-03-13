@@ -21,69 +21,49 @@ namespace PowerPad.WinUI.Dialogs
 {
     public sealed partial class InputDialog : ContentDialog
     {
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-            "Text", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
+        public bool Aceppted { get; private set; }
 
-        public static readonly DependencyProperty DialogTitleProperty = DependencyProperty.Register(
-            "DialogTitle", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
-
-        public static readonly DependencyProperty PrimaryButtonTextProperty = DependencyProperty.Register(
-            "PrimaryButtonText", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
-
-        public static readonly DependencyProperty SecondaryButtonTextProperty = DependencyProperty.Register(
-            "SecondaryButtonText", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
-
-        private InputDialog(XamlRoot xamlRoot)
+        private InputDialog(string? currentValue)
         {
             InitializeComponent();
-            this.XamlRoot = xamlRoot;
-        }
 
-        public string Text
-        {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
-
-        public string DialogTitle
-        {
-            get { return (string)GetValue(DialogTitleProperty); }
-            set { SetValue(DialogTitleProperty, value); }
-        }
-
-        public string PrimaryButtonText
-        {
-            get { return (string)GetValue(PrimaryButtonTextProperty); }
-            set { SetValue(PrimaryButtonTextProperty, value); }
-        }
-
-        public string SecondaryButtonText
-        {
-            get { return (string)GetValue(SecondaryButtonTextProperty); }
-            set { SetValue(SecondaryButtonTextProperty, value); }
-        }
-
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-        }
-
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
+            TextBox.Text = currentValue ?? string.Empty;
+            TextBox.SelectAll();
+            TextBox.Focus(FocusState.Programmatic);
         }
 
         public static async Task<string?> ShowAsync(XamlRoot xamlRoot, string title, string? currentValue, string primaryButtonText = "Aceptar", string secondaryButtonText = "Cancelar")
         {
-            var inputDialog = new InputDialog(xamlRoot)
+            var inputDialog = new InputDialog(currentValue)
             {
+                XamlRoot = xamlRoot,
                 Title = title,
-                Text = currentValue ?? string.Empty,
                 PrimaryButtonText = primaryButtonText,
-                SecondaryButtonText = secondaryButtonText
+                SecondaryButtonText = secondaryButtonText,
+                DefaultButton = ContentDialogButton.Primary
             };
 
-            var dialogResult = await inputDialog.ShowAsync();
+            await inputDialog.ShowAsync();
 
-            return dialogResult == ContentDialogResult.Primary ? inputDialog.Text : null;
+            return inputDialog.Aceppted ? inputDialog.TextBox.Text : null;
+        }
+
+        private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter) 
+            {
+                Aceppted = true;
+                Hide();
+            }
+            else if(e.Key == Windows.System.VirtualKey.Escape)
+            {
+                Hide();
+            }
+        }
+
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            Aceppted = true;
         }
     }
 }

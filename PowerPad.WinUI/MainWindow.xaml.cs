@@ -72,7 +72,7 @@ namespace PowerPad.WinUI
                         NavFrame.Navigate(typeof(NotesPage));
                         break;
                     case "Modelos":
-                        NavFrame.Navigate(typeof(NotesPage));
+                        NavFrame.Navigate(typeof(AIServicesPage));
                         break;
                 }
             }
@@ -80,7 +80,7 @@ namespace PowerPad.WinUI
 
         private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            ((NotesPage)NavFrame.Content).ShowWorkspaceControl();
+            (NavFrame.Content as NotesPage)?.ShowWorkspaceControl();
         }
     }
 }

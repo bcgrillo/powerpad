@@ -5,5 +5,6 @@
         Unkown,
         Available,
         Installed,
+        Running,
     }
 }

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ContentDialog
     x:Class="PowerPad.WinUI.Dialogs.InputDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,13 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="ContentDialog"
-    Title = "{Binding ElementName=ContentDialog, Path=DialogTitle, Mode=TwoWay}"
-    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    PrimaryButtonText = "{Binding ElementName=ContentDialog, Path=PrimaryButtonText, Mode=TwoWay}"
-    SecondaryButtonClick = "ContentDialog_SecondaryButtonClick"
-    SecondaryButtonText = "{Binding ElementName=ContentDialog, Path=SecondaryButtonText, Mode=TwoWay}"
-    mc:Ignorable="d">
-    <Grid>
-        <TextBox Text="{Binding ElementName=ContentDialog, Path=Text, Mode=TwoWay}" />
-    </Grid>
+    Title = ""
+    PrimaryButtonText = ""
+    SecondaryButtonText = ""
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+    <TextBox x:Name="TextBox" Text="" KeyDown="TextBox_KeyDown" />
 </ContentDialog>
