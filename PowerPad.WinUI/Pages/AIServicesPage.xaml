@@ -50,6 +50,12 @@
                     </Button>
                 </StackPanel>
             </NavigationView.PaneHeader>
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    Content="Ollama"
+                    Icon="{ui:FontIcon Glyph=&#xE964;}"
+                    Tag="Ollama"/>
+            </NavigationView.MenuItems>
             <NavigationView.Content>
                 <Frame x:Name="NavFrame" />
             </NavigationView.Content>

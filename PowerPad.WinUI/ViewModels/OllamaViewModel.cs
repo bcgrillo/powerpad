@@ -12,21 +12,20 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public partial class OllamaViewModel : ObservableObject
+    public partial class OllamaViewModel : AIServiceViewModel
     {
         private readonly IOllamaService _ollamaService;
 
         [ObservableProperty]
-        public ObservableCollection<ModelInfoViewModel> _models;
-
-        [ObservableProperty]
         public OllamaStatus _ollamaStatus;
 
-        public IRelayCommand NewEntryCommand { get; }
+        //public IRelayCommand NewEntryCommand { get; }
 
         public OllamaViewModel(IOllamaService ollamaService)
+        : base(name: "Ollama", glyph: "\uE964", kind: AIServices.Ollama)
         {
             _ollamaService = ollamaService;
+            _ollamaStatus = OllamaStatus.Unknown;
 
             _models = new ObservableCollection<ModelInfoViewModel>();
 

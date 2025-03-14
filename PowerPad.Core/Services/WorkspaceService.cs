@@ -1,4 +1,5 @@
-﻿using PowerPad.Core.Models;
+﻿using PowerPad.Core.Config;
+using PowerPad.Core.Models;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using static PowerPad.Core.Services.AutosaveConventions;
@@ -8,7 +9,7 @@ namespace PowerPad.Core.Services
 {
     public interface IWorkspaceService
     {
-        Folder OpenWorkspace(string path);
+        Folder Root { get; }
 
         void MoveDocument(Document document, Folder targetFolder);
 
@@ -25,32 +26,20 @@ namespace PowerPad.Core.Services
         void RenameDocument(Document document, string newName);
 
         void RenameFolder(Folder folder, string newName);
-
-        void SaveConfig<T>(string key, T config);
-
-        T? GetConfig<T>(string key);
     }
 
     public class WorkspaceService : IWorkspaceService
     {
         private const string CONFIG_FOLDER_NAME = ".powerpad";
         private const string TRASH_FOLDER_NAME = ".trash";
-
+        private Folder _root;
         private string _configFolder;
         private string _trashFolder;
-        private Dictionary<string, (object? value, bool dirty)> _configStore = [];
-        private Timer _timer;
+        private IConfigStore _configStore;
 
-        public WorkspaceService()
-        {
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) => StoreConfig();
+        public Folder Root => _root;
 
-            _timer = new Timer(2000);
-            _timer.Elapsed += (sender, e) => StoreConfig();
-            _timer.Start();
-        }
-
-        public Folder OpenWorkspace(string path)
+        public WorkspaceService(string path, IConfigStoreService configStoreService)
         {
             _configFolder = Path.Combine(path, CONFIG_FOLDER_NAME);
             _trashFolder = Path.Combine(path, TRASH_FOLDER_NAME);
@@ -58,11 +47,11 @@ namespace PowerPad.Core.Services
             if (!Directory.Exists(_configFolder)) Directory.CreateDirectory(_configFolder);
             if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
 
-            var root = Folder.CreateRoot(path);
-            root.AddFolders(GetFoldersRecursive(path, root));
-            root.AddDocuments(GetDocuments(path));
+            _root = Folder.CreateRoot(path);
+            _root.AddFolders(GetFoldersRecursive(path, _root));
+            _root.AddDocuments(GetDocuments(path));
 
-            return root;
+            _configStore = configStoreService.GetConfigStore(_configFolder);
         }
 
         private IEnumerable<Folder> GetFoldersRecursive(string path, Folder parent)
@@ -188,35 +177,6 @@ namespace PowerPad.Core.Services
             Directory.Move(folder.Path, newPath);
 
             folder.Name = newName;
-        }
-
-        public void SaveConfig<T>(string key, T config)
-        {
-            _configStore[key] = (config, true);
-        }
-
-        public T? GetConfig<T>(string key)
-        {
-            if (_configStore.TryGetValue(key, out var config))
-            {
-                return (T?)config.value;
-            }
-            return default;
-        }
-
-        private void StoreConfig()
-        {
-            for(var i = 0; i < _configStore.Count; i++)
-            {
-                var (key, value) = _configStore.ElementAt(i);
-                if (value.dirty)
-                {
-                    var path = Path.Combine(_configFolder, $"{key}.json");
-                    var jsonConfig = JsonSerializer.Serialize(value.value);
-                    File.WriteAllText(path, jsonConfig);
-                    value.dirty = false;
-                }
-            }
         }
     }
 }

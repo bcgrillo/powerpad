@@ -38,13 +38,37 @@ namespace PowerPad.WinUI
         {
             this.InitializeComponent();
 
+            string workspacePath = GetOllamaServiceUrl();
+            string ollamaServiceUrl = GetOllamaServiceUrl();
+
             Ioc.Default.ConfigureServices(
                 new ServiceCollection()
-                    .AddSingleton<IWorkspaceService, WorkspaceService>()
+                    .AddSingleton<IConfigStoreService, ConfigStoreService>()
+                    .AddSingleton<IWorkspaceService, WorkspaceService>(_ =>
+                    {
+                        var configStoreService = Ioc.Default.GetRequiredService<IConfigStoreService>();
+                        return new WorkspaceService(workspacePath, configStoreService);
+                    })
                     .AddSingleton<IDocumentService, DocumentService>()
                     .AddTransient<WorkspaceViewModel>()
+                    .AddSingleton<IOllamaService>(_ => new OllamaService(ollamaServiceUrl))
                     .BuildServiceProvider()
             );
+        }
+
+        private string GetOllamaServiceUrl()
+        {
+            // Logic to check if a configuration exists
+            // If not, return a default URL
+            string? configUrl = LoadConfigurationUrl();
+            return configUrl ?? "http://localhost";
+        }
+
+        private string? LoadConfigurationUrl()
+        {
+            // Implement the logic to load the configuration URL
+            // Return null if no configuration is found
+            return null; // Placeholder for actual implementation
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace PowerPad.WinUI.ViewModels
         {
             _workspaceService = workspaceService;
 
-            Root = new FolderEntryViewModel(_workspaceService.OpenWorkspace(@"D:\OneDrive\Escritorio\Universidad\PruebasTFG"), null);
+            Root = new FolderEntryViewModel(_workspaceService.Root, null);
 
             MoveEntryCommand = new RelayCommand<MoveEntryParameters>(MoveEntry);
 

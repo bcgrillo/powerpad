@@ -17,13 +17,28 @@ namespace PowerPad.Core.Services
         Task<IEnumerable<ModelInfo>> GetModels();
     }
 
-    public class OllamaService
+    public class OllamaService : IOllamaService
     {
-        private OllamaApiClient _ollama;
+        private OllamaApiClient? _ollama;
+
+        public string? BaseUrl
+        {
+            get
+            {
+                return _ollama?.Uri?.ToString();
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _ollama = new OllamaApiClient(value);
+                }
+            }
+        }
 
         public OllamaService(string baseUrl)
         {
-            _ollama = new OllamaApiClient(baseUrl);
+            BaseUrl = baseUrl;
         }
 
         public async Task<OllamaStatus> GetStatus()
