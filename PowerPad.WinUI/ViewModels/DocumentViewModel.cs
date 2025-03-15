@@ -5,6 +5,7 @@ using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using System;
+using System.Windows.Input;
 
 namespace PowerPad.WinUI.ViewModels
 {
@@ -25,11 +26,14 @@ namespace PowerPad.WinUI.ViewModels
                 if (_document.Status != value)
                 {
                     _document.Status = value;
+
                     OnPropertyChanged(nameof(Status));
-                    SaveCommand.NotifyCanExecuteChanged();
+                    OnPropertyChanged(nameof(CanSave));
                 }
             }
         }
+
+        public bool CanSave => Status != DocumentStatus.Saved;
 
         public DateTime LastSaveTime { get => _lastSaveTime; }
 
@@ -49,24 +53,26 @@ namespace PowerPad.WinUI.ViewModels
             _documentService.LoadDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
 
-            SaveCommand = new RelayCommand(Save, CanSave);
+            SaveCommand = new RelayCommand(Save);
             AutosaveCommand = new RelayCommand(Autosave);
             RenameCommand = new RelayCommand<string>(Rename);
         }
-
-        private bool CanSave() => Status != DocumentStatus.Saved;
 
         private void Save()
         {
             _documentService.SaveDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
-            SaveCommand.NotifyCanExecuteChanged();
+
+            OnPropertyChanged(nameof(Status));
+            OnPropertyChanged(nameof(CanSave));
         }
 
         private void Autosave()
         {
             _documentService.AutosaveDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
+
+            OnPropertyChanged(nameof(Status));
         }
 
         private void Rename(string? newName)

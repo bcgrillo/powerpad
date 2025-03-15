@@ -58,7 +58,7 @@
         <TreeView 
             Name="TreeView" 
             Grid.Row="1"
-            ItemsSource="{x:Bind Workspace.Root.Children}" 
+            ItemsSource="{x:Bind _workspace.Root.Children}" 
             ItemInvoked="TreeView_ItemInvoked"
             CanDrag="False"
             Margin="0,2">

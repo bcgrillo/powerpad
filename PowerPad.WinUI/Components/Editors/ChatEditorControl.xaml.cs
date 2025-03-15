@@ -36,22 +36,23 @@ namespace PowerPad.WinUI.Components.Editors
         private CancellationTokenSource? _cts;
         private ScrollViewer? _scrollViewer;
 
-        private ObservableCollection<MessageViewModel>? Messages;
+        private DocumentViewModel _document;
+        private ObservableCollection<MessageViewModel>? _messages;
 
-        public override bool IsDirty { get => ((DocumentViewModel)DataContext).Status == DocumentStatus.Dirty; }
+        public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
-        public override DateTime LastSaveTime { get => ((DocumentViewModel)DataContext).LastSaveTime; }
+        public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
         public ChatEditorControl(FolderEntryViewModel documentEntry)
         {
             this.InitializeComponent();
 
-            this.DataContext = documentEntry.ToDocumentViewModel(this);
+            _document = documentEntry.ToDocumentViewModel(this);
         }
 
         public override string GetContent()
         {
-            return JsonSerializer.Serialize(Messages);
+            return JsonSerializer.Serialize(_messages);
         }
 
         public override void SetContent(string content)
@@ -71,7 +72,7 @@ namespace PowerPad.WinUI.Components.Editors
                 InfoBar.IsOpen = true;
             }
 
-            Messages = new ObservableCollection<MessageViewModel>(chatMessages);
+            _messages = new ObservableCollection<MessageViewModel>(chatMessages);
         }
 
         private void EditableTextBlock_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -101,11 +102,11 @@ namespace PowerPad.WinUI.Components.Editors
 
             try
             {
-                ((DocumentViewModel)DataContext).RenameCommand.Execute(EditableTextBox.Text);
+                _document.RenameCommand.Execute(EditableTextBox.Text);
             }
             catch (Exception)
             {
-                EditableTextBox.Text = ((DocumentViewModel)DataContext).Name;
+                EditableTextBox.Text = _document.Name;
                 InfoBar.Title = "Error";
                 InfoBar.Message = "No ha sido posible cambiar el nombre del documento.";
                 InfoBar.Visibility = Visibility.Visible;
@@ -125,27 +126,27 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override void AutoSave()
         {
-            ((DocumentViewModel)DataContext).AutosaveCommand.Execute(null);
+            _document.AutosaveCommand.Execute(null);
         }
 
         public override void Dispose()
         {
-            DataContext = null;
-            Messages = null;
+            _document = null!;
+            _messages = null;
         }
 
         private async void SendBtn_Click(object sender, RoutedEventArgs e)
         {
-            Messages!.Add(new MessageViewModel(InputBox.Text.Trim(), DateTime.Now, ChatRole.User));
+            _messages!.Add(new MessageViewModel(InputBox.Text.Trim(), DateTime.Now, ChatRole.User));
 
             _ = Task.Run(async () =>
             {
-                var history = Messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList();
+                var history = _messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList();
                 var responseMessage = new MessageViewModel(string.Empty, DateTime.Now, ChatRole.Assistant);
 
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    Messages.Add(responseMessage);
+                    _messages.Add(responseMessage);
                     StopBtn.Visibility = Visibility.Visible;
                     InputBox.IsEnabled = false;
                     InputBox.PlaceholderText = "Please wait for the response to complete before entering a new prompt";
@@ -182,7 +183,7 @@ namespace PowerPad.WinUI.Components.Editors
                 });
             });
 
-            ((DocumentViewModel)DataContext).Status = DocumentStatus.Dirty;
+            _document.Status = DocumentStatus.Dirty;
         }
 
         private void InvertedListView_Loaded(object sender, RoutedEventArgs e)

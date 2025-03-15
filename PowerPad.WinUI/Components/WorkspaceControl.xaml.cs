@@ -10,13 +10,13 @@ namespace PowerPad.WinUI.Components
 {
     public sealed partial class WorkspaceControl : UserControl
     {
-        public WorkspaceViewModel Workspace => (WorkspaceViewModel)DataContext;
+        private WorkspaceViewModel _workspace;
 
         public WorkspaceControl()
         {
             this.InitializeComponent();
 
-            DataContext = Ioc.Default.GetRequiredService<WorkspaceViewModel>();
+            _workspace = Ioc.Default.GetRequiredService<WorkspaceViewModel>();
         }
 
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
@@ -53,7 +53,7 @@ namespace PowerPad.WinUI.Components
 
             if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
 
-            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Chat));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Chat));
         }
 
         private void NewSplitButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
@@ -62,7 +62,7 @@ namespace PowerPad.WinUI.Components
 
             if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
 
-            Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Text));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Text));
         }
 
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
@@ -75,11 +75,11 @@ namespace PowerPad.WinUI.Components
 
             if (tag == null)
             {
-                Workspace.NewEntryCommand.Execute(NewEntryParameters.NewFolder(parent, "Nueva carpeta"));
-            }
+                _workspace.NewEntryCommand.Execute(NewEntryParameters.NewFolder(parent, "Nueva carpeta"));
+            }   
             else
             {
-                Workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentTypes)tag));
+                _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentTypes)tag));
             }
         }
 

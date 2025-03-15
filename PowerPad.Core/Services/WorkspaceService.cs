@@ -1,4 +1,4 @@
-﻿using PowerPad.Core.Config;
+﻿using PowerPad.Core.Configuration;
 using PowerPad.Core.Models;
 using System.Collections.ObjectModel;
 using System.Text.Json;
@@ -30,26 +30,27 @@ namespace PowerPad.Core.Services
 
     public class WorkspaceService : IWorkspaceService
     {
-        private const string CONFIG_FOLDER_NAME = ".powerpad";
+        private static readonly string CONFIG_FOLDER_NAME = $".{nameof(PowerPad).ToLower()}";
         private const string TRASH_FOLDER_NAME = ".trash";
         private Folder _root;
         private string _configFolder;
         private string _trashFolder;
+
         private IConfigStore _configStore;
 
         public Folder Root => _root;
 
-        public WorkspaceService(string path, IConfigStoreService configStoreService)
+        public WorkspaceService(string rootFolder, IConfigStoreService configStoreService)
         {
-            _configFolder = Path.Combine(path, CONFIG_FOLDER_NAME);
-            _trashFolder = Path.Combine(path, TRASH_FOLDER_NAME);
+            _configFolder = Path.Combine(rootFolder, CONFIG_FOLDER_NAME);
+            _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
 
             if (!Directory.Exists(_configFolder)) Directory.CreateDirectory(_configFolder);
             if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
 
-            _root = Folder.CreateRoot(path);
-            _root.AddFolders(GetFoldersRecursive(path, _root));
-            _root.AddDocuments(GetDocuments(path));
+            _root = Folder.CreateRoot(rootFolder);
+            _root.AddFolders(GetFoldersRecursive(rootFolder, _root));
+            _root.AddDocuments(GetDocuments(rootFolder));
 
             _configStore = configStoreService.GetConfigStore(_configFolder);
         }

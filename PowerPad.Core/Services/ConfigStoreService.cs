@@ -1,4 +1,4 @@
-﻿using PowerPad.Core.Config;
+﻿using PowerPad.Core.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace PowerPad.Core.Services
 
         private Timer _timer;
 
-        private Dictionary<string, IConfigStore> _configStores = [];
+        private Dictionary<string, ConfigStore> _configStores = [];
 
         public ConfigStoreService()
         {
@@ -47,10 +47,8 @@ namespace PowerPad.Core.Services
 
         private async Task StoreConfigs()
         {
-            foreach (var configStore in _configStores.Values)
-            {
-                await configStore.StoreConfig();
-            }
+            var tasks = _configStores.Values.Select(cs => cs.StoreConfig());
+            await Task.WhenAll(tasks);
         }
     }
 }

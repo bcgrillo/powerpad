@@ -19,6 +19,8 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using PowerPad.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using PowerPad.WinUI.ViewModels;
+using PowerPad.Core.Configuration;
+using PowerPad.WinUI.Configuration;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,6 +32,12 @@ namespace PowerPad.WinUI
     /// </summary>
     public partial class App : Application
     {
+        private IServiceProvider _serviceProvider;
+        private IConfigStore _appConfigStore;
+
+        public IServiceProvider ServiceProvider => _serviceProvider;
+        public IConfigStore AppConfigStore => _appConfigStore;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -38,37 +46,17 @@ namespace PowerPad.WinUI
         {
             this.InitializeComponent();
 
-            string workspacePath = GetOllamaServiceUrl();
-            string ollamaServiceUrl = GetOllamaServiceUrl();
+            _serviceProvider = new ServiceCollection()
+                .ConfigureWorkspaceService(this)
+                .ConfigureOllamaService(this)
+                .AddSingleton<IConfigStoreService, ConfigStoreService>()
+                .AddSingleton<IDocumentService, DocumentService>()
+                .AddTransient<WorkspaceViewModel>()
+                .BuildServiceProvider();
 
-            Ioc.Default.ConfigureServices(
-                new ServiceCollection()
-                    .AddSingleton<IConfigStoreService, ConfigStoreService>()
-                    .AddSingleton<IWorkspaceService, WorkspaceService>(_ =>
-                    {
-                        var configStoreService = Ioc.Default.GetRequiredService<IConfigStoreService>();
-                        return new WorkspaceService(workspacePath, configStoreService);
-                    })
-                    .AddSingleton<IDocumentService, DocumentService>()
-                    .AddTransient<WorkspaceViewModel>()
-                    .AddSingleton<IOllamaService>(_ => new OllamaService(ollamaServiceUrl))
-                    .BuildServiceProvider()
-            );
-        }
+            Ioc.Default.ConfigureServices(_serviceProvider);
 
-        private string GetOllamaServiceUrl()
-        {
-            // Logic to check if a configuration exists
-            // If not, return a default URL
-            string? configUrl = LoadConfigurationUrl();
-            return configUrl ?? "http://localhost";
-        }
-
-        private string? LoadConfigurationUrl()
-        {
-            // Implement the logic to load the configuration URL
-            // Return null if no configuration is found
-            return null; // Placeholder for actual implementation
+            _appConfigStore = this.InitializeAppConfigStore();
         }
 
         /// <summary>

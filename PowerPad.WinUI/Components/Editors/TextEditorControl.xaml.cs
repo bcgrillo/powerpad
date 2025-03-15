@@ -29,9 +29,11 @@ namespace PowerPad.WinUI.Components.Editors
 {
     public sealed partial class TextEditorControl : EditorControl
     {
-        public override bool IsDirty { get => ((DocumentViewModel)DataContext).Status == DocumentStatus.Dirty; }
+        private DocumentViewModel _document;
 
-        public override DateTime LastSaveTime { get => ((DocumentViewModel)DataContext).LastSaveTime; }
+        public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
+
+        public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
         public TextEditorControl(FolderEntryViewModel documentEntry)
         {
@@ -39,9 +41,9 @@ namespace PowerPad.WinUI.Components.Editors
 
             TextEditor.Editor.WrapMode = Wrap.WhiteSpace;
 
-            this.DataContext = documentEntry.ToDocumentViewModel(this);
+            _document = documentEntry.ToDocumentViewModel(this);
 
-            TextEditor.Editor.Modified += (s, e) => ((DocumentViewModel)DataContext).Status = DocumentStatus.Dirty;
+            TextEditor.Editor.Modified += (s, e) => _document.Status = DocumentStatus.Dirty;
         }
 
         public override string GetContent()
@@ -81,11 +83,11 @@ namespace PowerPad.WinUI.Components.Editors
 
             try
             {
-                ((DocumentViewModel)DataContext).RenameCommand.Execute(EditableTextBox.Text);
+                _document.RenameCommand.Execute(EditableTextBox.Text);
             }
             catch(Exception)
             {
-                EditableTextBox.Text = ((DocumentViewModel)DataContext).Name;
+                EditableTextBox.Text = _document.Name;
                 InfoBar.Title = "Error";
                 InfoBar.Message = "No ha sido posible cambiar el nombre del documento.";
                 InfoBar.Visibility = Visibility.Visible;
@@ -109,12 +111,12 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override void AutoSave()
         {
-            ((DocumentViewModel)DataContext).AutosaveCommand.Execute(null);
+            _document.AutosaveCommand.Execute(null);
         }
 
         public override void Dispose()
         {
-            DataContext = null;
+            _document = null!;
             TextEditor = null;
         }
 
