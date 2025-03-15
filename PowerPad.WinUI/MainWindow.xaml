@@ -12,7 +12,8 @@
     MinWidth="640"
     MinHeight="480"
     mc:Ignorable="d"
-    Title="PowerPad">
+    Title="PowerPad"
+    Closed="WindowEx_Closed">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="38" />

@@ -54,14 +54,9 @@
                     <FontIcon FontSize="16" Glyph="&#xE838;"/>
                 </DropDownButton.Content>
                 <DropDownButton.Flyout>
-                    <MenuFlyout Placement="Bottom" items>
-                        <ItemsControl ItemsSource="{x:Bind vm:WorkspaceViewModel.RecentlyWorkspaces}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <MenuFlyoutItem Text="{Binding}" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                    <MenuFlyout x:Name="WorkspaceMenu" Placement="BottomEdgeAlignedLeft">
+                        <MenuFlyoutItem Text="Seleccionar carpeta..." Click="AbrirCarpetaFlyoutItem_Click"/>
+                        <MenuFlyoutSeparator/>
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
@@ -84,14 +79,14 @@
         <TreeView 
             Name="TreeView" 
             Grid.Row="1"
-            ItemsSource="{x:Bind _workspace.Root.Children}" 
+            ItemsSource="{x:Bind _workspace.Root.Children, Mode=OneWay}" 
             ItemInvoked="TreeView_ItemInvoked"
             CanDrag="False"
             Margin="0,2">
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="vm:FolderEntryViewModel">
                     <TreeViewItem 
-                        ItemsSource="{x:Bind Children}" 
+                        ItemsSource="{x:Bind Children, Mode=OneWay}" 
                         Padding="0,0,8,0"
                         AllowDrop="{x:Bind IsFolder}">
                         <StackPanel Orientation="Horizontal">

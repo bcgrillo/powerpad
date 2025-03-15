@@ -31,7 +31,7 @@ namespace PowerPad.WinUI
         private readonly DesktopAcrylicController? _acrylicController;
         private readonly SystemBackdropConfiguration? _configurationSource;
 
-        public MainWindow(object? _ = null)
+        public MainWindow()
         {
             this.InitializeComponent();
             this.ExtendsContentIntoTitleBar = true;
@@ -81,6 +81,11 @@ namespace PowerPad.WinUI
         private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             (NavFrame.Content as NotesPage)?.ShowWorkspaceControl();
+        }
+
+        private void WindowEx_Closed(object sender, WindowEventArgs args)
+        {
+            
         }
     }
 }

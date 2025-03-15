@@ -26,6 +26,8 @@ namespace PowerPad.Core.Services
         void RenameDocument(Document document, string newName);
 
         void RenameFolder(Folder folder, string newName);
+
+        void OpenWorkspace(string rootFolder);
     }
 
     public class WorkspaceService : IWorkspaceService
@@ -33,9 +35,9 @@ namespace PowerPad.Core.Services
         private static readonly string CONFIG_FOLDER_NAME = $".{nameof(PowerPad).ToLower()}";
         private const string TRASH_FOLDER_NAME = ".trash";
 
-        private readonly Folder _root;
-        private readonly string _configFolder;
-        private readonly string _trashFolder;
+        private Folder _root;
+        private string _configFolder;
+        private string _trashFolder;
         private readonly IConfigStore _configStore;
 
         public Folder Root => _root;
@@ -44,15 +46,21 @@ namespace PowerPad.Core.Services
         {
             _configFolder = Path.Combine(rootFolder, CONFIG_FOLDER_NAME);
             _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
+            _root = InitializeRootFolder(rootFolder);
 
+            _configStore = configStoreService.GetConfigStore(_configFolder);
+        }
+
+        private Folder InitializeRootFolder(string rootFolder)
+        {
             if (!Directory.Exists(_configFolder)) Directory.CreateDirectory(_configFolder);
             if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
 
-            _root = Folder.CreateRoot(rootFolder);
-            _root.AddFolders(GetFoldersRecursive(rootFolder));
-            _root.AddDocuments(GetDocuments(rootFolder));
+            var folder = Folder.CreateRoot(rootFolder);
+            folder.AddFolders(GetFoldersRecursive(rootFolder));
+            folder.AddDocuments(GetDocuments(rootFolder));
 
-            _configStore = configStoreService.GetConfigStore(_configFolder);
+            return folder;
         }
 
         private Collection<Folder> GetFoldersRecursive(string path)
@@ -178,6 +186,13 @@ namespace PowerPad.Core.Services
             Directory.Move(folder.Path, newPath);
 
             folder.Name = newName;
+        }
+
+        public void OpenWorkspace(string rootFolder)
+        {
+            _configFolder = Path.Combine(rootFolder, CONFIG_FOLDER_NAME);
+            _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
+            _root = InitializeRootFolder(rootFolder);
         }
     }
 }

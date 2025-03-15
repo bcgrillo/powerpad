@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PowerPad.WinUI.ViewModels;
 using PowerPad.Core.Configuration;
 using PowerPad.WinUI.Configuration;
+using PowerPad.WinUI.Helpers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -65,7 +66,7 @@ namespace PowerPad.WinUI
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow();
+            m_window = WindowHelper.CreateWindow<MainWindow>();
             m_window.Activate();
         }
 

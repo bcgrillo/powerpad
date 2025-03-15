@@ -7,18 +7,53 @@ using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Dialogs;
 using PowerPad.Core.Services;
 using PowerPad.Core.Configuration;
+using System.Collections.Generic;
+using CommunityToolkit.WinUI;
+using static System.Net.Mime.MediaTypeNames;
+using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers;
+using Windows.Storage;
+using PowerPad.WinUI.Helpers;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using Windows.Web.AtomPub;
 
 namespace PowerPad.WinUI.Components
 {
     public sealed partial class WorkspaceControl : UserControl
     {
         private readonly WorkspaceViewModel _workspace;
+        private readonly List<MenuFlyoutItem> _menuFlyoutItems;
 
         public WorkspaceControl()
         {
             this.InitializeComponent();
 
             _workspace = new WorkspaceViewModel();
+            _menuFlyoutItems = [];
+
+            UpdateWorkspacesMenu();
+        }
+
+        private void UpdateWorkspacesMenu()
+        {
+            foreach (var item in _menuFlyoutItems) WorkspaceMenu.Items.Remove(item);
+            _menuFlyoutItems.Clear();
+
+            foreach (var item in _workspace.RecentlyWorkspaces)
+            {
+                var menuItem = new MenuFlyoutItem
+                {
+                    Text = item!.Split('\\')[^1],
+                    Tag = item
+                };
+
+                ToolTipService.SetToolTip(menuItem, item);
+
+                menuItem.Click += AbrirRecienteFlyoutItem_Click;
+                WorkspaceMenu.Items.Add(menuItem);
+                _menuFlyoutItems.Add(menuItem);
+            }
         }
 
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
@@ -92,6 +127,35 @@ namespace PowerPad.WinUI.Components
                 {
                 }
             }
+        }
+
+        private async void AbrirCarpetaFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var openPicker = new FolderPicker();
+
+            var window = WindowHelper.GetWindowForElement(this);
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+
+            WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
+
+            openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            openPicker.FileTypeFilter.Add("*");
+
+            StorageFolder folder = await openPicker.PickSingleFolderAsync();
+
+            if (folder != null)
+            {
+                _workspace.OpenWorkspaceCommand.Execute(folder.Path);
+
+                UpdateWorkspacesMenu();
+            }
+        }
+
+        private void AbrirRecienteFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            _workspace.OpenWorkspaceCommand.Execute(((MenuFlyoutItem)sender).Tag);
+
+            UpdateWorkspacesMenu();
         }
     }
 

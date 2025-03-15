@@ -9,12 +9,15 @@ using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Xml.Linq;
+using Windows.Web.AtomPub;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels
 {
     public partial class WorkspaceViewModel : ObservableObject
     {
+        private const int MAX_RECENTLY_WORKSPACES = 5;
+
         private readonly IWorkspaceService _workspaceService;
         private readonly IConfigStore _appConfigStore;
 
@@ -23,6 +26,8 @@ namespace PowerPad.WinUI.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<string> _recentlyWorkspaces;
+
+        public IRelayCommand OpenWorkspaceCommand { get; }
 
         public IRelayCommand MoveEntryCommand { get; }
 
@@ -38,6 +43,8 @@ namespace PowerPad.WinUI.ViewModels
             MoveEntryCommand = new RelayCommand<MoveEntryParameters>(MoveEntry);
 
             NewEntryCommand = new RelayCommand<NewEntryParameters>(NewEntry);
+
+            OpenWorkspaceCommand = new RelayCommand<string>(OpenWorkspace);
 
             var recentlyWorkspaces = _appConfigStore.Get<ObservableCollection<string>>(Keys.RecentlyWorkspaces);
 
@@ -90,6 +97,25 @@ namespace PowerPad.WinUI.ViewModels
 
                 parent.Children!.Add(new FolderEntryViewModel(newDocumentModel, parent));
             }
+        }
+
+        private void OpenWorkspace(string? path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            _workspaceService.OpenWorkspace(path);
+
+            Root = new FolderEntryViewModel(_workspaceService.Root, null);
+
+            RecentlyWorkspaces.Remove(path);
+            RecentlyWorkspaces.Insert(0, path);
+
+            if(RecentlyWorkspaces.Count > MAX_RECENTLY_WORKSPACES)
+            {
+                RecentlyWorkspaces.RemoveAt(5);
+            }
+
+            _appConfigStore.Set(Keys.RecentlyWorkspaces, RecentlyWorkspaces);
         }
     }
 

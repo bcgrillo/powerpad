@@ -27,13 +27,14 @@ namespace PowerPad.Core.Configuration
     {
         private readonly string _configFolder;
         private readonly Dictionary<string, ConfigEntry> _store;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
         public ConfigStore(string configFolder)
         {
             if (!Directory.Exists(configFolder)) Directory.CreateDirectory(configFolder);
 
             _configFolder = configFolder;
-            _store = [];
+            _store = new Dictionary<string, ConfigEntry>();
 
             Load();
         }
@@ -74,20 +75,28 @@ namespace PowerPad.Core.Configuration
                 var key = Path.GetFileNameWithoutExtension(file);
                 var config = File.ReadAllText(file);
                 _store[key] = new ConfigEntry(config, false);
-            };
+            }
         }
 
         internal async Task Save()
         {
-            for (var i = 0; i < _store.Count; i++)
+            await _semaphore.WaitAsync();
+            try
             {
-                var (key, value) = _store.ElementAt(i);
-                if (value.Dirty)
+                for (var i = 0; i < _store.Count; i++)
                 {
-                    var path = Path.Combine(_configFolder, $"{key}.json");
-                    await File.WriteAllTextAsync(path, value.Value);
-                    value.Dirty = false;
+                    var (key, value) = _store.ElementAt(i);
+                    if (value.Dirty)
+                    {
+                        var path = Path.Combine(_configFolder, $"{key}.json");
+                        await File.WriteAllTextAsync(path, value.Value);
+                        value.Dirty = false;
+                    }
                 }
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
     }
