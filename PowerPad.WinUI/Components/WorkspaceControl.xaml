@@ -44,7 +44,7 @@
                 x:Name="OpenWorkspaceBtn"
                 Grid.Column="1"
                 Height="30"
-                ToolTipService.ToolTip="Ocultar Workspace"
+                ToolTipService.ToolTip="Cambiar Workspace"
                 Margin="10,8,2,0"
                 Background="Transparent"
                 BorderBrush="Transparent"

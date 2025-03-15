@@ -10,7 +10,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
     <Grid ColumnDefinitions="auto, *">
-        <components:WorkspaceControl x:Name="WorkspaceControl" Grid.Column="0" ItemInvoked="WorkspaceControl_ItemInvoked"/>
+        <components:WorkspaceControl x:Name="WorkspaceControl" Grid.Column="0" ItemInvoked="WorkspaceControl_ItemInvoked" VisibilityChanged="WorkspaceControl_VisibilityChanged"/>
 
         <Border
             Grid.Column="1"

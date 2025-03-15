@@ -17,6 +17,7 @@ using PowerPad.WinUI.Helpers;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Windows.Web.AtomPub;
+using Windows.UI.Core;
 
 namespace PowerPad.WinUI.Components
 {
@@ -57,6 +58,7 @@ namespace PowerPad.WinUI.Components
         }
 
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
+        public event EventHandler? VisibilityChanged;
 
         private void TreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
         {
@@ -71,6 +73,8 @@ namespace PowerPad.WinUI.Components
         private void HideMenuBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Visibility = Visibility.Collapsed;
+
+            VisibilityChanged?.Invoke(this, null!);
         }
 
         private void NewChatButton_Click(object sender, RoutedEventArgs e)

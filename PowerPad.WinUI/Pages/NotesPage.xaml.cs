@@ -10,21 +10,36 @@ using PowerPad.WinUI.Components;
 
 namespace PowerPad.WinUI.Pages
 {
-    internal sealed partial class NotesPage : Page
+    internal sealed partial class NotesPage : Page, INavigationPage
     {
         public NotesPage()
         {
             this.InitializeComponent();
         }
 
-        public void ShowWorkspaceControl()
+        public event EventHandler<NavigationVisibilityChangedEventArgs>? NavigationVisibilityChanged;
+
+        public void ToggleNavigationVisibility()
         {
-            WorkspaceControl.Visibility = Visibility.Visible;
+            var isVisible = WorkspaceControl.Visibility == Visibility.Visible;
+
+            WorkspaceControl.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+
+            isVisible = !isVisible;
+
+            NavigationVisibilityChanged?.Invoke(this, new NavigationVisibilityChangedEventArgs(isVisible ? WorkspaceControl.ActualWidth : 0));
         }
 
         private void WorkspaceControl_ItemInvoked(object sender, WorkspaceControlItemInvokedEventArgs e)
         {
             EditorManager.OpenFile(e.SelectedFile);
+        }
+
+        private void WorkspaceControl_VisibilityChanged(object sender, EventArgs e)
+        {
+            var isVisible = WorkspaceControl.Visibility == Visibility.Visible;
+
+            NavigationVisibilityChanged?.Invoke(this, new NavigationVisibilityChangedEventArgs(isVisible ? WorkspaceControl.ActualWidth : 0));
         }
     }
 }

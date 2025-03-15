@@ -25,13 +25,11 @@
         </Grid.ColumnDefinitions>
 
         <Border
-            x:Name="AppTitleBar"
+            x:Name="AppIcon"
             Height="38"
             Width="48"
             VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            Canvas.ZIndex="1"
-            IsHitTestVisible="True">
+            HorizontalAlignment="Center">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Image
                     Width="22"
@@ -69,7 +67,8 @@
                 <NavigationViewItem
                     Content="Modelos"
                     Icon="{ui:FontIcon Glyph=&#xF158;}"
-                    Tag="Modelos" />
+                    Tag="Modelos"
+                    PointerPressed="NavigationViewItem_PointerPressed"/>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
             </NavigationView.FooterMenuItems>
@@ -87,5 +86,17 @@
 
             <Frame x:Name="NavFrame"/>
         </NavigationView>
+
+        <winuiex:TitleBar
+            x:Name="TitleBar"
+            Grid.Column="2"
+            Title="PowerPad"
+            Height="48"
+            Margin="280,0,0,0"
+            IsTabStop="False"
+            Background="Red"
+            >
+            
+        </winuiex:TitleBar>
     </Grid>
 </winuiex:WindowEx>

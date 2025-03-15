@@ -17,6 +17,7 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using WinRT;
 using Microsoft.UI.Composition;
 using PowerPad.WinUI.Pages;
+using Microsoft.UI.Windowing;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -34,10 +35,10 @@ namespace PowerPad.WinUI
         public MainWindow()
         {
             this.InitializeComponent();
-            this.ExtendsContentIntoTitleBar = true;
+            SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            NavFrame.Navigate(typeof(Pages.NotesPage));
+            Navigate(typeof(NotesPage));
 
             if (DesktopAcrylicController.IsSupported())
             {
@@ -57,6 +58,14 @@ namespace PowerPad.WinUI
             }
         }
 
+        private void SetTitleBar()
+        {
+            this.ExtendsContentIntoTitleBar = true;
+            this.SetTitleBar(TitleBar);
+            this.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+            this.AppWindow.SetIcon("Assets/AppIcon/Icon.ico");
+        }
+
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (args.IsSettingsSelected)
@@ -69,18 +78,35 @@ namespace PowerPad.WinUI
                 switch (selectedItem.Tag)
                 {
                     case "Notas":
-                        NavFrame.Navigate(typeof(NotesPage));
+                        Navigate(typeof(NotesPage));
                         break;
                     case "Modelos":
-                        NavFrame.Navigate(typeof(AIServicesPage));
+                        Navigate(typeof(AIServicesPage));
                         break;
                 }
+
+
             }
+        }
+
+        private void Navigate(Type type)
+        {
+            NavFrame.Navigate(type);
+
+            if (NavFrame.Content is INavigationPage navigationPage)
+            {
+                navigationPage.NavigationVisibilityChanged += NavigationVisibilityChanged;
+            }
+        }
+
+        private void NavigationVisibilityChanged(object? sender, NavigationVisibilityChangedEventArgs eventArgs)
+        {
+            TitleBar.Margin = new Thickness(eventArgs.Width, 0, 0, 0);
         }
 
         private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            (NavFrame.Content as NotesPage)?.ShowWorkspaceControl();
+            (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
         }
 
         private void WindowEx_Closed(object sender, WindowEventArgs args)
