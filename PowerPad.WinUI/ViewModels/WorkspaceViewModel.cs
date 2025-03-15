@@ -1,38 +1,53 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using OllamaSharp.Models.Chat;
+using PowerPad.Core.Configuration;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Helpers;
 using System;
+using System.Collections.ObjectModel;
 using System.Xml.Linq;
+using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels
 {
     public partial class WorkspaceViewModel : ObservableObject
     {
         private readonly IWorkspaceService _workspaceService;
+        private readonly IConfigStore _appConfigStore;
 
         [ObservableProperty]
         private FolderEntryViewModel _root;
+
+        [ObservableProperty]
+        private ObservableCollection<string> _recentlyWorkspaces;
 
         public IRelayCommand MoveEntryCommand { get; }
 
         public IRelayCommand NewEntryCommand { get; }
 
-        public WorkspaceViewModel(IWorkspaceService workspaceService)
+        public WorkspaceViewModel()
         {
-            _workspaceService = workspaceService;
+            _workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
+            _appConfigStore = Ioc.Default.GetRequiredService<IConfigStore>();
 
             Root = new FolderEntryViewModel(_workspaceService.Root, null);
 
             MoveEntryCommand = new RelayCommand<MoveEntryParameters>(MoveEntry);
 
             NewEntryCommand = new RelayCommand<NewEntryParameters>(NewEntry);
+
+            var recentlyWorkspaces = _appConfigStore.Get<ObservableCollection<string>>(Keys.RecentlyWorkspaces);
+
+            _recentlyWorkspaces = [.. recentlyWorkspaces];
         }
 
-        private void MoveEntry(MoveEntryParameters parameters)
+        private void MoveEntry(MoveEntryParameters? parameters)
         {
+            ArgumentNullException.ThrowIfNull(parameters, nameof(parameters));
+
             parameters.NewParent ??= Root;
 
             if (parameters.Entry.Type == EntryType.Document)
@@ -49,9 +64,9 @@ namespace PowerPad.WinUI.ViewModels
             }
         }
 
-        private void NewEntry(NewEntryParameters parameters)
+        private void NewEntry(NewEntryParameters? parameters)
         {
-            ArgumentException.ThrowIfNullOrEmpty(parameters.Name, nameof(parameters.Name));
+            ArgumentNullException.ThrowIfNull(parameters, nameof(parameters));
 
             FolderEntryViewModel parent = parameters.Parent ?? Root;
 
@@ -85,33 +100,31 @@ namespace PowerPad.WinUI.ViewModels
         public DocumentTypes? DocumentType { get; set; }
         public string Name { get; set; }
 
-        private NewEntryParameters() { }
+        private NewEntryParameters(string name) { Name = name; }
 
         public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentTypes documentType, string? name = null)
         {
-            return new NewEntryParameters
+            return new NewEntryParameters(name ?? NewEntryNameHelper.NewDocumentName(documentType))
             {
                 Parent = parent,
                 Type = EntryType.Document,
                 DocumentType = documentType,
-                Name = name ?? NewEntryNameHelper.NewDocumentName(documentType)
             };
         }
 
         public static NewEntryParameters NewFolder(FolderEntryViewModel? parent, string? name = null)
         {
-            return new NewEntryParameters
+            return new NewEntryParameters(name ?? NewEntryNameHelper.NewFolderName())
             {
                 Parent = parent,
                 Type = EntryType.Folder,
-                Name = name ?? NewEntryNameHelper.NewFolderName()
             };
         }
     }
 
-    public class MoveEntryParameters
+    public class MoveEntryParameters(FolderEntryViewModel entry, FolderEntryViewModel? newParent)
     {
-        public FolderEntryViewModel Entry { get; set; }
-        public FolderEntryViewModel? NewParent { get; set; }
+        public FolderEntryViewModel Entry { get; set; } = entry;
+        public FolderEntryViewModel? NewParent { get; set; } = newParent;
     }
 }

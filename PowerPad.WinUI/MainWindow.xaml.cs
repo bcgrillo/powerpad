@@ -28,10 +28,10 @@ namespace PowerPad.WinUI
     /// </summary>
     public sealed partial class MainWindow : WindowEx
     {
-        private DesktopAcrylicController _acrylicController;
-        private SystemBackdropConfiguration _configurationSource;
+        private readonly DesktopAcrylicController? _acrylicController;
+        private readonly SystemBackdropConfiguration? _configurationSource;
 
-        public MainWindow(object? obj = null)
+        public MainWindow(object? _ = null)
         {
             this.InitializeComponent();
             this.ExtendsContentIntoTitleBar = true;

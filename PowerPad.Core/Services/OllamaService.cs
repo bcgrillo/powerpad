@@ -43,6 +43,8 @@ namespace PowerPad.Core.Services
 
         public async Task<OllamaStatus> GetStatus()
         {
+            if (_ollama == null) return OllamaStatus.Unknown;
+
             bool connected;
 
             try
@@ -71,12 +73,11 @@ namespace PowerPad.Core.Services
                         CreateNoWindow = true
                     };
 
-                    using (var process = Process.Start(startInfo)!)
-                    {
-                        await process.WaitForExitAsync();
+                    using var process = Process.Start(startInfo)!;
 
-                        if (process.ExitCode == 0) return OllamaStatus.Available;
-                    }
+                    await process.WaitForExitAsync();
+
+                    if (process.ExitCode == 0) return OllamaStatus.Available;
                 }
                 catch (Exception)
                 {
@@ -88,6 +89,8 @@ namespace PowerPad.Core.Services
 
         public async Task<IEnumerable<ModelInfo>> GetModels()
         {
+            if (_ollama == null) return [];
+
             var models = await _ollama.ListLocalModelsAsync();
 
             return models.Select(m => new ModelInfo(m.Name, string.Empty));

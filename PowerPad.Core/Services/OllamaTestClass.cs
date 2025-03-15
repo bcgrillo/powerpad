@@ -3,6 +3,7 @@ using OllamaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Media.Protection.PlayReady;
@@ -22,7 +23,7 @@ namespace PowerPad.Core.Services
             ])).Message.Text!;
         }
 
-        public static async IAsyncEnumerable<ChatResponseUpdate> GetResponseAsync(string model, IList<ChatMessage> chatMessages, CancellationToken cancellationToken)
+        public static async IAsyncEnumerable<ChatResponseUpdate> GetResponseAsync(string model, IList<ChatMessage> chatMessages, [EnumeratorCancellation]CancellationToken cancellationToken)
         {
             IChatClient client = new OllamaChatClient(new Uri("http://localhost:11434/"), model);
 

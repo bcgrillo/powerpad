@@ -11,7 +11,7 @@ namespace PowerPad.WinUI.Configuration
     {
         public class Keys
         {
-            public const string WorkspaceFolder = "WorkspacePath";
+            public const string RecentlyWorkspaces = "RecentlyWorkspaces";
             public const string OllamaServiceUrl = "OllamaServiceUrl";
         }
 

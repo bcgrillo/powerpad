@@ -14,26 +14,27 @@ namespace PowerPad.WinUI.Components
 {
     public sealed partial class EditorManager : UserControl
     {
+        private const long AUTO_SAVE_INTERVAL = 3000;
+
         private EditorControl? _currentEditor;
-        private Dictionary<FolderEntryViewModel, EditorControl> _editors;
-        private DispatcherTimer _timer;
+        private readonly Dictionary<FolderEntryViewModel, EditorControl> _editors;
+        private readonly DispatcherTimer _timer;
 
         public EditorManager()
         {
             this.InitializeComponent();
 
-            _editors = new Dictionary<FolderEntryViewModel, EditorControl>();
+            _editors = [];
 
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(3);
+            _timer = new();
+            _timer.Interval = TimeSpan.FromSeconds(AUTO_SAVE_INTERVAL);
             _timer.Tick += OnTimerTick;
             _timer.Start();
         }
 
         public void OpenFile(FolderEntryViewModel document)
         {
-            EditorControl? _requestedEditor;
-            _editors.TryGetValue(document, out _requestedEditor);
+            _editors.TryGetValue(document, out EditorControl? _requestedEditor);
 
             if (_currentEditor != null && _currentEditor == _requestedEditor)
             {
@@ -74,7 +75,7 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void OnTimerTick(object sender, object e)
+        private void OnTimerTick(object? sender, object e)
         {
             var editorsToRemove = new List<FolderEntryViewModel>();
 

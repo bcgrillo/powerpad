@@ -32,8 +32,8 @@ namespace PowerPad.WinUI
     /// </summary>
     public partial class App : Application
     {
-        private IServiceProvider _serviceProvider;
-        private IConfigStore _appConfigStore;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IConfigStore _appConfigStore;
 
         public IServiceProvider ServiceProvider => _serviceProvider;
         public IConfigStore AppConfigStore => _appConfigStore;
@@ -51,7 +51,7 @@ namespace PowerPad.WinUI
                 .ConfigureOllamaService(this)
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()
-                .AddTransient<WorkspaceViewModel>()
+                .AddSingleton(_ => AppConfigStore)
                 .BuildServiceProvider();
 
             Ioc.Default.ConfigureServices(_serviceProvider);

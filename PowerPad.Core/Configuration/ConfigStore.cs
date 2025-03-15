@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -9,26 +10,23 @@ namespace PowerPad.Core.Configuration
 {
     public interface IConfigStore
     {
-        void SaveConfig<T>(string key, T config);
-        T? GetConfig<T>(string key);
+        void Set<T>(string key, T config);
+
+        T Get<T>(string key);
+
+        T? TryGet<T>(string key);
     }
 
-    internal struct ConfigEntry
+    internal struct ConfigEntry(string value, bool dirty)
     {
-        public string Value { get; set; }
-        public bool Dirty { get; set; }
-
-        public ConfigEntry(string value, bool dirty)
-        {
-            Value = value;
-            Dirty = dirty;
-        }
+        public string Value { get; set; } = value;
+        public bool Dirty { get; set; } = dirty;
     }
 
     public class ConfigStore : IConfigStore
     {
-        private string _configFolder;
-        private Dictionary<string, ConfigEntry> _store;
+        private readonly string _configFolder;
+        private readonly Dictionary<string, ConfigEntry> _store;
 
         public ConfigStore(string configFolder)
         {
@@ -37,24 +35,37 @@ namespace PowerPad.Core.Configuration
             _configFolder = configFolder;
             _store = [];
 
-            LoadConfig();
+            Load();
         }
 
-        public void SaveConfig<T>(string key, T config)
+        public void Set<T>(string key, T config)
         {
             _store[key] = new ConfigEntry(JsonSerializer.Serialize(config), true);
         }
 
-        public T? GetConfig<T>(string key)
+        public T? TryGet<T>(string key)
         {
-            if (_store.TryGetValue(key, out var config))
+            try
             {
-                return JsonSerializer.Deserialize<T>(config.Value);
+                if (_store.TryGetValue(key, out var config))
+                {
+                    return JsonSerializer.Deserialize<T>(config.Value);
+                }
             }
+            catch (Exception)
+            {
+            }
+
             return default;
         }
 
-        private void LoadConfig()
+        public T Get<T>(string key)
+        {
+            return JsonSerializer.Deserialize<T>(_store[key].Value)
+                ?? throw new NullReferenceException($"Config value for key '{key}' is null.");
+        }
+
+        private void Load()
         {
             var files = Directory.EnumerateFiles(_configFolder, "*.json");
 
@@ -66,7 +77,7 @@ namespace PowerPad.Core.Configuration
             };
         }
 
-        internal async Task StoreConfig()
+        internal async Task Save()
         {
             for (var i = 0; i < _store.Count; i++)
             {

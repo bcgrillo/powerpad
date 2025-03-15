@@ -5,18 +5,20 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using PowerPad.WinUI.ViewModels;
 using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Dialogs;
+using PowerPad.Core.Services;
+using PowerPad.Core.Configuration;
 
 namespace PowerPad.WinUI.Components
 {
     public sealed partial class WorkspaceControl : UserControl
     {
-        private WorkspaceViewModel _workspace;
+        private readonly WorkspaceViewModel _workspace;
 
         public WorkspaceControl()
         {
             this.InitializeComponent();
 
-            _workspace = Ioc.Default.GetRequiredService<WorkspaceViewModel>();
+            _workspace = new WorkspaceViewModel();
         }
 
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
@@ -29,17 +31,6 @@ namespace PowerPad.WinUI.Components
             {
                 ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(invokedEntry));
             }
-        }
-
-        private void TreeViewItem_DropCompleted(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.DropCompletedEventArgs args)
-        {
-            //var entry = args.OriginalSource as FolderEntryViewModel;
-            //var newParent = (sender as TreeViewItem)?.DataContext as FolderEntryViewModel;
-
-            //if (entry != null && newParent != null)
-            //{
-            //    ViewModel.MoveEntryCommand.Execute((entry, newParent));
-            //}
         }
 
         private void HideMenuBtn_Click(object sender, RoutedEventArgs e)
@@ -97,29 +88,24 @@ namespace PowerPad.WinUI.Components
                 {
                     entry.RenameCommand.Execute(newName);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }
         }
     }
 
-    public class WorkspaceControlItemInvokedEventArgs : EventArgs
+    public class WorkspaceControlItemInvokedEventArgs(FolderEntryViewModel selectedFile) : EventArgs
     {
-        public FolderEntryViewModel SelectedFile { get; }
-
-        public WorkspaceControlItemInvokedEventArgs(FolderEntryViewModel selectedFile)
-        {
-            SelectedFile = selectedFile;
-        }
+        public FolderEntryViewModel SelectedFile { get; } = selectedFile;
     }
 
     public class EntryTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate FolderTemplate { get; set; }
-        public DataTemplate FileTemplate { get; set; }
+        public DataTemplate? FolderTemplate { get; set; }
+        public DataTemplate? FileTemplate { get; set; }
 
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
         {
             var entry = (FolderEntryViewModel)item;
 

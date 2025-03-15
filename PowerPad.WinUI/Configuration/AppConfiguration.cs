@@ -19,10 +19,10 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IWorkspaceService, WorkspaceService>(sp =>
             {
-                var workspaceFolder = GetWorkspacePath(app);
+                var lastWorkspace = GetLastWorkspace(app);
                 var configStoreService = sp.GetRequiredService<IConfigStoreService>();
 
-                return new WorkspaceService(workspaceFolder, configStoreService);
+                return new WorkspaceService(lastWorkspace, configStoreService);
             });
         }
 
@@ -44,27 +44,27 @@ namespace PowerPad.WinUI.Configuration
             return configStoreService.GetConfigStore(appDataFolder);
         }
 
-        private static string GetWorkspacePath(App app)
+        private static string GetLastWorkspace(App app)
         {
-            var workspaceFolder = app.AppConfigStore.GetConfig<string>(Keys.WorkspaceFolder);
+            var recentlyWorkspaces = app.AppConfigStore.TryGet<string[]>(Keys.RecentlyWorkspaces);
 
-            if (workspaceFolder == null)
+            if (recentlyWorkspaces == null)
             {
-                workspaceFolder = Defaults.WorkspaceFolder;
-                app.AppConfigStore.SaveConfig(Keys.WorkspaceFolder, workspaceFolder);
+                recentlyWorkspaces = [ Defaults.WorkspaceFolder ];
+                app.AppConfigStore.Set(Keys.RecentlyWorkspaces, recentlyWorkspaces);
             }
 
-            return workspaceFolder;
+            return recentlyWorkspaces.First();
         }
 
         private static string GetOllamaServiceUrl(IConfigStore config)
         {
-            var configUrl = config.GetConfig<string>(Keys.OllamaServiceUrl);
+            var configUrl = config.Get<string>(Keys.OllamaServiceUrl);
 
             if (configUrl == null)
             {
                 configUrl = Defaults.OllamaServiceUrl;
-                config.SaveConfig(Keys.OllamaServiceUrl, configUrl);
+                config.Set(Keys.OllamaServiceUrl, configUrl);
             };
 
             return configUrl;

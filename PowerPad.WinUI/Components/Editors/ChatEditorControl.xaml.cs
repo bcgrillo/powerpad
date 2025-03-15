@@ -61,18 +61,18 @@ namespace PowerPad.WinUI.Components.Editors
 
             try
             {
-                chatMessages = JsonSerializer.Deserialize<List<MessageViewModel>>(content) ?? new List<MessageViewModel>();
+                chatMessages = JsonSerializer.Deserialize<List<MessageViewModel>>(content) ?? [];
             }
             catch (JsonException)
             {
-                chatMessages = new List<MessageViewModel>();
+                chatMessages = [];
                 InfoBar.Title = "Error";
                 InfoBar.Message = "No ha sido posible deserializar el contenido como JSON.";
                 InfoBar.Visibility = Visibility.Visible;
                 InfoBar.IsOpen = true;
             }
 
-            _messages = new ObservableCollection<MessageViewModel>(chatMessages);
+            _messages = [.. chatMessages];
         }
 
         private void EditableTextBlock_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -135,7 +135,7 @@ namespace PowerPad.WinUI.Components.Editors
             _messages = null;
         }
 
-        private async void SendBtn_Click(object sender, RoutedEventArgs e)
+        private void SendBtn_Click(object sender, RoutedEventArgs e)
         {
             _messages!.Add(new MessageViewModel(InputBox.Text.Trim(), DateTime.Now, ChatRole.User));
 

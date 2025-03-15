@@ -18,9 +18,9 @@ namespace PowerPad.Core.Services
     {
         private const double STORE_INTERVAL = 2000;
 
-        private Timer _timer;
+        private readonly Timer _timer;
 
-        private Dictionary<string, ConfigStore> _configStores = [];
+        private readonly Dictionary<string, ConfigStore> _configStores = [];
 
         public ConfigStoreService()
         {
@@ -47,7 +47,7 @@ namespace PowerPad.Core.Services
 
         private async Task StoreConfigs()
         {
-            var tasks = _configStores.Values.Select(cs => cs.StoreConfig());
+            var tasks = _configStores.Values.Select(cs => cs.Save());
             await Task.WhenAll(tasks);
         }
     }
