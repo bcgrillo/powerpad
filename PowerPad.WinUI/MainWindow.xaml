@@ -62,12 +62,12 @@
                 <NavigationViewItem
                     Content="Notas"
                     Icon="{ui:FontIcon Glyph=&#xE70B;}"
-                    Tag="Notas"
+                    Tag="NotesPage"
                     PointerPressed="NavigationViewItem_PointerPressed"/>
                 <NavigationViewItem
                     Content="Modelos"
                     Icon="{ui:FontIcon Glyph=&#xF158;}"
-                    Tag="Modelos"
+                    Tag="AIServicesPage"
                     PointerPressed="NavigationViewItem_PointerPressed"/>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
@@ -90,13 +90,9 @@
         <winuiex:TitleBar
             x:Name="TitleBar"
             Grid.Column="2"
-            Title="PowerPad"
-            Height="48"
-            Margin="280,0,0,0"
-            IsTabStop="False"
-            Background="Red"
-            >
-            
+            Height="31"
+            Margin="0,-8,0,0"
+            IsTabStop="False">
         </winuiex:TitleBar>
     </Grid>
 </winuiex:WindowEx>

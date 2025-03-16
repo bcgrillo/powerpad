@@ -12,22 +12,20 @@ namespace PowerPad.WinUI.Pages
 {
     internal sealed partial class NotesPage : Page, INavigationPage
     {
+        public double NavigationWidth => WorkspaceControl.Visibility == Visibility.Visible ? WorkspaceControl.ActualWidth : 0;
+
         public NotesPage()
         {
             this.InitializeComponent();
         }
 
-        public event EventHandler<NavigationVisibilityChangedEventArgs>? NavigationVisibilityChanged;
+        public event EventHandler? NavigationVisibilityChanged;
 
         public void ToggleNavigationVisibility()
         {
-            var isVisible = WorkspaceControl.Visibility == Visibility.Visible;
+            WorkspaceControl.Visibility = WorkspaceControl.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
 
-            WorkspaceControl.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
-
-            isVisible = !isVisible;
-
-            NavigationVisibilityChanged?.Invoke(this, new NavigationVisibilityChangedEventArgs(isVisible ? WorkspaceControl.ActualWidth : 0));
+            NavigationVisibilityChanged?.Invoke(this, null!);
         }
 
         private void WorkspaceControl_ItemInvoked(object sender, WorkspaceControlItemInvokedEventArgs e)
@@ -37,9 +35,7 @@ namespace PowerPad.WinUI.Pages
 
         private void WorkspaceControl_VisibilityChanged(object sender, EventArgs e)
         {
-            var isVisible = WorkspaceControl.Visibility == Visibility.Visible;
-
-            NavigationVisibilityChanged?.Invoke(this, new NavigationVisibilityChangedEventArgs(isVisible ? WorkspaceControl.ActualWidth : 0));
+            NavigationVisibilityChanged?.Invoke(this, null!);
         }
     }
 }

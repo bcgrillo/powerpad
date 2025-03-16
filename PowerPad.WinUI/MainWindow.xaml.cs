@@ -18,6 +18,8 @@ using WinRT;
 using Microsoft.UI.Composition;
 using PowerPad.WinUI.Pages;
 using Microsoft.UI.Windowing;
+using System.Xml.Linq;
+using Microsoft.UI.Xaml.Media.Animation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,13 +34,22 @@ namespace PowerPad.WinUI
         private readonly DesktopAcrylicController? _acrylicController;
         private readonly SystemBackdropConfiguration? _configurationSource;
 
+        private string? _activePageName;
+        private INavigationPage? _activePage;
+
+        private readonly Dictionary<string, Type> _navigation = new Dictionary<string, Type>
+        {
+            { nameof(NotesPage), typeof(NotesPage) },
+            { nameof(AIServicesPage), typeof(AIServicesPage) }
+        };
+
         public MainWindow()
         {
             this.InitializeComponent();
             SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            Navigate(typeof(NotesPage));
+            Navigate(nameof(NotesPage));
 
             if (DesktopAcrylicController.IsSupported())
             {
@@ -62,8 +73,6 @@ namespace PowerPad.WinUI
         {
             this.ExtendsContentIntoTitleBar = true;
             this.SetTitleBar(TitleBar);
-            this.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
-            this.AppWindow.SetIcon("Assets/AppIcon/Icon.ico");
         }
 
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -75,43 +84,45 @@ namespace PowerPad.WinUI
             else
             {
                 var selectedItem = (NavigationViewItem)args.SelectedItem;
-                switch (selectedItem.Tag)
-                {
-                    case "Notas":
-                        Navigate(typeof(NotesPage));
-                        break;
-                    case "Modelos":
-                        Navigate(typeof(AIServicesPage));
-                        break;
-                }
 
-
+                Navigate(selectedItem.Tag?.ToString());
             }
         }
 
-        private void Navigate(Type type)
+        private void Navigate(string? page)
         {
-            NavFrame.Navigate(type);
+            ArgumentException.ThrowIfNullOrEmpty(page, nameof(page));
 
-            if (NavFrame.Content is INavigationPage navigationPage)
+            if (_navigation.ContainsKey(page))
             {
-                navigationPage.NavigationVisibilityChanged += NavigationVisibilityChanged;
+                NavFrame.Navigate(_navigation[page]);
+
+                _activePage = NavFrame.Content as INavigationPage;
+                _activePageName = page;
+
+                if (_activePage != null)
+                {
+                    _activePage.NavigationVisibilityChanged += NavigationVisibilityChanged;
+                    (NavFrame.Content as Page)!.Loaded += (sender, args) => NavigationVisibilityChanged(null, null!);
+                }
             }
         }
 
-        private void NavigationVisibilityChanged(object? sender, NavigationVisibilityChangedEventArgs eventArgs)
+        private void NavigationVisibilityChanged(object? sender, EventArgs args)
         {
-            TitleBar.Margin = new Thickness(eventArgs.Width, 0, 0, 0);
+            TitleBar.Margin = new Thickness(_activePage?.NavigationWidth ?? 0, -8, 0, 0);
         }
 
-        private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs args)
         {
-            (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
+            var navigationViewItem = (NavigationViewItem)sender;
+
+            if (navigationViewItem.Tag.ToString() == _activePageName) (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
         }
 
         private void WindowEx_Closed(object sender, WindowEventArgs args)
         {
-            
+
         }
     }
 }

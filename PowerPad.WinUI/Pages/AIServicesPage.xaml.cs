@@ -19,16 +19,12 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Components;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace PowerPad.WinUI.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class AIServicesPage : Page, INavigationPage
     {
+        public double NavigationWidth => NavView.Visibility == Visibility.Visible ? NavView.ActualWidth : 0;
+
         public ObservableCollection<AIServiceViewModel> Services { get; set; }
 
         public AIServicesPage()
@@ -40,7 +36,7 @@ namespace PowerPad.WinUI.Pages
             Services.Add(new OllamaViewModel(Ioc.Default.GetRequiredService<IOllamaService>()));
         }
 
-        public event EventHandler<NavigationVisibilityChangedEventArgs>? NavigationVisibilityChanged;
+        public event EventHandler? NavigationVisibilityChanged;
 
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
@@ -49,13 +45,9 @@ namespace PowerPad.WinUI.Pages
 
         public void ToggleNavigationVisibility()
         {
-            var isVisible = NavView.Visibility == Visibility.Visible;
+            NavView.Visibility = NavView.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
 
-            NavView.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
-
-            isVisible = !isVisible;
-
-            NavigationVisibilityChanged?.Invoke(this, new NavigationVisibilityChangedEventArgs(isVisible ? NavView.ActualWidth : 0));
+            NavigationVisibilityChanged?.Invoke(this, null!);
         }
     }
 }
