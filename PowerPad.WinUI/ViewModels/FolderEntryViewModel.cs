@@ -1,16 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.Messages;
 using System;
 using System.Collections.ObjectModel;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public partial class FolderEntryViewModel : ObservableObject
+    public partial class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
         private readonly IFolderEntry _entry;
         private readonly DocumentTypes? _documentType;
@@ -65,6 +67,8 @@ namespace PowerPad.WinUI.ViewModels
 
             DeleteCommand = new RelayCommand(Delete);
             RenameCommand = new RelayCommand<string>(Rename);
+
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         public FolderEntryViewModel(Document document, FolderEntryViewModel? parent)
@@ -81,6 +85,8 @@ namespace PowerPad.WinUI.ViewModels
 
             DeleteCommand = new RelayCommand(Delete);
             RenameCommand = new RelayCommand<string>(Rename);
+
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         public DocumentViewModel ToDocumentViewModel(IEditorContract editorControl)
@@ -102,6 +108,7 @@ namespace PowerPad.WinUI.ViewModels
             }
 
             _parent?.Children!.Remove(this);
+            WeakReferenceMessenger.Default.Send(new FolderEntryDeleted(_entry));
         }
 
         private void Rename(string? newName)
@@ -119,7 +126,22 @@ namespace PowerPad.WinUI.ViewModels
                 workspaceService.RenameFolder((Folder)_entry, newName);
             }
 
+            NameChanged();
+        }
+
+        public void NameChanged()
+        {
+            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_entry) { NameChanged = true });
+
             OnPropertyChanged(nameof(Name));
+        }
+
+        public void Receive(FolderEntryChanged message)
+        {
+            if (message.Value == _entry)
+            {
+                if (message.NameChanged) OnPropertyChanged(nameof(Name));
+            }
         }
     }
 }

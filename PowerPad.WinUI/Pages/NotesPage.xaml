@@ -10,12 +10,16 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
     <Grid ColumnDefinitions="auto, *">
-        <components:WorkspaceControl x:Name="WorkspaceControl" Grid.Column="0" ItemInvoked="WorkspaceControl_ItemInvoked" VisibilityChanged="WorkspaceControl_VisibilityChanged"/>
-
+        <components:WorkspaceControl 
+            x:Name="WorkspaceControl"
+            Grid.Column="0"
+            ItemInvoked="WorkspaceControl_ItemInvoked"
+            VisibilityChanged="WorkspaceControl_VisibilityChanged"/>
         <Border
             Grid.Column="1"
             Background="{ThemeResource SmokeFillColorDefaultBrush}">
-            <components:EditorManager x:Name="EditorManager"/>
+            <components:EditorManager 
+                x:Name="EditorManager"/>
         </Border>
     </Grid>
 </Page>

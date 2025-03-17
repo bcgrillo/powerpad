@@ -1,15 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
+using PowerPad.WinUI.Messages;
 using System;
 using System.Windows.Input;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public partial class DocumentViewModel : ObservableObject
+    public partial class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
         private readonly IDocumentService _documentService;
         private readonly Document _document;
@@ -56,6 +58,8 @@ namespace PowerPad.WinUI.ViewModels
             SaveCommand = new RelayCommand(Save);
             AutosaveCommand = new RelayCommand(Autosave);
             RenameCommand = new RelayCommand<string>(Rename);
+
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         private void Save()
@@ -83,7 +87,22 @@ namespace PowerPad.WinUI.ViewModels
 
             workspaceService.RenameDocument(_document, newName);
 
+            NameChanged();
+        }
+
+        public void NameChanged()
+        {
+            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true});
+
             OnPropertyChanged(nameof(Name));
+        }
+
+        public void Receive(FolderEntryChanged message)
+        {
+            if (message.Value == _document)
+            {
+                if (message.NameChanged) OnPropertyChanged(nameof(Name));
+            }
         }
     }
 }

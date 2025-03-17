@@ -126,7 +126,8 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override void AutoSave()
         {
-            _document.AutosaveCommand.Execute(null);
+            //Chat elements always save automatically (instead of autosaving)
+            _document.SaveCommand.Execute(null);
         }
 
         public override void Dispose()
@@ -181,6 +182,8 @@ namespace PowerPad.WinUI.Components.Editors
                     InputBox.Text = string.Empty;
                     InputBox.IsEnabled = true;
                 });
+
+                _document.Status = DocumentStatus.Dirty;
             });
 
             _document.Status = DocumentStatus.Dirty;

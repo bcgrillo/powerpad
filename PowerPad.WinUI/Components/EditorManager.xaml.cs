@@ -1,18 +1,21 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using PowerPad.Core.Models;
 using PowerPad.WinUI.Components.Editors;
+using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
 using WinUIEditor;
+using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.Components
 {
-    public sealed partial class EditorManager : UserControl
+    public sealed partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     {
         private const long AUTO_SAVE_INTERVAL = 3000;
 
@@ -27,9 +30,11 @@ namespace PowerPad.WinUI.Components
             _editors = [];
 
             _timer = new();
-            _timer.Interval = TimeSpan.FromSeconds(AUTO_SAVE_INTERVAL);
+            _timer.Interval = TimeSpan.FromMilliseconds(AUTO_SAVE_INTERVAL);
             _timer.Tick += OnTimerTick;
             _timer.Start();
+
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         public void OpenFile(FolderEntryViewModel document)
@@ -44,15 +49,16 @@ namespace PowerPad.WinUI.Components
             {
                 if (_currentEditor != null)
                 {
-                    _currentEditor.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+                    _currentEditor.Visibility = Visibility.Collapsed;
                 }
 
                 if (_requestedEditor != null)
                 {
-                    _requestedEditor.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+                    _requestedEditor.Visibility = Visibility.Visible;
                     _currentEditor = _requestedEditor;
                 }
-                else {
+                else
+                {
                     EditorControl newEditor;
 
                     if (document.DocumentType == DocumentTypes.Chat)
@@ -64,13 +70,13 @@ namespace PowerPad.WinUI.Components
                         newEditor = new TextEditorControl(document);
                     }
 
-                    newEditor.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+                    newEditor.Visibility = Visibility.Collapsed;
 
                     _editors.Add(document, newEditor);
                     EditorGrid.Children.Add(newEditor);
                     _currentEditor = newEditor;
 
-                    newEditor.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+                    newEditor.Visibility = Visibility.Visible;
                 }
             }
         }
@@ -94,7 +100,37 @@ namespace PowerPad.WinUI.Components
 
             foreach (var key in editorsToRemove)
             {
+                EditorGrid.Children.Remove(_editors[key]);
                 _editors[key].Dispose();
+
+                if (_currentEditor == _editors[key])
+                {
+                    _currentEditor = null;
+                }
+
+                _editors.Remove(key);
+            }
+        }
+
+        public void Receive(FolderEntryDeleted message)
+        {
+            FolderEntryViewModel? key = null;
+
+            foreach (var kvp in _editors)
+            {
+                if (kvp.Key.ModelEntry == message.Value) key = kvp.Key;
+            }
+
+            if (key != null)
+            {
+                EditorGrid.Children.Remove(_editors[key]);
+                _editors[key].Dispose();
+
+                if (_currentEditor == _editors[key])
+                {
+                    _currentEditor = null;
+                }
+                
                 _editors.Remove(key);
             }
         }

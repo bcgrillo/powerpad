@@ -75,7 +75,7 @@
         <TextBlock
             x:Name="EditableTextBlock"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="{x:Bind _document.Name}"
+            Text="{x:Bind _document.Name, Mode=OneWay}"
             TextTrimming="CharacterEllipsis"
             TextWrapping="NoWrap"
             Margin="36,24,36,0"
@@ -83,7 +83,7 @@
         <TextBox
             x:Name="EditableTextBox"
             Style="{StaticResource TransparentTextBoxStyle}"
-            Text="{x:Bind _document.Name}"
+            Text="{x:Bind _document.Name, Mode=OneWay}"
             Visibility="Collapsed"
             Margin="32,24,36,0"
             Padding="0"

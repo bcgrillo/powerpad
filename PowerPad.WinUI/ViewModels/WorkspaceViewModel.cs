@@ -1,15 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
-using OllamaSharp.Models.Chat;
 using PowerPad.Core.Configuration;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.ObjectModel;
-using System.Xml.Linq;
-using Windows.Web.AtomPub;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels
