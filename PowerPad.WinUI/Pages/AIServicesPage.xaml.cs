@@ -18,34 +18,38 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Components;
+using Azure;
+using PowerPad.WinUI.Pages.AIServices;
 
 namespace PowerPad.WinUI.Pages
 {
     public sealed partial class AIServicesPage : Page, INavigationPage
     {
-        public double NavigationWidth => NavView.Visibility == Visibility.Visible ? NavView.ActualWidth : 0;
+        public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
 
-        public ObservableCollection<AIServiceViewModel> Services { get; set; }
+        private readonly AIServicesVMCollection _services;
 
         public AIServicesPage()
         {
             this.InitializeComponent();
 
-            Services = [];
-            
-            Services.Add(new OllamaViewModel(Ioc.Default.GetRequiredService<IOllamaService>()));
+            _services = Ioc.Default.GetRequiredService<AIServicesVMCollection>();
+            _services.Services.Add(new OllamaViewModel(Ioc.Default.GetRequiredService<IOllamaService>()));
+
+            NavView.SelectedItem = NavView.MenuItems[0];
+            NavFrame.Navigate(typeof(OllamaPage));
         }
 
         public event EventHandler? NavigationVisibilityChanged;
 
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-
+            NavFrame.Navigate(typeof(OllamaPage));
         }
 
         public void ToggleNavigationVisibility()
         {
-            NavView.Visibility = NavView.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            NavView.IsPaneVisible = !NavView.IsPaneVisible;
 
             NavigationVisibilityChanged?.Invoke(this, null!);
         }

@@ -14,7 +14,7 @@
             <Setter Property="FontSize" Value="22" />
         </Style>
     </Page.Resources>
-    <Grid ColumnDefinitions="auto, *">
+    <Grid>
         <NavigationView
             x:Name="NavView"
             CompactModeThresholdWidth="0"
@@ -27,10 +27,11 @@
             OpenPaneLength="248"
             SelectionChanged="NavView_SelectionChanged">
             <NavigationView.Resources>
-                <Thickness x:Key="NavigationViewContentGridBorderThickness">1,0,0,0</Thickness>
-                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
+                <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
+                <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
+                <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
                 <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
             </NavigationView.Resources>
             <NavigationView.PaneHeader>
                 <StackPanel Orientation="Vertical">
@@ -56,9 +57,8 @@
                     Icon="{ui:FontIcon Glyph=&#xE964;}"
                     Tag="Ollama"/>
             </NavigationView.MenuItems>
-            <NavigationView.Content>
-                <Frame x:Name="NavFrame" />
-            </NavigationView.Content>
+
+            <Frame x:Name="NavFrame"/>
         </NavigationView>
     </Grid>
 </Page>

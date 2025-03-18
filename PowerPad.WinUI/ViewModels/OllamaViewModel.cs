@@ -27,7 +27,7 @@ namespace PowerPad.WinUI.ViewModels
             _ollamaService = ollamaService;
             _ollamaStatus = OllamaStatus.Unknown;
 
-            _models = new ObservableCollection<ModelInfoViewModel>();
+            _models = [];
 
             _ = RefreshStatus();
         }

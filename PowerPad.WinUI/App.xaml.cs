@@ -52,6 +52,7 @@ namespace PowerPad.WinUI
                 .ConfigureOllamaService(this)
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()
+                .AddSingleton<AIServicesVMCollection>()
                 .AddSingleton(_ => AppConfigStore)
                 .BuildServiceProvider();
 

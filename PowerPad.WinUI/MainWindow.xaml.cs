@@ -37,7 +37,7 @@ namespace PowerPad.WinUI
         private string? _activePageName;
         private INavigationPage? _activePage;
 
-        private readonly Dictionary<string, Type> _navigation = new Dictionary<string, Type>
+        private readonly Dictionary<string, Type> _navigation = new()
         {
             { nameof(NotesPage), typeof(NotesPage) },
             { nameof(AIServicesPage), typeof(AIServicesPage) }
@@ -49,7 +49,7 @@ namespace PowerPad.WinUI
             SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            Navigate(nameof(NotesPage));
+            NavigateToPage(nameof(NotesPage));
 
             if (DesktopAcrylicController.IsSupported())
             {
@@ -85,17 +85,17 @@ namespace PowerPad.WinUI
             {
                 var selectedItem = (NavigationViewItem)args.SelectedItem;
 
-                Navigate(selectedItem.Tag?.ToString());
+                NavigateToPage(selectedItem.Tag?.ToString());
             }
         }
 
-        private void Navigate(string? page)
+        private void NavigateToPage(string? page)
         {
             ArgumentException.ThrowIfNullOrEmpty(page, nameof(page));
 
-            if (_navigation.ContainsKey(page))
+            if (_navigation.TryGetValue(page, out Type? value) && typeof(INavigationPage).IsAssignableFrom(value))
             {
-                NavFrame.Navigate(_navigation[page]);
+                NavFrame.Navigate(value);
 
                 _activePage = NavFrame.Content as INavigationPage;
                 _activePageName = page;

@@ -48,7 +48,7 @@
 
         <NavigationView
             x:Name="NavView"
-            Grid.Row="1"
+            Grid.RowSpan="2"
             Grid.ColumnSpan="2"
             Canvas.ZIndex="0"
             IsTabStop="False"
@@ -60,6 +60,7 @@
             SelectionChanged="NavView_SelectionChanged">
             <NavigationView.MenuItems>
                 <NavigationViewItem
+                    Margin="0,38,0,0"
                     Content="Notas"
                     Icon="{ui:FontIcon Glyph=&#xE70B;}"
                     Tag="NotesPage"
@@ -73,14 +74,11 @@
             <NavigationView.FooterMenuItems>
             </NavigationView.FooterMenuItems>
 
-            <!--  Custom TitleBar with NavigationView L-Pattern Overwriting resources  -->
             <NavigationView.Resources>
-                <!--  This top margin is the height of the custom titleBar  -->
-                <Thickness x:Key="NavigationViewContentMargin">0,-38,0,0</Thickness>
-                <Thickness x:Key="NavigationViewMinimalContentMargin">0,-38,0,0</Thickness>
+                <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
+                <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
                 <Thickness x:Key="NavigationViewContentGridBorderThickness">1,0,0,0</Thickness>
                 <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                <!--  This is the rounded corner on the Top left of the L Pattern  -->
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
             </NavigationView.Resources>
 
