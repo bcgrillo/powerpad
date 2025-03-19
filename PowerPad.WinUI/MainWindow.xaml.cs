@@ -20,6 +20,7 @@ using PowerPad.WinUI.Pages;
 using Microsoft.UI.Windowing;
 using System.Xml.Linq;
 using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -61,7 +62,9 @@ namespace PowerPad.WinUI
 
                 _acrylicController = new DesktopAcrylicController
                 {
-                    Kind = DesktopAcrylicKind.Thin
+                    Kind = DesktopAcrylicKind.Thin,
+                    TintColor = (Color)Application.Current.Resources["PowerPadBackGroundColor"],
+                    TintOpacity = 0.3F
                 };
 
                 _acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());

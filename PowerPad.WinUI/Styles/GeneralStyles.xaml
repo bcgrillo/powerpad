@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ResourceDictionary.ThemeDictionaries>
+    
+        <ResourceDictionary x:Key="Default">
+            <Color x:Key="PowerPadBackGroundColor">#FF242424</Color>
+            <Color x:Key="PowerPadEditorColor">#90000000</Color>
+            
+            <SolidColorBrush x:Key="PowerPadEditorBrush" Color="{StaticResource PowerPadEditorColor}" />
+        </ResourceDictionary>
+        
+        <ResourceDictionary x:Key="Light">
+            <Color x:Key="PowerPadBackGroundColor">#FFD3D3D3</Color>
+
+        </ResourceDictionary>
+        
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

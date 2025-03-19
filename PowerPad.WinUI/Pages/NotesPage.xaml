@@ -9,7 +9,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
-    <Grid ColumnDefinitions="auto, *">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <components:WorkspaceControl 
             x:Name="WorkspaceControl"
             Grid.Column="0"
@@ -17,7 +21,7 @@
             VisibilityChanged="WorkspaceControl_VisibilityChanged"/>
         <Border
             Grid.Column="1"
-            Background="{ThemeResource SmokeFillColorDefaultBrush}">
+            Background="{ThemeResource PowerPadEditorColor}">
             <components:EditorManager 
                 x:Name="EditorManager"/>
         </Border>

@@ -10,7 +10,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:vm="using:PowerPad.WinUI.ViewModels"
     mc:Ignorable="d"
-    Background="{ThemeResource SmokeFillColorDefaultBrush}">
+    Background="{ThemeResource PowerPadEditorColor}">
     <Page.Resources>
         <!--  These styles can be referenced to create a consistent SettingsPage layout  -->
         <!--  Spacing between cards  -->
@@ -25,7 +25,11 @@
             </Style.Setters>
         </Style>
     </Page.Resources>
-    <Grid RowDefinitions="auto, *">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <TextBlock
             Style="{StaticResource TitleTextBlockStyle}"
             Text="Ollama"
@@ -45,7 +49,8 @@
                         Description="Models are cached on your disk"
                         Header="Model cache"
                         HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
-                        ItemsSource="{x:Bind _ollama.Models, Mode=OneWay}">
+                        ItemsSource="{x:Bind _ollama.Models, Mode=OneWay}"
+                        IsExpanded="True">
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <HyperlinkButton
                                 x:Name="FolderPathTxt"
