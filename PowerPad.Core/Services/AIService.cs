@@ -27,11 +27,13 @@ namespace PowerPad.Core.Services
         private AIConfig? _defaultConfig;
 
         private IOllamaService _ollamaService;
+        private IAzureAIService _azureAIService;
 
-        public AIService(AIModel defaultModel, IOllamaService ollamaService)
+        public AIService(AIModel defaultModel, IOllamaService ollamaService, IAzureAIService azureAIService)
         {
             _defaultModel = defaultModel;
             _ollamaService = ollamaService;
+            _azureAIService = azureAIService;
         }
 
         public void SetDefaultModel(AIModel defaultModel)
@@ -50,6 +52,8 @@ namespace PowerPad.Core.Services
             {
                 case ModelProvider.Ollama:
                     return _ollamaService.ChatClient(model);
+                case ModelProvider.AzureAI:
+                    return _azureAIService.ChatClient(model);
                 default:
                     throw new NotImplementedException($"Client for provider {model.ModelProvider} not implemented.");
             }

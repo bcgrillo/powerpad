@@ -3,7 +3,7 @@
     public enum ModelProvider
     {
         Ollama,
+        AzureAI,
         OpenAI,
-        AzureAIInference,
     }
 }

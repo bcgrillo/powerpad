@@ -50,6 +50,7 @@ namespace PowerPad.WinUI
             _serviceProvider = new ServiceCollection()
                 .ConfigureWorkspaceService(this)
                 .ConfigureOllamaService(this)
+                .ConfigureAzureAIService(this)
                 .ConfigureAIService(this)
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()

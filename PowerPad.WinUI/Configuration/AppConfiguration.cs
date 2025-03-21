@@ -37,14 +37,25 @@ namespace PowerPad.WinUI.Configuration
             });
         }
 
+        public static IServiceCollection ConfigureAzureAIService(this IServiceCollection serviceColection, App app)
+        {
+            return serviceColection.AddSingleton<IAzureAIService, AzureAIService>(sp =>
+            {
+                var (baseUrl, key) = GetAzureAIConfig(app.AppConfigStore);
+
+                return new AzureAIService(baseUrl, key);
+            });
+        }
+
         public static IServiceCollection ConfigureAIService(this IServiceCollection serviceColection, App app)
         {
             return serviceColection.AddSingleton<IAIService, AIService>(sp =>
             {
                 AIModel defaultModel = GetDefaultModel(app.AppConfigStore);
                 var ollamaService = sp.GetRequiredService<IOllamaService>();
+                var azureAIService = sp.GetRequiredService<IAzureAIService>();
 
-                return new AIService(defaultModel, ollamaService);
+                return new AIService(defaultModel, ollamaService, azureAIService);
             });
         }
 
@@ -77,9 +88,22 @@ namespace PowerPad.WinUI.Configuration
             {
                 configUrl = Defaults.OllamaServiceUrl;
                 config.Set(Keys.OllamaServiceUrl, configUrl);
-            };
+            }
 
             return configUrl;
+        }
+
+        private static AzureAIConfig GetAzureAIConfig(IConfigStore config)
+        {
+            var azureAIConfig = config.TryGet<AzureAIConfig>(Keys.AzureAIConfig);
+
+            if (azureAIConfig == null)
+            {
+                azureAIConfig = Defaults.AzureAIConfig;
+                config.Set(Keys.AzureAIConfig, azureAIConfig);
+            }
+
+            return azureAIConfig;
         }
 
         private static AIModel GetDefaultModel(IConfigStore config)
