@@ -1,4 +1,5 @@
 ﻿using ABI.System;
+using Microsoft.Extensions.AI;
 using OllamaSharp;
 using PowerPad.Core.Models;
 using System;
@@ -14,7 +15,8 @@ namespace PowerPad.Core.Services
     public interface IOllamaService
     {
         Task<OllamaStatus> GetStatus();
-        Task<IEnumerable<ModelInfo>> GetModels();
+        Task<IEnumerable<AIModel>> GetModels();
+        IChatClient ChatClient(AIModel model);
     }
 
     public class OllamaService : IOllamaService
@@ -87,13 +89,22 @@ namespace PowerPad.Core.Services
             return OllamaStatus.Unknown;
         }
 
-        public async Task<IEnumerable<ModelInfo>> GetModels()
+        public async Task<IEnumerable<AIModel>> GetModels()
         {
             if (_ollama == null) return [];
 
             var models = await _ollama.ListLocalModelsAsync();
 
-            return models.Select(m => new ModelInfo(m.Name, string.Empty));
+            return models.Select(m => new AIModel(m.Name, ModelProvider.Ollama));
+        }
+
+        public IChatClient ChatClient(AIModel model)
+        {
+            if (_ollama == null) throw new InvalidOperationException("Ollama service not initialized.");
+
+            _ollama.SelectedModel = model.Name;
+
+            return _ollama;
         }
     }
 }

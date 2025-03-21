@@ -39,15 +39,18 @@ namespace PowerPad.WinUI.Components.Editors
         private DocumentViewModel _document;
         private ObservableCollection<MessageViewModel>? _messages;
 
+        private IAIService _aiService;
+
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
-        public ChatEditorControl(FolderEntryViewModel documentEntry)
+        public ChatEditorControl(FolderEntryViewModel documentEntry, IAIService aiService)
         {
             this.InitializeComponent();
 
             _document = documentEntry.ToDocumentViewModel(this);
+            _aiService = aiService;
         }
 
         public override string GetContent()
@@ -157,7 +160,7 @@ namespace PowerPad.WinUI.Components.Editors
 
                 history.Insert(0, new ChatMessage(ChatRole.System, "You are a helpful assistant"));
 
-                await foreach (var messagePart in OllamaTestClass.GetResponseAsync("llama3.2:latest", history, _cts.Token))
+                await foreach (var messagePart in _aiService.GetStreamingResponse(history, cancellationToken: _cts.Token))
                 {
                     try
                     {

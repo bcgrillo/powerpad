@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PowerPad.Core.Configuration;
+using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,17 @@ namespace PowerPad.WinUI.Configuration
             });
         }
 
+        public static IServiceCollection ConfigureAIService(this IServiceCollection serviceColection, App app)
+        {
+            return serviceColection.AddSingleton<IAIService, AIService>(sp =>
+            {
+                AIModel defaultModel = GetDefaultModel(app.AppConfigStore);
+                var ollamaService = sp.GetRequiredService<IOllamaService>();
+
+                return new AIService(defaultModel, ollamaService);
+            });
+        }
+
         public static IConfigStore InitializeAppConfigStore(this App app)
         {
             var appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $".{nameof(PowerPad).ToLower()}");
@@ -59,7 +71,7 @@ namespace PowerPad.WinUI.Configuration
 
         private static string GetOllamaServiceUrl(IConfigStore config)
         {
-            var configUrl = config.Get<string>(Keys.OllamaServiceUrl);
+            var configUrl = config.TryGet<string>(Keys.OllamaServiceUrl);
 
             if (configUrl == null)
             {
@@ -68,6 +80,19 @@ namespace PowerPad.WinUI.Configuration
             };
 
             return configUrl;
+        }
+
+        private static AIModel GetDefaultModel(IConfigStore config)
+        {
+            var configModel = config.TryGet<AIModel>(Keys.DefaultModel);
+
+            if (configModel == null)
+            {
+                configModel = Defaults.DefaultModel;
+                config.Set(Keys.DefaultModel, configModel);
+            }
+
+            return configModel;
         }
     }
 }

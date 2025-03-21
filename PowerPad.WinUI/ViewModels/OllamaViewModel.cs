@@ -22,7 +22,7 @@ namespace PowerPad.WinUI.ViewModels
         //public IRelayCommand NewEntryCommand { get; }
 
         public OllamaViewModel(IOllamaService ollamaService)
-        : base(name: "Ollama", glyph: "\uE964", kind: AIServices.Ollama)
+        : base(name: "Ollama", glyph: "\uE964", provider: ModelProvider.Ollama)
         {
             _ollamaService = ollamaService;
             _ollamaStatus = OllamaStatus.Unknown;

@@ -10,13 +10,13 @@ namespace PowerPad.WinUI.ViewModels
 {
     public partial class ModelInfoViewModel : ObservableObject
     {
-        private ModelInfo _modelInfo;
+        private AIModel _modelInfo;
 
         public string Name { get => _modelInfo.Name; }
 
         public ModelStatus ModelStatus { get => _modelInfo.Status; }
 
-        public ModelInfoViewModel(ModelInfo modelInfo)
+        public ModelInfoViewModel(AIModel modelInfo)
         {
             _modelInfo = modelInfo;
         }

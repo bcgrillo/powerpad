@@ -31,11 +31,13 @@ namespace PowerPad.WinUI.Components.Editors
     {
         private DocumentViewModel _document;
 
+        private IAIService _aiService;
+
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
-        public TextEditorControl(FolderEntryViewModel documentEntry)
+        public TextEditorControl(FolderEntryViewModel documentEntry, IAIService aiService)
         {
             this.InitializeComponent();
 
@@ -44,6 +46,7 @@ namespace PowerPad.WinUI.Components.Editors
             _document = documentEntry.ToDocumentViewModel(this);
 
             TextEditor.Editor.Modified += (s, e) => _document.Status = DocumentStatus.Dirty;
+            _aiService = aiService;
         }
 
         public override string GetContent()
@@ -122,12 +125,11 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void SendBtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = await OllamaTestClass.GetResponseAsync(
-                "llama3.2:latest",
-                $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}",
-                TextEditor.Editor.GetText(TextEditor.Editor.Length));
+            var result = await _aiService.GetResponse(
+                message: TextEditor.Editor.GetText(TextEditor.Editor.Length), 
+                config: new AIConfig(SystemPrompt: $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}" ) );
 
-            TextEditor.Editor.SetText(result);
+            TextEditor.Editor.SetText(result.Message.Text);
         }
     }
 
