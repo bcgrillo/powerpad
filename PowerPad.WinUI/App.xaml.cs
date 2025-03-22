@@ -51,6 +51,7 @@ namespace PowerPad.WinUI
                 .ConfigureWorkspaceService(this)
                 .ConfigureOllamaService(this)
                 .ConfigureAzureAIService(this)
+                .ConfigureOpenAIService(this)
                 .ConfigureAIService(this)
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()

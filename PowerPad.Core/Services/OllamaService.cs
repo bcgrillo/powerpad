@@ -99,7 +99,7 @@ namespace PowerPad.Core.Services
             return models.Select(m => CreateAIModel(m));
         }
 
-        private AIModel CreateAIModel(Model m)
+        private static AIModel CreateAIModel(Model m)
         {
             var name = m.Name;
             var provider = ModelProvider.Ollama;

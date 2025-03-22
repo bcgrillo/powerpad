@@ -26,14 +26,16 @@ namespace PowerPad.Core.Services
         private AIModel _defaultModel;
         private AIConfig? _defaultConfig;
 
-        private IOllamaService _ollamaService;
-        private IAzureAIService _azureAIService;
+        private readonly IOllamaService _ollamaService;
+        private readonly IAzureAIService _azureAIService;
+        private readonly IOpenAIService _openAIService;
 
-        public AIService(AIModel defaultModel, IOllamaService ollamaService, IAzureAIService azureAIService)
+        public AIService(AIModel defaultModel, IOllamaService ollamaService, IAzureAIService azureAIService, IOpenAIService openAIService)
         {
             _defaultModel = defaultModel;
             _ollamaService = ollamaService;
             _azureAIService = azureAIService;
+            _openAIService = openAIService;
         }
 
         public void SetDefaultModel(AIModel defaultModel)
@@ -48,16 +50,13 @@ namespace PowerPad.Core.Services
 
         private IChatClient ChatClient(AIModel model)
         {
-            switch (model.ModelProvider)
+            return model.ModelProvider switch
             {
-                case ModelProvider.Ollama:
-                case ModelProvider.HuggingFace:
-                    return _ollamaService.ChatClient(model);
-                case ModelProvider.GitHub:
-                    return _azureAIService.ChatClient(model);
-                default:
-                    throw new NotImplementedException($"Client for provider {model.ModelProvider} not implemented.");
-            }
+                ModelProvider.Ollama or ModelProvider.HuggingFace => _ollamaService.ChatClient(model),
+                ModelProvider.GitHub => _azureAIService.ChatClient(model),
+                ModelProvider.OpenAI => _openAIService.ChatClient(model),
+                _ => throw new NotImplementedException($"Client for provider {model.ModelProvider} not implemented."),
+            };
         }
 
         public Task<ChatResponse> GetResponse(string message, AIModel? model = null, AIConfig? config = null, CancellationToken cancellationToken = default)

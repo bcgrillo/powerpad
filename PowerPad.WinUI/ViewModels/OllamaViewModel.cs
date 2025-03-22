@@ -26,7 +26,7 @@ namespace PowerPad.WinUI.ViewModels
         public IEnumerable<ModelInfoViewModel>? HuggingFaceModels => Models?.Where(model => model.ModelProvider == ModelProvider.HuggingFace);
 
         public OllamaViewModel(IOllamaService ollamaService)
-        : base(name: "Ollama", glyph: "\uE964", provider: ModelProvider.Ollama)
+        : base(name: "Ollama", provider: ModelProvider.Ollama)
         {
             _ollamaService = ollamaService;
             _ollamaStatus = OllamaStatus.Unknown;

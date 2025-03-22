@@ -47,6 +47,16 @@ namespace PowerPad.WinUI.Configuration
             });
         }
 
+        public static IServiceCollection ConfigureOpenAIService(this IServiceCollection serviceColection, App app)
+        {
+            return serviceColection.AddSingleton<IOpenAIService, OpenAIService>(sp =>
+            {
+                var (baseUrl, key) = GetOpenAIConfig(app.AppConfigStore);
+
+                return new OpenAIService(baseUrl, key);
+            });
+        }
+
         public static IServiceCollection ConfigureAIService(this IServiceCollection serviceColection, App app)
         {
             return serviceColection.AddSingleton<IAIService, AIService>(sp =>
@@ -54,8 +64,9 @@ namespace PowerPad.WinUI.Configuration
                 AIModel defaultModel = GetDefaultModel(app.AppConfigStore);
                 var ollamaService = sp.GetRequiredService<IOllamaService>();
                 var azureAIService = sp.GetRequiredService<IAzureAIService>();
+                var openAIService = sp.GetRequiredService<IOpenAIService>();
 
-                return new AIService(defaultModel, ollamaService, azureAIService);
+                return new AIService(defaultModel, ollamaService, azureAIService, openAIService);
             });
         }
 
@@ -104,6 +115,19 @@ namespace PowerPad.WinUI.Configuration
             }
 
             return azureAIConfig;
+        }
+
+        private static OpenAIConfig GetOpenAIConfig(IConfigStore config)
+        {
+            var openAIConfig = config.TryGet<OpenAIConfig>(Keys.OpenAIConfig);
+
+            if (openAIConfig == null)
+            {
+                openAIConfig = Defaults.OpenAIConfig;
+                config.Set(Keys.AzureAIConfig, openAIConfig);
+            }
+
+            return openAIConfig;
         }
 
         private static AIModel GetDefaultModel(IConfigStore config)

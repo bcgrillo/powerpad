@@ -1,6 +1,6 @@
 ﻿namespace PowerPad.WinUI.Configuration
 {
-    public record AzureAIConfig
+    public record OpenAIConfig
     (
         string BaseUrl,
         string Key

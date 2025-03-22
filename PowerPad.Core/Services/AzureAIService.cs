@@ -1,16 +1,7 @@
-﻿using ABI.System;
-using Azure;
+﻿using Azure;
 using Azure.AI.Inference;
 using Microsoft.Extensions.AI;
-using OllamaSharp;
 using PowerPad.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Exception = System.Exception;
 using Uri = System.Uri;
 
 namespace PowerPad.Core.Services

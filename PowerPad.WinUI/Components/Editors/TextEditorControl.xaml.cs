@@ -51,7 +51,7 @@ namespace PowerPad.WinUI.Components.Editors
             EditableTextBox.Focus(FocusState.Programmatic);
         }
 
-        private void EditableTextBox_KeyDown(object sender, KeyRoutedEventArgs args)
+        private void EditableTextBox_KeyDown(object _, KeyRoutedEventArgs args)
         {
             if (args.Key == Windows.System.VirtualKey.Enter)
             {
@@ -83,7 +83,7 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        private void CopyBtn_Click(object sender, RoutedEventArgs args)
+        private void CopyBtn_Click(object _, RoutedEventArgs __)
         {
             var textToCopy = TextEditor.Text;
 
@@ -92,7 +92,7 @@ namespace PowerPad.WinUI.Components.Editors
             Clipboard.SetContent(dataPackage);
         }
 
-        private void InfoBar_Closing(object sender, InfoBarClosingEventArgs args)
+        private void InfoBar_Closing(object _, InfoBarClosingEventArgs __)
         {
             InfoBar.Visibility = Visibility.Collapsed;
         }
@@ -108,13 +108,13 @@ namespace PowerPad.WinUI.Components.Editors
             TextEditor = null;
         }
 
-        private async void SendBtn_Click(object sender, RoutedEventArgs args)
+        private async void SendBtn_Click(object _, RoutedEventArgs __)
         {
             var result = await _aiService.GetResponse(
                 message: TextEditor.Text == string.Empty ? " " : TextEditor.Text, 
                 config: new AIConfig(SystemPrompt: $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}" ) );
 
-            TextEditor.Text = result.Message.Text;
+            TextEditor.Text = result.Text;
         }
     }
 
