@@ -43,7 +43,7 @@ namespace PowerPad.WinUI.Configuration
             {
                 var (baseUrl, key) = GetAzureAIConfig(app.AppConfigStore);
 
-                return new AzureAIService(baseUrl, key);
+                return new AzureAIService(baseUrl, key, app.AppConfigStore);
             });
         }
 
@@ -53,7 +53,7 @@ namespace PowerPad.WinUI.Configuration
             {
                 var (baseUrl, key) = GetOpenAIConfig(app.AppConfigStore);
 
-                return new OpenAIService(baseUrl, key);
+                return new OpenAIService(baseUrl, key, app.AppConfigStore);
             });
         }
 

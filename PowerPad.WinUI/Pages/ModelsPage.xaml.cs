@@ -35,6 +35,7 @@ namespace PowerPad.WinUI.Pages
 
             _services = Ioc.Default.GetRequiredService<AIServicesVMCollection>();
             _services.Services.Add(new OllamaViewModel(Ioc.Default.GetRequiredService<IOllamaService>()));
+            _services.Services.Add(new AzureAIViewModel(Ioc.Default.GetRequiredService<IAzureAIService>()));
             _services.Services.Add(new OpenAIViewModel(Ioc.Default.GetRequiredService<IOpenAIService>()));
 
             NavView.SelectedItem = NavView.MenuItems[0];
@@ -52,6 +53,9 @@ namespace PowerPad.WinUI.Pages
                     break;
                 case "HuggingFace":
                     NavFrame.Navigate(typeof(HuggingFaceModelsPage));
+                    break;
+                case "Github":
+                    NavFrame.Navigate(typeof(AzureAIModelsPage));
                     break;
                 case "OpenAI":
                     NavFrame.Navigate(typeof(OpenAIModelsPage));

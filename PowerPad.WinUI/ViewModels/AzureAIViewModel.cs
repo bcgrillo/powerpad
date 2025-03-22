@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public partial class OpenAIViewModel : AIServiceViewModel
+    public partial class AzureAIViewModel : AIServiceViewModel
     {
-        private readonly IOpenAIService _openAIService;
+        private readonly IAzureAIService _azureAIService;
 
         public IRelayCommand RefreshModelsCommand { get; }
 
-        public OpenAIViewModel(IOpenAIService openAIService)
-        : base(name: "OpenAI", provider: ModelProvider.OpenAI)
+        public AzureAIViewModel(IAzureAIService azureAIService)
+        : base(name: "AzureAI", provider: ModelProvider.GitHub)
         {
-            _openAIService = openAIService;
+            _azureAIService = azureAIService;
 
             RefreshModels();
 
@@ -23,7 +23,7 @@ namespace PowerPad.WinUI.ViewModels
 
         private void RefreshModels()
         {
-            var models = _openAIService.GetModels();
+            var models = _azureAIService.GetModels();
 
             Models = [];
 

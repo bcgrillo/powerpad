@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PowerPad.WinUI.Pages.Providers.AzureAIModelsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PowerPad.WinUI.Pages.Providers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:vm="using:PowerPad.WinUI.ViewModels"
+    mc:Ignorable="d"
+    Background="{ThemeResource PowerPadEditorColor}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Orientation="Horizontal" Margin="36,36,36,20">
+            <Image Source="{ThemeResource GithubSvg}" Width="42" Height="42" Margin="0,0,24,0"/>
+            <TextBlock
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="Modelos de GitHub"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="NoWrap"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <ProgressRing 
+                x:Name="LoadingIndicator" 
+                IsActive="True" 
+                Width="50" 
+                Height="50" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"/>
+            <TextBlock 
+                x:Name="LoadingText" 
+                Text="Cargando modelos..." 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" 
+                Margin="0,120,0,0"/>
+
+            <ScrollViewer 
+                x:Name="ModelsScrollViewer" 
+                Visibility="Collapsed">
+                <Grid Padding="36,0,36,36">
+                    <StackPanel
+                            MaxWidth="1000"
+                            HorizontalAlignment="Stretch">
+
+                        <ItemsRepeater ItemsSource="{x:Bind _azureAI.Models, Mode=OneWay}">
+                            <ItemsRepeater.ItemTemplate>
+
+                                <DataTemplate x:DataType="vm:ModelInfoViewModel">
+
+                                    <toolkit:SettingsExpander
+                                            x:Name="ModelsExpander"
+                                            AutomationProperties.AccessibilityView="Raw"
+                                            Header="{x:Bind Name}"
+                                            Description="{x:Bind ModelStatus}"
+                                            HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
+                                            Margin="0,0,0,4">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="{x:Bind SizeToString()}" />
+                                            <Button
+                                                AutomationProperties.Name="Delete"
+                                                Content="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
+                                                Tag="{x:Bind}"
+                                                ToolTipService.ToolTip="Delete" />
+                                        </StackPanel>
+                                        <!--<toolkit:SettingsExpander.ItemsHeader>
+                                            <toolkit:SettingsCard
+                                                    x:Name="totalCacheCard"
+                                                    BorderThickness="0"
+                                                    CornerRadius="0"
+                                                    Header="Total cache">
+                                                <StackPanel
+                                                        Margin="0,0,16,0"
+                                                        Orientation="Horizontal"
+                                                        Spacing="8">
+                                                    <TextBlock
+                                                            x:Name="TotalCacheTxt"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                    <Button
+                                                            AutomationProperties.Name="Clear cache"
+                                                            Content="Clear"
+                                                            ToolTipService.ToolTip="Clear cache" />
+                                                </StackPanel>
+                                            </toolkit:SettingsCard>
+                                        </toolkit:SettingsExpander.ItemsHeader>
+                                        <toolkit:SettingsExpander.Items>
+                                            <toolkit:SettingsCard Header="{x:Bind Name}">
+                                                <toolkit:SettingsCard.Description>
+                                                    <TextBlock Text="{x:Bind ModelStatus}" TextWrapping="Wrap" />
+                                                </toolkit:SettingsCard.Description>
+                                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                                    <TextBlock
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                            Text="xxx" />
+
+                                                </StackPanel>
+                                            </toolkit:SettingsCard>
+                                        </toolkit:SettingsExpander.Items>-->
+
+                                    </toolkit:SettingsExpander>
+
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+
+                        </ItemsRepeater>
+
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>

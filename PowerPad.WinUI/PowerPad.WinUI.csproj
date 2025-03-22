@@ -92,6 +92,9 @@
     <Page Update="Components\WorkspaceControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Pages\Providers\AzureAIModelsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
   <!--
