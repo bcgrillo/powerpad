@@ -10,11 +10,11 @@ using System.Collections.Generic;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public sealed partial class OllamaModelsPage : Page
+    public sealed partial class HuggingFaceModelsPage : Page
     {
         private readonly OllamaViewModel _ollama;
 
-        public OllamaModelsPage()
+        public HuggingFaceModelsPage()
         {
             this.InitializeComponent();
 

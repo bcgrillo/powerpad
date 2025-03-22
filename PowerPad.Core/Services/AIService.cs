@@ -51,8 +51,9 @@ namespace PowerPad.Core.Services
             switch (model.ModelProvider)
             {
                 case ModelProvider.Ollama:
+                case ModelProvider.HuggingFace:
                     return _ollamaService.ChatClient(model);
-                case ModelProvider.AzureAI:
+                case ModelProvider.GitHub:
                     return _azureAIService.ChatClient(model);
                 default:
                     throw new NotImplementedException($"Client for provider {model.ModelProvider} not implemented.");

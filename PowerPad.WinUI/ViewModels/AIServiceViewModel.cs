@@ -22,14 +22,13 @@ namespace PowerPad.WinUI.ViewModels
         public ModelProvider _provider;
 
         [ObservableProperty]
-        public ObservableCollection<ModelInfoViewModel> _models;
+        public ObservableCollection<ModelInfoViewModel>? _models;
 
         public AIServiceViewModel(string name, string glyph, ModelProvider provider)
         {
             Name = name;
             Glyph = glyph;
             Provider = provider;
-            Models = [];
         }
     }
 }

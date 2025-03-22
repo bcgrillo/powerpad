@@ -17,7 +17,7 @@ namespace PowerPad.WinUI.ViewModels
         private readonly IFolderEntry _entry;
         private readonly DocumentTypes? _documentType;
 
-        private FolderEntryViewModel? _parent;
+        private readonly FolderEntryViewModel? _parent;
 
         public string Name { get => _entry.Name; }
 
@@ -47,7 +47,7 @@ namespace PowerPad.WinUI.ViewModels
 
             Type = EntryType.Folder;
 
-            Children = new ObservableCollection<FolderEntryViewModel>();
+            Children = [];
 
             if (folder.Folders != null)
             {

@@ -42,9 +42,19 @@ namespace PowerPad.WinUI.Pages
 
         public event EventHandler? NavigationVisibilityChanged;
 
-        private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs __)
+        private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs args)
         {
-            NavFrame.Navigate(typeof(OllamaModelsPage));
+            switch ((args.SelectedItem as NavigationViewItem)?.Tag)
+            {
+                case "Ollama":
+                    NavFrame.Navigate(typeof(OllamaModelsPage));
+                    break;
+                case "HuggingFace":
+                    NavFrame.Navigate(typeof(HuggingFaceModelsPage));
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void ToggleNavigationVisibility()

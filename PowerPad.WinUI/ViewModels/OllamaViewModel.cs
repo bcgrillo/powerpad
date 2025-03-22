@@ -19,7 +19,11 @@ namespace PowerPad.WinUI.ViewModels
         [ObservableProperty]
         public OllamaStatus _ollamaStatus;
 
-        //public IRelayCommand NewEntryCommand { get; }
+        public IRelayCommand RefreshStatusCommand { get; }
+        public IRelayCommand RefreshModelsCommand { get; }
+
+        public IEnumerable<ModelInfoViewModel>? OllamaModels => Models?.Where(model => model.ModelProvider == ModelProvider.Ollama);
+        public IEnumerable<ModelInfoViewModel>? HuggingFaceModels => Models?.Where(model => model.ModelProvider == ModelProvider.HuggingFace);
 
         public OllamaViewModel(IOllamaService ollamaService)
         : base(name: "Ollama", glyph: "\uE964", provider: ModelProvider.Ollama)
@@ -27,9 +31,11 @@ namespace PowerPad.WinUI.ViewModels
             _ollamaService = ollamaService;
             _ollamaStatus = OllamaStatus.Unknown;
 
-            _models = [];
-
             _ = RefreshStatus();
+            _ = RefreshModels();
+
+            RefreshStatusCommand = new RelayCommand(async () => await RefreshStatus());
+            RefreshModelsCommand = new RelayCommand(async () => await RefreshModels());
         }
 
         private async Task RefreshStatus()
@@ -39,16 +45,23 @@ namespace PowerPad.WinUI.ViewModels
 
         private async Task RefreshModels()
         {
+            await RefreshStatus();
+
             if (OllamaStatus == OllamaStatus.Online)
             {
                 var models = await _ollamaService.GetModels();
+
+                Models = [];
 
                 foreach (var model in models) Models.Add(new ModelInfoViewModel(model));
             }
             else
             {
-                Models.Clear();
+                Models = [];
             }
+
+            OnPropertyChanged(nameof(OllamaModels));
+            OnPropertyChanged(nameof(HuggingFaceModels));
         }
     }
 }

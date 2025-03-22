@@ -51,6 +51,13 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem
+                    Content="Hugging Face"
+                    Tag="HuggingFace">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="{ThemeResource HuggingFaceSvg}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem
                     Content="Github"
                     Tag="Github">
                     <NavigationViewItem.Icon>

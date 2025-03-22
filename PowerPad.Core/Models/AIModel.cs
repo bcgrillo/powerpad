@@ -1,17 +1,13 @@
 ﻿namespace PowerPad.Core.Models
 {
-    public class AIModel
-    {
-        public string Name { get; private set; }
+    public record AIModel
+    (
+        string Name,
 
-        public ModelStatus Status { get; internal set; } = ModelStatus.Unkown;
+        ModelProvider ModelProvider,
 
-        public ModelProvider ModelProvider { get; private set; }
+        long? Size = null,
 
-        public AIModel(string name, ModelProvider modelProvider)
-        {
-            Name = name;
-            ModelProvider = modelProvider;
-        }
-    }
+        ModelStatus Status = ModelStatus.Unkown
+    );
 }

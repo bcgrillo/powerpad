@@ -1,6 +1,7 @@
 ﻿using ABI.System;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
+using OllamaSharp.Models;
 using PowerPad.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -95,7 +96,27 @@ namespace PowerPad.Core.Services
 
             var models = await _ollama.ListLocalModelsAsync();
 
-            return models.Select(m => new AIModel(m.Name, ModelProvider.Ollama));
+            return models.Select(m => CreateAIModel(m));
+        }
+
+        private AIModel CreateAIModel(Model m)
+        {
+            var name = m.Name;
+            var provider = ModelProvider.Ollama;
+
+            if (name.StartsWith("hf.co") || name.StartsWith("huggingface.co"))
+            {
+                provider = ModelProvider.HuggingFace;
+                name = name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty);
+            }
+
+            return new AIModel
+            (
+                name,
+                provider,
+                m.Size,
+                ModelStatus.Installed
+            );
         }
 
         public IChatClient ChatClient(AIModel model)

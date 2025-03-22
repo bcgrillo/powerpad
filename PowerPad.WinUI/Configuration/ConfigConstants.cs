@@ -22,7 +22,7 @@ namespace PowerPad.WinUI.Configuration
         {
             public static readonly string WorkspaceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nameof(PowerPad));
             public const string OllamaServiceUrl = "http://localhost:11434";
-            public static readonly AIModel DefaultModel = new AIModel("gemma3:latest", ModelProvider.Ollama);
+            public static readonly AIModel DefaultModel = new("gemma3:latest", ModelProvider.Ollama);
             public static readonly AzureAIConfig AzureAIConfig = new ("https://models.inference.ai.azure.com", "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");
         }
     }
