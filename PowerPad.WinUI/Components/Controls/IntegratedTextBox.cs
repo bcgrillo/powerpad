@@ -1,0 +1,21 @@
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI;
+
+namespace PowerPad.WinUI.Components.Controls
+{
+    public class IntegratedTextBox : TextBox
+    {
+        public IntegratedTextBox()
+        {
+            this.DefaultStyleKey = typeof(IntegratedTextBox);
+
+            this.Resources["TextControlBorderThemeThickness"] = new Thickness(0);
+            this.Resources["TextControlBorderThemeThicknessFocused"] = new Thickness(0);
+            this.Resources["TextControlBackground"] = new SolidColorBrush(Colors.Transparent);
+            this.Resources["TextControlBackgroundPointerOver"] = new SolidColorBrush(Colors.Transparent);
+            this.Resources["TextControlBackgroundFocused"] = new SolidColorBrush(Colors.Transparent);
+        }
+    }
+}

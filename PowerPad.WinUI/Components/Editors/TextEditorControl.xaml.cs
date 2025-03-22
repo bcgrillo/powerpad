@@ -1,26 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using PowerPad.Core.Models;
-using WinUIEditor;
-using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.WinUI.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
-using CommunityToolkit.WinUI;
 using PowerPad.Core.Services;
-using System.Threading.Tasks;
 using Microsoft.Extensions.AI;
+using Microsoft.UI.Input;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,7 +18,7 @@ namespace PowerPad.WinUI.Components.Editors
     {
         private DocumentViewModel _document;
 
-        private IAIService _aiService;
+        private readonly IAIService _aiService;
 
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
@@ -41,40 +28,38 @@ namespace PowerPad.WinUI.Components.Editors
         {
             this.InitializeComponent();
 
-            TextEditor.Editor.WrapMode = Wrap.WhiteSpace;
-
             _document = documentEntry.ToDocumentViewModel(this);
 
-            TextEditor.Editor.Modified += (s, e) => _document.Status = DocumentStatus.Dirty;
+            TextEditor.TextChanged += (s, e) => _document.Status = DocumentStatus.Dirty;
             _aiService = aiService;
         }
 
         public override string GetContent()
         {
-            return TextEditor.Editor.GetText(TextEditor.Editor.Length);
+            return TextEditor.Text;
         }
 
         public override void SetContent(string content)
         {
-            TextEditor.Editor.SetText(content);
+            TextEditor.Text = content;
         }
 
-        private void EditableTextBlock_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void EditableTextBlock_PointerPressed(object _, PointerRoutedEventArgs __)
         {
             EditableTextBlock.Visibility = Visibility.Collapsed;
             EditableTextBox.Visibility = Visibility.Visible;
             EditableTextBox.Focus(FocusState.Programmatic);
         }
 
-        private void EditableTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void EditableTextBox_KeyDown(object sender, KeyRoutedEventArgs args)
         {
-            if (e.Key == Windows.System.VirtualKey.Enter)
+            if (args.Key == Windows.System.VirtualKey.Enter)
             {
                 FinalizeEditing();
             }
         }
 
-        private void EditableTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void EditableTextBox_LostFocus(object _, RoutedEventArgs __)
         {
             FinalizeEditing();
         }
@@ -98,16 +83,16 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        private void CopyBtn_Click(object sender, RoutedEventArgs e)
+        private void CopyBtn_Click(object sender, RoutedEventArgs args)
         {
-            var textToCopy = TextEditor.Editor.GetText(TextEditor.Editor.Length);
+            var textToCopy = TextEditor.Text;
 
             var dataPackage = new DataPackage();
             dataPackage.SetText(textToCopy);
             Clipboard.SetContent(dataPackage);
         }
 
-        private void InfoBar_Closing(InfoBar sender, InfoBarClosingEventArgs args)
+        private void InfoBar_Closing(object sender, InfoBarClosingEventArgs args)
         {
             InfoBar.Visibility = Visibility.Collapsed;
         }
@@ -123,13 +108,13 @@ namespace PowerPad.WinUI.Components.Editors
             TextEditor = null;
         }
 
-        private async void SendBtn_Click(object sender, RoutedEventArgs e)
+        private async void SendBtn_Click(object sender, RoutedEventArgs args)
         {
             var result = await _aiService.GetResponse(
-                message: TextEditor.Editor.GetText(TextEditor.Editor.Length), 
+                message: TextEditor.Text == string.Empty ? " " : TextEditor.Text, 
                 config: new AIConfig(SystemPrompt: $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}" ) );
 
-            TextEditor.Editor.SetText(result.Message.Text);
+            TextEditor.Text = result.Message.Text;
         }
     }
 

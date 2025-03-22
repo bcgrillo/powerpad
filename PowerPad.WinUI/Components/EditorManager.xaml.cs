@@ -2,19 +2,12 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Windows.Services.Maps;
-using Windows.Storage;
-using WinUIEditor;
-using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.Components
 {
@@ -26,7 +19,7 @@ namespace PowerPad.WinUI.Components
         private readonly Dictionary<FolderEntryViewModel, EditorControl> _editors;
         private readonly DispatcherTimer _timer;
 
-        private IAIService _aiService;
+        private readonly IAIService _aiService;
 
         public EditorManager()
         {
@@ -36,8 +29,10 @@ namespace PowerPad.WinUI.Components
 
             _editors = [];
 
-            _timer = new();
-            _timer.Interval = TimeSpan.FromMilliseconds(AUTO_SAVE_INTERVAL);
+            _timer = new()
+            {
+                Interval = TimeSpan.FromMilliseconds(AUTO_SAVE_INTERVAL)
+            };
             _timer.Tick += OnTimerTick;
             _timer.Start();
 

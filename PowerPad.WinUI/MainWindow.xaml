@@ -16,7 +16,7 @@
     Closed="WindowEx_Closed">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="38" />
+            <RowDefinition Height="48" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -28,6 +28,7 @@
             x:Name="AppIcon"
             Height="38"
             Width="48"
+            Margin="0,-6,0,0"
             VerticalAlignment="Center"
             HorizontalAlignment="Center">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -57,18 +58,19 @@
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="True"
             PaneDisplayMode="LeftCompact"
-            SelectionChanged="NavView_SelectionChanged">
+            SelectionChanged="NavView_SelectionChanged"
+            Margin="0,0,0,-2">
             <NavigationView.MenuItems>
                 <NavigationViewItem
-                    Margin="0,38,0,0"
-                    Content="Notas"
-                    Icon="{ui:FontIcon Glyph=&#xE70B;}"
-                    Tag="NotesPage"
+                    Margin="0,44,0,0"
+                    Content="Workspace"
+                    Icon="{ui:FontIcon Glyph=&#xE821;}"
+                    Tag="WorkspacePage"
                     PointerPressed="NavigationViewItem_PointerPressed"/>
                 <NavigationViewItem
                     Content="Modelos"
                     Icon="{ui:FontIcon Glyph=&#xF158;}"
-                    Tag="AIServicesPage"
+                    Tag="ModelsPage"
                     PointerPressed="NavigationViewItem_PointerPressed"/>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
@@ -77,19 +79,28 @@
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
                 <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
-                <Thickness x:Key="NavigationViewContentGridBorderThickness">1,0,0,0</Thickness>
+                <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
                 <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
             </NavigationView.Resources>
 
-            <Frame x:Name="NavFrame"/>
+            <Frame x:Name="NavFrame" />
         </NavigationView>
+
+        <Border 
+            x:Name="Splitter"
+            Grid.Column="2" 
+            Grid.RowSpan="2" 
+            Width="1" 
+            HorizontalAlignment="Left" 
+            Background="{StaticResource PowerPadStrokeColorDefault}" />
 
         <winuiex:TitleBar
             x:Name="TitleBar"
+            Title="PowerPad"
+            Subtitle="Notas"
             Grid.Column="2"
-            Height="31"
-            Margin="0,-8,0,0"
+            Height="48"
             IsTabStop="False">
         </winuiex:TitleBar>
     </Grid>

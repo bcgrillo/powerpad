@@ -40,8 +40,8 @@ namespace PowerPad.WinUI
 
         private readonly Dictionary<string, Type> _navigation = new()
         {
-            { nameof(NotesPage), typeof(NotesPage) },
-            { nameof(AIServicesPage), typeof(AIServicesPage) }
+            { nameof(WorkspacePage), typeof(WorkspacePage) },
+            { nameof(ModelsPage), typeof(ModelsPage) }
         };
 
         public MainWindow()
@@ -50,7 +50,7 @@ namespace PowerPad.WinUI
             SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            NavigateToPage(nameof(NotesPage));
+            NavigateToPage(nameof(WorkspacePage));
 
             if (DesktopAcrylicController.IsSupported())
             {
@@ -64,7 +64,7 @@ namespace PowerPad.WinUI
                 {
                     Kind = DesktopAcrylicKind.Thin,
                     TintColor = (Color)Application.Current.Resources["PowerPadBackGroundColor"],
-                    TintOpacity = 0.3F
+                    TintOpacity = 0.4F
                 };
 
                 _acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
@@ -76,6 +76,7 @@ namespace PowerPad.WinUI
         {
             this.ExtendsContentIntoTitleBar = true;
             this.SetTitleBar(TitleBar);
+            this.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         }
 
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -113,7 +114,10 @@ namespace PowerPad.WinUI
 
         private void NavigationVisibilityChanged(object? sender, EventArgs args)
         {
-            TitleBar.Margin = new Thickness(_activePage?.NavigationWidth ?? 0, -8, 0, 0);
+            TitleBar.Margin = new Thickness(_activePage?.NavigationWidth ?? 0, 0, 0, 0);
+
+            if (_activePage?.NavigationWidth > 0) Splitter.Visibility = Visibility.Visible;
+            else Splitter.Visibility = Visibility.Collapsed;
         }
 
         private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs args)

@@ -1,30 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using PowerPad.Core.Models;
-using WinUIEditor;
-using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.WinUI.ViewModels;
-using Windows.ApplicationModel.DataTransfer;
-using CommunityToolkit.WinUI;
 using PowerPad.Core.Services;
 using System.Threading.Tasks;
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Collections.ObjectModel;
-using static System.Net.Mime.MediaTypeNames;
 using System.Threading;
+using Microsoft.UI.Input;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -39,7 +28,7 @@ namespace PowerPad.WinUI.Components.Editors
         private DocumentViewModel _document;
         private ObservableCollection<MessageViewModel>? _messages;
 
-        private IAIService _aiService;
+        private readonly IAIService _aiService;
 
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
@@ -78,22 +67,22 @@ namespace PowerPad.WinUI.Components.Editors
             _messages = [.. chatMessages];
         }
 
-        private void EditableTextBlock_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void EditableTextBlock_PointerPressed(object sender, PointerRoutedEventArgs args)
         {
             EditableTextBlock.Visibility = Visibility.Collapsed;
             EditableTextBox.Visibility = Visibility.Visible;
             EditableTextBox.Focus(FocusState.Programmatic);
         }
 
-        private void EditableTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void EditableTextBox_KeyDown(object sender, KeyRoutedEventArgs args)
         {
-            if (e.Key == Windows.System.VirtualKey.Enter)
+            if (args.Key == Windows.System.VirtualKey.Enter)
             {
                 FinalizeEditing();
             }
         }
 
-        private void EditableTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void EditableTextBox_LostFocus(object sender, RoutedEventArgs args)
         {
             FinalizeEditing();
         }
@@ -117,12 +106,12 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        private void CopyBtn_Click(object sender, RoutedEventArgs e)
+        private void CopyBtn_Click(object _, RoutedEventArgs __)
         {
            
         }
 
-        private void InfoBar_Closing(InfoBar sender, InfoBarClosingEventArgs args)
+        private void InfoBar_Closing(object _, InfoBarClosingEventArgs __)
         {
             InfoBar.Visibility = Visibility.Collapsed;
         }
@@ -139,7 +128,7 @@ namespace PowerPad.WinUI.Components.Editors
             _messages = null;
         }
 
-        private void SendBtn_Click(object sender, RoutedEventArgs e)
+        private void SendBtn_Click(object _, RoutedEventArgs __)
         {
             _messages!.Add(new MessageViewModel(InputBox.Text.Trim(), DateTime.Now, ChatRole.User));
 
@@ -192,7 +181,7 @@ namespace PowerPad.WinUI.Components.Editors
             _document.Status = DocumentStatus.Dirty;
         }
 
-        private void InvertedListView_Loaded(object sender, RoutedEventArgs e)
+        private void InvertedListView_Loaded(object _, RoutedEventArgs __)
         {
             _scrollViewer = FindElement<ScrollViewer>(InvertedListView);
 

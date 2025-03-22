@@ -13,12 +13,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\Logos\ollama.svg" />
+    <None Remove="Assets\Logos\openai.svg" />
     <None Remove="Components\Editors\ChatEditorControl.xaml" />
     <None Remove="Components\Editors\TextEditorControl.xaml" />
     <None Remove="Components\WorkspaceControl.xaml" />
     <None Remove="Dialogs\InputDialog.xaml" />
-    <None Remove="Pages\AIServicesPage.xaml" />
-    <None Remove="Pages\AIServices\OllamaPage.xaml" />
     <None Remove="Styles\GeneralStyles.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -58,7 +58,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250228001" />
-    <PackageReference Include="WinUIEdit" Version="0.0.3-prerelease" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +69,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\AIServicesPage.xaml">
+    <Page Update="Pages\ModelsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

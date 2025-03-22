@@ -3,13 +3,13 @@ using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.ViewModels;
 using System;
 
-namespace PowerPad.WinUI.Pages.AIServices
+namespace PowerPad.WinUI.Pages.Providers
 {
-    public sealed partial class OllamaPage : Page
+    public sealed partial class OllamaModelsPage : Page
     {
         private readonly OllamaViewModel _ollama;
 
-        public OllamaPage()
+        public OllamaModelsPage()
         {
             this.InitializeComponent();
 

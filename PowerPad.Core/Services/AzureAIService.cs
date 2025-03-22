@@ -23,7 +23,7 @@ namespace PowerPad.Core.Services
 
     public class AzureAIService : IAzureAIService
     {
-        private ChatCompletionsClient? _azureAI;
+        private readonly ChatCompletionsClient? _azureAI;
 
         public AzureAIService(string baseUrl, string key)
         {
@@ -32,7 +32,7 @@ namespace PowerPad.Core.Services
 
         public async Task<IEnumerable<AIModel>> GetModels()
         {
-            return [];
+            return await Task.FromResult<IEnumerable<AIModel>>([]);
         }
 
         public IChatClient ChatClient(AIModel model)

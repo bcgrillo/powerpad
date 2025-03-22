@@ -45,19 +45,19 @@
                     MaxWidth="486"
                     Padding="12"
                     HorizontalAlignment="Right"
-                    Background="{ThemeResource AccentFillColorDefaultBrush}"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
                     CornerRadius="{StaticResource OverlayCornerRadius}"
                     Spacing="8">
                     <TextBlock
                         HorizontalAlignment="Right"
-                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         IsTextSelectionEnabled="True"
                         Text="{x:Bind Content, Mode=OneWay}"
                         TextWrapping="Wrap" />
                     <TextBlock
-                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind DateTime}" />
                 </StackPanel>
