@@ -71,6 +71,11 @@
                                                 Content="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
                                                 Tag="{x:Bind}"
                                                 ToolTipService.ToolTip="Delete" />
+                                            <Button
+                                                AutomationProperties.Name="SetDefault"
+                                                Content="{ui:FontIcon Glyph=&#xE718;,FontSize=14}"
+                                                Command="{x:Bind SetDefaultModelCommand}"
+                                                ToolTipService.ToolTip="Establecer como predeterminado" />
                                         </StackPanel>
                                         <!--<toolkit:SettingsExpander.ItemsHeader>
                                             <toolkit:SettingsCard

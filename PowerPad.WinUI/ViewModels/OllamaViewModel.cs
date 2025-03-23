@@ -53,7 +53,12 @@ namespace PowerPad.WinUI.ViewModels
 
                 Models = [];
 
-                foreach (var model in models) Models.Add(new ModelInfoViewModel(model));
+                foreach (var model in models)
+                {
+                    var displayName = model.Name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty);
+
+                    Models.Add(new ModelInfoViewModel(model, displayName));
+                }
             }
             else
             {

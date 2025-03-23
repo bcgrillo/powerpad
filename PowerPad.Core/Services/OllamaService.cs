@@ -99,22 +99,20 @@ namespace PowerPad.Core.Services
             return models.Select(m => CreateAIModel(m));
         }
 
-        private static AIModel CreateAIModel(Model m)
+        private static AIModel CreateAIModel(Model model)
         {
-            var name = m.Name;
-            var provider = ModelProvider.Ollama;
+            ModelProvider provider;
 
-            if (name.StartsWith("hf.co") || name.StartsWith("huggingface.co"))
-            {
+            if (model.Name.StartsWith("hf.co") || model.Name.StartsWith("huggingface.co"))
                 provider = ModelProvider.HuggingFace;
-                name = name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty);
-            }
+            else
+                provider = ModelProvider.Ollama;
 
             return new AIModel
             (
-                name,
+                model.Name,
                 provider,
-                m.Size,
+                model.Size,
                 ModelStatus.Installed
             );
         }

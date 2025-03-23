@@ -1,18 +1,24 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
+using PowerPad.Core.Configuration;
 using PowerPad.Core.Models;
+using PowerPad.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels
 {
     public partial class ModelInfoViewModel : ObservableObject
     {
         private readonly AIModel _modelInfo;
+        private string? _displayName;
 
-        public string Name { get => _modelInfo.Name; }
+        public string Name { get => _displayName ?? _modelInfo.Name; }
 
         public ModelStatus ModelStatus { get => _modelInfo.Status; }
 
@@ -20,13 +26,20 @@ namespace PowerPad.WinUI.ViewModels
 
         public long? Size { get => _modelInfo.Size; }
 
-        public ModelInfoViewModel(AIModel modelInfo)
+        public readonly RelayCommand SetDefaultModelCommand;
+
+        public ModelInfoViewModel(AIModel modelInfo, string? displayName = null)
         {
             _modelInfo = modelInfo;
+            _displayName = displayName;
+
+            SetDefaultModelCommand = new RelayCommand(SetAsDefault);
         }
 
         public string SizeToString()
         {
+            if (Size == null) return string.Empty;
+
             const long kiloByte = 1024;
             const long megaByte = kiloByte * 1024;
             const long gigaByte = megaByte * 1024;
@@ -52,6 +65,15 @@ namespace PowerPad.WinUI.ViewModels
             {
                 return $"{Size} Bytes";
             }
+        }
+
+        private void SetAsDefault()
+        {
+            var aiService = Ioc.Default.GetRequiredService<IAIService>();
+            var configStore = Ioc.Default.GetRequiredService<IConfigStore>();
+
+            configStore.Set(Keys.DefaultModel, _modelInfo);
+            aiService.SetDefaultModel(_modelInfo);
         }
     }
 }
