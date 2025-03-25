@@ -17,7 +17,12 @@ namespace PowerPad.Core.Models
 
         public string Path => $"{Parent?.Path}\\{Name}{Extension}";
 
-        public string AutosavePath => AutosaveConventions.AutosavePath(Path);
+        public string AutosavePath => Conventions.AutosavePath(Path);
+
+        public int? Position
+        {
+            get => Parent?.PositionOf(Name);
+        }
 
         public Document(string name, string extension)
         {

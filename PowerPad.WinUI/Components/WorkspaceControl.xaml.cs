@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Windows.Web.AtomPub;
 using Windows.UI.Core;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace PowerPad.WinUI.Components
 {
@@ -67,6 +68,16 @@ namespace PowerPad.WinUI.Components
             if (invokedEntry.Type == EntryType.Document)
             {
                 ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(invokedEntry));
+            }
+        }
+
+        private void TreeView_DragItemsCompleted(TreeView sender, TreeViewDragItemsCompletedEventArgs args)
+        {
+            if (args.DropResult == DataPackageOperation.Move && args.Items.Count == 1 && args.Items[0] is FolderEntryViewModel entry)
+            {
+                var destinationFolder = args.NewParentItem as FolderEntryViewModel;
+
+                _workspace.MoveEntryCommand.Execute(new MoveEntryParameters(entry, destinationFolder));
             }
         }
 

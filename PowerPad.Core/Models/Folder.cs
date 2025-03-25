@@ -24,6 +24,13 @@ namespace PowerPad.Core.Models
 
         public ReadOnlyCollection<Document>? Documents => _documents?.AsReadOnly();
 
+        public int? Position
+        {
+            get => Parent?.PositionOf(Name);
+        }
+
+        public IList<string>? Order;
+
         private Folder()
         {
             Name = null!;
@@ -33,7 +40,6 @@ namespace PowerPad.Core.Models
         {
             Name = name;
         }
-
         internal void AddFolder(Folder folder)
         {
             if (_folders == null) _folders = new Collection<Folder>();
@@ -89,6 +95,13 @@ namespace PowerPad.Core.Models
             var root = new Folder();
             root._rootPath = rootPath;
             return root;
+        }
+
+        public int? PositionOf(string entryName)
+        {
+            var position = Order?.IndexOf(entryName);
+
+            return position == -1 ? null : position;
         }
     }
 }

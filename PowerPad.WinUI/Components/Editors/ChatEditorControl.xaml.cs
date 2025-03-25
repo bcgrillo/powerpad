@@ -44,7 +44,7 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override string GetContent()
         {
-            return JsonSerializer.Serialize(_messages);
+            return JsonSerializer.Serialize(_messages, new JsonSerializerOptions { WriteIndented = true });
         }
 
         public override void SetContent(string content)

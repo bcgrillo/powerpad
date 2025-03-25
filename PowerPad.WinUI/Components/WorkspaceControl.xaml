@@ -83,7 +83,9 @@
             Grid.Row="1"
             ItemsSource="{x:Bind _workspace.Root.Children, Mode=OneWay}" 
             ItemInvoked="TreeView_ItemInvoked"
-            CanDrag="False">
+            CanDrag="True"
+            CanReorderItems="True"
+            DragItemsCompleted="TreeView_DragItemsCompleted">
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="vm:FolderEntryViewModel">
                     <TreeViewItem 

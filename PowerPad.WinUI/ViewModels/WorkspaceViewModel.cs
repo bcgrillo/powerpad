@@ -54,17 +54,19 @@ namespace PowerPad.WinUI.ViewModels
 
             parameters.NewParent ??= Root;
 
+            var targetPosition = parameters.NewParent.Children!.IndexOf(parameters.Entry);
+
             if (parameters.Entry.Type == EntryType.Document)
             {
                 var document = (Document)parameters.Entry.ModelEntry;
                 var targetFolder = (Folder)parameters.NewParent.ModelEntry;
-                _workspaceService.MoveDocument(document, targetFolder);
+                _workspaceService.MoveDocument(document, targetFolder, targetPosition);
             }
             else
             {
                 var folder = (Folder)parameters.Entry.ModelEntry;
                 var targetFolder = (Folder)parameters.NewParent.ModelEntry;
-                _workspaceService.MoveFolder(folder, targetFolder);
+                _workspaceService.MoveFolder(folder, targetFolder, targetPosition);
             }
         }
 

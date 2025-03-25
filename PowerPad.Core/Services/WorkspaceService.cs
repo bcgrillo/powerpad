@@ -1,9 +1,7 @@
 ﻿using PowerPad.Core.Configuration;
 using PowerPad.Core.Models;
 using System.Collections.ObjectModel;
-using System.Text.Json;
-using static PowerPad.Core.Services.AutosaveConventions;
-using Timer = System.Timers.Timer;
+using static PowerPad.Core.Services.Conventions;
 
 namespace PowerPad.Core.Services
 {
@@ -11,9 +9,9 @@ namespace PowerPad.Core.Services
     {
         Folder Root { get; }
 
-        void MoveDocument(Document document, Folder targetFolder);
+        void MoveDocument(Document document, Folder targetFolder, int targetPosition);
 
-        void MoveFolder(Folder folder, Folder targetFolder);
+        void MoveFolder(Folder folder, Folder targetFolder, int targetPosition);
 
         void CreateDocument(Folder parent, Document document);
 
@@ -32,23 +30,24 @@ namespace PowerPad.Core.Services
 
     public class WorkspaceService : IWorkspaceService
     {
-        private static readonly string CONFIG_FOLDER_NAME = $".{nameof(PowerPad).ToLower()}";
-        private const string TRASH_FOLDER_NAME = ".trash";
-
         private Folder _root;
         private string _configFolder;
         private string _trashFolder;
-        private readonly IConfigStore _configStore;
+        private readonly IConfigStoreService _configStoreService;
+        private readonly IOrderService _orderService;
+
+        private IConfigStore _configStore => _configStoreService.GetConfigStore(_configFolder);
 
         public Folder Root => _root;
 
-        public WorkspaceService(string rootFolder, IConfigStoreService configStoreService)
+        public WorkspaceService(string rootFolder, IConfigStoreService configStoreService, IOrderService orderService)
         {
+            _configStoreService = configStoreService;
+            _orderService = orderService;
+
             _configFolder = Path.Combine(rootFolder, CONFIG_FOLDER_NAME);
             _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
             _root = InitializeRootFolder(rootFolder);
-
-            _configStore = configStoreService.GetConfigStore(_configFolder);
         }
 
         private Folder InitializeRootFolder(string rootFolder)
@@ -59,6 +58,8 @@ namespace PowerPad.Core.Services
             var folder = Folder.CreateRoot(rootFolder);
             folder.AddFolders(GetFoldersRecursive(rootFolder));
             folder.AddDocuments(GetDocuments(rootFolder));
+
+            _orderService.LoadOrderRecursive(folder);
 
             return folder;
         }
@@ -85,13 +86,18 @@ namespace PowerPad.Core.Services
             Collection<Document> documents = [];
             foreach (var file in Directory.GetFiles(directory))
             {
-                if (!file.EndsWith(AUTO_SAVE_EXTENSION))
-                    documents.Add(new Document(Path.GetFileNameWithoutExtension(file), Path.GetExtension(file)));
+                var filename = Path.GetFileNameWithoutExtension(file);
+                var extension = Path.GetExtension(file);
+
+                if (extension != AUTO_SAVE_EXTENSION && extension != ORDER_FILE_NAME)
+                {
+                    documents.Add(new Document(filename, extension));
+                }
             }
             return documents;
         }
 
-        public void MoveDocument(Document document, Folder targetFolder)
+        public void MoveDocument(Document document, Folder targetFolder, int targetPosition)
         {
             var newPath = $"{targetFolder.Path}\\{document.Name}{document.Extension}";
 
@@ -102,15 +108,21 @@ namespace PowerPad.Core.Services
             document.Parent!.RemoveDocument(document);
 
             targetFolder.AddDocument(document);
+
+            _orderService.UpdateOrderAfterMove(document.Parent, targetFolder, $"{document.Name}{document.Extension}", targetPosition);
         }
 
-        public void MoveFolder(Folder folder, Folder targetFolder)
+        public void MoveFolder(Folder folder, Folder targetFolder, int targetPosition)
         {
-            var newPath = Path.Combine(targetFolder.Path, Path.GetFileName(folder.Path));
+            var newPath = Path.Combine(targetFolder.Path, folder.Name);
+
             Directory.Move(folder.Path, newPath);
 
             folder.Parent!.RemoveFolder(folder);
+
             targetFolder.AddFolder(folder);
+
+            _orderService.UpdateOrderAfterMove(folder.Parent, targetFolder, folder.Name, targetPosition);
         }
 
         public void CreateDocument(Folder parent, Document newDocument)
@@ -129,6 +141,8 @@ namespace PowerPad.Core.Services
             File.WriteAllText(newPath, string.Empty);
 
             parent.AddDocument(newDocument);
+
+            _orderService.UpdateOrderAfterCreation(parent, $"{newDocument.Name}{newDocument.Extension}");
         }
 
         public void CreateFolder(Folder parent, Folder newFolder)
@@ -147,29 +161,46 @@ namespace PowerPad.Core.Services
             Directory.CreateDirectory(newPath);
 
             parent.AddFolder(newFolder);
+
+            _orderService.UpdateOrderAfterCreation(parent, newFolder.Name);
+
         }
 
         public void DeleteDocument(Document document)
         {
             var newPath = $"{_trashFolder}\\{document.Name}{document.Extension}";
+            var originalName = document.Name;
+
+            int counter = 1;
+            while (File.Exists(newPath))
+            {
+                document.Name = $"{originalName} ({counter})";
+                newPath = $"{_trashFolder}\\{document.Name}{document.Extension}";
+                counter++;
+            }
 
             File.Move(document.Path, newPath);
 
             if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
 
             document.Parent!.RemoveDocument(document);
+
+            _orderService.UpdateOrderAfterDeletion(document.Parent, $"{document.Name}{document.Extension}");
         }
 
         public void DeleteFolder(Folder folder)
         {
-            var newPath = Path.Combine(_trashFolder, Path.GetFileName(folder.Path));
+            var newPath = Path.Combine(_trashFolder, folder.Name);
+
             Directory.Move(folder.Path, newPath);
 
             folder.Parent!.RemoveFolder(folder);
-        }
 
+            _orderService.UpdateOrderAfterDeletion(folder.Parent, folder.Name);
+        }
         public void RenameDocument(Document document, string newName)
         {
+            var oldName = $"{document.Name}{document.Extension}";
             var newPath = $"{document.Parent!.Path}\\{newName}{document.Extension}";
 
             File.Move(document.Path, newPath);
@@ -177,15 +208,20 @@ namespace PowerPad.Core.Services
             if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
 
             document.Name = newName;
+
+            _orderService.UpdateOrderAfterRename(document.Parent, oldName, $"{document.Name}{document.Extension}");
         }
 
         public void RenameFolder(Folder folder, string newName)
         {
+            var oldName = folder.Name;
             var newPath = Path.Combine(folder.Parent!.Path, newName);
 
             Directory.Move(folder.Path, newPath);
 
             folder.Name = newName;
+
+            _orderService.UpdateOrderAfterRename(folder.Parent, oldName, folder.Name);
         }
 
         public void OpenWorkspace(string rootFolder)

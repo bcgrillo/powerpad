@@ -22,8 +22,9 @@ namespace PowerPad.WinUI.Configuration
             {
                 var lastWorkspace = GetLastWorkspace(app);
                 var configStoreService = sp.GetRequiredService<IConfigStoreService>();
+                var orderService = sp.GetRequiredService<IOrderService>();
 
-                return new WorkspaceService(lastWorkspace, configStoreService);
+                return new WorkspaceService(lastWorkspace, configStoreService, orderService);
             });
         }
 

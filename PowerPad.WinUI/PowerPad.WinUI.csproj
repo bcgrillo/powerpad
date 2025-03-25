@@ -12,34 +12,19 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <ItemGroup>
-    <None Remove="Assets\Logos\ollama.svg" />
-    <None Remove="Assets\Logos\openai.svg" />
-    <None Remove="Components\Editors\ChatEditorControl.xaml" />
-    <None Remove="Components\Editors\TextEditorControl.xaml" />
-    <None Remove="Components\WorkspaceControl.xaml" />
-    <None Remove="Dialogs\InputDialog.xaml" />
-    <None Remove="Styles\GeneralStyles.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Remove="Styles\GeneralStyles.xaml" />
+    <None Remove="**\*.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Content Include="Assets\notepad.ico" />
-    <Content Include="Styles\GeneralStyles.xaml">
-      <Generator></Generator>
+    <Content Include="Styles\GeneralStyles.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
   <!--
@@ -59,41 +44,16 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
+    <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
+	
   <ItemGroup>
     <ProjectReference Include="..\PowerPad.Core\PowerPad.Core.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Page Update="Pages\AIServices\OllamaPage.xaml">
+    <Page Update="**\*.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\ModelsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Dialogs\InputDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Components\Editors\ChatEditorControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Components\Editors\TextEditorControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Components\WorkspaceControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\Providers\AzureAIModelsPage.xaml">
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
 

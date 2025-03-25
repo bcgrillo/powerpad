@@ -41,7 +41,7 @@ namespace PowerPad.Core.Configuration
 
         public void Set<T>(string key, T config)
         {
-            _store[key] = new ConfigEntry(JsonSerializer.Serialize(config), true);
+            _store[key] = new ConfigEntry(JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true }), true);
         }
 
         public T? TryGet<T>(string key)

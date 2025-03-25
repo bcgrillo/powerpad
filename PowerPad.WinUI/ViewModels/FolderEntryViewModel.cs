@@ -8,7 +8,9 @@ using PowerPad.Core.Services;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Messages;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels
 {
@@ -40,6 +42,8 @@ namespace PowerPad.WinUI.ViewModels
 
         public IRelayCommand RenameCommand { get; }
 
+        public int? Position { get => _entry.Position; }
+
         public FolderEntryViewModel(Folder folder, FolderEntryViewModel? parent)
         {
             _entry = folder;
@@ -47,13 +51,13 @@ namespace PowerPad.WinUI.ViewModels
 
             Type = EntryType.Folder;
 
-            Children = [];
+            var children = new List<FolderEntryViewModel>();
 
             if (folder.Folders != null)
             {
                 foreach (var f in folder.Folders)
                 {
-                    Children.Add(new FolderEntryViewModel(f, this));
+                    children.Add(new FolderEntryViewModel(f, this));
                 }
             }
 
@@ -61,9 +65,11 @@ namespace PowerPad.WinUI.ViewModels
             {
                 foreach (var d in folder.Documents)
                 {
-                    Children.Add(new FolderEntryViewModel(d, this));
+                    children.Add(new FolderEntryViewModel(d, this));
                 }
             }
+
+            Children = [.. children.OrderBy(x => (x.Position.HasValue ? 0 : 1)).ThenBy(x => x.Position)];
 
             DeleteCommand = new RelayCommand(Delete);
             RenameCommand = new RelayCommand<string>(Rename);

@@ -13,5 +13,7 @@ namespace PowerPad.Core.Contracts
         DocumentStatus? Status { get; }
 
         Folder? Parent { get; }
+
+        int? Position { get; }
     }
 }

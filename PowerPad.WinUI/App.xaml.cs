@@ -55,6 +55,7 @@ namespace PowerPad.WinUI
                 .ConfigureAIService(this)
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()
+                .AddSingleton<IOrderService, OrderService>()
                 .AddSingleton<AIServicesVMCollection>()
                 .AddSingleton(_ => AppConfigStore)
                 .BuildServiceProvider();
