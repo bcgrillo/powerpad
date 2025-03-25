@@ -53,20 +53,35 @@ namespace PowerPad.WinUI.ViewModels
             ArgumentNullException.ThrowIfNull(parameters, nameof(parameters));
 
             parameters.NewParent ??= Root;
-
             var targetPosition = parameters.NewParent.Children!.IndexOf(parameters.Entry);
 
-            if (parameters.Entry.Type == EntryType.Document)
+            if (parameters.NewParent.ModelEntry == parameters.Entry.ModelEntry.Parent)
             {
-                var document = (Document)parameters.Entry.ModelEntry;
-                var targetFolder = (Folder)parameters.NewParent.ModelEntry;
-                _workspaceService.MoveDocument(document, targetFolder, targetPosition);
+                if (parameters.Entry.Type == EntryType.Document)
+                {
+                    var document = (Document)parameters.Entry.ModelEntry;
+                    _workspaceService.SetPosition(document, targetPosition);
+                }
+                else 
+                {
+                    var folder = (Folder)parameters.Entry.ModelEntry;
+                    _workspaceService.SetPosition(folder, targetPosition);
+                }
             }
             else
             {
-                var folder = (Folder)parameters.Entry.ModelEntry;
-                var targetFolder = (Folder)parameters.NewParent.ModelEntry;
-                _workspaceService.MoveFolder(folder, targetFolder, targetPosition);
+                if (parameters.Entry.Type == EntryType.Document)
+                {
+                    var document = (Document)parameters.Entry.ModelEntry;
+                    var targetFolder = (Folder)parameters.NewParent.ModelEntry;
+                    _workspaceService.MoveDocument(document, targetFolder, targetPosition);
+                }
+                else
+                {
+                    var folder = (Folder)parameters.Entry.ModelEntry;
+                    var targetFolder = (Folder)parameters.NewParent.ModelEntry;
+                    _workspaceService.MoveFolder(folder, targetFolder, targetPosition);
+                }
             }
         }
 

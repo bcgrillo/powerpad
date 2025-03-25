@@ -1,4 +1,5 @@
 ﻿using PowerPad.Core.Configuration;
+using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
 using System.Collections.ObjectModel;
 using static PowerPad.Core.Services.Conventions;
@@ -12,6 +13,10 @@ namespace PowerPad.Core.Services
         void MoveDocument(Document document, Folder targetFolder, int targetPosition);
 
         void MoveFolder(Folder folder, Folder targetFolder, int targetPosition);
+
+        void SetPosition(Document entry, int targetPosition);
+
+        void SetPosition(Folder folder, int targetPosition);
 
         void CreateDocument(Folder parent, Document document);
 
@@ -99,6 +104,7 @@ namespace PowerPad.Core.Services
 
         public void MoveDocument(Document document, Folder targetFolder, int targetPosition)
         {
+            var sourceFolder = document.Parent!;
             var newPath = $"{targetFolder.Path}\\{document.Name}{document.Extension}";
 
             File.Move(document.Path, newPath);
@@ -109,11 +115,12 @@ namespace PowerPad.Core.Services
 
             targetFolder.AddDocument(document);
 
-            _orderService.UpdateOrderAfterMove(document.Parent, targetFolder, $"{document.Name}{document.Extension}", targetPosition);
+            _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, $"{document.Name}{document.Extension}", targetPosition);
         }
 
         public void MoveFolder(Folder folder, Folder targetFolder, int targetPosition)
         {
+            var sourceFolder = folder.Parent!;
             var newPath = Path.Combine(targetFolder.Path, folder.Name);
 
             Directory.Move(folder.Path, newPath);
@@ -122,7 +129,17 @@ namespace PowerPad.Core.Services
 
             targetFolder.AddFolder(folder);
 
-            _orderService.UpdateOrderAfterMove(folder.Parent, targetFolder, folder.Name, targetPosition);
+            _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, folder.Name, targetPosition);
+        }
+
+        public void SetPosition(Document document, int targetPosition)
+        {
+            _orderService.UpdateOrderAfterMove(document.Parent!, null, $"{document.Name}{document.Extension}", targetPosition);
+        }
+
+        public void SetPosition(Folder folder, int targetPosition)
+        {
+            _orderService.UpdateOrderAfterMove(folder.Parent!, null, folder.Name, targetPosition);
         }
 
         public void CreateDocument(Folder parent, Document newDocument)

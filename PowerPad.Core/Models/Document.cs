@@ -21,7 +21,7 @@ namespace PowerPad.Core.Models
 
         public int? Position
         {
-            get => Parent?.PositionOf(Name);
+            get => Parent?.PositionOf($"{Name}{Extension}");
         }
 
         public Document(string name, string extension)

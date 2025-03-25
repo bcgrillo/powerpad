@@ -98,20 +98,29 @@ namespace PowerPad.Core.Services
             //Initialize order
             if (order == null)
             {
+                var orderAux = new List<string>();
+
+                if (parentFolder.Folders != null) foreach (var folder in parentFolder.Folders) orderAux.Add(folder.Name);
+
+                if (parentFolder.Documents != null) foreach (var document in parentFolder.Documents) orderAux.Add($"{document.Name}{document.Extension}");
+
                 var orderFilePath = Path.Combine(parentFolder.Path, ORDER_FILE_NAME);
 
                 if (File.Exists(orderFilePath))
                 {
-                    order = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(orderFilePath));
+                    order = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(orderFilePath)) ?? orderAux;
+
+                    var elementsToRemove = order.Except(orderAux);
+                    if (elementsToRemove.Any())
+                    {
+                        order = order.Where(element => !elementsToRemove.Contains(element)).ToList();
+
+                        SaveOrder(parentFolder, order);
+                    }
                 }
-
-                if (order == null)
+                else
                 {
-                    order = [];
-                    
-                    if (parentFolder.Folders != null) foreach (var folder in parentFolder.Folders) order.Add(folder.Name);
-
-                    if (parentFolder.Documents != null) foreach (var document in parentFolder.Documents) order.Add($"{document.Name}{document.Extension}");
+                    order = orderAux;
                 }
             }
 

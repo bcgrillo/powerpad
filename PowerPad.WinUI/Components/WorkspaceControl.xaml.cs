@@ -75,9 +75,9 @@ namespace PowerPad.WinUI.Components
         {
             if (args.DropResult == DataPackageOperation.Move && args.Items.Count == 1 && args.Items[0] is FolderEntryViewModel entry)
             {
-                var destinationFolder = args.NewParentItem as FolderEntryViewModel;
+                var parentFolder = args.NewParentItem as FolderEntryViewModel;
 
-                _workspace.MoveEntryCommand.Execute(new MoveEntryParameters(entry, destinationFolder));
+                _workspace.MoveEntryCommand.Execute(new MoveEntryParameters(entry, parentFolder));
             }
         }
 
