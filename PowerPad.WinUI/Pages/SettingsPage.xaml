@@ -50,7 +50,6 @@
                         <!-- Ollama Settings -->
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderOllama"
-                            AutomationProperties.AccessibilityView="Raw"
                             Header="Ollama"
                             Description="{x:Bind _settings.OllamaStatus}"
                             Margin="0,0,0,4">
@@ -58,7 +57,7 @@
                                 <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.OllamaEnabled, Mode=TwoWay}" />
                             </StackPanel>
                             <!--<toolkit:SettingsExpander.ItemsHeader>
                                 <toolkit:SettingsCard
@@ -106,7 +105,6 @@
                         <!-- AzureAI Settings -->
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderAzureAI"
-                            AutomationProperties.AccessibilityView="Raw"
                             Header="Azure AI"
                             Description="{x:Bind _settings.OllamaStatus}"
                             Margin="0,0,0,4">
@@ -114,14 +112,13 @@
                                 <ImageIcon Source="{ThemeResource AzureAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.AzureAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                         </toolkit:SettingsExpander>
                         
                         <!-- AzureAI Settings -->
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderOpenAI"
-                            AutomationProperties.AccessibilityView="Raw"
                             Header="OpenAI"
                             Description="{x:Bind _settings.OllamaStatus}"
                             Margin="0,0,0,4">
@@ -129,9 +126,48 @@
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.OpenAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                         </toolkit:SettingsExpander>
+
+                        
+                        <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                            Text="Parámetros por defecto" />
+                            <toolkit:SettingsExpander Description="Modelo predeterminado para edición, chats y agentes"
+                                           Header="Modelo"
+                                           HeaderIcon="{ui:FontIcon Glyph=&#xF158;}">
+                            <DropDownButton>Default</DropDownButton>
+                            <toolkit:SettingsExpander.Items>
+                                <toolkit:SettingsCard HorizontalContentAlignment="Left"
+                                               ContentAlignment="Left">
+                                    <StackPanel Margin="-12,0,0,0"
+                                        Orientation="Vertical">
+                                        <RadioButton>Claro</RadioButton>
+                                        <RadioButton>Oscuro</RadioButton>
+                                        <RadioButton>Configuración del sistema</RadioButton>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                                <toolkit:SettingsCard HorizontalContentAlignment="Left"
+                                    ContentAlignment="Left">
+                                    <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
+                                        <CheckBox>Fondo con efecto transparente</CheckBox>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.Items>
+                        </toolkit:SettingsExpander>
+
+                        <toolkit:SettingsExpander
+                            Header="Parámetros"
+                            Description="Permite configurar parámetros adicionales de forma predeterminada"
+                            Margin="0,0,0,4">
+                            <toolkit:SettingsExpander.HeaderIcon>
+                                <ImageIcon Source="{ThemeResource SettingsSvg}"/>
+                            </toolkit:SettingsExpander.HeaderIcon>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ToggleSwitch IsOn="false" />
+                            </StackPanel>
+                        </toolkit:SettingsExpander>
+                        
 
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                            Text="Aparencia" />

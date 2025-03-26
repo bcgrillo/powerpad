@@ -22,26 +22,11 @@ namespace PowerPad.Core.Services
 
     public class OllamaService : IOllamaService
     {
-        private OllamaApiClient? _ollama;
-
-        public string? BaseUrl
-        {
-            get
-            {
-                return _ollama?.Uri?.ToString();
-            }
-            set
-            {
-                if (value != null)
-                {
-                    _ollama = new OllamaApiClient(value);
-                }
-            }
-        }
+        private OllamaApiClient _ollama;
 
         public OllamaService(string baseUrl)
         {
-            BaseUrl = baseUrl;
+            _ollama = new OllamaApiClient(baseUrl);
         }
 
         public async Task<OllamaStatus> GetStatus()

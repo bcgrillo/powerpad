@@ -19,7 +19,7 @@ namespace PowerPad.Core.Services
 
     public class AzureAIService : IAzureAIService
     {
-        private readonly ChatCompletionsClient? _azureAI;
+        private readonly ChatCompletionsClient _azureAI;
         private IConfigStore _configStore;
         private Collection<AIModel>? _models;
 

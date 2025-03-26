@@ -20,11 +20,12 @@
 
             <SolidColorBrush x:Key="PowerPadStrokeColorDefault" Color="#20FFFFFF" />
 
-            <ImageSource x:Key="OllamaSvg">ms-appx:///Assets/Logos/ollama_w.svg</ImageSource>
-            <ImageSource x:Key="GithubSvg">ms-appx:///Assets/Logos/github_w.svg</ImageSource>
-            <ImageSource x:Key="OpenAISvg">ms-appx:///Assets/Logos/openai_w.svg</ImageSource>
-            <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Logos/huggingface_w.svg</ImageSource>
-            <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Logos/azureai_w.svg</ImageSource>
+            <ImageSource x:Key="OllamaSvg">ms-appx:///Assets/Icons/ollama_w.svg</ImageSource>
+            <ImageSource x:Key="GithubSvg">ms-appx:///Assets/Icons/github_w.svg</ImageSource>
+            <ImageSource x:Key="OpenAISvg">ms-appx:///Assets/Icons/openai_w.svg</ImageSource>
+            <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Icons/huggingface_w.svg</ImageSource>
+            <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Icons/azureai_w.svg</ImageSource>
+            <ImageSource x:Key="SettingsSvg">ms-appx:///Assets/Icons/settings_w.svg</ImageSource>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Light">
@@ -35,11 +36,12 @@
 
             <SolidColorBrush x:Key="PowerPadStrokeColorDefault" Color="#30000000" />
 
-            <ImageSource x:Key="OllamaSvg">ms-appx:///Assets/Logos/ollama_b.svg</ImageSource>
-            <ImageSource x:Key="GithubSvg">ms-appx:///Assets/Logos/github_b.svg</ImageSource>
-            <ImageSource x:Key="OpenAISvg">ms-appx:///Assets/Logos/openai_b.svg</ImageSource>
-            <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Logos/huggingface_b.svg</ImageSource>
-            <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Logos/azureai_b.svg</ImageSource>
+            <ImageSource x:Key="OllamaSvg">ms-appx:///Assets/Icons/ollama_b.svg</ImageSource>
+            <ImageSource x:Key="GithubSvg">ms-appx:///Assets/Icons/github_b.svg</ImageSource>
+            <ImageSource x:Key="OpenAISvg">ms-appx:///Assets/Icons/openai_b.svg</ImageSource>
+            <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Icons/huggingface_b.svg</ImageSource>
+            <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Icons/azureai_b.svg</ImageSource>
+            <ImageSource x:Key="SettingsSvg">ms-appx:///Assets/Icons/settings_b.svg</ImageSource>
         </ResourceDictionary>
 
     </ResourceDictionary.ThemeDictionaries>

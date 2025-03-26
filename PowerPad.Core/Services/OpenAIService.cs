@@ -19,7 +19,7 @@ namespace PowerPad.Core.Services
 
     public class OpenAIService : IOpenAIService
     {
-        private readonly OpenAIClient? _openAI;
+        private readonly OpenAIClient _openAI;
         private IConfigStore _configStore;
         private Collection<AIModel>? _models;
 

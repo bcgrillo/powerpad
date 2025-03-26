@@ -20,12 +20,52 @@ namespace PowerPad.WinUI.ViewModels
         private readonly IOllamaService _ollama;
         private readonly IAzureAIService _azureAI;
         private readonly IOpenAIService _openAI;
-
-        [ObservableProperty]
         private GeneralSettings _general;
 
         [ObservableProperty]
         private OllamaStatus _ollamaStatus;
+
+        public bool OllamaEnabled
+        {
+            get => _general.OllamaEnabled;
+            set
+            {
+                if (_general.OllamaEnabled != value)
+                {
+                    _general.OllamaEnabled = value;
+                    SaveSettings();
+                    OnPropertyChanged(nameof(OllamaEnabled));
+                }
+            }
+        }
+
+        public bool AzureAIEnabled
+        {
+            get => _general.AzureAIEnabled;
+            set
+            {
+                if (_general.AzureAIEnabled != value)
+                {
+                    _general.AzureAIEnabled = value;
+                    SaveSettings();
+                    OnPropertyChanged(nameof(AzureAIEnabled));
+                }
+            }
+        }
+
+        public bool OpenAIEnabled
+        {
+            get => _general.OpenAIEnabled;
+            set
+            {
+                if (_general.OpenAIEnabled != value)
+                {
+                    _general.OpenAIEnabled = value;
+                    SaveSettings();
+                    OnPropertyChanged(nameof(OpenAIEnabled));
+                }
+            }
+        }
 
         public SettingsViewModel()
         {
@@ -42,9 +82,9 @@ namespace PowerPad.WinUI.ViewModels
             });
         }
 
-        public void OnGeneralSettingsChanged()
+        private void SaveSettings()
         {
-            _configStore.Set(Keys.GeneralSettings, General);
+            _configStore.Set(Keys.GeneralSettings, _general);
         }
     }
 }
