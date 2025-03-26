@@ -25,10 +25,10 @@ namespace PowerPad.WinUI.ViewModels
         public IEnumerable<ModelInfoViewModel>? OllamaModels => Models?.Where(model => model.ModelProvider == ModelProvider.Ollama);
         public IEnumerable<ModelInfoViewModel>? HuggingFaceModels => Models?.Where(model => model.ModelProvider == ModelProvider.HuggingFace);
 
-        public OllamaViewModel(IOllamaService ollamaService)
+        public OllamaViewModel()
         : base(name: "Ollama", provider: ModelProvider.Ollama)
         {
-            _ollamaService = ollamaService;
+            _ollamaService = App.Get<IOllamaService>();
             _ollamaStatus = OllamaStatus.Unknown;
 
             _ = RefreshStatus();

@@ -18,9 +18,7 @@ namespace PowerPad.WinUI.Pages.Providers
         {
             this.InitializeComponent();
 
-            var aiServicesCollection = Ioc.Default.GetRequiredService<SettingsViewModel>();
-
-            _ollama = aiServicesCollection.Ollama;
+            _ollama = new OllamaViewModel();
 
             _ollama.PropertyChanged += Ollama_PropertyChanged;
 

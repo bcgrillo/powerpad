@@ -77,5 +77,7 @@ namespace PowerPad.WinUI
         }
 
         private Window? m_window;
+
+        public static T Get<T>() where T : notnull => Ioc.Default.GetRequiredService<T>();
     }
 }

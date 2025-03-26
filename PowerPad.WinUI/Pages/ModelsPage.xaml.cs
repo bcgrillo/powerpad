@@ -1,25 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.WinUI.ViewModels;
-using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using PowerPad.Core.Services;
-using PowerPad.WinUI.Components;
-using Azure;
 using PowerPad.WinUI.Pages.Providers;
+using PowerPad.Core.Models;
 
 namespace PowerPad.WinUI.Pages
 {
@@ -27,34 +12,37 @@ namespace PowerPad.WinUI.Pages
     {
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
 
-        private readonly SettingsViewModel _services;
+        private readonly SettingsViewModel _settings;
 
         public ModelsPage()
         {
             this.InitializeComponent();
 
-            _services = Ioc.Default.GetRequiredService<SettingsViewModel>();
-
-            NavView.SelectedItem = NavView.MenuItems[0];
-            NavFrame.Navigate(typeof(OllamaModelsPage));
+            _settings = App.Get<SettingsViewModel>();
         }
 
         public event EventHandler? NavigationVisibilityChanged;
 
         private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs args)
         {
-            switch ((args.SelectedItem as NavigationViewItem)?.Tag)
+            if (args.SelectedItem != null) 
+                NavigateToPage((ModelProvider)((NavigationViewItem)args.SelectedItem)!.Tag);
+        }
+
+        private void NavigateToPage(ModelProvider modelProvider)
+        {
+            switch (modelProvider)
             {
-                case "Ollama":
+                case ModelProvider.Ollama:
                     NavFrame.Navigate(typeof(OllamaModelsPage));
                     break;
-                case "HuggingFace":
+                case ModelProvider.HuggingFace:
                     NavFrame.Navigate(typeof(HuggingFaceModelsPage));
                     break;
-                case "Github":
+                case ModelProvider.GitHub:
                     NavFrame.Navigate(typeof(AzureAIModelsPage));
                     break;
-                case "OpenAI":
+                case ModelProvider.OpenAI:
                     NavFrame.Navigate(typeof(OpenAIModelsPage));
                     break;
                 default:
@@ -67,6 +55,15 @@ namespace PowerPad.WinUI.Pages
             NavView.IsPaneVisible = !NavView.IsPaneVisible;
 
             NavigationVisibilityChanged?.Invoke(this, null!);
+        }
+
+        private void NavView_Loaded(object _, RoutedEventArgs __)
+        {
+            NavView.SelectedItem = NavView.MenuItems
+                .FirstOrDefault(mi => ((NavigationViewItem)mi).Visibility == Visibility.Visible);
+
+            if (NavView.SelectedItem != null)
+                NavigateToPage((ModelProvider)(NavView.SelectedItem as NavigationViewItem)!.Tag);
         }
     }
 }

@@ -11,10 +11,10 @@ namespace PowerPad.WinUI.ViewModels
 
         public IRelayCommand RefreshModelsCommand { get; }
 
-        public OpenAIViewModel(IOpenAIService openAIService)
+        public OpenAIViewModel()
         : base(name: "OpenAI", provider: ModelProvider.OpenAI)
         {
-            _openAIService = openAIService;
+            _openAIService = App.Get<IOpenAIService>();
 
             RefreshModels();
 

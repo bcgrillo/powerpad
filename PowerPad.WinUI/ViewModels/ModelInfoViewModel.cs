@@ -69,8 +69,8 @@ namespace PowerPad.WinUI.ViewModels
 
         private void SetAsDefault()
         {
-            var aiService = Ioc.Default.GetRequiredService<IAIService>();
-            var configStore = Ioc.Default.GetRequiredService<IConfigStore>();
+            var aiService = App.Get<IAIService>();
+            var configStore = App.Get<IConfigStore>();
 
             configStore.Set(Keys.DefaultModel, _modelInfo);
             aiService.SetDefaultModel(_modelInfo);

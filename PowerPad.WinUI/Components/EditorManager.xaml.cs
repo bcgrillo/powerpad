@@ -25,7 +25,7 @@ namespace PowerPad.WinUI.Components
         {
             this.InitializeComponent();
 
-            _aiService = Ioc.Default.GetRequiredService<IAIService>();
+            _aiService = App.Get<IAIService>();
 
             _editors = [];
 

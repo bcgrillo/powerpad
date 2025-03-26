@@ -32,8 +32,8 @@ namespace PowerPad.WinUI.ViewModels
 
         public WorkspaceViewModel()
         {
-            _workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
-            _appConfigStore = Ioc.Default.GetRequiredService<IConfigStore>();
+            _workspaceService = App.Get<IWorkspaceService>();
+            _appConfigStore = App.Get<IConfigStore>();
 
             Root = new FolderEntryViewModel(_workspaceService.Root, null);
 

@@ -14,13 +14,13 @@ namespace PowerPad.WinUI.Pages
 {
     internal sealed partial class SettingsPage : Page
     {
-        private readonly SettingsViewModel _services;
+        private readonly SettingsViewModel _settings;
 
         public SettingsPage()
         {
             this.InitializeComponent();
 
-            _services = Ioc.Default.GetRequiredService<SettingsViewModel>();
+            _settings = App.Get<SettingsViewModel>();
         }
     }
 }

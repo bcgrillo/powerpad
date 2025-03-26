@@ -1,8 +1,8 @@
 ﻿namespace PowerPad.WinUI.Configuration
 {
-    public record AzureAIConfig
-    (
-        string BaseUrl,
-        string Key
-    );
+    public class AzureAIConfig
+    {
+        public required string BaseUrl {get; set;}
+        public required string Key { get; set; }
+    }
 }

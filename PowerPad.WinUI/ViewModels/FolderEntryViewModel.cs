@@ -102,7 +102,7 @@ namespace PowerPad.WinUI.ViewModels
 
         private void Delete()
         {
-            var workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
+            var workspaceService = App.Get<IWorkspaceService>();
 
             if (Type == EntryType.Folder)
             {
@@ -121,7 +121,7 @@ namespace PowerPad.WinUI.ViewModels
         {
             ArgumentException.ThrowIfNullOrEmpty(newName, nameof(newName));
 
-            var workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
+            var workspaceService = App.Get<IWorkspaceService>();
 
             if (Type == EntryType.Document)
             {

@@ -15,9 +15,7 @@ namespace PowerPad.WinUI.Pages.Providers
         {
             this.InitializeComponent();
 
-            var aiServicesCollection = Ioc.Default.GetRequiredService<SettingsViewModel>();
-
-            _openAI = aiServicesCollection.OpenAI;
+            _openAI = new OpenAIViewModel();
 
             _openAI.PropertyChanged += OpenAI_PropertyChanged;
 

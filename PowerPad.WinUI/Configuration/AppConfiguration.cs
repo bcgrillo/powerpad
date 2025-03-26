@@ -42,9 +42,9 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IAzureAIService, AzureAIService>(sp =>
             {
-                var (baseUrl, key) = GetAzureAIConfig(app.AppConfigStore);
+                var config = GetAzureAIConfig(app.AppConfigStore);
 
-                return new AzureAIService(baseUrl, key, app.AppConfigStore);
+                return new AzureAIService(config.BaseUrl, config.Key, app.AppConfigStore);
             });
         }
 
@@ -52,9 +52,9 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IOpenAIService, OpenAIService>(sp =>
             {
-                var (baseUrl, key) = GetOpenAIConfig(app.AppConfigStore);
+                var config = GetOpenAIConfig(app.AppConfigStore);
 
-                return new OpenAIService(baseUrl, key, app.AppConfigStore);
+                return new OpenAIService(config.BaseUrl, config.Key, app.AppConfigStore);
             });
         }
 

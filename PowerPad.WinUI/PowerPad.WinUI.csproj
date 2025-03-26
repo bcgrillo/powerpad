@@ -49,6 +49,9 @@
     <PackageReference Include="WinUIEx" Version="2.5.1" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ViewModels\SettingsViewModel.cs" />
+  </ItemGroup>
 	
   <ItemGroup>
     <ProjectReference Include="..\PowerPad.Core\PowerPad.Core.csproj" />

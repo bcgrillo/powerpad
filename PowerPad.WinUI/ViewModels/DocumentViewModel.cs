@@ -49,7 +49,7 @@ namespace PowerPad.WinUI.ViewModels
         public DocumentViewModel(Document document, IEditorContract editorControl)
         {
             _document = document;
-            _documentService = Ioc.Default.GetRequiredService<IDocumentService>();
+            _documentService = App.Get<IDocumentService>();
             _editorControl = editorControl;
 
             _documentService.LoadDocument(_document, _editorControl);
@@ -83,7 +83,7 @@ namespace PowerPad.WinUI.ViewModels
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(newName, nameof(newName));
 
-            var workspaceService = Ioc.Default.GetRequiredService<IWorkspaceService>();
+            var workspaceService = App.Get<IWorkspaceService>();
 
             workspaceService.RenameDocument(_document, newName);
 

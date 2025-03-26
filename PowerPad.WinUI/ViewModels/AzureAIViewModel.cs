@@ -11,10 +11,10 @@ namespace PowerPad.WinUI.ViewModels
 
         public IRelayCommand RefreshModelsCommand { get; }
 
-        public AzureAIViewModel(IAzureAIService azureAIService)
+        public AzureAIViewModel()
         : base(name: "AzureAI", provider: ModelProvider.GitHub)
         {
-            _azureAIService = azureAIService;
+            _azureAIService = App.Get<IAzureAIService>();
 
             RefreshModels();
 

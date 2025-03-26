@@ -52,13 +52,13 @@
                             x:Name="ModelsExpanderOllama"
                             AutomationProperties.AccessibilityView="Raw"
                             Header="Ollama"
-                            Description="{x:Bind _services.Ollama.OllamaStatus}"
+                            Description="{x:Bind _settings.OllamaStatus}"
                             Margin="0,0,0,4">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="True" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" />
                             </StackPanel>
                             <!--<toolkit:SettingsExpander.ItemsHeader>
                                 <toolkit:SettingsCard
@@ -108,13 +108,13 @@
                             x:Name="ModelsExpanderAzureAI"
                             AutomationProperties.AccessibilityView="Raw"
                             Header="Azure AI"
-                            Description="{x:Bind _services.Ollama.OllamaStatus}"
+                            Description="{x:Bind _settings.OllamaStatus}"
                             Margin="0,0,0,4">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource AzureAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="True" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                         </toolkit:SettingsExpander>
                         
@@ -123,13 +123,13 @@
                             x:Name="ModelsExpanderOpenAI"
                             AutomationProperties.AccessibilityView="Raw"
                             Header="OpenAI"
-                            Description="{x:Bind _services.Ollama.OllamaStatus}"
+                            Description="{x:Bind _settings.OllamaStatus}"
                             Margin="0,0,0,4">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="True" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                         </toolkit:SettingsExpander>
 

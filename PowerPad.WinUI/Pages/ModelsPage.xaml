@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:m="using:PowerPad.Core.Models"
     mc:Ignorable="d">
     <Page.Resources>
         <Style TargetType="TextBlock" x:Key="WSTitleStyle" BasedOn="{StaticResource TitleTextBlockStyle}">
@@ -25,7 +26,8 @@
             IsPaneVisible="True"
             IsSettingsVisible="False"
             OpenPaneLength="248"
-            SelectionChanged="NavView_SelectionChanged">
+            SelectionChanged="NavView_SelectionChanged"
+            Loaded="NavView_Loaded">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
                 <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
@@ -43,30 +45,38 @@
             </NavigationView.PaneHeader>
             <NavigationView.MenuItems>
                 <NavigationViewItem
+                    x:Name="OllamaMenuItem"
                     Content="Ollama"
                     Margin="0,6,0,0"
-                    Tag="Ollama">
+                    Tag="{x:Bind m:ModelProvider.Ollama}"
+                    Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem
+                    x:Name="HuggingFaceMenuItem"
                     Content="Hugging Face"
-                    Tag="HuggingFace">
+                    Tag="{x:Bind m:ModelProvider.HuggingFace}"
+                    Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource HuggingFaceSvg}"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem
-                    Content="Github"
-                    Tag="Github">
+                    x:Name="GitHubMenuItem"
+                    Content="GitHub"
+                    Tag="{x:Bind m:ModelProvider.GitHub}"
+                    Visibility="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource GithubSvg}"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem
+                    x:Name="OpenAIMenuItem"
                     Content="OpenAI"
-                    Tag="OpenAI">
+                    Tag="{x:Bind m:ModelProvider.OpenAI}"
+                    Visibility="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                     </NavigationViewItem.Icon>
