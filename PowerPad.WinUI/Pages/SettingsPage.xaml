@@ -9,8 +9,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:converters="using:PowerPad.WinUI.Converters"
     mc:Ignorable="d">
     <Page.Resources>
+        <converters:OllamaOnlineStatusToVisibilityConverter x:Key="OllamaOnlineStatusToVisibilityConverter" />
+        <converters:OllamaAvailableStatusToVisibilityConverter x:Key="OllamaAvailableStatusToVisibilityConverter" />
         <Style
             x:Key="SettingsSectionHeaderTextBlockStyle"
             BasedOn="{StaticResource BodyStrongTextBlockStyle}"
@@ -51,7 +54,7 @@
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderOllama"
                             Header="Ollama"
-                            Description="{x:Bind _settings.OllamaStatus}"
+                            Description="IA generativa en tu equipo local o red privada con Ollama"
                             Margin="0,0,0,4">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OllamaSvg}"/>
@@ -59,41 +62,51 @@
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.OllamaEnabled, Mode=TwoWay}" />
                             </StackPanel>
-                            <!--<toolkit:SettingsExpander.ItemsHeader>
-                                <toolkit:SettingsCard
-                                        x:Name="totalCacheCard"
-                                        BorderThickness="0"
-                                        CornerRadius="0"
-                                        Header="Total cache">
-                                    <StackPanel
-                                            Margin="0,0,16,0"
-                                            Orientation="Horizontal"
-                                            Spacing="8">
-                                        <TextBlock
-                                                x:Name="TotalCacheTxt"
-                                                VerticalAlignment="Center"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                        <Button
-                                                AutomationProperties.Name="Clear cache"
-                                                Content="Clear"
-                                                ToolTipService.ToolTip="Clear cache" />
-                                    </StackPanel>
-                                </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
-                                <toolkit:SettingsCard Header="{x:Bind Name}">
-                                    <toolkit:SettingsCard.Description>
-                                        <TextBlock Text="{x:Bind ModelStatus}" TextWrapping="Wrap" />
-                                    </toolkit:SettingsCard.Description>
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
-                                        <TextBlock
-                                                VerticalAlignment="Center"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Text="xxx" />
-
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Width="150">Estado:</TextBlock>
+                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}">Conectado</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <StackPanel
+                                        Margin="0,0,16,0"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <FontIcon Glyph="&#xE71A;" FontSize="14" Margin="0,0,10,0" />
+                                                <TextBlock>Parar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button ToolTipService.ToolTip="Iniciar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaAvailableStatusToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <FontIcon Glyph="&#xE768;" FontSize="14" Margin="0,0,10,0" />
+                                                <TextBlock>Iniciar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
                                     </StackPanel>
                                 </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.Items>-->
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Width="150">Dirección URL:</TextBlock>
+                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}">http://localhost:12456</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <StackPanel
+                                        Margin="0,0,16,0"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock>Editar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.Items>
 
                         </toolkit:SettingsExpander>
 
@@ -114,9 +127,55 @@
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.AzureAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
+                            <toolkit:SettingsExpander.Items>
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Width="150">Dirección URL:</TextBlock>
+                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}">http://localhost:12456</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <StackPanel
+                                        Margin="0,0,16,0"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock>Editar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Width="150">Clave:</TextBlock>
+                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}">●●●●●●●●</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <StackPanel
+                                        Margin="0,0,16,0"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock>Editar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                                <toolkit:SettingsCard HorizontalContentAlignment="Left"
+                                    ContentAlignment="Left">
+                                    <StackPanel Margin="-12,0,0,0"
+                                        Orientation="Vertical">
+                                        <HyperlinkButton Content="Pruebe modelos gratuitos de GitHub Models con un token de desarrollador" NavigateUri="https://github.com/settings/tokens" />
+                                        <HyperlinkButton Content="Consiga una clave de Azure AI (pago por uso)" NavigateUri="https://ai.azure.com/github" />
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.Items>
                         </toolkit:SettingsExpander>
                         
-                        <!-- AzureAI Settings -->
+                        <!-- OpenAI Settings -->
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderOpenAI"
                             Header="OpenAI"
@@ -128,44 +187,97 @@
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.OpenAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
-                        </toolkit:SettingsExpander>
-
-                        
-                        <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                            Text="Parámetros por defecto" />
-                            <toolkit:SettingsExpander Description="Modelo predeterminado para edición, chats y agentes"
-                                           Header="Modelo"
-                                           HeaderIcon="{ui:FontIcon Glyph=&#xF158;}">
-                            <DropDownButton>Default</DropDownButton>
                             <toolkit:SettingsExpander.Items>
-                                <toolkit:SettingsCard HorizontalContentAlignment="Left"
-                                               ContentAlignment="Left">
-                                    <StackPanel Margin="-12,0,0,0"
-                                        Orientation="Vertical">
-                                        <RadioButton>Claro</RadioButton>
-                                        <RadioButton>Oscuro</RadioButton>
-                                        <RadioButton>Configuración del sistema</RadioButton>
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Width="150">Dirección URL:</TextBlock>
+                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}">http://localhost:12456</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <StackPanel
+                                        Margin="0,0,16,0"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock>Editar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Width="150">Clave:</TextBlock>
+                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}">●●●●●●●●</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <StackPanel
+                                        Margin="0,0,16,0"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock>Editar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                                 <toolkit:SettingsCard HorizontalContentAlignment="Left"
                                     ContentAlignment="Left">
-                                    <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
-                                        <CheckBox>Fondo con efecto transparente</CheckBox>
+                                    <StackPanel Margin="-12,0,0,0"
+                                        Orientation="Vertical">
+                                        <HyperlinkButton Content="Consiga una clave de de OpenAI (pago por uso)" NavigateUri="https://platform.openai.com/signup" />
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>
                         </toolkit:SettingsExpander>
 
+                        
+                        <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                            Text="Parámetros por defecto" />
+                        <toolkit:SettingsCard Description="Modelo predeterminado para edición, chats y agentes"
+                            Header="Modelo"
+                            HeaderIcon="{ui:FontIcon Glyph=&#xF158;}">
+                            <DropDownButton>Default</DropDownButton>
+                        </toolkit:SettingsCard>
+
                         <toolkit:SettingsExpander
                             Header="Parámetros"
-                            Description="Permite configurar parámetros adicionales de forma predeterminada"
+                            Description="Enviar parámetros adicionales de forma predeterminada"
                             Margin="0,0,0,4">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource SettingsSvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="false" />
-                            </StackPanel>
+                            <toolkit:SettingsExpander.Items>
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <CheckBox>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Width="150" Margin="8,2,0,0">Temperatura:</TextBlock>
+                                                <TextBlock Margin="0,2,0,0" Foreground="{ThemeResource TextFillColorTertiaryBrush}">0.8</TextBlock>
+                                            </StackPanel>
+                                        </CheckBox>
+                                    </toolkit:SettingsCard.Header>
+                                    <Slider
+                                        Width="200" Minimum="500" Maximum="1000" StepFrequency="10"
+                                        SmallChange="10" Value="820" />
+                                </toolkit:SettingsCard>
+                                <toolkit:SettingsCard>
+                                    <toolkit:SettingsCard.Header>
+                                        <CheckBox>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Width="150" Margin="8,2,0,0">Máximo de tokens:</TextBlock>
+                                                <TextBlock Margin="0,2,0,0" Foreground="{ThemeResource TextFillColorTertiaryBrush}">5000</TextBlock>
+                                            </StackPanel>
+                                        </CheckBox>
+                                    </toolkit:SettingsCard.Header>
+                                    <Slider
+                                        Width="200" Minimum="500" Maximum="1000" StepFrequency="10"
+                                        SmallChange="10" Value="820" />
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.Items>
                         </toolkit:SettingsExpander>
                         
 
@@ -179,15 +291,15 @@
                                                ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0"
                                         Orientation="Vertical">
-                                        <RadioButton>Claro</RadioButton>
-                                        <RadioButton>Oscuro</RadioButton>
-                                        <RadioButton>Configuración del sistema</RadioButton>
+                                        <RadioButton><TextBlock Margin="8,0,0,0">Claro</TextBlock></RadioButton>
+                                        <RadioButton><TextBlock Margin="8,0,0,0">Oscuro</TextBlock></RadioButton>
+                                        <RadioButton><TextBlock Margin="8,0,0,0">Configuración del sistema</TextBlock></RadioButton>
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                                 <toolkit:SettingsCard HorizontalContentAlignment="Left"
                                     ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
-                                        <CheckBox>Fondo con efecto transparente</CheckBox>
+                                        <CheckBox><TextBlock Margin="8,2,0,0">Fondo con efecto transparente</TextBlock></CheckBox>
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>
