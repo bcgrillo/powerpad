@@ -41,7 +41,8 @@ namespace PowerPad.WinUI
         private readonly Dictionary<string, Type> _navigation = new()
         {
             { nameof(WorkspacePage), typeof(WorkspacePage) },
-            { nameof(ModelsPage), typeof(ModelsPage) }
+            { nameof(ModelsPage), typeof(ModelsPage) },
+            { nameof(SettingsPage), typeof(SettingsPage) },
         };
 
         public MainWindow()
@@ -79,11 +80,11 @@ namespace PowerPad.WinUI
             this.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         }
 
-        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        private void NavView_SelectionChanged(object _, NavigationViewSelectionChangedEventArgs args)
         {
             if (args.IsSettingsSelected)
             {
-                // Navigate to settings page
+                NavigateToPage(nameof(SettingsPage));
             }
             else
             {
@@ -97,7 +98,7 @@ namespace PowerPad.WinUI
         {
             ArgumentException.ThrowIfNullOrEmpty(page, nameof(page));
 
-            if (_navigation.TryGetValue(page, out Type? value) && typeof(INavigationPage).IsAssignableFrom(value))
+            if (_navigation.TryGetValue(page, out Type? value) )
             {
                 NavFrame.Navigate(value);
 
@@ -110,26 +111,25 @@ namespace PowerPad.WinUI
                     (NavFrame.Content as Page)!.Loaded += (sender, args) => NavigationVisibilityChanged(null, null!);
                 }
             }
+
+            NavigationVisibilityChanged(null, null!);
         }
 
-        private void NavigationVisibilityChanged(object? sender, EventArgs args)
+        private void NavigationVisibilityChanged(object? _, EventArgs __)
         {
-            TitleBar.Margin = new Thickness(_activePage?.NavigationWidth ?? 0, 0, 0, 0);
+            var navWidth = _activePage?.NavigationWidth ?? 0;
 
-            if (_activePage?.NavigationWidth > 0) Splitter.Visibility = Visibility.Visible;
+            TitleBar.Margin = new Thickness(navWidth, 0, 0, 0);
+
+            if (navWidth > 0) Splitter.Visibility = Visibility.Visible;
             else Splitter.Visibility = Visibility.Collapsed;
         }
 
-        private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs args)
+        private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs __)
         {
             var navigationViewItem = (NavigationViewItem)sender;
 
             if (navigationViewItem.Tag.ToString() == _activePageName) (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
-        }
-
-        private void WindowEx_Closed(object sender, WindowEventArgs args)
-        {
-
         }
     }
 }

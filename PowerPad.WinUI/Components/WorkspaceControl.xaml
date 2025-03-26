@@ -99,7 +99,7 @@
                         <TreeViewItem.ContextFlyout>
                             <MenuFlyout Placement="Bottom">
                                 <MenuFlyoutItem Text="Renombrar" Click="RenameFlyoutItem_Click"/>
-                                <MenuFlyoutItem Text="Eliminar" Command="{x:Bind DeleteCommand}"/>
+                                <MenuFlyoutItem Text="Eliminar" Click="DeleteFlyoutItem_Click"/>
                             </MenuFlyout>
                         </TreeViewItem.ContextFlyout>
                     </TreeViewItem>

@@ -41,8 +41,6 @@ namespace PowerPad.Core.Services
         private readonly IConfigStoreService _configStoreService;
         private readonly IOrderService _orderService;
 
-        private IConfigStore _configStore => _configStoreService.GetConfigStore(_configFolder);
-
         public Folder Root => _root;
 
         public WorkspaceService(string rootFolder, IConfigStoreService configStoreService, IOrderService orderService)
@@ -86,7 +84,7 @@ namespace PowerPad.Core.Services
             return folders;
         }
 
-        private Collection<Document>GetDocuments(string directory)
+        private static Collection<Document>GetDocuments(string directory)
         {
             Collection<Document> documents = [];
             foreach (var file in Directory.GetFiles(directory))
@@ -185,36 +183,48 @@ namespace PowerPad.Core.Services
 
         public void DeleteDocument(Document document)
         {
+            var sourceFolder = document.Parent!;
             var newPath = $"{_trashFolder}\\{document.Name}{document.Extension}";
             var originalName = document.Name;
 
             int counter = 1;
             while (File.Exists(newPath))
             {
-                document.Name = $"{originalName} ({counter})";
-                newPath = $"{_trashFolder}\\{document.Name}{document.Extension}";
+                var altName = $"{originalName} ({counter})";
+                newPath = $"{_trashFolder}\\{altName}{document.Extension}";
                 counter++;
             }
 
             File.Move(document.Path, newPath);
 
-            if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
+            if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath), true);
 
             document.Parent!.RemoveDocument(document);
 
-            _orderService.UpdateOrderAfterDeletion(document.Parent, $"{document.Name}{document.Extension}");
+            _orderService.UpdateOrderAfterDeletion(sourceFolder, $"{originalName}{document.Extension}");
         }
 
         public void DeleteFolder(Folder folder)
         {
+            var sourceFolder = folder.Parent!;
             var newPath = Path.Combine(_trashFolder, folder.Name);
+            var originalName = folder.Name;
+
+            int counter = 1;
+            while (Directory.Exists(newPath))
+            {
+                var altName = $"{originalName} ({counter})";
+                newPath = $"{_trashFolder}\\{altName}";
+                counter++;
+            }
 
             Directory.Move(folder.Path, newPath);
 
             folder.Parent!.RemoveFolder(folder);
 
-            _orderService.UpdateOrderAfterDeletion(folder.Parent, folder.Name);
+            _orderService.UpdateOrderAfterDeletion(sourceFolder, originalName);
         }
+
         public void RenameDocument(Document document, string newName)
         {
             var oldName = $"{document.Name}{document.Extension}";
@@ -247,5 +257,7 @@ namespace PowerPad.Core.Services
             _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
             _root = InitializeRootFolder(rootFolder);
         }
+
+        private IConfigStore GetConfigStore() => _configStoreService.GetConfigStore(_configFolder);
     }
 }

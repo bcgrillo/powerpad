@@ -84,6 +84,7 @@ namespace PowerPad.Core.Services
                 }
                 catch (Exception)
                 {
+                    //TODO: Something
                 }
             }
 

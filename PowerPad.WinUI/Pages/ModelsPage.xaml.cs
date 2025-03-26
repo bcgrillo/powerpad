@@ -27,16 +27,13 @@ namespace PowerPad.WinUI.Pages
     {
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
 
-        private readonly AIServicesVMCollection _services;
+        private readonly SettingsViewModel _services;
 
         public ModelsPage()
         {
             this.InitializeComponent();
 
-            _services = Ioc.Default.GetRequiredService<AIServicesVMCollection>();
-            _services.Services.Add(new OllamaViewModel(Ioc.Default.GetRequiredService<IOllamaService>()));
-            _services.Services.Add(new AzureAIViewModel(Ioc.Default.GetRequiredService<IAzureAIService>()));
-            _services.Services.Add(new OpenAIViewModel(Ioc.Default.GetRequiredService<IOpenAIService>()));
+            _services = Ioc.Default.GetRequiredService<SettingsViewModel>();
 
             NavView.SelectedItem = NavView.MenuItems[0];
             NavFrame.Navigate(typeof(OllamaModelsPage));

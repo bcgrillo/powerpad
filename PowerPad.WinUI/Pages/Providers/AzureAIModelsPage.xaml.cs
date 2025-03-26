@@ -15,9 +15,9 @@ namespace PowerPad.WinUI.Pages.Providers
         {
             this.InitializeComponent();
 
-            var aiServicesCollection = Ioc.Default.GetRequiredService<AIServicesVMCollection>();
+            var aiServicesCollection = Ioc.Default.GetRequiredService<SettingsViewModel>();
 
-            _azureAI = aiServicesCollection.GetVM<AzureAIViewModel>() ?? throw new InvalidOperationException("AzureAI View Model not found");
+            _azureAI = aiServicesCollection.AzureAI;
 
             _azureAI.PropertyChanged += OpenAI_PropertyChanged;
 

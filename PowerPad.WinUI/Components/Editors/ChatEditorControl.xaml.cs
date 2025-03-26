@@ -14,6 +14,9 @@ using System.Text.Json;
 using System.Collections.ObjectModel;
 using System.Threading;
 using Microsoft.UI.Input;
+using PowerPad.WinUI.Dialogs;
+using CommunityToolkit.WinUI.Animations;
+using static PowerPad.Core.Configuration.ConfigConstants;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,37 +47,42 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override string GetContent()
         {
-            return JsonSerializer.Serialize(_messages, new JsonSerializerOptions { WriteIndented = true });
+            return JsonSerializer.Serialize(_messages, JSON_SERIALIZER_OPTIONS);
         }
 
         public override void SetContent(string content)
         {
-            List<MessageViewModel> chatMessages;
+            List<MessageViewModel>? chatMessages = null;
 
-            try
-            {
-                chatMessages = JsonSerializer.Deserialize<List<MessageViewModel>>(content) ?? [];
+            if (!string.IsNullOrEmpty(content)) {
+                try
+                {
+                    chatMessages = JsonSerializer.Deserialize<List<MessageViewModel>>(content);
+                }
+                catch (JsonException)
+                {
+                    DialogHelper.Alert
+                    (
+                        this.XamlRoot,
+                        "Error",
+                        "No ha sido posible deserializar el contenido como JSON."
+                    ).Wait();
+                }
             }
-            catch (JsonException)
-            {
-                chatMessages = [];
-                InfoBar.Title = "Error";
-                InfoBar.Message = "No ha sido posible deserializar el contenido como JSON.";
-                InfoBar.Visibility = Visibility.Visible;
-                InfoBar.IsOpen = true;
-            }
+
+            chatMessages ??= [];
 
             _messages = [.. chatMessages];
         }
 
-        private void EditableTextBlock_PointerPressed(object sender, PointerRoutedEventArgs args)
+        private void EditableTextBlock_PointerPressed(object _, PointerRoutedEventArgs __)
         {
             EditableTextBlock.Visibility = Visibility.Collapsed;
             EditableTextBox.Visibility = Visibility.Visible;
             EditableTextBox.Focus(FocusState.Programmatic);
         }
 
-        private void EditableTextBox_KeyDown(object sender, KeyRoutedEventArgs args)
+        private void EditableTextBox_KeyDown(object _, KeyRoutedEventArgs args)
         {
             if (args.Key == Windows.System.VirtualKey.Enter)
             {
@@ -82,7 +90,7 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        private void EditableTextBox_LostFocus(object sender, RoutedEventArgs args)
+        private void EditableTextBox_LostFocus(object _, RoutedEventArgs __)
         {
             FinalizeEditing();
         }
@@ -99,21 +107,19 @@ namespace PowerPad.WinUI.Components.Editors
             catch (Exception)
             {
                 EditableTextBox.Text = _document.Name;
-                InfoBar.Title = "Error";
-                InfoBar.Message = "No ha sido posible cambiar el nombre del documento.";
-                InfoBar.Visibility = Visibility.Visible;
-                InfoBar.IsOpen = true;
+
+                DialogHelper.Alert
+                (
+                    this.XamlRoot,
+                    "Error",
+                    "No ha sido posible cambiar el nombre del documento."
+                ).Wait();
             }
         }
 
         private void CopyBtn_Click(object _, RoutedEventArgs __)
         {
            
-        }
-
-        private void InfoBar_Closing(object _, InfoBarClosingEventArgs __)
-        {
-            InfoBar.Visibility = Visibility.Collapsed;
         }
 
         public override void AutoSave()
@@ -160,6 +166,7 @@ namespace PowerPad.WinUI.Components.Editors
                     }
                     catch(Exception ex)
                     {
+                        //TODO: Anythig
                         Console.WriteLine(ex.ToString());
                     }
                 }

@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PowerPad.WinUI.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PowerPad.WinUI.Pages"
+    xmlns:components="using:PowerPad.WinUI.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style
+            x:Key="SettingsSectionHeaderTextBlockStyle"
+            BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+            TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="Margin" Value="1,30,0,6" />
+            </Style.Setters>
+        </Style>
+    </Page.Resources>
+    <Grid Margin="0,0,0,2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border
+            Grid.Row="1"
+            Background="{ThemeResource PowerPadEditorColor}"
+            CornerRadius="10,0,0,0">
+            <ScrollViewer 
+                x:Name="ModelsScrollViewer">
+                <Grid Padding="36,24,36,36">
+                    <StackPanel
+                        MaxWidth="1000"
+                        HorizontalAlignment="Stretch">
+
+                        <TextBlock
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="Ajustes"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"/>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE977;" Margin="0,16,8,0"/>
+                            <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="Servicios locales" />
+                        </StackPanel>
+                        
+                        <!-- Ollama Settings -->
+                        <toolkit:SettingsExpander
+                            x:Name="ModelsExpanderOllama"
+                            AutomationProperties.AccessibilityView="Raw"
+                            Header="Ollama"
+                            Description="{x:Bind _services.Ollama.OllamaStatus}"
+                            Margin="0,0,0,4">
+                            <toolkit:SettingsExpander.HeaderIcon>
+                                <ImageIcon Source="{ThemeResource OllamaSvg}"/>
+                            </toolkit:SettingsExpander.HeaderIcon>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ToggleSwitch IsOn="True" />
+                            </StackPanel>
+                            <!--<toolkit:SettingsExpander.ItemsHeader>
+                                <toolkit:SettingsCard
+                                        x:Name="totalCacheCard"
+                                        BorderThickness="0"
+                                        CornerRadius="0"
+                                        Header="Total cache">
+                                    <StackPanel
+                                            Margin="0,0,16,0"
+                                            Orientation="Horizontal"
+                                            Spacing="8">
+                                        <TextBlock
+                                                x:Name="TotalCacheTxt"
+                                                VerticalAlignment="Center"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                        <Button
+                                                AutomationProperties.Name="Clear cache"
+                                                Content="Clear"
+                                                ToolTipService.ToolTip="Clear cache" />
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.ItemsHeader>
+                            <toolkit:SettingsExpander.Items>
+                                <toolkit:SettingsCard Header="{x:Bind Name}">
+                                    <toolkit:SettingsCard.Description>
+                                        <TextBlock Text="{x:Bind ModelStatus}" TextWrapping="Wrap" />
+                                    </toolkit:SettingsCard.Description>
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock
+                                                VerticalAlignment="Center"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="xxx" />
+
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.Items>-->
+
+                        </toolkit:SettingsExpander>
+
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE753;" Margin="0,22,8,0"/>
+                            <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="Servicios en línea" />
+                        </StackPanel>
+                        
+                        <!-- AzureAI Settings -->
+                        <toolkit:SettingsExpander
+                            x:Name="ModelsExpanderAzureAI"
+                            AutomationProperties.AccessibilityView="Raw"
+                            Header="Azure AI"
+                            Description="{x:Bind _services.Ollama.OllamaStatus}"
+                            Margin="0,0,0,4">
+                            <toolkit:SettingsExpander.HeaderIcon>
+                                <ImageIcon Source="{ThemeResource AzureAISvg}"/>
+                            </toolkit:SettingsExpander.HeaderIcon>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ToggleSwitch IsOn="True" />
+                            </StackPanel>
+                        </toolkit:SettingsExpander>
+                        
+                        <!-- AzureAI Settings -->
+                        <toolkit:SettingsExpander
+                            x:Name="ModelsExpanderOpenAI"
+                            AutomationProperties.AccessibilityView="Raw"
+                            Header="OpenAI"
+                            Description="{x:Bind _services.Ollama.OllamaStatus}"
+                            Margin="0,0,0,4">
+                            <toolkit:SettingsExpander.HeaderIcon>
+                                <ImageIcon Source="{ThemeResource OpenAISvg}"/>
+                            </toolkit:SettingsExpander.HeaderIcon>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ToggleSwitch IsOn="True" />
+                            </StackPanel>
+                        </toolkit:SettingsExpander>
+
+                        <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                           Text="Aparencia" />
+                            <toolkit:SettingsExpander Description="Seleccionar el tema que se mostrará en la aplicación"
+                                           Header="Tema de la aplicación"
+                                           HeaderIcon="{ui:FontIcon Glyph=&#xE790;}">
+                            <toolkit:SettingsExpander.Items>
+                                <toolkit:SettingsCard HorizontalContentAlignment="Left"
+                                               ContentAlignment="Left">
+                                    <StackPanel Margin="-12,0,0,0"
+                                        Orientation="Vertical">
+                                        <RadioButton>Claro</RadioButton>
+                                        <RadioButton>Oscuro</RadioButton>
+                                        <RadioButton>Configuración del sistema</RadioButton>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                                <toolkit:SettingsCard HorizontalContentAlignment="Left"
+                                    ContentAlignment="Left">
+                                    <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
+                                        <CheckBox>Fondo con efecto transparente</CheckBox>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.Items>
+                        </toolkit:SettingsExpander>
+                        
+                        
+                        
+                        <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                           Text="Acerca de PowerPad" />
+                        <toolkit:SettingsExpander Description="Licencia MIT"
+                                           Header="PowerPad"
+                                           HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/StoreLogo.scale-200.png}">
+                            <TextBlock
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Text="Versión 1.0.0" />
+                            <toolkit:SettingsExpander.Items>
+                                <toolkit:SettingsCard HorizontalContentAlignment="Left"
+                                               ContentAlignment="Left">
+                                    <StackPanel Margin="-12,0,0,0"
+                                        Orientation="Vertical">
+                                        <HyperlinkButton Content="Link 1" />
+                                        <HyperlinkButton Content="Link 2" />
+                                        <HyperlinkButton Content="Link 3" />
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </toolkit:SettingsExpander.Items>
+                        </toolkit:SettingsExpander>
+
+
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>

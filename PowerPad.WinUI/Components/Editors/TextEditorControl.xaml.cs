@@ -8,6 +8,7 @@ using Windows.ApplicationModel.DataTransfer;
 using PowerPad.Core.Services;
 using Microsoft.Extensions.AI;
 using Microsoft.UI.Input;
+using PowerPad.WinUI.Dialogs;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -76,10 +77,13 @@ namespace PowerPad.WinUI.Components.Editors
             catch(Exception)
             {
                 EditableTextBox.Text = _document.Name;
-                InfoBar.Title = "Error";
-                InfoBar.Message = "No ha sido posible cambiar el nombre del documento.";
-                InfoBar.Visibility = Visibility.Visible;
-                InfoBar.IsOpen = true;
+
+                DialogHelper.Alert
+                (
+                    this.XamlRoot,
+                    "Error",
+                    "No ha sido posible cambiar el nombre del documento."
+                ).Wait();
             }
         }
 
@@ -90,11 +94,6 @@ namespace PowerPad.WinUI.Components.Editors
             var dataPackage = new DataPackage();
             dataPackage.SetText(textToCopy);
             Clipboard.SetContent(dataPackage);
-        }
-
-        private void InfoBar_Closing(object _, InfoBarClosingEventArgs __)
-        {
-            InfoBar.Visibility = Visibility.Collapsed;
         }
 
         public override void AutoSave()

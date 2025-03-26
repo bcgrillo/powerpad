@@ -18,9 +18,9 @@ namespace PowerPad.WinUI.Pages.Providers
         {
             this.InitializeComponent();
 
-            var aiServicesCollection = Ioc.Default.GetRequiredService<AIServicesVMCollection>();
+            var aiServicesCollection = Ioc.Default.GetRequiredService<SettingsViewModel>();
 
-            _ollama = aiServicesCollection.GetVM<OllamaViewModel>() ?? throw new InvalidOperationException("Ollama View Model not found");
+            _ollama = aiServicesCollection.Ollama;
 
             _ollama.PropertyChanged += Ollama_PropertyChanged;
 

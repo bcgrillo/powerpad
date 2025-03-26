@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static PowerPad.Core.Configuration.ConfigConstants;
 
 namespace PowerPad.Core.Configuration
 {
@@ -27,21 +28,21 @@ namespace PowerPad.Core.Configuration
     {
         private readonly string _configFolder;
         private readonly Dictionary<string, ConfigEntry> _store;
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         public ConfigStore(string configFolder)
         {
             if (!Directory.Exists(configFolder)) Directory.CreateDirectory(configFolder);
 
             _configFolder = configFolder;
-            _store = new Dictionary<string, ConfigEntry>();
+            _store = [];
 
             Load();
         }
 
         public void Set<T>(string key, T config)
         {
-            _store[key] = new ConfigEntry(JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true }), true);
+            _store[key] = new ConfigEntry(JsonSerializer.Serialize(config, JSON_SERIALIZER_OPTIONS), true);
         }
 
         public T? TryGet<T>(string key)
@@ -55,6 +56,7 @@ namespace PowerPad.Core.Configuration
             }
             catch (Exception)
             {
+                //It's ok
             }
 
             return default;

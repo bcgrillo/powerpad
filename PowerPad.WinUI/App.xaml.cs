@@ -22,6 +22,7 @@ using PowerPad.WinUI.ViewModels;
 using PowerPad.Core.Configuration;
 using PowerPad.WinUI.Configuration;
 using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.Dialogs;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -56,7 +57,7 @@ namespace PowerPad.WinUI
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()
                 .AddSingleton<IOrderService, OrderService>()
-                .AddSingleton<AIServicesVMCollection>()
+                .AddSingleton<SettingsViewModel>()
                 .AddSingleton(_ => AppConfigStore)
                 .BuildServiceProvider();
 

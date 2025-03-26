@@ -61,7 +61,7 @@ namespace PowerPad.WinUI.Components
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
         public event EventHandler? VisibilityChanged;
 
-        private void TreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
+        private void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs args)
         {
             var invokedEntry = (FolderEntryViewModel)args.InvokedItem;
 
@@ -71,7 +71,7 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void TreeView_DragItemsCompleted(TreeView sender, TreeViewDragItemsCompletedEventArgs args)
+        private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs args)
         {
             if (args.DropResult == DataPackageOperation.Move && args.Items.Count == 1 && args.Items[0] is FolderEntryViewModel entry)
             {
@@ -81,14 +81,14 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void HideMenuBtn_Click(object sender, RoutedEventArgs e)
+        private void HideMenuBtn_Click(object _, RoutedEventArgs __)
         {
             this.Visibility = Visibility.Collapsed;
 
             VisibilityChanged?.Invoke(this, null!);
         }
 
-        private void NewChatButton_Click(object sender, RoutedEventArgs e)
+        private void NewChatButton_Click(object _, RoutedEventArgs __)
         {
             var parent = TreeView.SelectedItem as FolderEntryViewModel;
 
@@ -97,7 +97,7 @@ namespace PowerPad.WinUI.Components
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Chat));
         }
 
-        private void NewSplitButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
+        private void NewSplitButton_Click(SplitButton _, SplitButtonClickEventArgs __)
         {
             var parent = TreeView.SelectedItem as FolderEntryViewModel;
 
@@ -106,7 +106,7 @@ namespace PowerPad.WinUI.Components
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Text));
         }
 
-        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var parent = TreeView.SelectedItem as FolderEntryViewModel;
 
@@ -124,11 +124,11 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
 
-            var result = await InputDialog.ShowAsync(this.XamlRoot, "Renombrar", entry.Name);
+            var result = await DialogHelper.Imput(this.XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
 
             if (result != null)
             {
@@ -140,11 +140,41 @@ namespace PowerPad.WinUI.Components
                 }
                 catch (Exception)
                 {
+                    await DialogHelper.Alert
+                    (
+                        this.XamlRoot,
+                        "Error",
+                        "No ha sido posible cambiar el nombre del documento."
+                    );
                 }
             }
         }
 
-        private async void AbrirCarpetaFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private async void DeleteFlyoutItem_Click(object sender, RoutedEventArgs __)
+        {
+            var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
+
+            var result = await DialogHelper.Confirm(this.XamlRoot, "Eliminar", "¿Estás seguro?");
+
+            if (result)
+            {
+                try
+                {
+                    entry.DeleteCommand.Execute(null);
+                }
+                catch (Exception)
+                {
+                    await DialogHelper.Alert
+                    (
+                        this.XamlRoot,
+                        "Error",
+                        "No ha sido posible eliminar el documento."
+                    );
+                }
+            }
+        }
+
+        private async void AbrirCarpetaFlyoutItem_Click(object _, RoutedEventArgs __)
         {
             var openPicker = new FolderPicker();
 

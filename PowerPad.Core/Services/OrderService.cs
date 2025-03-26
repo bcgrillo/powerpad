@@ -2,6 +2,7 @@
 using PowerPad.Core.Models;
 using System.Text.Json;
 using static PowerPad.Core.Services.Conventions;
+using static PowerPad.Core.Configuration.ConfigConstants;
 
 namespace PowerPad.Core.Services
 {
@@ -30,7 +31,7 @@ namespace PowerPad.Core.Services
         {
             var orderedEntries = LoadOrder(parentFolder);
 
-            if (orderedEntries.Contains(newEntryName)) orderedEntries.Remove(newEntryName);
+            orderedEntries.Remove(newEntryName);
 
             orderedEntries.Add(newEntryName);
 
@@ -42,7 +43,7 @@ namespace PowerPad.Core.Services
         {
             var orderedEntries = LoadOrder(parentFolder);
 
-            if (orderedEntries.Contains(deletedEntryName)) orderedEntries.Remove(deletedEntryName);
+            orderedEntries.Remove(deletedEntryName);
 
             SaveOrder(parentFolder, orderedEntries);
         }
@@ -113,7 +114,7 @@ namespace PowerPad.Core.Services
                     var elementsToRemove = order.Except(orderAux);
                     if (elementsToRemove.Any())
                     {
-                        order = order.Where(element => !elementsToRemove.Contains(element)).ToList();
+                        order = [.. order.Where(element => !elementsToRemove.Contains(element))];
 
                         SaveOrder(parentFolder, order);
                     }
@@ -133,7 +134,7 @@ namespace PowerPad.Core.Services
         {
             var orderFilePath = Path.Combine(parentFolder.Path, ORDER_FILE_NAME);
 
-            File.WriteAllText(orderFilePath, JsonSerializer.Serialize(order, new JsonSerializerOptions { WriteIndented = true }));
+            File.WriteAllText(orderFilePath, JsonSerializer.Serialize(order, JSON_SERIALIZER_OPTIONS));
 
             parentFolder.Order = order;
         }
