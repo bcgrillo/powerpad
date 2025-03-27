@@ -7,35 +7,65 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public partial class OllamaViewModel : AIServiceViewModel
+    public partial class OllamaViewModel : ObservableObject
     {
         private readonly IOllamaService _ollamaService;
+        private readonly SettingsViewModel _settingsViewModel;
 
         [ObservableProperty]
-        public OllamaStatus _ollamaStatus;
+        private OllamaStatus _ollamaStatus;
 
         public IRelayCommand RefreshStatusCommand { get; }
         public IRelayCommand RefreshModelsCommand { get; }
+        public IRelayCommand<AIModel> SetDefaultModel { get; }
 
-        public IEnumerable<ModelInfoViewModel>? OllamaModels => Models?.Where(model => model.ModelProvider == ModelProvider.Ollama);
-        public IEnumerable<ModelInfoViewModel>? HuggingFaceModels => Models?.Where(model => model.ModelProvider == ModelProvider.HuggingFace);
+
+        public ObservableCollection<AIModelViewModel> OllamaModels { get; set; }
+
+        public ObservableCollection<AIModelViewModel> HuggingFaceModels { get; set; }
 
         public OllamaViewModel()
-        : base(name: "Ollama", provider: ModelProvider.Ollama)
         {
             _ollamaService = App.Get<IOllamaService>();
+            _settingsViewModel = App.Get<SettingsViewModel>();
+
             _ollamaStatus = OllamaStatus.Unknown;
 
+            OllamaModels = [];
+            HuggingFaceModels = [];
+
+            InitCollections();
+
             _ = RefreshStatus();
-            _ = RefreshModels();
 
             RefreshStatusCommand = new RelayCommand(async () => await RefreshStatus());
             RefreshModelsCommand = new RelayCommand(async () => await RefreshModels());
+            SetDefaultModel = new RelayCommand<AIModel>(model => _settingsViewModel.Models.DefaultModel = model);
+        }
+
+        private void InitCollections()
+        {
+            foreach (var model in _settingsViewModel.Models.AvailableModels)
+            {
+                AIModelViewModel? viewModel = null;
+
+                if (model.ModelProvider == ModelProvider.Ollama)
+                {
+                    viewModel = new AIModelViewModel(model);
+                    OllamaModels.Add(viewModel);
+                }
+                else if (model.ModelProvider == ModelProvider.HuggingFace)
+                {
+                    viewModel = new AIModelViewModel(model);
+                    HuggingFaceModels.Add(viewModel);
+                }
+            }
         }
 
         private async Task RefreshStatus()
@@ -47,26 +77,33 @@ namespace PowerPad.WinUI.ViewModels
         {
             await RefreshStatus();
 
+            IEnumerable<AIModel> availableModels;
+
             if (OllamaStatus == OllamaStatus.Online)
             {
-                var models = await _ollamaService.GetModels();
-
-                Models = [];
-
-                foreach (var model in models)
-                {
-                    var displayName = model.Name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty);
-
-                    Models.Add(new ModelInfoViewModel(model, displayName));
-                }
+                availableModels = await _ollamaService.GetAvailableModels();
             }
             else
             {
-                Models = [];
+                availableModels = Enumerable.Empty<AIModel>();
             }
 
-            OnPropertyChanged(nameof(OllamaModels));
-            OnPropertyChanged(nameof(HuggingFaceModels));
+            var destinationModels = _settingsViewModel.Models.AvailableModels;
+
+            foreach (var model in availableModels)
+            {
+                if (!destinationModels.Any(m => m == model)) destinationModels.Add(model);
+            }
+
+            for (int i = destinationModels.Count - 1; i >= 0; i--)
+            {
+                var model = destinationModels[i];
+                if (!availableModels.Any(m => m == model) &&
+                    (model.ModelProvider == ModelProvider.GitHub || model.ModelProvider == ModelProvider.HuggingFace))
+                {
+                    destinationModels.RemoveAt(i);
+                }
+            }
         }
     }
 }

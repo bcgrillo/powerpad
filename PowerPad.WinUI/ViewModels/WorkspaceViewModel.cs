@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
-using PowerPad.Core.Configuration;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Helpers;
@@ -43,7 +42,7 @@ namespace PowerPad.WinUI.ViewModels
 
             OpenWorkspaceCommand = new RelayCommand<string>(OpenWorkspace);
 
-            var recentlyWorkspaces = _appConfigStore.Get<ObservableCollection<string>>(Keys.RecentlyWorkspaces);
+            var recentlyWorkspaces = _appConfigStore.Get<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces);
 
             _recentlyWorkspaces = [.. recentlyWorkspaces];
         }
@@ -129,7 +128,7 @@ namespace PowerPad.WinUI.ViewModels
                 RecentlyWorkspaces.RemoveAt(5);
             }
 
-            _appConfigStore.Set(Keys.RecentlyWorkspaces, RecentlyWorkspaces);
+            _appConfigStore.Set(StoreKey.RecentlyWorkspaces, RecentlyWorkspaces);
         }
     }
 
@@ -137,12 +136,12 @@ namespace PowerPad.WinUI.ViewModels
     {
         public FolderEntryViewModel? Parent { get; set; }
         public EntryType Type { get; set; }
-        public DocumentTypes? DocumentType { get; set; }
+        public DocumentType? DocumentType { get; set; }
         public string Name { get; set; }
 
         private NewEntryParameters(string name) { Name = name; }
 
-        public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentTypes documentType, string? name = null)
+        public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentType documentType, string? name = null)
         {
             return new NewEntryParameters(name ?? NewEntryNameHelper.NewDocumentName(documentType))
             {

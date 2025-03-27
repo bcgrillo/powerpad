@@ -52,7 +52,7 @@
                         <ItemsRepeater ItemsSource="{x:Bind _ollama.HuggingFaceModels, Mode=OneWay}">
                             <ItemsRepeater.ItemTemplate>
 
-                                <DataTemplate x:DataType="vm:ModelInfoViewModel">
+                                <DataTemplate x:DataType="vm:AIModelViewModel">
 
                                     <toolkit:SettingsExpander
                                             x:Name="ModelsExpander"

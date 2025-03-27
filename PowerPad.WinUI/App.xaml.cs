@@ -19,10 +19,10 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using PowerPad.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using PowerPad.WinUI.ViewModels;
-using PowerPad.Core.Configuration;
 using PowerPad.WinUI.Configuration;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Dialogs;
+using CommunityToolkit.Mvvm.Messaging;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

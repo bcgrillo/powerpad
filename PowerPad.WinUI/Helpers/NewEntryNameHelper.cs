@@ -11,15 +11,15 @@ namespace PowerPad.WinUI.Helpers
     {
         public static string NewFolderName() => "Nueva carpeta";
 
-        public static string NewDocumentName(DocumentTypes type)
+        public static string NewDocumentName(DocumentType type)
         {
             return type switch
             {
-                DocumentTypes.Text => "Nueva nota",
-                DocumentTypes.Chat => "Nuevo chat",
-                DocumentTypes.Markdown => "Nuevo Markdown",
-                DocumentTypes.ToDo => "Nueva lista",
-                DocumentTypes.Search => "Nueva búsqueda",
+                DocumentType.Text => "Nueva nota",
+                DocumentType.Chat => "Nuevo chat",
+                DocumentType.Markdown => "Nuevo Markdown",
+                DocumentType.ToDo => "Nueva lista",
+                DocumentType.Search => "Nueva búsqueda",
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }

@@ -45,7 +45,6 @@ namespace PowerPad.WinUI.ViewModels
 
         public IRelayCommand RenameCommand { get; }
 
-
         public DocumentViewModel(Document document, IEditorContract editorControl)
         {
             _document = document;

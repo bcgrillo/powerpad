@@ -1,8 +1,7 @@
-﻿using PowerPad.Core.Contracts;
-using PowerPad.Core.Models;
+﻿using PowerPad.Core.Models;
 using System.Text.Json;
 using static PowerPad.Core.Services.Conventions;
-using static PowerPad.Core.Configuration.ConfigConstants;
+using static PowerPad.Core.Constants;
 
 namespace PowerPad.Core.Services
 {

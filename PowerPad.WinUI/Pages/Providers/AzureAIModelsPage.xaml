@@ -52,20 +52,20 @@
                         <ItemsRepeater ItemsSource="{x:Bind _azureAI.Models, Mode=OneWay}">
                             <ItemsRepeater.ItemTemplate>
 
-                                <DataTemplate x:DataType="vm:ModelInfoViewModel">
+                                <DataTemplate x:DataType="vm:AIModelViewModel">
 
                                     <toolkit:SettingsExpander
                                             x:Name="ModelsExpander"
                                             AutomationProperties.AccessibilityView="Raw"
                                             Header="{x:Bind Name}"
-                                            Description="{x:Bind ModelStatus}"
+                                            Description=""
                                             HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
                                             Margin="0,0,0,4">
                                         <StackPanel Orientation="Horizontal" Spacing="4">
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Text="{x:Bind SizeToString()}" />
+                                                Text="{x:Bind SizeAsString}" />
                                             <Button
                                                 AutomationProperties.Name="Delete"
                                                 Content="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
@@ -74,7 +74,7 @@
                                             <Button
                                                 AutomationProperties.Name="SetDefault"
                                                 Content="{ui:FontIcon Glyph=&#xE718;,FontSize=14}"
-                                                Command="{x:Bind SetDefaultModelCommand}"
+                                                Click="SetDefault_Click"
                                                 ToolTipService.ToolTip="Establecer como predeterminado" />
                                         </StackPanel>
                                         <!--<toolkit:SettingsExpander.ItemsHeader>

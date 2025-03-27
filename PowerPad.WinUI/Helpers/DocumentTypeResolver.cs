@@ -5,18 +5,18 @@ namespace PowerPad.WinUI.Helpers
 {
     public static class DocumentTypeResolver
     {
-        public static DocumentTypes FromFilePath(string filePath)
+        public static DocumentType FromFilePath(string filePath)
         {
             string extension = filePath.Split('.').Last().ToLower();
 
             return extension switch
             {
-                "txt" => DocumentTypes.Text,
-                "chat" => DocumentTypes.Chat,
-                "md" => DocumentTypes.Markdown,
-                "todo" => DocumentTypes.ToDo,
-                "search" => DocumentTypes.Search,
-                _ => DocumentTypes.Text
+                "txt" => DocumentType.Text,
+                "chat" => DocumentType.Chat,
+                "md" => DocumentType.Markdown,
+                "todo" => DocumentType.ToDo,
+                "search" => DocumentType.Search,
+                _ => DocumentType.Text
             };
         }
     }

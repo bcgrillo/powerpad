@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using PowerPad.Core.Configuration;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using System;
@@ -32,9 +31,13 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IOllamaService, OllamaService>(sp =>
             {
-                string ollamaServiceUrl = GetOllamaServiceUrl(app.AppConfigStore);
+                var config = GetGeneralSettings(app.AppConfigStore).OllamaConfig;
 
-                return new OllamaService(ollamaServiceUrl);
+                var ollama = new OllamaService();
+
+                if (config != null) ollama.Initialize(config);
+
+                return ollama;
             });
         }
 
@@ -42,9 +45,13 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IAzureAIService, AzureAIService>(sp =>
             {
-                var config = GetAzureAIConfig(app.AppConfigStore);
+                var config = GetGeneralSettings(app.AppConfigStore).AzureAIConfig;
 
-                return new AzureAIService(config.BaseUrl, config.Key, app.AppConfigStore);
+                var azureAI = new AzureAIService();
+
+                if (config != null) azureAI.Initialize(config);
+
+                return azureAI;
             });
         }
 
@@ -52,9 +59,13 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IOpenAIService, OpenAIService>(sp =>
             {
-                var config = GetOpenAIConfig(app.AppConfigStore);
+                var config = GetGeneralSettings(app.AppConfigStore).OpenAIConfig;
 
-                return new OpenAIService(config.BaseUrl, config.Key, app.AppConfigStore);
+                var openAI = new OpenAIService();
+
+                if (config != null) openAI.Initialize(config);
+
+                return openAI;
             });
         }
 
@@ -62,12 +73,18 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IAIService, AIService>(sp =>
             {
-                AIModel defaultModel = GetDefaultModel(app.AppConfigStore);
                 var ollamaService = sp.GetRequiredService<IOllamaService>();
                 var azureAIService = sp.GetRequiredService<IAzureAIService>();
                 var openAIService = sp.GetRequiredService<IOpenAIService>();
 
-                return new AIService(defaultModel, ollamaService, azureAIService, openAIService);
+                var aiService = new AIService(ollamaService, azureAIService, openAIService);
+
+                var modelSettings = GetModelSettings(app.AppConfigStore);
+
+                if (modelSettings.DefaultModel != null) aiService.SetDefaultModel(modelSettings.DefaultModel);
+                if (modelSettings.DefaultParameters != null) aiService.SetDefaultParameters(modelSettings.DefaultParameters);
+
+                return aiService;
             });
         }
 
@@ -81,67 +98,41 @@ namespace PowerPad.WinUI.Configuration
 
         private static string GetLastWorkspace(App app)
         {
-            var recentlyWorkspaces = app.AppConfigStore.TryGet<string[]>(Keys.RecentlyWorkspaces);
+            var recentlyWorkspaces = app.AppConfigStore.TryGet<string[]>(StoreKey.RecentlyWorkspaces);
 
             if (recentlyWorkspaces == null)
             {
-                recentlyWorkspaces = [ Defaults.WorkspaceFolder ];
-                app.AppConfigStore.Set(Keys.RecentlyWorkspaces, recentlyWorkspaces);
+                recentlyWorkspaces = [ StoreDefault.WorkspaceFolder ];
+                app.AppConfigStore.Set(StoreKey.RecentlyWorkspaces, recentlyWorkspaces);
             }
 
             return recentlyWorkspaces.First();
         }
 
-        private static string GetOllamaServiceUrl(IConfigStore config)
+        private static GeneralSettings GetGeneralSettings(IConfigStore config)
         {
-            var configUrl = config.TryGet<string>(Keys.OllamaServiceUrl);
+            var general = config.TryGet<GeneralSettings>(StoreKey.GeneralSettings);
 
-            if (configUrl == null)
+            if (general == null)
             {
-                configUrl = Defaults.OllamaServiceUrl;
-                config.Set(Keys.OllamaServiceUrl, configUrl);
+                general = StoreDefault.GeneralSettings;
+                config.Set(StoreKey.GeneralSettings, general);
             }
 
-            return configUrl;
+            return general;
         }
 
-        private static AzureAIConfig GetAzureAIConfig(IConfigStore config)
+        private static ModelsSettings GetModelSettings(IConfigStore config)
         {
-            var azureAIConfig = config.TryGet<AzureAIConfig>(Keys.AzureAIConfig);
+            var models = config.TryGet<ModelsSettings>(StoreKey.ModelsSettings);
 
-            if (azureAIConfig == null)
+            if (models == null)
             {
-                azureAIConfig = Defaults.AzureAIConfig;
-                config.Set(Keys.AzureAIConfig, azureAIConfig);
+                models = StoreDefault.ModelsSettings;
+                config.Set(StoreKey.ModelsSettings, models);
             }
 
-            return azureAIConfig;
-        }
-
-        private static OpenAIConfig GetOpenAIConfig(IConfigStore config)
-        {
-            var openAIConfig = config.TryGet<OpenAIConfig>(Keys.OpenAIConfig);
-
-            if (openAIConfig == null)
-            {
-                openAIConfig = Defaults.OpenAIConfig;
-                config.Set(Keys.AzureAIConfig, openAIConfig);
-            }
-
-            return openAIConfig;
-        }
-
-        private static AIModel GetDefaultModel(IConfigStore config)
-        {
-            var configModel = config.TryGet<AIModel>(Keys.DefaultModel);
-
-            if (configModel == null)
-            {
-                configModel = Defaults.DefaultModel;
-                config.Set(Keys.DefaultModel, configModel);
-            }
-
-            return configModel;
+            return models;
         }
     }
 }

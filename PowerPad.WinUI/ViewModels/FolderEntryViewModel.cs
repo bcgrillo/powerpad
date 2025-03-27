@@ -17,24 +17,24 @@ namespace PowerPad.WinUI.ViewModels
     public partial class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
         private readonly IFolderEntry _entry;
-        private readonly DocumentTypes? _documentType;
+        private readonly DocumentType? _documentType;
 
         private readonly FolderEntryViewModel? _parent;
 
         public string Name { get => _entry.Name; }
 
         [ObservableProperty]
-        public string? _glyph;
+        private string? _glyph;
 
         [ObservableProperty]
-        public EntryType _type;
+        private EntryType _type;
 
         [ObservableProperty]
-        public ObservableCollection<FolderEntryViewModel>? _children;
+        private ObservableCollection<FolderEntryViewModel>? _children;
 
         public bool IsFolder => Type == EntryType.Folder;
 
-        public DocumentTypes? DocumentType => _documentType;
+        public DocumentType? DocumentType => _documentType;
 
         public IFolderEntry ModelEntry => _entry;
 

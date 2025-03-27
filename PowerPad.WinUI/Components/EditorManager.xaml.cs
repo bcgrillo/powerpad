@@ -63,7 +63,7 @@ namespace PowerPad.WinUI.Components
                 {
                     EditorControl newEditor;
 
-                    if (document.DocumentType == DocumentTypes.Chat)
+                    if (document.DocumentType == DocumentType.Chat)
                     {
                         newEditor = new ChatEditorControl(document, _aiService);
                     }

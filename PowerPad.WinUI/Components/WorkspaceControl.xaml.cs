@@ -94,7 +94,7 @@ namespace PowerPad.WinUI.Components
 
             if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
 
-            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Chat));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Chat));
         }
 
         private void NewSplitButton_Click(SplitButton _, SplitButtonClickEventArgs __)
@@ -103,7 +103,7 @@ namespace PowerPad.WinUI.Components
 
             if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
 
-            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentTypes.Text));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Text));
         }
 
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs __)
@@ -120,7 +120,7 @@ namespace PowerPad.WinUI.Components
             }   
             else
             {
-                _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentTypes)tag));
+                _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentType)tag));
             }
         }
 

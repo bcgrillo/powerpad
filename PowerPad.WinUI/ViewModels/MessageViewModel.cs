@@ -7,7 +7,7 @@ namespace PowerPad.WinUI.ViewModels
     public partial class MessageViewModel : ObservableObject
     {
         [ObservableProperty]
-        public string _content;
+        private string _content;
 
         public DateTime DateTime { get; private set; }
 

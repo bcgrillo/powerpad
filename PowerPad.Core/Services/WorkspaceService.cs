@@ -1,5 +1,4 @@
-﻿using PowerPad.Core.Configuration;
-using PowerPad.Core.Contracts;
+﻿using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
 using System.Collections.ObjectModel;
 using static PowerPad.Core.Services.Conventions;

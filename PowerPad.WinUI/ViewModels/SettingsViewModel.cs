@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using PowerPad.Core.Configuration;
+using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Configuration;
+using PowerPad.WinUI.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,58 +16,19 @@ using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public partial class SettingsViewModel : ObservableObject
+    public partial class SettingsViewModel : ObservableObject, IRecipient<AIModelChanged>
     {
         private readonly IConfigStore _configStore;
         private readonly IOllamaService _ollama;
         private readonly IAzureAIService _azureAI;
         private readonly IOpenAIService _openAI;
-        private GeneralSettings _general;
+
+        public GeneralSettings General { get; private set; }
+
+        public ModelsSettings Models { get; private set; }
 
         [ObservableProperty]
         private OllamaStatus _ollamaStatus;
-
-        public bool OllamaEnabled
-        {
-            get => _general.OllamaEnabled;
-            set
-            {
-                if (_general.OllamaEnabled != value)
-                {
-                    _general.OllamaEnabled = value;
-                    SaveSettings();
-                    OnPropertyChanged(nameof(OllamaEnabled));
-                }
-            }
-        }
-
-        public bool AzureAIEnabled
-        {
-            get => _general.AzureAIEnabled;
-            set
-            {
-                if (_general.AzureAIEnabled != value)
-                {
-                    _general.AzureAIEnabled = value;
-                    SaveSettings();
-                    OnPropertyChanged(nameof(AzureAIEnabled));
-                }
-            }
-        }
-
-        public bool OpenAIEnabled
-        {
-            get => _general.OpenAIEnabled;
-            set
-            {
-                if (_general.OpenAIEnabled != value)
-                {
-                    _general.OpenAIEnabled = value;
-                    SaveSettings();
-                    OnPropertyChanged(nameof(OpenAIEnabled));
-                }
-            }
-        }
 
         public SettingsViewModel()
         {
@@ -74,17 +37,24 @@ namespace PowerPad.WinUI.ViewModels
             _azureAI = App.Get<IAzureAIService>();
             _openAI = App.Get<IOpenAIService>();
 
-            _general = _configStore.TryGet<GeneralSettings>(Keys.GeneralSettings) ?? Defaults.GeneralSettings;
+            General = _configStore.TryGet<GeneralSettings>(StoreKey.GeneralSettings) ?? StoreDefault.GeneralSettings;
+            Models = _configStore.TryGet<ModelsSettings>(StoreKey.ModelsSettings) ?? StoreDefault.ModelsSettings;
 
             _ = Task.Run(async() =>
             {
                 OllamaStatus = await _ollama.GetStatus();
             });
+
+            General.PropertyChanged += (s, o) => SaveGeneralSettings();
+            Models.PropertyChanged += (s, o) => SaveModelsSettings();
+
+            WeakReferenceMessenger.Default.Register(this);
         }
 
-        private void SaveSettings()
-        {
-            _configStore.Set(Keys.GeneralSettings, _general);
-        }
+        public void Receive(AIModelChanged message) => SaveModelsSettings();
+
+        private void SaveGeneralSettings() => _configStore.Set(StoreKey.GeneralSettings, General);
+
+        private void SaveModelsSettings() => _configStore.Set(StoreKey.ModelsSettings, Models);
     }
 }

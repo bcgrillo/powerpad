@@ -42,5 +42,10 @@ namespace PowerPad.WinUI.Pages.Providers
                 ModelsScrollViewer.Visibility = Visibility.Visible;
             }
         }
+
+        private void SetDefault_Click(object sender, RoutedEventArgs e)
+        {
+            _azureAI.
+        }
     }
 }

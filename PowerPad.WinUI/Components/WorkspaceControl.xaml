@@ -138,17 +138,17 @@
                     <MenuFlyout Placement="Full">
                         <MenuFlyoutItem Text="Nuevo markdown" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Tag>
-                                <vm:DocumentTypes>Markdown</vm:DocumentTypes>
+                                <vm:DocumentType>Markdown</vm:DocumentType>
                             </MenuFlyoutItem.Tag>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem Text="Nueva lista" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Tag>
-                                <vm:DocumentTypes>ToDo</vm:DocumentTypes>
+                                <vm:DocumentType>ToDo</vm:DocumentType>
                             </MenuFlyoutItem.Tag>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem Text="Nueva búsqueda" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Tag>
-                                <vm:DocumentTypes>Search</vm:DocumentTypes>
+                                <vm:DocumentType>Search</vm:DocumentType>
                             </MenuFlyoutItem.Tag>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem Text="Nueva carpeta" Click="MenuFlyoutItem_Click"/>

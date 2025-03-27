@@ -109,9 +109,14 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void SendBtn_Click(object _, RoutedEventArgs __)
         {
-            var result = await _aiService.GetResponse(
-                message: TextEditor.Text == string.Empty ? " " : TextEditor.Text, 
-                config: new AIConfig(SystemPrompt: $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}" ) );
+            var result = await _aiService.GetResponse
+            (
+                message: TextEditor.Text == string.Empty ? " " : TextEditor.Text,
+                config: new AIParameters
+                {
+                    SystemPrompt = $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}"
+                }
+            );
 
             TextEditor.Text = result.Text;
         }

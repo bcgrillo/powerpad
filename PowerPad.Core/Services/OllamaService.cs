@@ -1,4 +1,6 @@
 ﻿using ABI.System;
+using Azure.AI.Inference;
+using Azure;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OllamaSharp.Models;
@@ -16,17 +18,19 @@ namespace PowerPad.Core.Services
     public interface IOllamaService
     {
         Task<OllamaStatus> GetStatus();
-        Task<IEnumerable<AIModel>> GetModels();
-        IChatClient ChatClient(AIModel model);
+        Task<IEnumerable<AIModel>> GetAvailableModels();
+        IChatClient? ChatClient(AIModel model);
     }
 
     public class OllamaService : IOllamaService
     {
-        private OllamaApiClient _ollama;
+        private OllamaApiClient? _ollama;
 
-        public OllamaService(string baseUrl)
+        public void Initialize(AIServiceConfig config)
         {
-            _ollama = new OllamaApiClient(baseUrl);
+            ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
+
+            _ollama = new OllamaApiClient(config.BaseUrl);
         }
 
         public async Task<OllamaStatus> GetStatus()
@@ -76,7 +80,7 @@ namespace PowerPad.Core.Services
             return OllamaStatus.Unknown;
         }
 
-        public async Task<IEnumerable<AIModel>> GetModels()
+        public async Task<IEnumerable<AIModel>> GetAvailableModels()
         {
             if (_ollama == null) return [];
 
@@ -96,16 +100,17 @@ namespace PowerPad.Core.Services
 
             return new AIModel
             (
-                model.Name,
+                model.Name, 
                 provider,
+                false,
                 model.Size,
-                ModelStatus.Installed
+                model.Name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty)
             );
         }
 
-        public IChatClient ChatClient(AIModel model)
+        public IChatClient? ChatClient(AIModel model)
         {
-            if (_ollama == null) throw new InvalidOperationException("Ollama service not initialized.");
+            if (_ollama == null) return null;
 
             _ollama.SelectedModel = model.Name;
 

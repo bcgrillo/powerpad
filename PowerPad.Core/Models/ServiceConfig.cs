@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace PowerPad.Core.Models
 {
-    public record AIConfig
-    (
-        string? SystemPrompt = null,
-        float? Temperature = null,
-        int? MaxOutputTokens = null
-    );
+    class ServiceConfig
+    {
+    }
 }

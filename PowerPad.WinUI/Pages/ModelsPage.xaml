@@ -49,7 +49,7 @@
                     Content="Ollama"
                     Margin="0,6,0,0"
                     Tag="{x:Bind m:ModelProvider.Ollama}"
-                    Visibility="{x:Bind _settings.OllamaEnabled, Mode=OneWay}">
+                    Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                     </NavigationViewItem.Icon>
@@ -58,7 +58,7 @@
                     x:Name="HuggingFaceMenuItem"
                     Content="Hugging Face"
                     Tag="{x:Bind m:ModelProvider.HuggingFace}"
-                    Visibility="{x:Bind _settings.OllamaEnabled, Mode=OneWay}">
+                    Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource HuggingFaceSvg}"/>
                     </NavigationViewItem.Icon>
@@ -67,7 +67,7 @@
                     x:Name="GitHubMenuItem"
                     Content="GitHub"
                     Tag="{x:Bind m:ModelProvider.GitHub}"
-                    Visibility="{x:Bind _settings.AzureAIEnabled, Mode=OneWay}">
+                    Visibility="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource GithubSvg}"/>
                     </NavigationViewItem.Icon>
@@ -76,7 +76,7 @@
                     x:Name="OpenAIMenuItem"
                     Content="OpenAI"
                     Tag="{x:Bind m:ModelProvider.OpenAI}"
-                    Visibility="{x:Bind _settings.OpenAIEnabled, Mode=OneWay}">
+                    Visibility="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                     </NavigationViewItem.Icon>

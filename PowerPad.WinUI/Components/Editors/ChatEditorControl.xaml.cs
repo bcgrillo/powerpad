@@ -16,7 +16,6 @@ using System.Threading;
 using Microsoft.UI.Input;
 using PowerPad.WinUI.Dialogs;
 using CommunityToolkit.WinUI.Animations;
-using static PowerPad.Core.Configuration.ConfigConstants;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

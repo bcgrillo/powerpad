@@ -1,33 +1,30 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels
 {
-    public partial class OpenAIViewModel : AIServiceViewModel
+    public partial class OpenAIViewModel : ObservableObject
     {
         private readonly IOpenAIService _openAIService;
+        private readonly SettingsViewModel _settingsViewModel;
 
-        public IRelayCommand RefreshModelsCommand { get; }
+        public ObservableCollection<AIModelViewModel> Models { get; set; }
 
         public OpenAIViewModel()
-        : base(name: "OpenAI", provider: ModelProvider.OpenAI)
         {
             _openAIService = App.Get<IOpenAIService>();
+            _settingsViewModel = App.Get<SettingsViewModel>();
 
-            RefreshModels();
-
-            RefreshModelsCommand = new RelayCommand(RefreshModels);
-        }
-
-        private void RefreshModels()
-        {
-            var models = _openAIService.GetModels();
-
-            Models = [];
-
-            foreach (var model in models) Models.Add(new ModelInfoViewModel(model));
+            Models =
+            [
+                .. _settingsViewModel.Models.AvailableModels
+                    .Where(m => m.ModelProvider == ModelProvider.OpenAI)
+                    .Select(m => new AIModelViewModel(m))
+            ];
         }
     }
 }

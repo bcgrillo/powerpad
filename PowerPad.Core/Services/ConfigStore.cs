@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using static PowerPad.Core.Configuration.ConfigConstants;
+﻿using System.Text.Json;
+using static PowerPad.Core.Constants;
 
-namespace PowerPad.Core.Configuration
+namespace PowerPad.Core.Services
 {
     public interface IConfigStore
     {
-        void Set<T>(string key, T config);
+        void Set<T>(Enum key, T config);
 
-        T Get<T>(string key);
+        T Get<T>(Enum key);
 
-        T? TryGet<T>(string key);
+        T? TryGet<T>(Enum key);
     }
 
     internal struct ConfigEntry(string value, bool dirty)
@@ -40,16 +34,16 @@ namespace PowerPad.Core.Configuration
             Load();
         }
 
-        public void Set<T>(string key, T config)
+        public void Set<T>(Enum key, T config)
         {
-            _store[key] = new ConfigEntry(JsonSerializer.Serialize(config, JSON_SERIALIZER_OPTIONS), true);
+            _store[key.ToString()] = new ConfigEntry(JsonSerializer.Serialize(config, JSON_SERIALIZER_OPTIONS), true);
         }
 
-        public T? TryGet<T>(string key)
+        public T? TryGet<T>(Enum key)
         {
             try
             {
-                if (_store.TryGetValue(key, out var config))
+                if (_store.TryGetValue(key.ToString(), out var config))
                 {
                     return JsonSerializer.Deserialize<T>(config.Value);
                 }
@@ -62,9 +56,9 @@ namespace PowerPad.Core.Configuration
             return default;
         }
 
-        public T Get<T>(string key)
+        public T Get<T>(Enum key)
         {
-            return JsonSerializer.Deserialize<T>(_store[key].Value)
+            return JsonSerializer.Deserialize<T>(_store[key.ToString()].Value)
                 ?? throw new NullReferenceException($"Config value for key '{key}' is null.");
         }
 
