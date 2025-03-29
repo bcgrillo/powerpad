@@ -1,13 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using PowerPad.Core.Models;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
@@ -77,8 +74,18 @@ namespace PowerPad.WinUI.ViewModels.Settings
                 }
             }
             else throw new NotImplementedException("Only Add and Remove actions are supported.");
+
+            ValidateDefaultModel();
         }
 
         private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
+
+        private void ValidateDefaultModel()
+        {
+            if (DefaultModel == null || !AvailableModels.Contains(DefaultModel))
+            {
+                DefaultModel = AvailableModels.FirstOrDefault();
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.Core.Services;
+using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
@@ -19,13 +19,13 @@ namespace PowerPad.WinUI.Components
         private readonly Dictionary<FolderEntryViewModel, EditorControl> _editors;
         private readonly DispatcherTimer _timer;
 
-        private readonly IAIService _aiService;
+        private readonly IChatService _chatService;
 
         public EditorManager()
         {
             this.InitializeComponent();
 
-            _aiService = App.Get<IAIService>();
+            _chatService = App.Get<IChatService>();
 
             _editors = [];
 
@@ -65,11 +65,11 @@ namespace PowerPad.WinUI.Components
 
                     if (document.DocumentType == DocumentType.Chat)
                     {
-                        newEditor = new ChatEditorControl(document, _aiService);
+                        newEditor = new ChatEditorControl(document, _chatService);
                     }
                     else
                     {
-                        newEditor = new TextEditorControl(document, _aiService);
+                        newEditor = new TextEditorControl(document, _chatService);
                     }
 
                     newEditor.Visibility = Visibility.Collapsed;

@@ -1,18 +1,14 @@
 ﻿using Azure;
 using Azure.AI.Inference;
 using Microsoft.Extensions.AI;
-using OpenAI;
-using PowerPad.Core.Models;
-using System.ClientModel;
-using System.Collections.ObjectModel;
+using PowerPad.Core.Contracts;
+using PowerPad.Core.Models.AI;
 using Uri = System.Uri;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.AI
 {
-    public interface IAzureAIService
+    public interface IAzureAIService : IAIService
     {
-        Task<IEnumerable<AIModel>> GetAvaliableModels();
-        IChatClient? ChatClient(AIModel model);
     }
 
     public class AzureAIService : IAzureAIService
@@ -27,7 +23,7 @@ namespace PowerPad.Core.Services
             _azureAI = new ChatCompletionsClient(new Uri(config.BaseUrl), new AzureKeyCredential(config.Key));
         }
 
-        public async Task<IEnumerable<AIModel>> GetAvaliableModels()
+        public async Task<IEnumerable<AIModel>> GetAvailableModels()
         {
             return await Task.FromResult<IEnumerable<AIModel>>([]);
         }

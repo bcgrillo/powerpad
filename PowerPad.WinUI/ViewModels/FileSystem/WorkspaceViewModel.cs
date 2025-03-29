@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Models;
+using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services;
+using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.ObjectModel;

@@ -2,6 +2,9 @@
 using Microsoft.UI.Xaml;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
+using PowerPad.Core.Services.AI;
+using PowerPad.Core.Services.Config;
+using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Collections.Generic;
@@ -72,13 +75,13 @@ namespace PowerPad.WinUI.Configuration
 
         public static IServiceCollection ConfigureAIService(this IServiceCollection serviceColection, App app)
         {
-            return serviceColection.AddSingleton<IAIService, AIService>(sp =>
+            return serviceColection.AddSingleton<IChatService, ChatService>(sp =>
             {
                 var ollamaService = sp.GetRequiredService<IOllamaService>();
                 var azureAIService = sp.GetRequiredService<IAzureAIService>();
                 var openAIService = sp.GetRequiredService<IOpenAIService>();
 
-                var aiService = new AIService(ollamaService, azureAIService, openAIService);
+                var aiService = new ChatService(ollamaService, azureAIService, openAIService);
 
                 var modelSettings = GetModelSettings(app.AppConfigStore);
 

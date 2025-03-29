@@ -1,9 +1,11 @@
 ﻿using PowerPad.Core.Contracts;
 using PowerPad.Core.Models;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.Core.Services.Config;
 using System.Collections.ObjectModel;
 using static PowerPad.Core.Services.Conventions;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.FileSystem
 {
     public interface IWorkspaceService
     {

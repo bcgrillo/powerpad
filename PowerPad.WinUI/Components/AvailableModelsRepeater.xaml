@@ -1,0 +1,47 @@
+﻿<UserControl
+    x:Class="PowerPad.WinUI.Components.AIModelsRepeater"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
+    xmlns:local="using:PowerPad.WinUI.Controls">
+    <Grid>
+        <ScrollViewer x:Name="ModelsScrollViewer">
+            <Grid Padding="36,0,36,36">
+                <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
+                    <ItemsRepeater ItemsSource="{x:Bind Models, Mode=OneWay}">
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="ai:AIModelViewModel">
+                                <toolkit:SettingsCard
+                                    x:Name="ModelsExpander"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    Header="{x:Bind Name}"
+                                    Description=""
+                                    HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
+                                    Margin="0,0,0,4">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Text="{x:Bind SizeAsString}" />
+                                        <Button
+                                            Content="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
+                                            Tag="{x:Bind}"
+                                            ToolTipService.ToolTip="Eliminar"
+                                            Click="OnDeleteClick" />
+                                        <Button
+                                            Content="{ui:FontIcon Glyph=&#xE718;,FontSize=14}"
+                                            ToolTipService.ToolTip="Establecer como predeterminado"
+                                            Tag="{x:Bind}"
+                                            Click="OnSetDefaultClick" />
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

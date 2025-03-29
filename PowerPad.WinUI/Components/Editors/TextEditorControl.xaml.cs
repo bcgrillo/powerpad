@@ -2,15 +2,16 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using PowerPad.Core.Models;
 using PowerPad.WinUI.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
-using PowerPad.Core.Services;
 using Microsoft.Extensions.AI;
 using Microsoft.UI.Input;
 using PowerPad.WinUI.Dialogs;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.Core.Services.AI;
+using PowerPad.Core.Models.AI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,20 +22,20 @@ namespace PowerPad.WinUI.Components.Editors
     {
         private DocumentViewModel _document;
 
-        private readonly IAIService _aiService;
+        private readonly IChatService _chatService;
 
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
-        public TextEditorControl(FolderEntryViewModel documentEntry, IAIService aiService)
+        public TextEditorControl(FolderEntryViewModel documentEntry, IChatService aiService)
         {
             this.InitializeComponent();
 
             _document = documentEntry.ToDocumentViewModel(this);
 
             TextEditor.TextChanged += (s, e) => _document.Status = DocumentStatus.Dirty;
-            _aiService = aiService;
+            _chatService = aiService;
         }
 
         public override string GetContent()
@@ -111,7 +112,7 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void SendBtn_Click(object _, RoutedEventArgs __)
         {
-            var result = await _aiService.GetResponse
+            var result = await _chatService.GetResponse
             (
                 message: TextEditor.Text == string.Empty ? " " : TextEditor.Text,
                 config: new AIParameters

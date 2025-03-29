@@ -1,11 +1,11 @@
 ﻿using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml;
-using PowerPad.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PowerPad.Core.Models.Config;
 
 namespace PowerPad.WinUI.Converters
 {

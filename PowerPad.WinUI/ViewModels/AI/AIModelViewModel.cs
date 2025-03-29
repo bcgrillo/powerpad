@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using PowerPad.Core.Models;
+using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.Messages;
+using System;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
@@ -62,6 +63,34 @@ namespace PowerPad.WinUI.ViewModels.AI
                     return $"{Size} Bytes";
                 }
             }
+        }
+
+        public override bool Equals(object? other)
+        {
+            if (other is null) return false;
+
+            if (other is AIModelViewModel otherAIViewModel)
+            {
+                if (ReferenceEquals(this, other)) return true;
+                return Name == otherAIViewModel.Name && ModelProvider == otherAIViewModel.ModelProvider;
+            }
+            else return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, ModelProvider);
+        }
+
+        public static bool operator ==(AIModelViewModel? left, AIModelViewModel? right)
+        {
+            if (left is null) return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(AIModelViewModel? left, AIModelViewModel? right)
+        {
+            return !(left == right);
         }
     }
 }

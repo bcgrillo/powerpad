@@ -5,9 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using PowerPad.Core.Models;
 using PowerPad.WinUI.ViewModels;
-using PowerPad.Core.Services;
 using System.Threading.Tasks;
 using Microsoft.Extensions.AI;
 using System.Text.Json;
@@ -18,6 +16,8 @@ using static PowerPad.Core.Constants;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.WinUI.Helpers;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.Core.Services.AI;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -29,18 +29,18 @@ namespace PowerPad.WinUI.Components.Editors
         private DocumentViewModel _document;
         private readonly ObservableCollection<MessageViewModel> _messages;
 
-        private readonly IAIService _aiService;
+        private readonly IChatService _chatService;
 
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
-        public ChatEditorControl(FolderEntryViewModel documentEntry, IAIService aiService)
+        public ChatEditorControl(FolderEntryViewModel documentEntry, IChatService aiService)
         {
             this.InitializeComponent();
 
             _document = documentEntry.ToDocumentViewModel(this);
-            _aiService = aiService;
+            _chatService = aiService;
             _messages = [];
         }
 
@@ -154,7 +154,7 @@ namespace PowerPad.WinUI.Components.Editors
 
                 history.Insert(0, new ChatMessage(ChatRole.System, "You are a helpful assistant"));
 
-                await foreach (var messagePart in _aiService.GetStreamingResponse(history, cancellationToken: _cts.Token))
+                await foreach (var messagePart in _chatService.GetStreamingResponse(history, cancellationToken: _cts.Token))
                 {
                     try
                     {

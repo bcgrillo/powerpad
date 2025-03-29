@@ -1,7 +1,7 @@
 ﻿using PowerPad.Core.Contracts;
-using PowerPad.Core.Models;
+using PowerPad.Core.Models.FileSystem;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.FileSystem
 {
     public interface IDocumentService
     {

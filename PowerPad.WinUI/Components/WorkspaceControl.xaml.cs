@@ -1,6 +1,5 @@
 using System;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.Core.Models;
 using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Dialogs;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using Windows.Storage;
 using PowerPad.WinUI.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using PowerPad.WinUI.ViewModels.FileSystem;
+using PowerPad.Core.Models.FileSystem;
 
 namespace PowerPad.WinUI.Components
 {

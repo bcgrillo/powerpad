@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Contracts;
-using PowerPad.Core.Models;
-using PowerPad.Core.Services;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.Messages;
 using System;
 

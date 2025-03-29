@@ -1,4 +1,4 @@
-﻿namespace PowerPad.Core.Models
+﻿namespace PowerPad.Core.Models.FileSystem
 {
     public enum DocumentStatus
     {

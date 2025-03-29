@@ -4,7 +4,6 @@ using Azure;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OllamaSharp.Models;
-using PowerPad.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,14 +11,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Exception = System.Exception;
+using PowerPad.Core.Models.AI;
+using PowerPad.Core.Models.Config;
+using PowerPad.Core.Contracts;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.AI
 {
-    public interface IOllamaService
+    public interface IOllamaService : IAIService
     {
         Task<OllamaStatus> GetStatus();
-        Task<IEnumerable<AIModel>> GetAvailableModels();
-        IChatClient? ChatClient(AIModel model);
     }
 
     public class OllamaService : IOllamaService

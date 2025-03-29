@@ -1,7 +1,7 @@
 ﻿using PowerPad.Core.Contracts;
 using PowerPad.Core.Services;
 
-namespace PowerPad.Core.Models
+namespace PowerPad.Core.Models.FileSystem
 {
     public class Document : IFolderEntry
     {

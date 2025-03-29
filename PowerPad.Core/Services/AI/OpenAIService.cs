@@ -1,17 +1,15 @@
 ﻿using Microsoft.Extensions.AI;
 using OpenAI;
 using OpenAI.Models;
-using PowerPad.Core.Models;
+using PowerPad.Core.Contracts;
+using PowerPad.Core.Models.AI;
 using System.ClientModel;
-using System.Collections.ObjectModel;
 using Uri = System.Uri;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.AI
 {
-    public interface IOpenAIService
+    public interface IOpenAIService : IAIService
     {
-        Task<IEnumerable<AIModel>> GetAvaliableModels();
-        IChatClient? ChatClient(AIModel model);
     }
 
     public class OpenAIService : IOpenAIService
@@ -42,7 +40,7 @@ namespace PowerPad.Core.Services
         //    return _models;
         //}
 
-        public async Task<IEnumerable<AIModel>> GetAvaliableModels()
+        public async Task<IEnumerable<AIModel>> GetAvailableModels()
         {
             if (_openAI == null) return [];
 

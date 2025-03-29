@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.AI;
-using PowerPad.Core.Models;
+using PowerPad.Core.Models.AI;
 using ChatRole = Microsoft.Extensions.AI.ChatRole;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.AI
 {
-    public interface IAIService
+    public interface IChatService
     {
         void SetDefaultModel(AIModel defaultModel);
         void SetDefaultParameters(AIParameters? defaultConfig);
@@ -14,7 +14,7 @@ namespace PowerPad.Core.Services
         IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default);
     }
 
-    public class AIService : IAIService
+    public class ChatService : IChatService
     {
         private AIModel? _defaultModel;
         private AIParameters? _defaultParameters;
@@ -23,7 +23,7 @@ namespace PowerPad.Core.Services
         private readonly IAzureAIService _azureAIService;
         private readonly IOpenAIService _openAIService;
 
-        public AIService(IOllamaService ollamaService, IAzureAIService azureAIService, IOpenAIService openAIService)
+        public ChatService(IOllamaService ollamaService, IAzureAIService azureAIService, IOpenAIService openAIService)
         {
             _ollamaService = ollamaService;
             _azureAIService = azureAIService;

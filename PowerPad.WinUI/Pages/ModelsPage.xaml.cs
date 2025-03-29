@@ -3,8 +3,8 @@ using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.Pages.Providers;
-using PowerPad.Core.Models;
 using PowerPad.WinUI.ViewModels.Settings;
+using PowerPad.Core.Models.AI;
 
 namespace PowerPad.WinUI.Pages
 {
@@ -40,7 +40,7 @@ namespace PowerPad.WinUI.Pages
                     NavFrame.Navigate(typeof(HuggingFaceModelsPage));
                     break;
                 case ModelProvider.GitHub:
-                    NavFrame.Navigate(typeof(AzureAIModelsPage));
+                    NavFrame.Navigate(typeof(GitHubModelsPage));
                     break;
                 case ModelProvider.OpenAI:
                     NavFrame.Navigate(typeof(OpenAIModelsPage));

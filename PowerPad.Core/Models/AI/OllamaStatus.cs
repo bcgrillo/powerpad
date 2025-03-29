@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PowerPad.Core.Models
+namespace PowerPad.Core.Models.Config
 {
     public enum OllamaStatus
     {

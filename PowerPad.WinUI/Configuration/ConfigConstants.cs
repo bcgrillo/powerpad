@@ -1,4 +1,4 @@
-﻿using PowerPad.Core.Models;
+﻿using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
@@ -50,7 +50,7 @@ namespace PowerPad.WinUI.Configuration
             {
                 var defaultModelSettings = new ModelsSettingsViewModel()
                 {
-                    DefaultModel = new(new AIModel("gemma3:latest", ModelProvider.Ollama, 1000), true),
+                    DefaultModel = new(new AIModel("gemma3:latest", ModelProvider.Ollama, 3338801718), true),
                     DefaultParameters = new AIParametersViewModel(new AIParameters()),
                     AvailableModels = []
                 };

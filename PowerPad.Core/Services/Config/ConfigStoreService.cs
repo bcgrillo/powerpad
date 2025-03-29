@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Timer = System.Timers.Timer;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.Config
 {
     public interface IConfigStoreService
     {

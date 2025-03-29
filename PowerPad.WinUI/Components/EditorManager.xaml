@@ -4,6 +4,5 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Components">
     <Grid x:Name="EditorGrid">
-        <!-- Editors will be dynamically added from the code behind -->
     </Grid>
 </UserControl>

@@ -24,6 +24,8 @@ using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Dialogs;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.WinUI.ViewModels.Settings;
+using PowerPad.Core.Services.Config;
+using PowerPad.Core.Services.FileSystem;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

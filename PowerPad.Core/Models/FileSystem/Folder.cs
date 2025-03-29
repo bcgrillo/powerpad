@@ -1,4 +1,5 @@
 ﻿using PowerPad.Core.Contracts;
+using PowerPad.Core.Models.FileSystem;
 using System.Collections.ObjectModel;
 
 namespace PowerPad.Core.Models
