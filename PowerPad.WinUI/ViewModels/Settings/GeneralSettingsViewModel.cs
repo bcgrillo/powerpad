@@ -41,17 +41,19 @@ namespace PowerPad.WinUI.ViewModels.Settings
             {
                 case nameof(OllamaConfig):
                     if (OllamaConfig != null)
-                        OllamaConfig.PropertyChanged += (s, e) => OnPropertyChanged($"{nameof(OllamaConfig)}.{e.PropertyName}");
+                        OllamaConfig.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
                 case nameof(AzureAIConfig):
                     if (AzureAIConfig != null)
-                        AzureAIConfig.PropertyChanged += (s, e) => OnPropertyChanged($"{nameof(AzureAIConfig)}.{e.PropertyName}");
+                        AzureAIConfig.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
                 case nameof(OpenAIConfig):
                     if (OpenAIConfig != null)
-                        OpenAIConfig.PropertyChanged += (s, e) => OnPropertyChanged($"{nameof(OpenAIConfig)}.{e.PropertyName}");
+                        OpenAIConfig.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
             }
         }
+
+        private void SecondaryPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
     };
 }

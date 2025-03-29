@@ -51,6 +51,8 @@ namespace PowerPad.WinUI.Configuration
                 var defaultModelSettings = new ModelsSettingsViewModel()
                 {
                     DefaultModel = new(new AIModel("gemma3:latest", ModelProvider.Ollama, 1000), true),
+                    DefaultParameters = new AIParametersViewModel(new AIParameters()),
+                    AvailableModels = []
                 };
 
                 defaultModelSettings.AvailableModels.Add(defaultModelSettings.DefaultModel);

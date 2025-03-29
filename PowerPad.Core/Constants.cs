@@ -14,7 +14,8 @@ namespace PowerPad.Core
         {
             WriteIndented = true,
             Converters = { new JsonStringEnumConverter() },
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            //IncludeFields = true,
         };
     }
 }

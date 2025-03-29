@@ -61,9 +61,6 @@ namespace PowerPad.WinUI.Pages
         {
             NavView.SelectedItem = NavView.MenuItems
                 .FirstOrDefault(mi => ((NavigationViewItem)mi).Visibility == Visibility.Visible);
-
-            if (NavView.SelectedItem != null)
-                NavigateToPage((ModelProvider)(NavView.SelectedItem as NavigationViewItem)!.Tag);
         }
     }
 }

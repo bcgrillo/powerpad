@@ -9,7 +9,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         private readonly AIParameters _aiParameters = aiParameters;
 
         [JsonConstructor]
-        public AIParametersViewModel(string? SystemPrompt, float? Temperature, int? TopP, int? MaxOutputTokens, int? MaxConversationLength)
+        public AIParametersViewModel(string? SystemPrompt = null, float? Temperature = null, int? TopP = null, int? MaxOutputTokens = null, int? MaxConversationLength = null)
             : this(new AIParameters
             {
                 SystemPrompt = SystemPrompt,

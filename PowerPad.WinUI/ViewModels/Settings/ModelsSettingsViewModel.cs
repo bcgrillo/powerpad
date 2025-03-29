@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
@@ -16,16 +17,32 @@ namespace PowerPad.WinUI.ViewModels.Settings
         private AIModelViewModel? _defaultModel;
 
         [ObservableProperty]
-        private AIParametersViewModel? _defaultParameters;
+        private bool _sendDefaultParameters;
 
-        public ObservableCollection<AIModelViewModel> AvailableModels { get; }
+        public required AIParametersViewModel DefaultParameters
+        { 
+            get;
+            init
+            {
+                field = value;
+                field.PropertyChanged += SecondaryPropertyChangedHandler;
+            }
+        }
+
+        public required ObservableCollection<AIModelViewModel> AvailableModels
+        {
+            get;
+            init
+            {
+                field = value;
+                field.CollectionChanged += CollectionChangedHandler;
+                foreach (AIModelViewModel model in field) model.PropertyChanged += CollectionPropertyChangedHandler;
+            }
+        }
 
         public ModelsSettingsViewModel()
         {
             PropertyChanged += PropertyChangedHandler;
-
-            AvailableModels = [];
-            AvailableModels.CollectionChanged += CollectionChangedHandler;
         }
 
         private void PropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
@@ -34,14 +51,12 @@ namespace PowerPad.WinUI.ViewModels.Settings
             {
                 case nameof(DefaultModel):
                     if (DefaultModel != null)
-                        DefaultModel.PropertyChanged += (s, e) => OnPropertyChanged($"{nameof(DefaultModel)}.{e.PropertyName}");
-                    break;
-                case nameof(DefaultParameters):
-                    if (DefaultParameters != null)
-                        DefaultParameters.PropertyChanged += (s, e) => OnPropertyChanged($"{nameof(DefaultParameters)}.{e.PropertyName}");
+                        DefaultModel.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
             }
         }
+
+        private void SecondaryPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
 
         private void CollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
@@ -64,9 +79,6 @@ namespace PowerPad.WinUI.ViewModels.Settings
             else throw new NotImplementedException("Only Add and Remove actions are supported.");
         }
 
-        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
-        {
-            OnPropertyChanged($"{nameof(AvailableModels)}");
-        }
+        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
     }
 }
