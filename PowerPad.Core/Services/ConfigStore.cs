@@ -12,7 +12,7 @@ namespace PowerPad.Core.Services
         T? TryGet<T>(Enum key);
     }
 
-    internal struct ConfigEntry(string value, bool dirty)
+    internal class ConfigEntry(string value, bool dirty)
     {
         public string Value { get; set; } = value;
         public bool Dirty { get; set; } = dirty;
@@ -45,7 +45,7 @@ namespace PowerPad.Core.Services
             {
                 if (_store.TryGetValue(key.ToString(), out var config))
                 {
-                    return JsonSerializer.Deserialize<T>(config.Value);
+                    return JsonSerializer.Deserialize<T>(config.Value, JSON_SERIALIZER_OPTIONS);
                 }
             }
             catch (Exception)
@@ -58,7 +58,7 @@ namespace PowerPad.Core.Services
 
         public T Get<T>(Enum key)
         {
-            return JsonSerializer.Deserialize<T>(_store[key.ToString()].Value)
+            return JsonSerializer.Deserialize<T>(_store[key.ToString()].Value, JSON_SERIALIZER_OPTIONS)
                 ?? throw new NullReferenceException($"Config value for key '{key}' is null.");
         }
 

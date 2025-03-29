@@ -2,7 +2,7 @@
 using Microsoft.Extensions.AI;
 using System;
 
-namespace PowerPad.WinUI.ViewModels
+namespace PowerPad.WinUI.ViewModels.Chat
 {
     public partial class MessageViewModel : ObservableObject
     {

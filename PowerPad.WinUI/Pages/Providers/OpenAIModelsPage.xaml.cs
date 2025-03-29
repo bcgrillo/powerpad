@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.WinUI.ViewModels;
 using System;
 using Microsoft.UI.Xaml;
 using System.ComponentModel;
+using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
@@ -16,31 +16,13 @@ namespace PowerPad.WinUI.Pages.Providers
             this.InitializeComponent();
 
             _openAI = new OpenAIViewModel();
-
-            _openAI.PropertyChanged += OpenAI_PropertyChanged;
-
-            UpdateLoadingState();
         }
 
-        private void OpenAI_PropertyChanged(object? _, PropertyChangedEventArgs e)
+        private void SetDefault_Click(object sender, RoutedEventArgs __)
         {
-            if (e.PropertyName == nameof(_openAI.Models)) UpdateLoadingState();
-        }
+            var aiModel = (AIModelViewModel)((Button)sender).DataContext;
 
-        private void UpdateLoadingState()
-        {
-            if (_openAI.Models == null)
-            {
-                LoadingIndicator.Visibility = Visibility.Visible;
-                LoadingText.Visibility = Visibility.Visible;
-                ModelsScrollViewer.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                LoadingIndicator.Visibility = Visibility.Collapsed;
-                LoadingText.Visibility = Visibility.Collapsed;
-                ModelsScrollViewer.Visibility = Visibility.Visible;
-            }
+            _openAI.SetDefaultModelCommand.Execute(aiModel.GetModel());
         }
     }
 }

@@ -60,7 +60,7 @@
                                 <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.OllamaEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" />
                             </StackPanel>
                             <toolkit:SettingsExpander.Items>
                                 <toolkit:SettingsCard>
@@ -125,7 +125,7 @@
                                 <ImageIcon Source="{ThemeResource AzureAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.AzureAIEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                             <toolkit:SettingsExpander.Items>
                                 <toolkit:SettingsCard>
@@ -185,7 +185,7 @@
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.OpenAIEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                             <toolkit:SettingsExpander.Items>
                                 <toolkit:SettingsCard>

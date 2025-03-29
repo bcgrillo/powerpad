@@ -108,7 +108,7 @@ namespace PowerPad.WinUI
                 if (_activePage != null)
                 {
                     _activePage.NavigationVisibilityChanged += NavigationVisibilityChanged;
-                    (NavFrame.Content as Page)!.Loaded += (sender, args) => NavigationVisibilityChanged(null, null!);
+                    (NavFrame.Content as Page)!.Loaded += (s, e) => NavigationVisibilityChanged(null, null!);
                 }
             }
 

@@ -9,6 +9,8 @@ using PowerPad.Core.Services;
 using Microsoft.Extensions.AI;
 using Microsoft.UI.Input;
 using PowerPad.WinUI.Dialogs;
+using PowerPad.WinUI.ViewModels.FileSystem;
+using PowerPad.WinUI.ViewModels.Chat;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

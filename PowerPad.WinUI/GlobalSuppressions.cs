@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Interoperability", "CA1416:Validar la compatibilidad de la plataforma", Justification = "<pendiente>", Scope = "member", Target = "~P:PowerPad.WinUI.ViewModels.AIModelViewModel.Name")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validar la compatibilidad de la plataforma", Justification = "<pendiente>", Scope = "Module")]

@@ -102,7 +102,6 @@ namespace PowerPad.Core.Services
             (
                 model.Name, 
                 provider,
-                false,
                 model.Size,
                 model.Name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty)
             );

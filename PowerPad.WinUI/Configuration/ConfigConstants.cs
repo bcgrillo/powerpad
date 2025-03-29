@@ -1,4 +1,6 @@
 ﻿using PowerPad.Core.Models;
+using PowerPad.WinUI.ViewModels.AI;
+using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,33 +30,35 @@ namespace PowerPad.WinUI.Configuration
                 ["gpt-4o", "gpt-4o-mini", "o3-mini", "o1-mini", "o1"];
 
             public static readonly string WorkspaceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nameof(PowerPad));
-            
-            public static readonly GeneralSettings GeneralSettings = new()
+
+            public static readonly GeneralSettingsViewModel GeneralSettings = new()
             {
                 OllamaEnabled = true,
                 AzureAIEnabled = false,
                 OpenAIEnabled = false,
 
-                OllamaConfig = new() { BaseUrl = "http://localhost:11434" },
+                OllamaConfig = new(new AIServiceConfig() { BaseUrl = "http://localhost:11434" }),
                 //TODO: Remove
-                AzureAIConfig = new() { BaseUrl = "https://models.inference.ai.azure.com", Key = "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" },
-                OpenAIConfig = new() { BaseUrl = "https://api.openai.com/v1", Key = "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" },
-                
+                AzureAIConfig = new(new AIServiceConfig() { BaseUrl = "https://models.inference.ai.azure.com", Key = "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" }),
+                OpenAIConfig = new(new AIServiceConfig() { BaseUrl = "https://api.openai.com/v1", Key = "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" }),
+
                 AppTheme = null, //Use system configuration
                 AcrylicBackground = true,
             };
 
-            public static readonly ModelsSettings ModelsSettings = new()
+            public static ModelsSettingsViewModel GenerateDefaultModelsSettings()
             {
-                DefaultModel = new("gemma3:latest", ModelProvider.Ollama, true, 1000),
+                var defaultModelSettings = new ModelsSettingsViewModel()
+                {
+                    DefaultModel = new(new AIModel("gemma3:latest", ModelProvider.Ollama, 1000), true),
+                };
 
-                AvailableModels =
-                [
-                    new("gemma3:latest", ModelProvider.Ollama, true, 1000),
-                    .. _initialGitHubModels.Select(m => new AIModel(m, ModelProvider.GitHub)),
-                    .. _initialOpenAIModels.Select(m => new AIModel(m, ModelProvider.GitHub))
-                ]
-            };
+                defaultModelSettings.AvailableModels.Add(defaultModelSettings.DefaultModel);
+                defaultModelSettings.AvailableModels.AddRange(_initialGitHubModels.Select(m => new AIModelViewModel(new AIModel(m, ModelProvider.GitHub), true)));
+                defaultModelSettings.AvailableModels.AddRange(_initialOpenAIModels.Select(m => new AIModelViewModel(new AIModel(m, ModelProvider.OpenAI), true)));
+
+                return defaultModelSettings;
+            }
         }
     }
 }

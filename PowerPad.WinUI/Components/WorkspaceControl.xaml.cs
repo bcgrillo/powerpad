@@ -1,24 +1,14 @@
 using System;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using PowerPad.WinUI.ViewModels;
 using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Dialogs;
-using PowerPad.Core.Services;
-using PowerPad.Core.Configuration;
 using System.Collections.Generic;
-using CommunityToolkit.WinUI;
-using static System.Net.Mime.MediaTypeNames;
-using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
 using Windows.Storage;
 using PowerPad.WinUI.Helpers;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using Windows.Web.AtomPub;
-using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
+using PowerPad.WinUI.ViewModels.FileSystem;
 
 namespace PowerPad.WinUI.Components
 {

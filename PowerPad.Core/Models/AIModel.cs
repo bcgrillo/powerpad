@@ -6,7 +6,6 @@ namespace PowerPad.Core.Models
     (
         string name,
         ModelProvider modelProvider,
-        bool enabled = false,
         long? size = null,
         string? displayName = null
     )
@@ -14,10 +13,8 @@ namespace PowerPad.Core.Models
         public string Name { get; init; } = name;
         public ModelProvider ModelProvider { get; init; } = modelProvider;
 
-        public bool Enabled { get; set; } = enabled;
         public long? Size { get; set; } = size;
-        public string? DisplayName { get; set; } = displayName;
-
+        public string? DisplayName { get; } = displayName;
 
         public virtual bool Equals(AIModel? other)
         {

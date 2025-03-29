@@ -6,7 +6,7 @@
     xmlns:local="using:PowerPad.WinUI.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:PowerPad.WinUI.ViewModels"
+    xmlns:fs="using:PowerPad.WinUI.ViewModels.FileSystem"
     xmlns:converters="using:PowerPad.WinUI.Converters"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -87,7 +87,7 @@
             CanReorderItems="True"
             DragItemsCompleted="TreeView_DragItemsCompleted">
             <TreeView.ItemTemplate>
-                <DataTemplate x:DataType="vm:FolderEntryViewModel">
+                <DataTemplate x:DataType="fs:FolderEntryViewModel">
                     <TreeViewItem 
                         ItemsSource="{x:Bind Children, Mode=OneWay}" 
                         Padding="0,0,8,0"
@@ -138,17 +138,17 @@
                     <MenuFlyout Placement="Full">
                         <MenuFlyoutItem Text="Nuevo markdown" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Tag>
-                                <vm:DocumentType>Markdown</vm:DocumentType>
+                                <fs:DocumentType>Markdown</fs:DocumentType>
                             </MenuFlyoutItem.Tag>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem Text="Nueva lista" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Tag>
-                                <vm:DocumentType>ToDo</vm:DocumentType>
+                                <fs:DocumentType>ToDo</fs:DocumentType>
                             </MenuFlyoutItem.Tag>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem Text="Nueva búsqueda" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Tag>
-                                <vm:DocumentType>Search</vm:DocumentType>
+                                <fs:DocumentType>Search</fs:DocumentType>
                             </MenuFlyoutItem.Tag>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem Text="Nueva carpeta" Click="MenuFlyoutItem_Click"/>

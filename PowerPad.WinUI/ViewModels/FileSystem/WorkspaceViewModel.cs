@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
@@ -8,7 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
 
-namespace PowerPad.WinUI.ViewModels
+namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public partial class WorkspaceViewModel : ObservableObject
     {
@@ -20,8 +19,7 @@ namespace PowerPad.WinUI.ViewModels
         [ObservableProperty]
         private FolderEntryViewModel _root;
 
-        [ObservableProperty]
-        private ObservableCollection<string> _recentlyWorkspaces;
+        public ObservableCollection<string> RecentlyWorkspaces { get; }
 
         public IRelayCommand OpenWorkspaceCommand { get; }
 
@@ -42,9 +40,8 @@ namespace PowerPad.WinUI.ViewModels
 
             OpenWorkspaceCommand = new RelayCommand<string>(OpenWorkspace);
 
-            var recentlyWorkspaces = _appConfigStore.Get<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces);
-
-            _recentlyWorkspaces = [.. recentlyWorkspaces];
+            //TODO: Initialize the recently workspaces with an specific folder
+            RecentlyWorkspaces = _appConfigStore.TryGet<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces) ?? [];
         }
 
         private void MoveEntry(MoveEntryParameters? parameters)

@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Contracts;
@@ -7,9 +6,8 @@ using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Messages;
 using System;
-using System.Windows.Input;
 
-namespace PowerPad.WinUI.ViewModels
+namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public partial class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {

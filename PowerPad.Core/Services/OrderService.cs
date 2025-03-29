@@ -10,7 +10,7 @@ namespace PowerPad.Core.Services
         void LoadOrderRecursive(Folder root);
         void UpdateOrderAfterCreation(Folder parentFolder, string newEntryName);
         void UpdateOrderAfterDeletion(Folder parentFolder, string deletedEntryName);
-        void UpdateOrderAfterRename(Folder parentFolder, string entryNewName, string entryOldName);
+        void UpdateOrderAfterRename(Folder parentFolder, string entryOldName, string entryNewName);
         void UpdateOrderAfterMove(Folder sourceFolder, Folder? targetFolder, string movedEntryName, int newPosition);
     }
 
@@ -47,7 +47,7 @@ namespace PowerPad.Core.Services
             SaveOrder(parentFolder, orderedEntries);
         }
 
-        public void UpdateOrderAfterRename(Folder parentFolder, string entryNewName, string entryOldName)
+        public void UpdateOrderAfterRename(Folder parentFolder, string entryOldName, string entryNewName)
         {
             var orderedEntries = LoadOrder(parentFolder);
 

@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Contracts;
@@ -12,7 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace PowerPad.WinUI.ViewModels
+namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public partial class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
@@ -29,8 +28,7 @@ namespace PowerPad.WinUI.ViewModels
         [ObservableProperty]
         private EntryType _type;
 
-        [ObservableProperty]
-        private ObservableCollection<FolderEntryViewModel>? _children;
+        public ObservableCollection<FolderEntryViewModel> Children { get; }
 
         public bool IsFolder => Type == EntryType.Folder;
 
@@ -88,6 +86,9 @@ namespace PowerPad.WinUI.ViewModels
 
             _documentType = documentType;
             Glyph = documentType.ToGlyph();
+
+            Children = [];
+            Children.CollectionChanged += (s, e) => throw new InvalidOperationException("Documents cannot have child elements");
 
             DeleteCommand = new RelayCommand(Delete);
             RenameCommand = new RelayCommand<string>(Rename);

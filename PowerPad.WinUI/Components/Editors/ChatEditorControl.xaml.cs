@@ -13,12 +13,11 @@ using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Collections.ObjectModel;
 using System.Threading;
-using Microsoft.UI.Input;
 using PowerPad.WinUI.Dialogs;
-using CommunityToolkit.WinUI.Animations;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using static PowerPad.Core.Constants;
+using PowerPad.WinUI.ViewModels.FileSystem;
+using PowerPad.WinUI.ViewModels.Chat;
+using PowerPad.WinUI.Helpers;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -28,7 +27,7 @@ namespace PowerPad.WinUI.Components.Editors
         private ScrollViewer? _scrollViewer;
 
         private DocumentViewModel _document;
-        private ObservableCollection<MessageViewModel>? _messages;
+        private readonly ObservableCollection<MessageViewModel> _messages;
 
         private readonly IAIService _aiService;
 
@@ -42,6 +41,7 @@ namespace PowerPad.WinUI.Components.Editors
 
             _document = documentEntry.ToDocumentViewModel(this);
             _aiService = aiService;
+            _messages = [];
         }
 
         public override string GetContent()
@@ -71,7 +71,7 @@ namespace PowerPad.WinUI.Components.Editors
 
             chatMessages ??= [];
 
-            _messages = [.. chatMessages];
+            _messages.AddRange(chatMessages);
         }
 
         private void EditableTextBlock_PointerPressed(object _, PointerRoutedEventArgs __)
@@ -130,7 +130,7 @@ namespace PowerPad.WinUI.Components.Editors
         public override void Dispose()
         {
             _document = null!;
-            _messages = null;
+            _messages.Clear();
         }
 
         private void SendBtn_Click(object _, RoutedEventArgs __)

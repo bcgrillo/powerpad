@@ -6,7 +6,7 @@
     xmlns:local="using:PowerPad.WinUI.Components.Editors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:PowerPad.WinUI.ViewModels"
+    xmlns:chat="using:PowerPad.WinUI.ViewModels.Chat"
     mc:Ignorable="d">
     <local:EditorControl.Resources>
         <Style TargetType="TextBox" x:Key="TransparentTextBoxStyle" BasedOn="{StaticResource DefaultTextBoxStyle}">
@@ -17,7 +17,7 @@
             x:Key="ChatTemplateSelector"
             AssistantTemplate="{StaticResource AssistantDataTemplate}"
             UserTemplate="{StaticResource UserDataTemplate}" />
-        <DataTemplate x:Key="UserDataTemplate" x:DataType="vm:MessageViewModel">
+        <DataTemplate x:Key="UserDataTemplate" x:DataType="chat:MessageViewModel">
             <StackPanel
                 MaxWidth="486"
                 Padding="12"
@@ -38,7 +38,7 @@
                     Text="{x:Bind DateTime}" />
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="AssistantDataTemplate" x:DataType="vm:MessageViewModel">
+        <DataTemplate x:Key="AssistantDataTemplate" x:DataType="chat:MessageViewModel">
             <Grid Margin="0,4" HorizontalAlignment="Left">
                 <StackPanel
                     MaxWidth="486"

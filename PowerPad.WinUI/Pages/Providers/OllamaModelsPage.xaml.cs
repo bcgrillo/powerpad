@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using System.ComponentModel;
 using System.Linq;
 using System.Collections.Generic;
+using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
@@ -19,31 +20,13 @@ namespace PowerPad.WinUI.Pages.Providers
             this.InitializeComponent();
 
             _ollama = new OllamaViewModel();
-
-            _ollama.PropertyChanged += Ollama_PropertyChanged;
-
-            UpdateLoadingState();
         }
 
-        private void Ollama_PropertyChanged(object? _, PropertyChangedEventArgs e)
+        private void SetDefault_Click(object sender, RoutedEventArgs __)
         {
-            if (e.PropertyName == nameof(_ollama.Models)) UpdateLoadingState();
-        }
+            var aiModel = (AIModelViewModel)((Button)sender).DataContext;
 
-        private void UpdateLoadingState()
-        {
-            if (_ollama.Models == null)
-            {
-                LoadingIndicator.Visibility = Visibility.Visible;
-                LoadingText.Visibility = Visibility.Visible;
-                ModelsScrollViewer.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                LoadingIndicator.Visibility = Visibility.Collapsed;
-                LoadingText.Visibility = Visibility.Collapsed;
-                ModelsScrollViewer.Visibility = Visibility.Visible;
-            }
+            _ollama.SetDefaultModelCommand.Execute(aiModel.GetModel());
         }
     }
 }

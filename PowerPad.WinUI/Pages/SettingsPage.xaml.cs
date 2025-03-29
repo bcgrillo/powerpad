@@ -1,14 +1,5 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Markup;
-using System;
-using PowerPad.Core.Services;
-using PowerPad.Core.Models;
-using System.IO;
-using PowerPad.WinUI.Components;
-using PowerPad.WinUI.ViewModels;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using Microsoft.UI.Xaml.Controls;
+using PowerPad.WinUI.ViewModels.Settings;
 
 namespace PowerPad.WinUI.Pages
 {

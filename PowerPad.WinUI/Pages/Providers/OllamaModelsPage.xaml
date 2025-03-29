@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:vm="using:PowerPad.WinUI.ViewModels"
+    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
     <Grid>
@@ -27,99 +27,41 @@
         </StackPanel>
 
         <Grid Grid.Row="1">
-            <ProgressRing 
-                x:Name="LoadingIndicator" 
-                IsActive="True" 
-                Width="50" 
-                Height="50" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center"/>
-            <TextBlock 
-                x:Name="LoadingText" 
-                Text="Cargando modelos..." 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center" 
-                Margin="0,120,0,0"/>
-
             <ScrollViewer 
-                x:Name="ModelsScrollViewer" 
-                Visibility="Collapsed">
+                x:Name="ModelsScrollViewer">
                 <Grid Padding="36,0,36,36">
                     <StackPanel
-                            MaxWidth="1000"
-                            HorizontalAlignment="Stretch">
-
+                        MaxWidth="1000"
+                        HorizontalAlignment="Stretch">
                         <ItemsRepeater ItemsSource="{x:Bind _ollama.OllamaModels, Mode=OneWay}">
                             <ItemsRepeater.ItemTemplate>
-
-                                <DataTemplate x:DataType="vm:AIModelViewModel">
-
-                                    <toolkit:SettingsExpander
-                                            x:Name="ModelsExpander"
-                                            AutomationProperties.AccessibilityView="Raw"
-                                            Header="{x:Bind Name}"
-                                            Description="{x:Bind ModelStatus}"
-                                            HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
-                                            Margin="0,0,0,4">
+                                <DataTemplate x:DataType="ai:AIModelViewModel">
+                                    <toolkit:SettingsCard
+                                        x:Name="ModelsExpander"
+                                        AutomationProperties.AccessibilityView="Raw"
+                                        Header="{x:Bind Name}"
+                                        Description=""
+                                        HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
+                                        Margin="0,0,0,4">
                                         <StackPanel Orientation="Horizontal" Spacing="4">
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Text="{x:Bind SizeToString()}" />
+                                                Text="{x:Bind SizeAsString}" />
                                             <Button
-                                                AutomationProperties.Name="Delete"
                                                 Content="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
                                                 Tag="{x:Bind}"
-                                                ToolTipService.ToolTip="Delete" />
+                                                ToolTipService.ToolTip="Eliminar" />
                                             <Button
-                                                AutomationProperties.Name="SetDefault"
                                                 Content="{ui:FontIcon Glyph=&#xE718;,FontSize=14}"
-                                                Command="{x:Bind SetDefaultModelCommand}"
+                                                Click="SetDefault_Click"
                                                 ToolTipService.ToolTip="Establecer como predeterminado" />
                                         </StackPanel>
-                                        <!--<toolkit:SettingsExpander.ItemsHeader>
-                                            <toolkit:SettingsCard
-                                                    x:Name="totalCacheCard"
-                                                    BorderThickness="0"
-                                                    CornerRadius="0"
-                                                    Header="Total cache">
-                                                <StackPanel
-                                                        Margin="0,0,16,0"
-                                                        Orientation="Horizontal"
-                                                        Spacing="8">
-                                                    <TextBlock
-                                                            x:Name="TotalCacheTxt"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                                    <Button
-                                                            AutomationProperties.Name="Clear cache"
-                                                            Content="Clear"
-                                                            ToolTipService.ToolTip="Clear cache" />
-                                                </StackPanel>
-                                            </toolkit:SettingsCard>
-                                        </toolkit:SettingsExpander.ItemsHeader>
-                                        <toolkit:SettingsExpander.Items>
-                                            <toolkit:SettingsCard Header="{x:Bind Name}">
-                                                <toolkit:SettingsCard.Description>
-                                                    <TextBlock Text="{x:Bind ModelStatus}" TextWrapping="Wrap" />
-                                                </toolkit:SettingsCard.Description>
-                                                <StackPanel Orientation="Horizontal" Spacing="12">
-                                                    <TextBlock
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                            Text="xxx" />
-
-                                                </StackPanel>
-                                            </toolkit:SettingsCard>
-                                        </toolkit:SettingsExpander.Items>-->
-
-                                    </toolkit:SettingsExpander>
+                                    </toolkit:SettingsCard>
 
                                 </DataTemplate>
                             </ItemsRepeater.ItemTemplate>
-
                         </ItemsRepeater>
-
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

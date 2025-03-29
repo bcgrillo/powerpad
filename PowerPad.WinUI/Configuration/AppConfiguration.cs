@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml;
 using PowerPad.Core.Models;
 using PowerPad.Core.Services;
+using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +36,7 @@ namespace PowerPad.WinUI.Configuration
 
                 var ollama = new OllamaService();
 
-                if (config != null) ollama.Initialize(config);
+                if (config != null) ollama.Initialize(config.GetModel());
 
                 return ollama;
             });
@@ -49,7 +50,7 @@ namespace PowerPad.WinUI.Configuration
 
                 var azureAI = new AzureAIService();
 
-                if (config != null) azureAI.Initialize(config);
+                if (config != null) azureAI.Initialize(config.GetModel());
 
                 return azureAI;
             });
@@ -63,7 +64,7 @@ namespace PowerPad.WinUI.Configuration
 
                 var openAI = new OpenAIService();
 
-                if (config != null) openAI.Initialize(config);
+                if (config != null) openAI.Initialize(config.GetModel());
 
                 return openAI;
             });
@@ -81,8 +82,8 @@ namespace PowerPad.WinUI.Configuration
 
                 var modelSettings = GetModelSettings(app.AppConfigStore);
 
-                if (modelSettings.DefaultModel != null) aiService.SetDefaultModel(modelSettings.DefaultModel);
-                if (modelSettings.DefaultParameters != null) aiService.SetDefaultParameters(modelSettings.DefaultParameters);
+                if (modelSettings.DefaultModel != null) aiService.SetDefaultModel(modelSettings.DefaultModel.GetModel());
+                if (modelSettings.DefaultParameters != null) aiService.SetDefaultParameters(modelSettings.DefaultParameters.GetModel());
 
                 return aiService;
             });
@@ -109,9 +110,9 @@ namespace PowerPad.WinUI.Configuration
             return recentlyWorkspaces.First();
         }
 
-        private static GeneralSettings GetGeneralSettings(IConfigStore config)
+        private static GeneralSettingsViewModel GetGeneralSettings(IConfigStore config)
         {
-            var general = config.TryGet<GeneralSettings>(StoreKey.GeneralSettings);
+            var general = config.TryGet<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
 
             if (general == null)
             {
@@ -122,13 +123,13 @@ namespace PowerPad.WinUI.Configuration
             return general;
         }
 
-        private static ModelsSettings GetModelSettings(IConfigStore config)
+        private static ModelsSettingsViewModel GetModelSettings(IConfigStore config)
         {
-            var models = config.TryGet<ModelsSettings>(StoreKey.ModelsSettings);
+            var models = config.TryGet<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
 
             if (models == null)
             {
-                models = StoreDefault.ModelsSettings;
+                models = StoreDefault.GenerateDefaultModelsSettings();
                 config.Set(StoreKey.ModelsSettings, models);
             }
 

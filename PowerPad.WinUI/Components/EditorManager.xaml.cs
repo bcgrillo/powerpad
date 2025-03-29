@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Services;
 using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.Messages;
-using PowerPad.WinUI.ViewModels;
+using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
 using System.Collections.Generic;
 
