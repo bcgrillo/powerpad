@@ -20,6 +20,7 @@ namespace PowerPad.Core.Services.AI
     public interface IOllamaService : IAIService
     {
         Task<OllamaStatus> GetStatus();
+        Task<IEnumerable<AIModel>> GetAvailableModels();
     }
 
     public class OllamaService : IOllamaService
@@ -114,6 +115,18 @@ namespace PowerPad.Core.Services.AI
             _ollama.SelectedModel = model.Name;
 
             return _ollama;
+        }
+
+        public Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
+        {
+            //TODO: Implement search models
+
+            return Task.FromResult<IEnumerable<AIModel>>(
+            [
+                new AIModel(query ?? "xxx", modelProvider),
+                new AIModel("yyy", modelProvider),
+                new AIModel("zzz", modelProvider),
+            ]);
         }
     }
 }

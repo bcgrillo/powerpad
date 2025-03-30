@@ -23,10 +23,10 @@ namespace PowerPad.Core.Services.Config
 
         public ConfigStoreService()
         {
-            AppDomain.CurrentDomain.ProcessExit += async (sender, e) => await StoreConfigs();
+            AppDomain.CurrentDomain.ProcessExit += async (s, e) => await StoreConfigs();
 
             _timer = new Timer(STORE_INTERVAL);
-            _timer.Elapsed += async (sender, e) => await StoreConfigs();
+            _timer.Elapsed += async (s, e) => await StoreConfigs();
             _timer.Start();
         }
 

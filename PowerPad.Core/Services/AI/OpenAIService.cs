@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.AI;
+using OllamaSharp.Models;
 using OpenAI;
 using OpenAI.Models;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using System.ClientModel;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using Uri = System.Uri;
 
 namespace PowerPad.Core.Services.AI
@@ -24,36 +27,22 @@ namespace PowerPad.Core.Services.AI
             _openAI = new OpenAIClient(new ApiKeyCredential(config.Key), new OpenAIClientOptions { Endpoint = new Uri(config.BaseUrl) });
         }
 
-        //public IEnumerable<AIModelInfo> GetModels()
-        //{
-        //    if (_models == null)
-        //    {
-        //        _models = _configStore.TryGet<Collection<AIModelInfo>>(StoreKey.OpenAIModels);
+        public IChatClient? ChatClient(AIModel model) => _openAI?.AsChatClient(model.Name);
 
-        //        if (_models == null)
-        //        {
-        //            _models = [.. StoreDefault.InitialOpenAIModels.Select(m => new AIModelInfo(new AIModel(m, ModelProvider.OpenAI), status: ModelStatus.Available))];
-        //            _configStore.Set(StoreKey.OpenAIModels, _models);
-        //        }
-        //    }
-
-        //    return _models;
-        //}
-
-        public async Task<IEnumerable<AIModel>> GetAvailableModels()
+        public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
             if (_openAI == null) return [];
 
             var models = await _openAI.GetOpenAIModelClient().GetModelsAsync();
 
-            return models.Value.Select(m => CreateAIModel(m));
+            return string.IsNullOrEmpty(query)
+                ? models.Value.Select(CreateAIModel)
+                : models.Value.Where(m => m.Id.Contains(query)).Select(CreateAIModel);
         }
 
         private static AIModel CreateAIModel(OpenAIModel openAIModel)
         {
             return new AIModel(openAIModel.Id, ModelProvider.OpenAI);
         }
-
-        public IChatClient? ChatClient(AIModel model) => _openAI?.AsChatClient(model.Name);
     }
 }

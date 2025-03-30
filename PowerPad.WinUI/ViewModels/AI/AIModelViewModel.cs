@@ -31,6 +31,9 @@ namespace PowerPad.WinUI.ViewModels.AI
         public AIModel GetModel() => _aiModel;
 
         [JsonIgnore]
+        public string? CardName => DisplayName ?? Name;
+
+        [JsonIgnore]
         public string SizeAsString
         {
             get

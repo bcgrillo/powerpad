@@ -71,6 +71,11 @@
                     Icon="{ui:FontIcon Glyph=&#xF158;}"
                     Tag="ModelsPage"
                     PointerPressed="NavigationViewItem_PointerPressed"/>
+                <NavigationViewItem
+                    Content="Agentes"
+                    Icon="{ui:FontIcon Glyph=&#xE99A;}"
+                    Tag="AgentsPage"
+                    PointerPressed="NavigationViewItem_PointerPressed"/>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
             </NavigationView.FooterMenuItems>

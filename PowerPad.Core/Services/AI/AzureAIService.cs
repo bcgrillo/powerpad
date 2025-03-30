@@ -29,5 +29,17 @@ namespace PowerPad.Core.Services.AI
         }
 
         public IChatClient? ChatClient(AIModel model) => _azureAI?.AsChatClient(model.Name);
+
+        public Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
+        {
+            //TODO: Implement search models
+
+            return Task.FromResult<IEnumerable<AIModel>>(
+            [
+                new AIModel(query ?? "xxx", modelProvider),
+                new AIModel("yyy", modelProvider),
+                new AIModel("zzz", modelProvider),
+            ]);
+        }
     }
 }

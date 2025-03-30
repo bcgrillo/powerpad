@@ -5,7 +5,7 @@ namespace PowerPad.Core.Contracts
 {
     public interface IAIService
     {
-        Task<IEnumerable<AIModel>> GetAvailableModels();
         IChatClient? ChatClient(AIModel model);
+        Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query);
     }
 }

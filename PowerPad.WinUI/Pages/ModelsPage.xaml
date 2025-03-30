@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:m="using:PowerPad.Core.Models.AI"
+    xmlns:vm="using:PowerPad.WinUI.ViewModels.AI"
     mc:Ignorable="d">
     <Page.Resources>
         <Style TargetType="TextBlock" x:Key="WSTitleStyle" BasedOn="{StaticResource TitleTextBlockStyle}">
@@ -53,6 +54,22 @@
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                     </NavigationViewItem.Icon>
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem
+                            Content="Modelos disponibles"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.Ollama,vm:MenuOption.AvailableModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xE71D;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem
+                            Content="Añadir modelos"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.Ollama,vm:MenuOption.AddModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xECC8;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
                 <NavigationViewItem
                     x:Name="HuggingFaceMenuItem"
@@ -62,6 +79,22 @@
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource HuggingFaceSvg}"/>
                     </NavigationViewItem.Icon>
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem
+                            Content="Modelos disponibles"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.HuggingFace,vm:MenuOption.AvailableModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xE71D;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem
+                            Content="Añadir modelos"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.HuggingFace,vm:MenuOption.AddModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xECC8;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
                 <NavigationViewItem
                     x:Name="GitHubMenuItem"
@@ -71,6 +104,22 @@
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource GithubSvg}"/>
                     </NavigationViewItem.Icon>
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem
+                            Content="Modelos disponibles"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.GitHub,vm:MenuOption.AvailableModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xE71D;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem
+                            Content="Añadir modelos"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.GitHub,vm:MenuOption.AddModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xECC8;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
                 <NavigationViewItem
                     x:Name="OpenAIMenuItem"
@@ -80,20 +129,24 @@
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                     </NavigationViewItem.Icon>
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem
+                            Content="Modelos disponibles"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.OpenAI,vm:MenuOption.AvailableModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xE71D;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem
+                            Content="Añadir modelos"
+                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.OpenAI,vm:MenuOption.AddModels)}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="&#xECC8;" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
-            <NavigationView.PaneFooter>
-                <Button
-                    Margin="4,8,4,-4"
-                    Height="36"
-                    HorizontalAlignment="Stretch"
-                    BorderThickness="0">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon FontSize="16" Glyph="&#xE710;" />
-                        <TextBlock Text="Añadir modelo" />
-                    </StackPanel>
-                </Button>
-            </NavigationView.PaneFooter>
             <Frame x:Name="NavFrame"/>
         </NavigationView>
     </Grid>

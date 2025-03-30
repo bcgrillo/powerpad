@@ -36,13 +36,14 @@ namespace PowerPad.WinUI
         private readonly SystemBackdropConfiguration? _configurationSource;
 
         private string? _activePageName;
-        private INavigationPage? _activePage;
+        private INavigationPage? _activeNavPage;
 
         private readonly Dictionary<string, Type> _navigation = new()
         {
             { nameof(WorkspacePage), typeof(WorkspacePage) },
             { nameof(ModelsPage), typeof(ModelsPage) },
             { nameof(SettingsPage), typeof(SettingsPage) },
+            { nameof(AgentsPage), typeof(AgentsPage) },
         };
 
         public MainWindow()
@@ -51,7 +52,6 @@ namespace PowerPad.WinUI
             SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            NavigateToPage(nameof(WorkspacePage));
 
             if (DesktopAcrylicController.IsSupported())
             {
@@ -98,26 +98,27 @@ namespace PowerPad.WinUI
         {
             ArgumentException.ThrowIfNullOrEmpty(page, nameof(page));
 
-            if (_navigation.TryGetValue(page, out Type? value) )
+            if (_activePageName != page)
             {
-                NavFrame.Navigate(value);
-
-                _activePage = NavFrame.Content as INavigationPage;
                 _activePageName = page;
 
-                if (_activePage != null)
-                {
-                    _activePage.NavigationVisibilityChanged += NavigationVisibilityChanged;
-                    (NavFrame.Content as Page)!.Loaded += (s, e) => NavigationVisibilityChanged(null, null!);
-                }
-            }
+                NavFrame.Navigate(_navigation[page]);
 
-            NavigationVisibilityChanged(null, null!);
+                _activeNavPage = NavFrame.Content as INavigationPage;
+
+                if (_activeNavPage != null)
+                {
+                    _activeNavPage.NavigationVisibilityChanged += NavigationVisibilityChanged;
+                    (NavFrame.Content as Page)!.Loaded += (s, e) => NavigationVisibilityChanged(null, null);
+                }
+
+                NavigationVisibilityChanged(null, null);
+            }
         }
 
-        private void NavigationVisibilityChanged(object? _, EventArgs __)
+        private void NavigationVisibilityChanged(object? _, EventArgs? __)
         {
-            var navWidth = _activePage?.NavigationWidth ?? 0;
+            var navWidth = _activeNavPage?.NavigationWidth ?? 0;
 
             TitleBar.Margin = new Thickness(navWidth, 0, 0, 0);
 

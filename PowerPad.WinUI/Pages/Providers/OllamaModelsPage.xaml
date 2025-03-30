@@ -29,7 +29,7 @@
 
         <Grid Grid.Row="1">
             <components:AIModelsRepeater
-                Models="{x:Bind _modelsViewModel.Models, Mode=OneWay}"
+                Models="{x:Bind _modelsViewModel.FilteredModels, Mode=OneWay}"
                 DeleteClick="Delete_Click"
                 SetDefaultClick="SetDefault_Click" />
         </Grid>

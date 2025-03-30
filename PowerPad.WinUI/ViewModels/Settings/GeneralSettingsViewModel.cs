@@ -22,7 +22,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         private AIServiceConfigViewModel? _azureAIConfig;
 
         [ObservableProperty]
-        private AIServiceConfigViewModel? _openAIConfig;
+        private AIServiceConfigViewModel? _openAIConfig; //TODO: Make readonly
 
         [ObservableProperty]
         private ApplicationTheme? _appTheme;

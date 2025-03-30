@@ -20,13 +20,15 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         private async Task RefreshModels()
         {
-            var ollamaStatus = await ((IOllamaService)_aiService).GetStatus();
+            var ollamaService = (IOllamaService)_aiService;
+
+            var ollamaStatus = await ollamaService.GetStatus();
 
             IEnumerable<AIModel> newAvailableModels;
 
             if (ollamaStatus == OllamaStatus.Online)
             {
-                newAvailableModels = await _aiService.GetAvailableModels();
+                newAvailableModels = await ollamaService.GetAvailableModels();
             }
             else
             {
@@ -53,7 +55,7 @@ namespace PowerPad.WinUI.ViewModels.AI
                 }
             }
 
-            UpdateModels();
+            FilterModels(null, null);
         }
     }
 }

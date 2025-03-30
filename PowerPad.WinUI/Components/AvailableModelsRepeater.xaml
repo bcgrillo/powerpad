@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
-    xmlns:local="using:PowerPad.WinUI.Controls">
+    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI">
     <Grid>
         <ScrollViewer x:Name="ModelsScrollViewer">
             <Grid Padding="36,0,36,36">
@@ -16,15 +15,16 @@
                                 <toolkit:SettingsCard
                                     x:Name="ModelsExpander"
                                     AutomationProperties.AccessibilityView="Raw"
-                                    Header="{x:Bind Name}"
+                                    Header="{x:Bind CardName}"
                                     Description=""
                                     HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
                                     Margin="0,0,0,4">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                         <TextBlock
                                             VerticalAlignment="Center"
-                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                             Text="{x:Bind SizeAsString}" />
+                                        <ToggleSwitch IsOn="{x:Bind Enabled, Mode=TwoWay}" />
                                         <Button
                                             Content="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
                                             Tag="{x:Bind}"
