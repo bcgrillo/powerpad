@@ -41,30 +41,45 @@ namespace PowerPad.WinUI.ViewModels.AI
             if (OllamaStatus == OllamaStatus.Online)
             {
                 newAvailableModels = await ollamaService.GetAvailableModels();
+
+                var currentAvailableModels = _settingsViewModel.Models.AvailableModels;
+
+                foreach (var newAvailableModel in newAvailableModels)
+                {
+                    if (!currentAvailableModels.Any(m => m.GetModel() == newAvailableModel))
+                    {
+                        currentAvailableModels.Add(new(newAvailableModel));
+                    }
+                }
+
+                for (int i = currentAvailableModels.Count - 1; i >= 0; i--)
+                {
+                    var currentAvailableModel = currentAvailableModels[i];
+
+                    if (currentAvailableModel.ModelProvider is ModelProvider.Ollama or ModelProvider.HuggingFace)
+                    {
+                        var newAvailableModel = newAvailableModels.FirstOrDefault(m => m == currentAvailableModel.GetModel());
+
+                        if (newAvailableModel == null)
+                        {
+                            if (!currentAvailableModel.Downloading) currentAvailableModels.RemoveAt(i);
+                        }
+                        else
+                        {
+                            currentAvailableModel.Available = true;
+                            currentAvailableModel.Downloading = false;
+                        }
+                    }
+                }
             }
             else
             {
-                newAvailableModels = [];
-            }
-
-            var currentAvailableModels = _settingsViewModel.Models.AvailableModels;
-
-            foreach (var model in newAvailableModels)
-            {
-                if (!currentAvailableModels.Any(m => m.GetModel() == model))
+                foreach (var model in _settingsViewModel.Models.AvailableModels)
                 {
-                    currentAvailableModels.Add(new(model));
-                }
-            }
-
-            for (int i = currentAvailableModels.Count - 1; i >= 0; i--)
-            {
-                var model = currentAvailableModels[i];
-                if (!newAvailableModels.Any(m => m == model.GetModel()) &&
-                    (model.ModelProvider == ModelProvider.Ollama || model.ModelProvider == ModelProvider.HuggingFace) &&
-                    model.Downloading == false)
-                {
-                    currentAvailableModels.RemoveAt(i);
+                    if (model.ModelProvider == ModelProvider.Ollama || model.ModelProvider == ModelProvider.HuggingFace)
+                    {
+                        model.Available = false;
+                    }
                 }
             }
 

@@ -6,7 +6,7 @@ namespace PowerPad.Core.Services.AI
 {
     public interface IChatService
     {
-        void SetDefaultModel(AIModel defaultModel);
+        void SetDefaultModel(AIModel? defaultModel);
         void SetDefaultParameters(AIParameters? defaultConfig);
         Task<ChatResponse> GetResponse(string message, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default);
         Task<ChatResponse> GetResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default);
@@ -14,23 +14,16 @@ namespace PowerPad.Core.Services.AI
         IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default);
     }
 
-    public class ChatService : IChatService
+    public class ChatService(IOllamaService ollamaService, IAzureAIService azureAIService, IOpenAIService openAIService) : IChatService
     {
         private AIModel? _defaultModel;
         private AIParameters? _defaultParameters;
 
-        private readonly IOllamaService _ollamaService;
-        private readonly IAzureAIService _azureAIService;
-        private readonly IOpenAIService _openAIService;
+        private readonly IOllamaService _ollamaService = ollamaService;
+        private readonly IAzureAIService _azureAIService = azureAIService;
+        private readonly IOpenAIService _openAIService = openAIService;
 
-        public ChatService(IOllamaService ollamaService, IAzureAIService azureAIService, IOpenAIService openAIService)
-        {
-            _ollamaService = ollamaService;
-            _azureAIService = azureAIService;
-            _openAIService = openAIService;
-        }
-
-        public void SetDefaultModel(AIModel defaultModel)
+        public void SetDefaultModel(AIModel? defaultModel)
         {
             _defaultModel = defaultModel;
         }

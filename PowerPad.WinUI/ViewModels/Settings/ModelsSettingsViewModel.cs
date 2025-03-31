@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
@@ -85,6 +86,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             if (DefaultModel == null || !AvailableModels.Contains(DefaultModel))
             {
                 DefaultModel = AvailableModels.FirstOrDefault();
+                App.Get<IChatService>().SetDefaultModel(DefaultModel?.GetModel());
             }
         }
     }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
+using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace PowerPad.WinUI.ViewModels.AI
             _settingsViewModel = App.Get<SettingsViewModel>();
             _modelProvider = modelProvider;
 
-            SetDefaultModelCommand = new RelayCommand<AIModelViewModel>(m => _settingsViewModel.Models.DefaultModel = m);
+            SetDefaultModelCommand = new RelayCommand<AIModelViewModel>(SetDefaultModel);
             RemoveModelCommand = new RelayCommand<AIModelViewModel>(m => _settingsViewModel.Models.AvailableModels.Remove(m!));
             AddModelCommand = new RelayCommand<AIModelViewModel>(AddModel);
             SearchModelCommand = new RelayCommand<string>(SearchModels);
@@ -63,8 +64,7 @@ namespace PowerPad.WinUI.ViewModels.AI
                 }
             }
 
-            var x = FilteredModels.Count;
-            for (int i = x - 1; i >= 0; i--)
+            for (int i = FilteredModels.Count - 1; i >= 0; i--)
             {
                 var model = FilteredModels[i];
                 if (!newAvailableModels.Any(m => m == model) && model.ModelProvider == _modelProvider)
@@ -74,7 +74,12 @@ namespace PowerPad.WinUI.ViewModels.AI
             }
         }
 
-        protected async void SearchModels(string? query)
+        private void SetDefaultModel(AIModelViewModel? aiModel)
+        {
+            App.Get<IChatService>().SetDefaultModel(aiModel?.GetModel());
+        }
+
+        private async void SearchModels(string? query)
         {
             Searching = true;
 

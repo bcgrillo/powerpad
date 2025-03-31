@@ -32,7 +32,7 @@ namespace PowerPad.WinUI.Components
 
         private void OnSetDefaultClick(object? sender, RoutedEventArgs _)
         {
-            SetDefaultClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((Button)sender!).Tag));
+            SetDefaultClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
         }
     }
 
