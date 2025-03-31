@@ -15,26 +15,49 @@
                                 <toolkit:SettingsCard
                                     x:Name="ModelsExpander"
                                     AutomationProperties.AccessibilityView="Raw"
-                                    Header="{x:Bind CardName}"
-                                    Description=""
                                     HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
                                     Margin="0,0,0,4">
+                                    <toolkit:SettingsCard.Header>
+                                        <TextBlock Text="{x:Bind CardName}"/>
+                                    </toolkit:SettingsCard.Header>
+                                    <toolkit:SettingsCard.Description>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                Text="{x:Bind SizeAsString}"/>
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                Visibility="{x:Bind Downloading, Mode=OneWay}"
+                                                Text="Descarga en curso" />
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Description>
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                            Text="{x:Bind SizeAsString}" />
-                                        <ToggleSwitch IsOn="{x:Bind Enabled, Mode=TwoWay}" />
+                                        <ToggleSwitch 
+                                            IsOn="{x:Bind Enabled, Mode=TwoWay}" 
+                                            IsEnabled="{x:Bind Available, Mode=OneWay}" 
+                                            Margin="0,0,8,0"/>
                                         <Button
-                                            Content="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
-                                            Tag="{x:Bind}"
-                                            ToolTipService.ToolTip="Eliminar"
-                                            Click="OnDeleteClick" />
-                                        <Button
-                                            Content="{ui:FontIcon Glyph=&#xE718;,FontSize=14}"
-                                            ToolTipService.ToolTip="Establecer como predeterminado"
-                                            Tag="{x:Bind}"
-                                            Click="OnSetDefaultClick" />
+                                            Content="{ui:FontIcon Glyph=&#xE712;,FontSize=14}"
+                                            ToolTipService.ToolTip="Más opciones"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent">
+                                            <Button.Flyout>
+                                                <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                                   <MenuFlyoutItem
+                                                       Text="Eliminar"
+                                                       Icon="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
+                                                       Tag="{x:Bind}"
+                                                       Click="OnDeleteClick" />
+                                                   <MenuFlyoutItem
+                                                       Text="Establecer como predeterminado"
+                                                       Icon="{ui:FontIcon Glyph=&#xE718;,FontSize=14}"
+                                                       Tag="{x:Bind}"
+                                                       IsEnabled="{x:Bind Available, Mode=OneWay}" 
+                                                       Click="OnSetDefaultClick" />
+                                               </MenuFlyout>
+                                           </Button.Flyout>
+                                        </Button>
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                             </DataTemplate>

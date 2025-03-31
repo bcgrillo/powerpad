@@ -18,14 +18,32 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         
-        <StackPanel Orientation="Horizontal" Margin="36,36,36,20">
-            <Image Source="{ThemeResource OllamaSvg}" Width="42" Height="42" Margin="0,0,24,0"/>
+        <Grid Margin="36,36,36,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Source="{ThemeResource OllamaSvg}" Width="42" Height="42" Margin="0,0,24,0"/>
             <TextBlock
+                Grid.Column="1"
                 Style="{StaticResource TitleTextBlockStyle}"
                 Text="Modelos de Ollama"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="NoWrap"/>
-        </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Height="32" Margin="0,6,6,-6" Foreground="{ThemeResource TextFillColorSecondaryBrush}">Estado Ollama: </TextBlock>
+                <TextBlock Height="32" Margin="0,6,12,-6" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind OllamaModelViewModel.OllamaStatus, Mode=OneWay}" />
+                <Button
+                    Height="32"
+                    ToolTipService.ToolTip="Refrescar"
+                    Command="{x:Bind OllamaModelViewModel.RefreshModelsCommand}">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <Grid Grid.Row="1">
             <components:AIModelsRepeater

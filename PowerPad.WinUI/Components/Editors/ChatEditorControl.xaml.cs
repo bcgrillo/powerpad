@@ -38,10 +38,10 @@ namespace PowerPad.WinUI.Components.Editors
         public ChatEditorControl(FolderEntryViewModel documentEntry, IChatService aiService)
         {
             this.InitializeComponent();
+            _messages = [];
 
             _document = documentEntry.ToDocumentViewModel(this);
             _chatService = aiService;
-            _messages = [];
         }
 
         public override string GetContent()

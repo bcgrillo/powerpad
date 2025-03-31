@@ -6,11 +6,11 @@ using System;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public abstract class AIModelsPageBase : Page, IDisposable
+    public abstract class AIModelsPageBase(AIModelsViewModelBase aIModelsViewModel) : Page, IDisposable
     {
         private bool _disposed;
 
-        protected AIModelsViewModelBase _modelsViewModel = null!;
+        protected AIModelsViewModelBase _modelsViewModel = aIModelsViewModel;
 
         protected void SetDefault_Click(object _, AIModelClickEventArgs eventArgs)
         {

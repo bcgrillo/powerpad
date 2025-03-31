@@ -25,23 +25,19 @@ namespace PowerPad.WinUI.Components
             this.InitializeComponent();
         }
 
-        private void OnDeleteClick(object? sender, RoutedEventArgs e)
+        private void OnDeleteClick(object? sender, RoutedEventArgs _)
         {
-            DeleteClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((Button)sender!).Tag));
+            DeleteClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
         }
 
-        private void OnSetDefaultClick(object? sender, RoutedEventArgs e)
+        private void OnSetDefaultClick(object? sender, RoutedEventArgs _)
         {
             SetDefaultClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((Button)sender!).Tag));
         }
     }
 
-    public class AIModelClickEventArgs : RoutedEventArgs
+    public class AIModelClickEventArgs(AIModelViewModel model) : RoutedEventArgs
     {
-        public AIModelViewModel Model { get; }
-        public AIModelClickEventArgs(AIModelViewModel model)
-        {
-            Model = model;
-        }
+        public AIModelViewModel Model { get; } = model;
     }
 }

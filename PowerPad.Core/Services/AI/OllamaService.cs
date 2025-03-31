@@ -117,16 +117,18 @@ namespace PowerPad.Core.Services.AI
             return _ollama;
         }
 
-        public Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
+        public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
             //TODO: Implement search models
+            //Remember change the name of huggingface models, and set displayname (see CreateAIModel method)
+            
+            await Task.Delay(2000);
 
-            return Task.FromResult<IEnumerable<AIModel>>(
-            [
+            return [
                 new AIModel(query ?? "xxx", modelProvider),
                 new AIModel("yyy", modelProvider),
                 new AIModel("zzz", modelProvider),
-            ]);
+            ];
         }
     }
 }

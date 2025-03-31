@@ -12,9 +12,20 @@ namespace PowerPad.WinUI.ViewModels.AI
 {
     public partial class OllamaModelsViewModel : AIModelsViewModelBase
     {
+        public OllamaStatus OllamaStatus { get; private set; }
+
+        public RelayCommand RefreshModelsCommand { get; }
+
         public OllamaModelsViewModel()
-            : base(App.Get<IOllamaService>(), ModelProvider.Ollama)
+            : this(App.Get<IOllamaService>(), ModelProvider.Ollama)
         {
+        }
+
+        protected OllamaModelsViewModel(IAIService aiService, ModelProvider modelProvider)
+            : base(aiService, modelProvider)
+        {
+            RefreshModelsCommand = new(async () => await RefreshModels());
+
             _ = RefreshModels();
         }
 
@@ -22,11 +33,12 @@ namespace PowerPad.WinUI.ViewModels.AI
         {
             var ollamaService = (IOllamaService)_aiService;
 
-            var ollamaStatus = await ollamaService.GetStatus();
+            OllamaStatus = await ollamaService.GetStatus();
+            OnPropertyChanged(nameof(OllamaStatus));
 
             IEnumerable<AIModel> newAvailableModels;
 
-            if (ollamaStatus == OllamaStatus.Online)
+            if (OllamaStatus == OllamaStatus.Online)
             {
                 newAvailableModels = await ollamaService.GetAvailableModels();
             }
@@ -49,7 +61,8 @@ namespace PowerPad.WinUI.ViewModels.AI
             {
                 var model = currentAvailableModels[i];
                 if (!newAvailableModels.Any(m => m == model.GetModel()) &&
-                    (model.ModelProvider == ModelProvider.Ollama || model.ModelProvider == ModelProvider.HuggingFace))
+                    (model.ModelProvider == ModelProvider.Ollama || model.ModelProvider == ModelProvider.HuggingFace) &&
+                    model.Downloading == false)
                 {
                     currentAvailableModels.RemoveAt(i);
                 }

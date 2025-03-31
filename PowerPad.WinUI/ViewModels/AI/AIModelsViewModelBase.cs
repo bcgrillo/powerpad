@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels.AI
 {
-    public abstract class AIModelsViewModelBase : ObservableObject, IDisposable
+    public abstract partial class AIModelsViewModelBase : ObservableObject, IDisposable
     {
         private bool _disposed;
 
@@ -22,8 +22,15 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         public IRelayCommand<AIModelViewModel> SetDefaultModelCommand { get; }
         public IRelayCommand<AIModelViewModel> RemoveModelCommand { get; }
+        public IRelayCommand<AIModelViewModel> AddModelCommand { get; }
+        public IRelayCommand<string> SearchModelCommand { get; }
 
         public ObservableCollection<AIModelViewModel> FilteredModels { get; }
+
+        public ObservableCollection<AIModelViewModel> SearchResultModels { get; }
+
+        [ObservableProperty]
+        private bool _searching;
 
         public AIModelsViewModelBase(IAIService aiService, ModelProvider modelProvider)
         {
@@ -33,11 +40,15 @@ namespace PowerPad.WinUI.ViewModels.AI
 
             SetDefaultModelCommand = new RelayCommand<AIModelViewModel>(m => _settingsViewModel.Models.DefaultModel = m);
             RemoveModelCommand = new RelayCommand<AIModelViewModel>(m => _settingsViewModel.Models.AvailableModels.Remove(m!));
+            AddModelCommand = new RelayCommand<AIModelViewModel>(AddModel);
+            SearchModelCommand = new RelayCommand<string>(SearchModels);
 
             _settingsViewModel.Models.AvailableModels.CollectionChanged += FilterModels;
 
             FilteredModels = [];
             FilterModels(null, null);
+
+            SearchResultModels = [];
         }
 
         protected void FilterModels(object? _, NotifyCollectionChangedEventArgs? __)
@@ -60,6 +71,41 @@ namespace PowerPad.WinUI.ViewModels.AI
                 {
                     FilteredModels.RemoveAt(i);
                 }
+            }
+        }
+
+        protected async void SearchModels(string? query)
+        {
+            Searching = true;
+
+            var resultModels = await _aiService.SearchModels(_modelProvider, query);
+
+            SearchResultModels.Clear();
+            SearchResultModels.AddRange(resultModels.Select(m =>
+            {
+                var existingModel = _settingsViewModel.Models.AvailableModels.FirstOrDefault(am => am.GetModel() == m);
+
+                return new AIModelViewModel
+                (
+                    m,
+                    available: existingModel?.Available ?? false,
+                    downloading: existingModel?.Downloading ?? false
+                );
+            }));
+
+            Searching = false;
+        }
+
+        private void AddModel(AIModelViewModel? aiModel)
+        {
+            ArgumentNullException.ThrowIfNull(aiModel);
+
+            if (!_settingsViewModel.Models.AvailableModels.Any(m => m == aiModel))
+            {
+                if (aiModel.ModelProvider is ModelProvider.Ollama or ModelProvider.HuggingFace) aiModel.Downloading = true;
+                else aiModel.Available = true;
+
+                _settingsViewModel.Models.AvailableModels.Add(aiModel);
             }
         }
 

@@ -5,10 +5,9 @@ namespace PowerPad.WinUI.Pages.Providers
     public sealed partial class GitHubModelsPage : AIModelsPageBase
     {
         public GitHubModelsPage()
+            : base(new GitHubModelsViewModel())
         {
             this.InitializeComponent();
-
-            _modelsViewModel = new GitHubModelsViewModel();
         }
     }
 }

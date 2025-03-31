@@ -4,11 +4,12 @@ namespace PowerPad.WinUI.Pages.Providers
 {
     public sealed partial class HuggingFaceModelsPage : AIModelsPageBase
     {
+        private HuggingFaceModelsViewModel HuggingFaceModelsViewModel => (HuggingFaceModelsViewModel)_modelsViewModel;
+
         public HuggingFaceModelsPage()
+            : base(new HuggingFaceModelsViewModel())
         {
             this.InitializeComponent();
-
-            _modelsViewModel = new HuggingFaceModelsViewModel();
         }
     }
 }

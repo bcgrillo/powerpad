@@ -5,10 +5,9 @@ namespace PowerPad.WinUI.Pages.Providers
     public sealed partial class OpenAIModelsPage : AIModelsPageBase
     {
         public OpenAIModelsPage()
+            : base(new OpenAIModelsViewModel())
         {
             this.InitializeComponent();
-
-            _modelsViewModel = new OpenAIModelsViewModel();
         }
     }
 }

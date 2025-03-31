@@ -6,17 +6,14 @@ using PowerPad.WinUI.Pages.Providers;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.AI;
-using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using PowerPad.WinUI.Helpers;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Payments;
 
 namespace PowerPad.WinUI.Pages
 {
     public sealed partial class ModelsPage : Page, INavigationPage
     {
-        private AIModelsPageBase? _currentAIModelsPage;
+        private IDisposable? _currentPage;
 
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
 
@@ -31,8 +28,10 @@ namespace PowerPad.WinUI.Pages
 
         public event EventHandler? NavigationVisibilityChanged;
 
-        private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs args)
+        private void NavView_SelectionChanged(NavigationView __, NavigationViewSelectionChangedEventArgs args)
         {
+            if (args.SelectedItem is null) return;
+
             var selectedItem = (NavigationViewItem)args.SelectedItem;
 
             var modelTag = selectedItem.Tag as ModelProvider?;
@@ -40,48 +39,67 @@ namespace PowerPad.WinUI.Pages
 
             if (optionTag.HasValue)
             {
-                switch (optionTag.Value.Option)
-                {
-                    case MenuOption.AvailableModels:
-                        NavigateToPage(optionTag.Value.ModelProvider);
-                        break;
-                    case MenuOption.AddModels:
-                        break;
-                }
+                NavigateToPage(optionTag.Value);
             }
-            else if (modelTag != null)
+            else if (modelTag.HasValue)
             {
-                foreach(NavigationViewItem item in NavView.MenuItems)
-                    if (item != selectedItem) item.IsExpanded = false;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    
+                    foreach (var item in NavView.MenuItems)
+                    {
+                        var navItem = (NavigationViewItem)item;
 
-                NavView.SelectedItem = selectedItem.MenuItems.First();
+                        if (navItem != selectedItem && navItem.IsExpanded) navItem.IsExpanded = false;
+                    }
+
+                    selectedItem.IsExpanded = true;
+                    NavView.SelectedItem = selectedItem.MenuItems.First();
+                });
             }
         }
 
-        private void NavigateToPage(ModelProvider modelProvider)
+        private void NavigateToPage(ModelsMenuOption menuOption)
         {
-            _currentAIModelsPage?.Dispose();
+            _currentPage?.Dispose();
 
-            switch (modelProvider)
+            if (menuOption.Option == MenuOption.AvailableModels)
+            { 
+                switch (menuOption.ModelProvider)
+                {
+                    case ModelProvider.Ollama:
+                        NavFrame.Navigate(typeof(OllamaModelsPage));
+                        _currentPage = (AIModelsPageBase)NavFrame.Content;
+                        break;
+                    case ModelProvider.HuggingFace:
+                        NavFrame.Navigate(typeof(HuggingFaceModelsPage));
+                        _currentPage = (AIModelsPageBase)NavFrame.Content;
+                        break;
+                    case ModelProvider.GitHub:
+                        NavFrame.Navigate(typeof(GitHubModelsPage));
+                        _currentPage = (AIModelsPageBase)NavFrame.Content;
+                        break;
+                    case ModelProvider.OpenAI:
+                        NavFrame.Navigate(typeof(OpenAIModelsPage));
+                        _currentPage = (AIModelsPageBase)NavFrame.Content;
+                        break;
+                }
+            }
+            else
             {
-                case ModelProvider.Ollama:
-                    NavFrame.Navigate(typeof(OllamaModelsPage));
-                    _currentAIModelsPage = (AIModelsPageBase)NavFrame.Content;
-                    break;
-                case ModelProvider.HuggingFace:
-                    NavFrame.Navigate(typeof(HuggingFaceModelsPage));
-                    _currentAIModelsPage = (AIModelsPageBase)NavFrame.Content;
-                    break;
-                case ModelProvider.GitHub:
-                    NavFrame.Navigate(typeof(GitHubModelsPage));
-                    _currentAIModelsPage = (AIModelsPageBase)NavFrame.Content;
-                    break;
-                case ModelProvider.OpenAI:
-                    NavFrame.Navigate(typeof(OpenAIModelsPage));
-                    _currentAIModelsPage = (AIModelsPageBase)NavFrame.Content;
-                    break;
-                default:
-                    break;
+                switch (menuOption.ModelProvider)
+                {
+                    case ModelProvider.Ollama:
+                        NavFrame.Navigate(typeof(OllamaAddModelPage));
+                        _currentPage = (OllamaAddModelPage)NavFrame.Content;
+                        break;
+                    case ModelProvider.HuggingFace:
+                        break;
+                    case ModelProvider.GitHub:
+                        break;
+                    case ModelProvider.OpenAI:
+                        break;
+                }
             }
         }
 
@@ -99,7 +117,7 @@ namespace PowerPad.WinUI.Pages
             if (firstItem != null)
             {
                 firstItem.IsExpanded = true;
-                NavView.SelectedItem = firstItem.MenuItems.FirstOrDefault();
+                NavView.SelectedItem = firstItem.MenuItems.First();
             }
         }
     }

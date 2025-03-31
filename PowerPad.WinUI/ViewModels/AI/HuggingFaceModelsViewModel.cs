@@ -1,9 +1,10 @@
 ﻿using PowerPad.Core.Models.AI;
+using PowerPad.Core.Models.Config;
 using PowerPad.Core.Services.AI;
 
 namespace PowerPad.WinUI.ViewModels.AI
 {
-    public partial class HuggingFaceModelsViewModel : AIModelsViewModelBase
+    public partial class HuggingFaceModelsViewModel : OllamaModelsViewModel
     {
         public HuggingFaceModelsViewModel()
             : base(App.Get<IOllamaService>(), ModelProvider.HuggingFace)

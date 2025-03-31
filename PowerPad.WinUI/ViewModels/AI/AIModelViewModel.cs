@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
 {
-    public partial class AIModelViewModel(AIModel aiModel, bool enabled = false) : ObservableObject
+    public partial class AIModelViewModel(AIModel aiModel, bool enabled = false, bool available = true, bool downloading = false) : ObservableObject
     {
         private readonly AIModel _aiModel = aiModel;
 
@@ -24,9 +24,17 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         private bool _enabled = enabled;
 
+        [ObservableProperty]
+        private bool _available = available;
+
+        [ObservableProperty]
+        private bool _downloading = downloading;
+
         public long? Size => _aiModel.Size;
 
         public string? DisplayName => _aiModel.DisplayName;
+
+        public bool CanAdd => !Available && !Downloading;
 
         public AIModel GetModel() => _aiModel;
 
@@ -95,5 +103,8 @@ namespace PowerPad.WinUI.ViewModels.AI
         {
             return !(left == right);
         }
+
+        partial void OnAvailableChanged(bool value) => OnPropertyChanged(nameof(CanAdd));
+        partial void OnDownloadingChanged(bool value) => OnPropertyChanged(nameof(CanAdd));
     }
 }
