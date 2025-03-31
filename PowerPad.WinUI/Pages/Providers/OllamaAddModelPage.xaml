@@ -26,7 +26,7 @@
                     Style="{StaticResource TitleTextBlockStyle}"
                     FontSize="16"
                     Margin="0,6,0,0"
-                    Text="Buscar modelos en biblioteca de Ollama"
+                    Text="Buscar modelos en la biblioteca de Ollama"
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="NoWrap"/>
             </StackPanel>
