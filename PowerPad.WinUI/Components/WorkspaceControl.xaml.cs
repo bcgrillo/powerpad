@@ -27,12 +27,11 @@ namespace PowerPad.WinUI.Components
 
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
         public event EventHandler? VisibilityChanged;
-
         public WorkspaceControl()
         {
             this.InitializeComponent();
 
-            _workspace = new WorkspaceViewModel();
+            _workspace = App.Get<WorkspaceViewModel>();
             _menuFlyoutItems = [];
 
             UpdateWorkspacesMenu();
@@ -185,6 +184,7 @@ namespace PowerPad.WinUI.Components
             if (folder != null)
             {
                 _workspace.OpenWorkspaceCommand.Execute(folder.Path);
+                ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(null));
 
                 UpdateWorkspacesMenu();
             }
@@ -193,6 +193,7 @@ namespace PowerPad.WinUI.Components
         private void OpenRecentlyFlyoutItem_Click(object sender, RoutedEventArgs _)
         {
             _workspace.OpenWorkspaceCommand.Execute(((MenuFlyoutItem)sender).Tag);
+            ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(null));
 
             UpdateWorkspacesMenu();
         }
@@ -232,8 +233,12 @@ namespace PowerPad.WinUI.Components
                 {
                     DispatcherQueue.TryEnqueue(async () =>
                     {
-                        await Task.Delay(100);
-                        entry.IsSelected = true;
+                        //TODO: Check it, sometimes the entry is not selected because treview is not loaded yet
+                        for (int i = 0; i < 5; i++)
+                        {
+                            await Task.Delay(100);
+                            entry.IsSelected = true;
+                        }
                     });
 
                     ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(entry));
@@ -278,9 +283,9 @@ namespace PowerPad.WinUI.Components
         }
     }
 
-    public class WorkspaceControlItemInvokedEventArgs(FolderEntryViewModel selectedFile) : EventArgs
+    public class WorkspaceControlItemInvokedEventArgs(FolderEntryViewModel? selectedFile) : EventArgs
     {
-        public FolderEntryViewModel SelectedFile { get; } = selectedFile;
+        public FolderEntryViewModel? SelectedFile { get; } = selectedFile;
     }
 
     public class EntryTemplateSelector : DataTemplateSelector
