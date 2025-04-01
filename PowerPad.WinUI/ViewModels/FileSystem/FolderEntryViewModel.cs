@@ -29,6 +29,12 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         [ObservableProperty]
         private EntryType _type;
 
+        [ObservableProperty]
+        private bool _isExpanded;
+
+        [ObservableProperty]
+        private bool _isSelected;
+
         public ObservableCollection<FolderEntryViewModel> Children { get; }
 
         public bool IsFolder => Type == EntryType.Folder;

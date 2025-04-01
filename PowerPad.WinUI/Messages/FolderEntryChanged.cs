@@ -8,12 +8,8 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Messages
 {
-    public class FolderEntryChanged : ValueChangedMessage<IFolderEntry>
+    public class FolderEntryChanged(IFolderEntry value) : ValueChangedMessage<IFolderEntry>(value)
     {
         public bool NameChanged { get; set; }
-
-        public FolderEntryChanged(IFolderEntry value) : base(value)
-        {
-        }
     }
 }

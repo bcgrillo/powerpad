@@ -13,9 +13,9 @@ namespace PowerPad.WinUI.Helpers
             {
                 DocumentType.Text => "Nueva nota",
                 DocumentType.Chat => "Nuevo chat",
-                DocumentType.Markdown => "Nuevo Markdown",
+                /*DocumentType.Markdown => "Nuevo Markdown",
                 DocumentType.ToDo => "Nueva lista",
-                DocumentType.Search => "Nueva búsqueda",
+                DocumentType.Search => "Nueva búsqueda",*/
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }

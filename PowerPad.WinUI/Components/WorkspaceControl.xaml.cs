@@ -9,13 +9,24 @@ using PowerPad.WinUI.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.Core.Models.FileSystem;
+using CommunityToolkit.WinUI;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using PowerPad.WinUI.Messages;
 
 namespace PowerPad.WinUI.Components
 {
-    public sealed partial class WorkspaceControl : UserControl
+    public sealed partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>
     {
         private readonly WorkspaceViewModel _workspace;
         private readonly List<MenuFlyoutItem> _menuFlyoutItems;
+
+        public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
+        public event EventHandler? VisibilityChanged;
 
         public WorkspaceControl()
         {
@@ -25,6 +36,8 @@ namespace PowerPad.WinUI.Components
             _menuFlyoutItems = [];
 
             UpdateWorkspacesMenu();
+
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         private void UpdateWorkspacesMenu()
@@ -42,14 +55,11 @@ namespace PowerPad.WinUI.Components
 
                 ToolTipService.SetToolTip(menuItem, item);
 
-                menuItem.Click += AbrirRecienteFlyoutItem_Click;
+                menuItem.Click += OpenRecentlyFlyoutItem_Click;
                 WorkspaceMenu.Items.Add(menuItem);
                 _menuFlyoutItems.Add(menuItem);
             }
         }
-
-        public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
-        public event EventHandler? VisibilityChanged;
 
         private void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs args)
         {
@@ -58,6 +68,7 @@ namespace PowerPad.WinUI.Components
             if (invokedEntry.Type == EntryType.Document)
             {
                 ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(invokedEntry));
+                _workspace.CurrentDocumentPath = invokedEntry.ModelEntry.Path;
             }
         }
 
@@ -80,38 +91,31 @@ namespace PowerPad.WinUI.Components
 
         private void NewChatButton_Click(object _, RoutedEventArgs __)
         {
-            var parent = TreeView.SelectedItem as FolderEntryViewModel;
-
-            if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
+            var parent = GetParentForNewElement();
 
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Chat));
         }
 
-        private void NewSplitButton_Click(SplitButton _, SplitButtonClickEventArgs __)
+        private void NewNoteButton_Click(object _, RoutedEventArgs __)
         {
-            var parent = TreeView.SelectedItem as FolderEntryViewModel;
-
-            if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
+            var parent = GetParentForNewElement();
 
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Text));
         }
 
-        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs __)
+        private void NewFolderButton_Click(object _, RoutedEventArgs __)
+        {
+            var parent = GetParentForNewElement();
+
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewFolder(parent, "Nueva carpeta"));
+        }
+
+        private FolderEntryViewModel? GetParentForNewElement()
         {
             var parent = TreeView.SelectedItem as FolderEntryViewModel;
-
-            if (parent != null && parent.Type != EntryType.Folder) parent = TreeView.SelectedNode.Parent.Content as FolderEntryViewModel;
-
-            var tag = ((MenuFlyoutItem)sender).Tag;
-
-            if (tag == null)
-            {
-                _workspace.NewEntryCommand.Execute(NewEntryParameters.NewFolder(parent, "Nueva carpeta"));
-            }   
-            else
-            {
-                _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, (DocumentType)tag));
-            }
+            if (parent != null && parent.Type != EntryType.Folder) parent = (FolderEntryViewModel)TreeView.SelectedNode.Parent.Content;
+            if (parent != null) parent.IsExpanded = true;
+            return parent;
         }
 
         private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs __)
@@ -164,7 +168,7 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private async void AbrirCarpetaFlyoutItem_Click(object _, RoutedEventArgs __)
+        private async void OpenFolderFlyoutItem_Click(object _, RoutedEventArgs __)
         {
             var openPicker = new FolderPicker();
 
@@ -186,11 +190,91 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void AbrirRecienteFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private void OpenRecentlyFlyoutItem_Click(object sender, RoutedEventArgs _)
         {
             _workspace.OpenWorkspaceCommand.Execute(((MenuFlyoutItem)sender).Tag);
 
             UpdateWorkspacesMenu();
+        }
+
+        private static FolderEntryViewModel? FindFolderEntryByPathRecursive(IEnumerable<FolderEntryViewModel> entries, string path)
+        {
+            foreach (var entry in entries)
+            {
+                if (entry.ModelEntry.Path == path)
+                {
+                    return entry;
+                }
+
+                if (entry.IsFolder)
+                {
+                    var result = FindFolderEntryByPathRecursive(entry.Children, path);
+
+                    if (result != null)
+                    {
+                        entry.IsExpanded = true;
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private void TreeView_Loaded(object _, RoutedEventArgs __)
+        {
+            if (_workspace.CurrentDocumentPath != null)
+            {
+                var entry = FindFolderEntryByPathRecursive(_workspace.Root.Children, _workspace.CurrentDocumentPath);
+
+                if (entry == null) _workspace.CurrentDocumentPath = null;
+                else
+                {
+                    DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        await Task.Delay(100);
+                        entry.IsSelected = true;
+                    });
+
+                    ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(entry));
+                }
+            }
+        }
+
+        private void TreeView_PointerPressed(object _, PointerRoutedEventArgs e)
+        {
+            var pointerPoint = e.GetCurrentPoint(TreeView);
+            if (pointerPoint.Properties.PointerUpdateKind != PointerUpdateKind.RightButtonPressed) ClearSelection();
+        }
+
+        private void TreeView_KeyDown(object _, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Escape) ClearSelection();
+        }
+
+        public void Receive(FolderEntryCreated message)
+        {
+            ClearSelection();
+
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(100);
+                message.Value.IsSelected = true;
+            });
+            
+            if (!message.Value.IsFolder) ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(message.Value));
+        }
+
+        private void ClearSelection() => ClearSelection(_workspace.Root.Children);
+
+        private static void ClearSelection(IEnumerable<FolderEntryViewModel> entries)
+        {
+            foreach (var entry in entries)
+            {
+                entry.IsSelected = false;
+
+                if (entry.IsFolder) ClearSelection(entry.Children);
+            }
         }
     }
 

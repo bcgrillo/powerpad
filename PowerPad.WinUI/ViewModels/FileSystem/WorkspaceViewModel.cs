@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Models;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.Messages;
 using System;
 using System.Collections.ObjectModel;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
@@ -29,6 +31,9 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public IRelayCommand NewEntryCommand { get; }
 
+        [ObservableProperty]
+        private string? _currentDocumentPath;
+
         public WorkspaceViewModel()
         {
             _workspaceService = App.Get<IWorkspaceService>();
@@ -42,8 +47,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
             OpenWorkspaceCommand = new RelayCommand<string>(OpenWorkspace);
 
-            //TODO: Initialize the recently workspaces with an specific folder
-            RecentlyWorkspaces = _appConfigStore.TryGet<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces) ?? [];
+            RecentlyWorkspaces = _appConfigStore.Get<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces);
+            CurrentDocumentPath = _appConfigStore.TryGet<string>(StoreKey.CurrentDocumentPath);
         }
 
         private void MoveEntry(MoveEntryParameters? parameters)
@@ -89,6 +94,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
             FolderEntryViewModel parent = parameters.Parent ?? Root;
 
+            FolderEntryViewModel createdEntry;
             if (parameters.Type == EntryType.Folder)
             {
                 var folderModel = (Folder)parent.ModelEntry;
@@ -97,7 +103,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
                 _workspaceService.CreateFolder(folderModel, newFolderModel);
 
-                parent.Children!.Add(new FolderEntryViewModel(newFolderModel, parent));
+                createdEntry = new FolderEntryViewModel(newFolderModel, parent);
+                parent.Children!.Add(createdEntry);
             }
             else
             {
@@ -107,8 +114,11 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
                 _workspaceService.CreateDocument(folderModel, newDocumentModel);
 
-                parent.Children!.Add(new FolderEntryViewModel(newDocumentModel, parent));
+                createdEntry = new FolderEntryViewModel(newDocumentModel, parent);
+                parent.Children!.Add(createdEntry);
             }
+
+            WeakReferenceMessenger.Default.Send(new FolderEntryCreated(createdEntry));
         }
 
         private void OpenWorkspace(string? path)
@@ -128,6 +138,11 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             }
 
             _appConfigStore.Set(StoreKey.RecentlyWorkspaces, RecentlyWorkspaces);
+        }
+
+        partial void OnCurrentDocumentPathChanged(string? oldValue, string? newValue)
+        {
+            _appConfigStore.Set(StoreKey.CurrentDocumentPath, newValue);
         }
     }
 

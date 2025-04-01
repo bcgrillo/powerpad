@@ -6,9 +6,9 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
     {
         Text,
         Chat,
-        Markdown,
+        /*Markdown,
         ToDo,
-        Search
+        Search*/
     }
 
     public static class DocumentTypesExtensions
@@ -19,9 +19,9 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             {
                 DocumentType.Text => ".txt",
                 DocumentType.Chat => ".chat",
-                DocumentType.Markdown => ".md",
+                /*DocumentType.Markdown => ".md",
                 DocumentType.ToDo => ".todo",
-                DocumentType.Search => ".search",
+                DocumentType.Search => ".search",*/
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -32,9 +32,9 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             {
                 DocumentType.Text => "\uE70B",
                 DocumentType.Chat => "\uE15F",
-                DocumentType.Markdown => "\uE8A5",
+                /*DocumentType.Markdown => "\uE8A5",
                 DocumentType.ToDo => "\uF0E3",
-                DocumentType.Search => "\uF6FA",
+                DocumentType.Search => "\uF6FA",*/
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }

@@ -10,11 +10,6 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:m="using:PowerPad.Core.Models.AI"
     mc:Ignorable="d">
-    <Page.Resources>
-        <Style TargetType="TextBlock" x:Key="WSTitleStyle" BasedOn="{StaticResource TitleTextBlockStyle}">
-            <Setter Property="FontSize" Value="22" />
-        </Style>
-    </Page.Resources>
     <Grid Margin="0,0,0,2">
         <NavigationView
             x:Name="NavView"
@@ -40,8 +35,7 @@
                     Style="{StaticResource WSTitleStyle}"
                     Text="Agentes"
                     TextTrimming="CharacterEllipsis"
-                    TextWrapping="NoWrap"
-                    Margin="16,4,16,4"/>
+                    TextWrapping="NoWrap"/>
             </NavigationView.PaneHeader>
             <NavigationView.MenuItems>
                 <NavigationViewItem

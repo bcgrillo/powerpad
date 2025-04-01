@@ -20,6 +20,7 @@ namespace PowerPad.WinUI.Configuration
             ModelsSettings,
             GitHubModels,
             OpenAIModels,
+            CurrentDocumentPath,
         }
 
         public class StoreDefault

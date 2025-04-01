@@ -9,6 +9,12 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="localc:IntegratedTextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
+    <Style TargetType="TextBlock" x:Key="WSTitleStyle" BasedOn="{StaticResource TitleTextBlockStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Margin" Value="16,12,16,4" />
+        </Style.Setters>
+    </Style>
 
     <ResourceDictionary.ThemeDictionaries>
 

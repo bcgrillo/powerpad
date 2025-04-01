@@ -13,9 +13,9 @@ namespace PowerPad.WinUI.Helpers
             {
                 "txt" => DocumentType.Text,
                 "chat" => DocumentType.Chat,
-                "md" => DocumentType.Markdown,
+                /*"md" => DocumentType.Markdown,
                 "todo" => DocumentType.ToDo,
-                "search" => DocumentType.Search,
+                "search" => DocumentType.Search,*/
                 _ => DocumentType.Text
             };
         }

@@ -16,9 +16,9 @@ namespace PowerPad.WinUI.ViewModels.Settings
         private readonly IAzureAIService _azureAI;
         private readonly IOpenAIService _openAI;
 
-        public GeneralSettingsViewModel General { get; private set; }
+        public GeneralSettingsViewModel General { get; private init; }
 
-        public ModelsSettingsViewModel Models { get; private set; }
+        public ModelsSettingsViewModel Models { get; private init; }
 
         [ObservableProperty]
         private OllamaStatus _ollamaStatus;

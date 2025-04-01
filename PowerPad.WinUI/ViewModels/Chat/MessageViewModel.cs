@@ -4,21 +4,14 @@ using System;
 
 namespace PowerPad.WinUI.ViewModels.Chat
 {
-    public partial class MessageViewModel : ObservableObject
+    public partial class MessageViewModel(string content, DateTime dateTime, ChatRole role) : ObservableObject
     {
         [ObservableProperty]
-        private string _content;
+        private string _content = content;
 
-        public DateTime DateTime { get; private set; }
+        public DateTime DateTime { get; private init; } = dateTime;
 
-        public ChatRole Role { get; set; }
-
-        public MessageViewModel(string content, DateTime dateTime, ChatRole role)
-        {
-            Content = content;
-            DateTime = dateTime;
-            Role = role;
-        }
+        public ChatRole Role { get; set; } = role;
 
         public override string ToString()
         {
