@@ -8,6 +8,7 @@ namespace PowerPad.WinUI.Components.Editors
     {
         public abstract string GetContent();
         public abstract void SetContent(string content);
+        public abstract void SetFocus();
         public abstract bool IsDirty { get; }
         public abstract void AutoSave();
         public abstract DateTime LastSaveTime { get; }

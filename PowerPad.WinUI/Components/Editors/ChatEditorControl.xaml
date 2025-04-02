@@ -4,9 +4,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Components.Editors"
+    xmlns:lcontrols="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:chat="using:PowerPad.WinUI.ViewModels.Chat"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
     <local:EditorControl.Resources>
         <Style TargetType="TextBox" x:Key="TransparentTextBoxStyle" BasedOn="{StaticResource DefaultTextBoxStyle}">
@@ -27,11 +29,12 @@
                 BorderThickness="1"
                 CornerRadius="{StaticResource OverlayCornerRadius}"
                 Spacing="8">
-                <TextBlock
+                <controls:MarkdownTextBlock
                     IsTextSelectionEnabled="True"
                     Text="{x:Bind Content, Mode=OneWay}"
+                    Background="Transparent"
                     TextWrapping="Wrap" />
-                    <TextBlock
+                <TextBlock
                     HorizontalAlignment="Right"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
@@ -49,9 +52,9 @@
                     BorderThickness="1"
                     CornerRadius="{StaticResource OverlayCornerRadius}"
                     Spacing="8">
-                    <TextBlock
+                    <controls:MarkdownTextBlock
                         HorizontalAlignment="Right"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Background="Transparent"
                         IsTextSelectionEnabled="True"
                         Text="{x:Bind Content, Mode=OneWay}"
                         TextWrapping="Wrap" />
@@ -68,7 +71,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <TextBlock
             x:Name="EditableTextBlock"
@@ -113,68 +115,52 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <ListView
-            x:Name="InvertedListView"
-            Grid.Row="2"
-            Padding="-12,0,-12,24"
-            Margin="36,0,36,0"
-            ItemTemplateSelector="{StaticResource ChatTemplateSelector}"
-            ItemsSource="{x:Bind _messages}"
-            SelectionMode="None"
-            Loaded="InvertedListView_Loaded">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsStackPanel VerticalAlignment="Bottom" ItemsUpdatingScrollMode="KeepLastItemInView" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
-        <Grid Grid.Row="3" Margin="36,12,36,12">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBox
-                x:Name="InputBox"
+        <Grid Grid.Row="2" x:Name="ChatGrid" MaxWidth="1200" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="ChatRowDefinition" Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid x:Name="Landing">
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical"
+                    Spacing="8">
+                    <TextBlock Text="✨" FontSize="42" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <TextBlock
+                        Style="{StaticResource TitleTextBlockStyle}"
+                        Text="¡Hola! ¿En qué puedo ayudarte?"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,16"/> 
+                </StackPanel>
+            </Grid>
+            <ListView
+                x:Name="InvertedListView"
+                Padding="-12,0,-12,24"
+                Margin="36,0,36,0"
+                ItemTemplateSelector="{StaticResource ChatTemplateSelector}"
+                ItemsSource="{x:Bind _messages}"
+                SelectionMode="None"
+                Loaded="InvertedListView_Loaded">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel VerticalAlignment="Bottom" ItemsUpdatingScrollMode="KeepLastItemInView" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+            <lcontrols:ChatControl
+                x:Name="ChatControl"
                 Grid.Row="1"
-                AutomationProperties.Name="Prompt input"
-                
-                PlaceholderText="Enter your prompt (Press Shift + Enter to insert a newline)"
-                
-                TextWrapping="Wrap" 
-                AcceptsReturn="True"
-                MaxHeight="148"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="SendBtn"
-                        AutomationProperties.Name="Send Message"
-                        Click="SendBtn_Click"
-                        Style="{StaticResource AccentButtonStyle}"
-                        IsEnabled="True">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                        <FontIcon FontSize="16"
-                                  Glyph="&#xE725;" />
-                        <TextBlock Text="Send" />
-                    </StackPanel>
-                </Button>
-                <Button x:Name="StopBtn"
-                        AutomationProperties.Name="Stop"
-                        
-                        Style="{ThemeResource AccentButtonStyle}"
-                        Visibility="Collapsed">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                        <FontIcon FontSize="16"
-                                  Glyph="&#xE73B;" />
-                        <TextBlock Text="Stop" />
-                    </StackPanel>
-                </Button>
-            </StackPanel>
+                Margin="36,24,36,24"
+                ChatPlaceHolder="Escribe lo que quieras..."
+                SendButtonClicked="ChatControl_SendButtonClicked" />
         </Grid>
     </Grid>
 </local:EditorControl>

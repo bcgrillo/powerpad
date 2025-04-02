@@ -1,9 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using PowerPad.Core.Models.AI;
 using PowerPad.Core.Models.Config;
 using PowerPad.Core.Services;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.Messages;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
 
@@ -39,11 +43,32 @@ namespace PowerPad.WinUI.ViewModels.Settings
             });
 
             General.PropertyChanged += (s, e) => SaveGeneralSettings();
-            Models.PropertyChanged += (s, e) => SaveModelsSettings();
+            Models.PropertyChanged += (s, e) => SaveModelsSettings(e.PropertyName);
         }
 
         private void SaveGeneralSettings() => _configStore.Set(StoreKey.GeneralSettings, General);
 
-        private void SaveModelsSettings() => _configStore.Set(StoreKey.ModelsSettings, Models);
+        private void SaveModelsSettings(string? propertyName)
+        {
+            //Control for change the default model
+            if (propertyName == nameof(Models.DefaultModel))
+            {
+                if (Models.DefaultModel == null)
+                {
+                    var availableModelProviders = General.GetAvailableModelProviders();
+
+                    foreach(var modelProvider in availableModelProviders)
+                    {
+                        Models.DefaultModel = Models.AvailableModels.Where(m => m.ModelProvider == modelProvider).FirstOrDefault();
+
+                        if (Models.DefaultModel != null) break;
+                    }
+                }
+
+                App.Get<IChatService>().SetDefaultModel(Models.DefaultModel?.GetModel());
+            }
+
+            _configStore.Set(StoreKey.ModelsSettings, Models);
+        }
     }
 }

@@ -1,5 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
+using PowerPad.Core.Models.AI;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PowerPad.WinUI.ViewModels.Settings
@@ -33,6 +37,27 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public GeneralSettingsViewModel()
         {
             PropertyChanged += PropertyChangedHandler;
+        }
+
+        public IEnumerable<ModelProvider> GetAvailableModelProviders()
+        {
+            List<ModelProvider> providers = [];
+
+            if (OllamaEnabled)
+            {
+                providers.Add(ModelProvider.Ollama);
+                providers.Add(ModelProvider.HuggingFace);
+            }
+            if (AzureAIEnabled)
+            {
+                providers.Add(ModelProvider.GitHub);
+            }
+            if (OpenAIEnabled)
+            {
+                providers.Add(ModelProvider.OpenAI);
+            }
+
+            return providers;
         }
 
         private void PropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)

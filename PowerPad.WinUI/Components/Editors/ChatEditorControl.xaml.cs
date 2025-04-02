@@ -5,43 +5,38 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using PowerPad.WinUI.ViewModels;
-using System.Threading.Tasks;
-using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Collections.ObjectModel;
-using System.Threading;
 using PowerPad.WinUI.Dialogs;
 using static PowerPad.Core.Constants;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
-using PowerPad.WinUI.Helpers;
 using PowerPad.Core.Models.FileSystem;
-using PowerPad.Core.Services.AI;
+using Windows.System;
+using System.Collections.Specialized;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Components.Editors
 {
     public sealed partial class ChatEditorControl : EditorControl
     {
-        private CancellationTokenSource? _cts;
         private ScrollViewer? _scrollViewer;
 
         private DocumentViewModel _document;
         private readonly ObservableCollection<MessageViewModel> _messages;
 
-        private readonly IChatService _chatService;
-
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
-        public ChatEditorControl(FolderEntryViewModel documentEntry, IChatService aiService)
+        public ChatEditorControl(FolderEntryViewModel documentEntry)
         {
             this.InitializeComponent();
             _messages = [];
 
+            _messages.CollectionChanged += Messages_CollectionChanged;
+
             _document = documentEntry.ToDocumentViewModel(this);
-            _chatService = aiService;
         }
 
         public override string GetContent()
@@ -74,6 +69,9 @@ namespace PowerPad.WinUI.Components.Editors
             _messages.AddRange(chatMessages);
         }
 
+        public override void SetFocus() => ChatControl.SetFocus();
+
+        #region ChatName
         private void EditableTextBlock_PointerPressed(object _, PointerRoutedEventArgs __)
         {
             EditableTextBlock.Visibility = Visibility.Collapsed;
@@ -83,7 +81,7 @@ namespace PowerPad.WinUI.Components.Editors
 
         private void EditableTextBox_KeyDown(object _, KeyRoutedEventArgs args)
         {
-            if (args.Key == Windows.System.VirtualKey.Enter)
+            if (args.Key == VirtualKey.Enter)
             {
                 FinalizeEditing();
             }
@@ -118,8 +116,8 @@ namespace PowerPad.WinUI.Components.Editors
 
         private void CopyBtn_Click(object _, RoutedEventArgs __)
         {
-           
         }
+        #endregion
 
         public override void AutoSave()
         {
@@ -131,60 +129,6 @@ namespace PowerPad.WinUI.Components.Editors
         {
             _document = null!;
             _messages.Clear();
-        }
-
-        private void SendBtn_Click(object _, RoutedEventArgs __)
-        {
-            _messages!.Add(new MessageViewModel(InputBox.Text.Trim(), DateTime.Now, ChatRole.User));
-
-            _ = Task.Run(async () =>
-            {
-                var history = _messages.Select(m => new ChatMessage(m.Role, m.Content)).ToList();
-                var responseMessage = new MessageViewModel(string.Empty, DateTime.Now, ChatRole.Assistant);
-
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    _messages.Add(responseMessage);
-                    StopBtn.Visibility = Visibility.Visible;
-                    InputBox.IsEnabled = false;
-                    InputBox.PlaceholderText = "Please wait for the response to complete before entering a new prompt";
-                });
-
-                _cts = new CancellationTokenSource();
-
-                history.Insert(0, new ChatMessage(ChatRole.System, "You are a helpful assistant"));
-
-                await foreach (var messagePart in _chatService.GetStreamingResponse(history, cancellationToken: _cts.Token))
-                {
-                    try
-                    {
-                        DispatcherQueue.TryEnqueue(() =>
-                        {
-                            responseMessage.Content += messagePart.Text;
-                        });
-                    }
-                    catch(Exception ex)
-                    {
-                        //TODO: Anythig
-                        Console.WriteLine(ex.ToString());
-                    }
-                }
-
-                _cts.Dispose();
-                _cts = null;
-
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    StopBtn.Visibility = Visibility.Collapsed;
-                    SendBtn.Visibility = Visibility.Visible;
-                    InputBox.Text = string.Empty;
-                    InputBox.IsEnabled = true;
-                });
-
-                _document.Status = DocumentStatus.Dirty;
-            });
-
-            _document.Status = DocumentStatus.Dirty;
         }
 
         private void InvertedListView_Loaded(object _, RoutedEventArgs __)
@@ -199,7 +143,7 @@ namespace PowerPad.WinUI.Components.Editors
         }
 
         private T? FindElement<T>(DependencyObject element)
-        where T : DependencyObject
+            where T : DependencyObject
         {
             if (element is T targetElement)
             {
@@ -219,8 +163,20 @@ namespace PowerPad.WinUI.Components.Editors
             return null;
         }
 
+        private void Messages_CollectionChanged(object? _, NotifyCollectionChangedEventArgs __)
+        {
+            if (_messages.Any())
+            {
+                Landing.Visibility = Visibility.Collapsed;
+                ChatGrid.VerticalAlignment = VerticalAlignment.Stretch;
+                ChatRowDefinition.Height = new GridLength(1, GridUnitType.Star);
+            }
+        }
+
         private void ItemsStackPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            _scrollViewer = FindElement<ScrollViewer>(InvertedListView);
+
             if (_scrollViewer != null)
             {
                 bool isScrollbarVisible = _scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
@@ -234,6 +190,22 @@ namespace PowerPad.WinUI.Components.Editors
                     InvertedListView.Padding = new Thickness(-12, 0, -12, 24);
                 }
             }
+        }
+
+        private async void ChatControl_SendButtonClicked(object _, RoutedEventArgs __)
+        {
+            if (_scrollViewer != null)
+            {
+                while (Math.Ceiling(_scrollViewer.VerticalOffset) < _scrollViewer.ScrollableHeight)
+                {
+                    _scrollViewer.ChangeView(null, _scrollViewer.ScrollableHeight + 100, null);
+                    InvertedListView.UpdateLayout();
+
+                    await Task.Delay(100);
+                }
+            }
+
+            ChatControl.StartStreamingChat(_messages, () => _document.Status = DocumentStatus.Dirty);
         }
     }
 }

@@ -1,0 +1,229 @@
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.WinUI.ViewModels.Chat;
+using System.Threading.Tasks;
+using System;
+using Windows.System;
+using Windows.UI.Core;
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.Extensions.AI;
+using System.Threading;
+using System.Linq;
+using PowerPad.Core.Services.AI;
+using PowerPad.WinUI.ViewModels.Settings;
+using PowerPad.Core.Services;
+using static PowerPad.WinUI.Configuration.ConfigConstants;
+using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.ViewModels.AI;
+using Windows.Web.AtomPub;
+using CommunityToolkit.WinUI.UI.Controls;
+using System.Diagnostics;
+
+namespace PowerPad.WinUI.Components.Controls
+{
+    public sealed partial class ChatControl : UserControl
+    {
+        private readonly IChatService _chatService;
+        private readonly SettingsViewModel _settings;
+
+        private CancellationTokenSource? _cts;
+
+        public event EventHandler<RoutedEventArgs>? SendButtonClicked;
+
+        public string ChatPlaceHolder
+        {
+            get => (string)GetValue(ChatPlaceHolderProperty);
+            set => SetValue(ChatPlaceHolderProperty, value);
+        }
+
+        public static readonly DependencyProperty ChatPlaceHolderProperty =
+            DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new PropertyMetadata(false));
+
+        public AIModelViewModel? SelectedModel { get; set; }
+
+        public ChatControl()
+        {
+            this.InitializeComponent();
+
+            _chatService = App.Get<IChatService>();
+            _settings = App.Get<SettingsViewModel>();
+
+            if (_settings.Models.DefaultModel == null)
+            {
+                ModelIcon.Content = null;
+                ModelName.Text = "No hay modelos disponibles :(";
+                ChatInputBox.IsEnabled = false;
+            }
+            else
+            {
+                ModelIcon.Content = _settings.Models.DefaultModel.ModelProvider.GetIcon();
+                ModelName.Text = _settings.Models.DefaultModel!.CardName;
+                SetModelsMenu();
+            }
+        }
+
+        public void SetFocus()
+        {
+            ChatInputBox.Focus(FocusState.Keyboard);
+        }
+
+        private void SetModelsMenu()
+        {
+            ModelFlyoutMenu.Items.Clear();
+
+            var firstItem = new RadioMenuFlyoutItem
+            {
+                Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})",
+                Tag = null,
+                Icon = _settings.Models.DefaultModel!.ModelProvider.GetIcon(),
+                IsChecked = true
+            };
+
+            firstItem.Click += SetModelItem_Click;
+            ModelFlyoutMenu.Items.Add(firstItem);
+            ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
+
+            var availableProviders = _settings.General.GetAvailableModelProviders();
+
+            foreach (var provider in availableProviders)
+            {
+                foreach (var item in _settings.Models.AvailableModels.Where(m => m.ModelProvider == provider && m.Enabled))
+                {
+                    var menuItem = new RadioMenuFlyoutItem
+                    {
+                        Text = item.CardName,
+                        Tag = item,
+                        Icon = provider.GetIcon()
+                    };
+
+                    ModelFlyoutMenu.Items.Add(menuItem);
+
+                    menuItem.Click += SetModelItem_Click;
+                }
+
+                ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
+            }
+
+            ModelFlyoutMenu.Items.RemoveAt(ModelFlyoutMenu.Items.Count - 1);
+        }
+
+        private void SetModelItem_Click(object sender, RoutedEventArgs _)
+        {
+            SelectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
+
+            if (SelectedModel != null)
+            {
+                ModelIcon.Content = SelectedModel.ModelProvider.GetIcon();
+                ModelName.Text = SelectedModel.CardName;
+                ChatInputBox.IsEnabled = true;
+            }
+            else
+            {
+                ModelIcon.Content = _settings.Models.DefaultModel!.ModelProvider.GetIcon();
+                ModelName.Text = _settings.Models.DefaultModel!.CardName;
+            }
+
+            ((RadioMenuFlyoutItem)sender).IsChecked = true;
+        }
+
+        private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
+        {
+            SendBtn.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
+            if (string.IsNullOrEmpty(ChatInputBox.Text)) ChatInputBox.AcceptsReturn = false;
+        }
+
+        private void SendBtn_Click(object _, RoutedEventArgs e)
+        {
+            SendButtonClicked?.Invoke(this, e);
+        }
+
+        public void StartStreamingChat(ICollection<MessageViewModel> messageList, Action? endAction)
+        {
+            messageList.Add(new MessageViewModel(ChatInputBox.Text.Trim().Replace("\r", "  \r"), DateTime.Now, ChatRole.User));
+
+            _ = Task.Run(async () =>
+            {
+                var history = messageList.Select(m => new ChatMessage(m.Role, m.Content)).ToList();
+                var responseMessage = new MessageViewModel(string.Empty, DateTime.Now, ChatRole.Assistant);
+
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    messageList.Add(responseMessage);
+                    SendBtn.Visibility = Visibility.Collapsed;
+                    StopBtn.Visibility = Visibility.Visible;
+                    ChatInputBox.IsEnabled = false;
+                });
+
+                _cts = new CancellationTokenSource();
+
+                history.Insert(0, new ChatMessage(ChatRole.System, "You are a helpful assistant"));
+
+                await foreach (var messagePart in _chatService.GetStreamingResponse(history, SelectedModel?.GetModel(), cancellationToken: _cts.Token))
+                {
+                    try
+                    {
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            responseMessage.Content += messagePart.Text;
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        //TODO: Anythig
+                        Debug.WriteLine(ex.ToString());
+                    }
+                }
+
+                _cts?.Dispose();
+                _cts = null;
+
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    StopBtn.Visibility = Visibility.Collapsed;
+                    SendBtn.Visibility = Visibility.Visible;
+                    ChatInputBox.Text = string.Empty;
+                    ChatInputBox.IsEnabled = true;
+                    ChatInputBox.Focus(FocusState.Keyboard);
+
+                    endAction?.Invoke();
+                });
+            });
+        }
+
+        private void StopBtn_Click(object _, RoutedEventArgs __)
+        {
+            StopBtn.Visibility = Visibility.Collapsed;
+            SendBtn.Visibility = Visibility.Visible;
+            ChatInputBox.Text = string.Empty;
+            ChatInputBox.IsEnabled = true;
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
+        }
+
+        private void ChatInputBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter)
+            {
+                if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
+                    .HasFlag(CoreVirtualKeyStates.Down) &&
+                    sender is TextBox &&
+                    !string.IsNullOrWhiteSpace(ChatInputBox.Text))
+                {
+                    SendButtonClicked?.Invoke(this, e);
+                }
+                else
+                {
+                    ChatInputBox.AcceptsReturn = true;
+                    var cursorPosition = ChatInputBox.SelectionStart;
+                    ChatInputBox.Text = ChatInputBox.Text.Insert(cursorPosition, Environment.NewLine);
+                    ChatInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
+                }
+            }
+        }
+    }
+}

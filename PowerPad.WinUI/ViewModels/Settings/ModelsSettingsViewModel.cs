@@ -83,11 +83,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         private void ValidateDefaultModel()
         {
-            if (DefaultModel == null || !AvailableModels.Contains(DefaultModel))
-            {
-                DefaultModel = AvailableModels.FirstOrDefault();
-                App.Get<IChatService>().SetDefaultModel(DefaultModel?.GetModel());
-            }
+            if (DefaultModel == null || !AvailableModels.Contains(DefaultModel)) DefaultModel = null;
         }
     }
 }

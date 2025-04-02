@@ -48,6 +48,11 @@ namespace PowerPad.WinUI.Components.Editors
             TextEditor.Text = content;
         }
 
+        public override void SetFocus()
+        {
+            TextEditor.Focus(FocusState.Programmatic);
+        }
+
         private void EditableTextBlock_PointerPressed(object _, PointerRoutedEventArgs __)
         {
             EditableTextBlock.Visibility = Visibility.Collapsed;

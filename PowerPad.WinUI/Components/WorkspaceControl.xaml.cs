@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.WinUI.Messages;
+using Windows.Web.AtomPub;
 
 namespace PowerPad.WinUI.Components
 {
@@ -266,11 +267,16 @@ namespace PowerPad.WinUI.Components
                 await Task.Delay(100);
                 message.Value.IsSelected = true;
             });
-            
-            if (!message.Value.IsFolder) ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(message.Value));
+
+            if (!message.Value.IsFolder)
+            {
+                ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(message.Value));
+                _workspace.CurrentDocumentPath = message.Value.ModelEntry.Path;
+
+            }
         }
 
-        private void ClearSelection() => ClearSelection(_workspace.Root.Children);
+        public void ClearSelection() => ClearSelection(_workspace.Root.Children);
 
         private static void ClearSelection(IEnumerable<FolderEntryViewModel> entries)
         {

@@ -76,7 +76,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         private void SetDefaultModel(AIModelViewModel? aiModel)
         {
-            App.Get<IChatService>().SetDefaultModel(aiModel?.GetModel());
+            _settingsViewModel.Models.DefaultModel = aiModel;
         }
 
         private async void SearchModels(string? query)

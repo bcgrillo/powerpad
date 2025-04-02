@@ -22,14 +22,13 @@ namespace PowerPad.WinUI.Components
         private readonly Dictionary<FolderEntryViewModel, EditorControl> _editors;
         private readonly DispatcherTimer _timer;
 
-        private readonly IChatService _chatService;
+        public event EventHandler? EditorUnloaded;
 
         public EditorManager()
         {
             this.InitializeComponent();
 
             _workspace = App.Get<WorkspaceViewModel>();
-            _chatService = App.Get<IChatService>();
 
             _editors = [];
 
@@ -79,11 +78,11 @@ namespace PowerPad.WinUI.Components
 
                         if (document.DocumentType == DocumentType.Chat)
                         {
-                            newEditor = new ChatEditorControl(document, _chatService);
+                            newEditor = new ChatEditorControl(document);
                         }
                         else
                         {
-                            newEditor = new TextEditorControl(document, _chatService);
+                            newEditor = new TextEditorControl(document, App.Get<IChatService>());
                         }
 
                         newEditor.Visibility = Visibility.Collapsed;
@@ -98,6 +97,8 @@ namespace PowerPad.WinUI.Components
                         newEditor.Visibility = Visibility.Visible;
                     }
                 }
+
+                _currentEditor.SetFocus();
             }
         }
 
@@ -128,6 +129,8 @@ namespace PowerPad.WinUI.Components
                     _currentEditor = null;
                     Landing.Visibility = Visibility.Visible;
                     EditorGrid.Visibility = Visibility.Collapsed;
+
+                    EditorUnloaded?.Invoke(null, null!);
                 }
 
                 _editors.Remove(key);

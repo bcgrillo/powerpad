@@ -16,6 +16,8 @@ namespace PowerPad.WinUI.Components.Controls
             this.Resources["TextControlBackground"] = new SolidColorBrush(Colors.Transparent);
             this.Resources["TextControlBackgroundPointerOver"] = new SolidColorBrush(Colors.Transparent);
             this.Resources["TextControlBackgroundFocused"] = new SolidColorBrush(Colors.Transparent);
+            this.Resources["TextControlBackgroundPointerOver"] = new SolidColorBrush(Colors.Transparent);
+            this.Resources["TextControlBackgroundDisabled"] = new SolidColorBrush(Colors.Transparent);
         }
     }
 }
