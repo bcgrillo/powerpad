@@ -28,14 +28,15 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
-        public TextEditorControl(FolderEntryViewModel documentEntry, IChatService aiService)
+        public TextEditorControl(Document document)
         {
+            _chatService = App.Get<IChatService>();
+
             this.InitializeComponent();
 
-            _document = documentEntry.ToDocumentViewModel(this);
+            _document = new DocumentViewModel(document, this);
 
             TextEditor.TextChanged += (s, e) => _document.Status = DocumentStatus.Dirty;
-            _chatService = aiService;
         }
 
         public override string GetContent()

@@ -15,58 +15,73 @@ using PowerPad.Core.Models.FileSystem;
 using Windows.System;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using PowerPad.WinUI.Components.Controls;
 
 namespace PowerPad.WinUI.Components.Editors
 {
     public sealed partial class ChatEditorControl : EditorControl
     {
-        private ScrollViewer? _scrollViewer;
-
         private DocumentViewModel _document;
-        private readonly ObservableCollection<MessageViewModel> _messages;
+        private ChatViewModel? _chat;
 
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
-        public ChatEditorControl(FolderEntryViewModel documentEntry)
+        public ChatEditorControl(Document document)
         {
-            this.InitializeComponent();
-            _messages = [];
-
-            _messages.CollectionChanged += Messages_CollectionChanged;
-
-            _document = documentEntry.ToDocumentViewModel(this);
+            _document = new DocumentViewModel(document, this);
         }
 
         public override string GetContent()
         {
-            return JsonSerializer.Serialize(_messages, JSON_SERIALIZER_OPTIONS);
+            return JsonSerializer.Serialize(_chat, JSON_SERIALIZER_OPTIONS);
         }
 
         public override void SetContent(string content)
         {
-            List<MessageViewModel>? chatMessages = null;
+            var error = false;
 
             if (!string.IsNullOrEmpty(content)) {
                 try
                 {
-                    chatMessages = JsonSerializer.Deserialize<List<MessageViewModel>>(content);
+                    _chat = JsonSerializer.Deserialize<ChatViewModel>(content, JSON_SERIALIZER_OPTIONS);
                 }
                 catch (JsonException)
                 {
-                    DialogHelper.Alert
-                    (
-                        this.XamlRoot,
-                        "Error",
-                        "No ha sido posible deserializar el contenido como JSON."
-                    ).Wait();
+                    //TODO: Quitar esto
+                    try
+                    {
+                        var chatMessages = JsonSerializer.Deserialize<List<MessageViewModel>>(content, JSON_SERIALIZER_OPTIONS);
+
+                        _chat = new() { Messages = [.. chatMessages ?? []] };
+                    }
+                    catch (JsonException)
+                    {
+                        error = true;
+                    }
                 }
             }
 
-            chatMessages ??= [];
+            _chat ??= new() { Messages = [] };
 
-            _messages.AddRange(chatMessages);
+            _chat.Messages.CollectionChanged += Messages_CollectionChanged;
+
+            this.InitializeComponent();
+
+            ChatControl.SetModel(_chat!.Model);
+            ChatControl.SetParameters(_chat!.Parameters);
+            if (_chat.Messages.Any()) HideLandingAndExpandChat();
+
+            if (error)
+            {
+                DialogHelper.Alert
+                (
+                    this.XamlRoot,
+                    "Error",
+                    "No ha sido posible deserializar el contenido como JSON."
+                ).Wait();
+            }
         }
 
         public override void SetFocus() => ChatControl.SetFocus();
@@ -128,13 +143,11 @@ namespace PowerPad.WinUI.Components.Editors
         public override void Dispose()
         {
             _document = null!;
-            _messages.Clear();
+            _chat!.Messages.Clear();
         }
 
         private void InvertedListView_Loaded(object _, RoutedEventArgs __)
         {
-            _scrollViewer = FindElement<ScrollViewer>(InvertedListView);
-
             ItemsStackPanel? itemsStackPanel = FindElement<ItemsStackPanel>(InvertedListView);
             if (itemsStackPanel != null)
             {
@@ -165,21 +178,23 @@ namespace PowerPad.WinUI.Components.Editors
 
         private void Messages_CollectionChanged(object? _, NotifyCollectionChangedEventArgs __)
         {
-            if (_messages.Any())
-            {
-                Landing.Visibility = Visibility.Collapsed;
-                ChatGrid.VerticalAlignment = VerticalAlignment.Stretch;
-                ChatRowDefinition.Height = new GridLength(1, GridUnitType.Star);
-            }
+            if (Landing.Visibility == Visibility.Visible && _chat!.Messages.Any()) HideLandingAndExpandChat();
+        }
+
+        private void HideLandingAndExpandChat()
+        {
+            Landing.Visibility = Visibility.Collapsed;
+            ChatGrid.VerticalAlignment = VerticalAlignment.Stretch;
+            ChatRowDefinition.Height = new GridLength(1, GridUnitType.Star);
         }
 
         private void ItemsStackPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            _scrollViewer = FindElement<ScrollViewer>(InvertedListView);
+            var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
 
-            if (_scrollViewer != null)
+            if (scrollViewer != null)
             {
-                bool isScrollbarVisible = _scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+                bool isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
 
                 if (isScrollbarVisible)
                 {
@@ -194,18 +209,30 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void ChatControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
-            if (_scrollViewer != null)
+            var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
+
+            if (scrollViewer != null)
             {
-                while (Math.Ceiling(_scrollViewer.VerticalOffset) < _scrollViewer.ScrollableHeight)
+                while (Math.Ceiling(scrollViewer.VerticalOffset) < scrollViewer.ScrollableHeight)
                 {
-                    _scrollViewer.ChangeView(null, _scrollViewer.ScrollableHeight + 100, null);
+                    scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight + 100, null);
                     InvertedListView.UpdateLayout();
 
                     await Task.Delay(100);
                 }
             }
 
-            ChatControl.StartStreamingChat(_messages, () => _document.Status = DocumentStatus.Dirty);
+            ChatControl.StartStreamingChat(_chat!.Messages, () => _document.Status = DocumentStatus.Dirty);
+        }
+
+        private void ChatControl_ChatOptionsChanged(object _, ChatOptionChangedEventArgs eventArgs)
+        {
+            if (_chat!.Model != eventArgs.SelectedModel || _chat!.Parameters != eventArgs.Parameters)
+            {
+                _chat!.Model = eventArgs.SelectedModel;
+                _chat!.Parameters = eventArgs.Parameters;
+                _document.Status = DocumentStatus.Dirty;
+            }
         }
     }
 }

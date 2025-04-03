@@ -120,5 +120,7 @@ namespace PowerPad.WinUI.Pages
                 NavView.SelectedItem = firstItem.MenuItems.First();
             }
         }
+
+        private void HideMenuBtn_Click(object _, RoutedEventArgs __) => ToggleNavigationVisibility();
     }
 }

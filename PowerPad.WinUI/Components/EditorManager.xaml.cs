@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.Messages;
@@ -22,7 +23,7 @@ namespace PowerPad.WinUI.Components
         private readonly Dictionary<FolderEntryViewModel, EditorControl> _editors;
         private readonly DispatcherTimer _timer;
 
-        public event EventHandler? EditorUnloaded;
+        public event EventHandler? EditorUnloaded; //TODO: Remove?
 
         public EditorManager()
         {
@@ -36,7 +37,7 @@ namespace PowerPad.WinUI.Components
             {
                 Interval = TimeSpan.FromMilliseconds(AUTO_SAVE_INTERVAL)
             };
-            _timer.Tick += OnTimerTick;
+            _timer.Tick += (o, e) => AutoSaveEditors();
             _timer.Start();
 
             WeakReferenceMessenger.Default.Register(this);
@@ -78,11 +79,11 @@ namespace PowerPad.WinUI.Components
 
                         if (document.DocumentType == DocumentType.Chat)
                         {
-                            newEditor = new ChatEditorControl(document);
+                            newEditor = new ChatEditorControl((Document)document.ModelEntry);
                         }
                         else
                         {
-                            newEditor = new TextEditorControl(document, App.Get<IChatService>());
+                            newEditor = new TextEditorControl((Document)document.ModelEntry);
                         }
 
                         newEditor.Visibility = Visibility.Collapsed;
@@ -102,18 +103,19 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void OnTimerTick(object? sender, object e)
+        private void AutoSaveEditors(bool forceSaveCurrent = false)
         {
             var editorsToRemove = new List<FolderEntryViewModel>();
 
             foreach (var kvp in _editors)
             {
                 var editor = kvp.Value;
-                if (editor.IsDirty)
+                if (editor.IsDirty || (forceSaveCurrent && _currentEditor == editor))
                 {
                     editor.AutoSave();
                 }
-                else if ((DateTime.Now - editor.LastSaveTime).TotalMinutes > 10)
+                else if ((DateTime.Now - editor.LastSaveTime).TotalMinutes > 10
+                    && _currentEditor != editor)
                 {
                     editorsToRemove.Add(kvp.Key);
                 }
@@ -123,16 +125,6 @@ namespace PowerPad.WinUI.Components
             {
                 EditorGrid.Children.Remove(_editors[key]);
                 _editors[key].Dispose();
-
-                if (_currentEditor == _editors[key])
-                {
-                    _currentEditor = null;
-                    Landing.Visibility = Visibility.Visible;
-                    EditorGrid.Visibility = Visibility.Collapsed;
-
-                    EditorUnloaded?.Invoke(null, null!);
-                }
-
                 _editors.Remove(key);
             }
         }
@@ -170,6 +162,11 @@ namespace PowerPad.WinUI.Components
         private void NewNoteButton_Click(object _, RoutedEventArgs __)
         {
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Text));
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            AutoSaveEditors(true);
         }
     }
 }

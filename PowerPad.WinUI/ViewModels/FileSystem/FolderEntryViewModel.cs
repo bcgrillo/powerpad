@@ -103,11 +103,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             WeakReferenceMessenger.Default.Register(this);
         }
 
-        public DocumentViewModel ToDocumentViewModel(IEditorContract editorControl)
-        {
-            return new DocumentViewModel((Document)_entry, editorControl);
-        }
-
         private void Delete()
         {
             var workspaceService = App.Get<IWorkspaceService>();

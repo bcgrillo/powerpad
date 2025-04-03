@@ -24,16 +24,17 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         private bool _enabled = enabled;
 
-        [ObservableProperty]
+        [JsonIgnore, ObservableProperty]
         private bool _available = available;
 
-        [ObservableProperty]
+        [JsonIgnore, ObservableProperty]
         private bool _downloading = downloading;
 
         public long? Size => _aiModel.Size;
 
         public string? DisplayName => _aiModel.DisplayName;
 
+        [JsonIgnore]
         public bool CanAdd => !Available && !Downloading;
 
         public AIModel GetModel() => _aiModel;

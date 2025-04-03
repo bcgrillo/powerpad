@@ -20,7 +20,7 @@
             IsPaneToggleButtonVisible="False"
             IsPaneVisible="True"
             IsSettingsVisible="False"
-            OpenPaneLength="248"
+            OpenPaneLength="260"
             SelectionChanged="NavView_SelectionChanged"
             Loaded="NavView_Loaded">
             <NavigationView.Resources>
@@ -31,11 +31,36 @@
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">10,0,0,0</CornerRadius>
             </NavigationView.Resources>
             <NavigationView.PaneHeader>
-                <TextBlock
-                    Style="{StaticResource WSTitleStyle}"
-                    Text="Agentes"
-                    TextTrimming="CharacterEllipsis"
-                    TextWrapping="NoWrap"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Margin="0,-4,0,0">
+                        <TextBlock
+                            Style="{StaticResource WSTitleStyle}"
+                            Text="Agentes"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"/>
+                    </Border>
+                    <Button
+                        x:Name="HideMenuBtn"
+                        Grid.Column="1"
+                        Height="30"
+                        Width="30"
+                        ToolTipService.ToolTip="Ocultar Workspace"
+                        Margin="0,4,10,0"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Click="HideMenuBtn_Click"
+                        Canvas.ZIndex="1"
+                        IsHitTestVisible="True">
+                        <Button.Content>
+                            <FontIcon FontSize="16" Glyph="&#xE973;"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
             </NavigationView.PaneHeader>
             <NavigationView.MenuItems>
                 <NavigationViewItem

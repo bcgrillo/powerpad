@@ -22,6 +22,7 @@ using PowerPad.WinUI.ViewModels.AI;
 using Windows.Web.AtomPub;
 using CommunityToolkit.WinUI.UI.Controls;
 using System.Diagnostics;
+using PowerPad.Core.Models.AI;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -33,6 +34,7 @@ namespace PowerPad.WinUI.Components.Controls
         private CancellationTokenSource? _cts;
 
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
+        public event EventHandler<ChatOptionChangedEventArgs>? ChatOptionsChanged;
 
         public string ChatPlaceHolder
         {
@@ -43,7 +45,8 @@ namespace PowerPad.WinUI.Components.Controls
         public static readonly DependencyProperty ChatPlaceHolderProperty =
             DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new PropertyMetadata(false));
 
-        public AIModelViewModel? SelectedModel { get; set; }
+        private AIModelViewModel? _selectedModel;
+        private AIParameters? _parameters;
 
         public ChatControl()
         {
@@ -69,6 +72,23 @@ namespace PowerPad.WinUI.Components.Controls
         public void SetFocus()
         {
             ChatInputBox.Focus(FocusState.Keyboard);
+        }
+
+        public void SetModel(AIModelViewModel? model)
+        {
+            foreach (var item in ModelFlyoutMenu.Items)
+            {
+                if (item.Tag as AIModelViewModel == model)
+                {
+                    SetModelItem_Click(item, null!);
+                    return;
+                }
+            }
+        }
+
+        public void SetParameters(AIParameters? parameters)
+        {
+            _parameters = parameters;
         }
 
         private void SetModelsMenu()
@@ -113,12 +133,12 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void SetModelItem_Click(object sender, RoutedEventArgs _)
         {
-            SelectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
+            _selectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
 
-            if (SelectedModel != null)
+            if (_selectedModel != null)
             {
-                ModelIcon.Content = SelectedModel.ModelProvider.GetIcon();
-                ModelName.Text = SelectedModel.CardName;
+                ModelIcon.Content = _selectedModel.ModelProvider.GetIcon();
+                ModelName.Text = _selectedModel.CardName;
                 ChatInputBox.IsEnabled = true;
             }
             else
@@ -128,6 +148,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
 
             ((RadioMenuFlyoutItem)sender).IsChecked = true;
+            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _parameters));
         }
 
         private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
@@ -162,7 +183,7 @@ namespace PowerPad.WinUI.Components.Controls
 
                 history.Insert(0, new ChatMessage(ChatRole.System, "You are a helpful assistant"));
 
-                await foreach (var messagePart in _chatService.GetStreamingResponse(history, SelectedModel?.GetModel(), cancellationToken: _cts.Token))
+                await foreach (var messagePart in _chatService.GetStreamingResponse(history, _selectedModel?.GetModel(), cancellationToken: _cts.Token))
                 {
                     try
                     {
@@ -225,5 +246,18 @@ namespace PowerPad.WinUI.Components.Controls
                 }
             }
         }
+
+        private void ParametersButton_Click(object _, RoutedEventArgs __)
+        {
+            ParametersPanel.Visibility = ParametersPanel.Visibility == Visibility.Visible
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+        }
+    }
+
+    public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParameters? parameters) : EventArgs
+    {
+        public AIModelViewModel? SelectedModel { get; set; } = model;
+        public AIParameters? Parameters { get; set; } = parameters;
     }
 }

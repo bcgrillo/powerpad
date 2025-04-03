@@ -44,5 +44,7 @@ namespace PowerPad.WinUI.Pages
         private void NavView_Loaded(object _, RoutedEventArgs __)
         {
         }
+
+        private void HideMenuBtn_Click(object _, RoutedEventArgs __) => ToggleNavigationVisibility();
     }
 }

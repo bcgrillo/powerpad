@@ -141,7 +141,7 @@
                 Padding="-12,0,-12,24"
                 Margin="36,0,36,0"
                 ItemTemplateSelector="{StaticResource ChatTemplateSelector}"
-                ItemsSource="{x:Bind _messages}"
+                ItemsSource="{x:Bind _chat.Messages}"
                 SelectionMode="None"
                 Loaded="InvertedListView_Loaded">
                 <ListView.ItemsPanel>
@@ -158,9 +158,10 @@
             <lcontrols:ChatControl
                 x:Name="ChatControl"
                 Grid.Row="1"
-                Margin="36,24,36,24"
+                Margin="36,24,36,12"
                 ChatPlaceHolder="Escribe lo que quieras..."
-                SendButtonClicked="ChatControl_SendButtonClicked" />
+                SendButtonClicked="ChatControl_SendButtonClicked"
+                ChatOptionsChanged="ChatControl_ChatOptionsChanged"/>
         </Grid>
     </Grid>
 </local:EditorControl>

@@ -7,69 +7,117 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Grid
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-        Padding="16"
-        CornerRadius="10"
-        RowSpacing="8">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <local:IntegratedTextBox
-            x:Name="ChatInputBox"
-            PlaceholderText="{x:Bind ChatPlaceHolder}"
-            TextWrapping="Wrap" 
-            MaxHeight="148"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            Padding="0"
-            FontSize="16"
-            KeyDown="ChatInputBox_KeyDown"
-            TextChanged="ChatInputBox_TextChanged"/>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <DropDownButton MaxWidth="200" x:Name="ModelButton" Height="32" ToolTipService.ToolTip="Modelo">
-                    <DropDownButton.Flyout>
-                        <MenuFlyout x:Name="ModelFlyoutMenu">
-                        </MenuFlyout>
-                    </DropDownButton.Flyout>
-                    <DropDownButton.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <ContentControl x:Name="ModelIcon" />
-                            <TextBlock x:Name="ModelName" Margin="8,0,0,0" />
-                        </StackPanel>
-                    </DropDownButton.Content>
-                </DropDownButton>
-                <Button Height="32" ToolTipService.ToolTip="Ajustes">
-                    <ImageIcon Opacity="0.8" Source="{ThemeResource SettingsSvg}"/>
-                </Button>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="SendBtn"
-                    Click="SendBtn_Click"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Height="32"
-                    BorderThickness="0"
-                    IsEnabled="False">
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon FontSize="22" Glyph="&#xE725;" />
-                    </StackPanel>
-                </Button>
-                <Button x:Name="StopBtn"
-                    Style="{ThemeResource AccentButtonStyle}"
-                    Visibility="Collapsed"
-                    Height="32"
-                    BorderThickness="0"
-                    Click="StopBtn_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon FontSize="22" Glyph="&#xE73B;" />
-                    </StackPanel>
-                </Button>
+    <StackPanel Orientation="Vertical" Spacing="4">
+        <Grid
+            x:Name="ParametersPanel"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            Padding="16"
+            CornerRadius="10"
+            Visibility="Collapsed">
+            <StackPanel Orientation="Vertical" Spacing="8">
+                <ToggleSwitch x:Name="EnableParametersSwitch"
+                              Header="Habilitar parámetros"/>
+                              <!--IsOn="{x:Bind ViewModel.ParametersEnabled, Mode=TwoWay}" -->
+                <TextBox Header="System Prompt"/>
+                        <!--Text="{x:Bind ViewModel.SystemPrompt, Mode=TwoWay}"
+                         IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" -->
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Temperature" VerticalAlignment="Center" />
+                    <Slider Minimum="0" Maximum="1" StepFrequency="0.01"/>
+                            <!--Value="{x:Bind ViewModel.Temperature, Mode=TwoWay}"
+                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" />-->
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Top P" VerticalAlignment="Center" />
+                    <Slider Minimum="0" Maximum="100" StepFrequency="1"/>
+                            <!--Value="{x:Bind ViewModel.TopP, Mode=TwoWay}"
+                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" -->
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Max Output Tokens" VerticalAlignment="Center" />
+                    <Slider Minimum="1" Maximum="1000" StepFrequency="1"/>
+                            <!--Value="{x:Bind ViewModel.MaxOutputTokens, Mode=TwoWay}"
+                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" -->
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Max Conversation Length" VerticalAlignment="Center" />
+                    <Slider Minimum="1" Maximum="100" StepFrequency="1"/>
+                    <!--Value="{x:Bind ViewModel.MaxConversationLength, Mode=TwoWay}"
+                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" />-->
+                </StackPanel>
             </StackPanel>
         </Grid>
-    </Grid>
+        <Grid
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            Padding="16"
+            CornerRadius="10"
+            RowSpacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <local:IntegratedTextBox
+                x:Name="ChatInputBox"
+                PlaceholderText="{x:Bind ChatPlaceHolder}"
+                TextWrapping="Wrap" 
+                MaxHeight="148"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                Padding="0"
+                FontSize="16"
+                KeyDown="ChatInputBox_KeyDown"
+                TextChanged="ChatInputBox_TextChanged"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <DropDownButton MaxWidth="200" x:Name="ModelButton" Height="32" ToolTipService.ToolTip="Modelo">
+                        <DropDownButton.Flyout>
+                            <MenuFlyout x:Name="ModelFlyoutMenu" Placement="TopEdgeAlignedLeft">
+                            </MenuFlyout>
+                        </DropDownButton.Flyout>
+                        <DropDownButton.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl x:Name="ModelIcon" />
+                                <TextBlock x:Name="ModelName" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </DropDownButton.Content>
+                    </DropDownButton>
+                    <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Ajustes">
+                        <ImageIcon Opacity="0.8" Height="18" Source="{ThemeResource SettingsSvg}"/>
+                    </ToggleButton>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="SendBtn"
+                        Click="SendBtn_Click"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Height="32"
+                        BorderThickness="0"
+                        IsEnabled="False">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon FontSize="20" Glyph="&#xE725;" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="StopBtn"
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Visibility="Collapsed"
+                        Height="32"
+                        BorderThickness="0"
+                        Click="StopBtn_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon FontSize="20" Glyph="&#xE73B;" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <TextBlock 
+            Text="Texto generado por inteligencia artificial generativa, puede contener errores." 
+            VerticalAlignment="Stretch"
+            TextAlignment="Center"
+            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+            FontSize="12"
+            Height="18" />
+    </StackPanel>
 </UserControl>
