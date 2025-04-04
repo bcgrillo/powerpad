@@ -19,7 +19,7 @@ namespace PowerPad.WinUI.ViewModels.Chat
         private AIModelViewModel? _model;
 
         [ObservableProperty]
-        private AIParameters? _parameters;
+        private AIParametersViewModel? _parameters;
 
         public required ObservableCollection<MessageViewModel> Messages { get; init; }
     }

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Models.AI;
+using System;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
@@ -33,7 +34,7 @@ namespace PowerPad.WinUI.ViewModels.AI
             set => SetProperty(_aiParameters.Temperature, value, _aiParameters, (x, y) => x.Temperature = y);
         }
 
-        public int? TopP
+        public float? TopP
         {
             get => _aiParameters.TopP;
             set => SetProperty(_aiParameters.TopP, value, _aiParameters, (x, y) => x.TopP = y);
@@ -52,5 +53,17 @@ namespace PowerPad.WinUI.ViewModels.AI
         }
 
         public AIParameters GetModel() => _aiParameters;
+
+        public AIParametersViewModel Copy()
+        {
+            return new (new AIParameters
+            {
+                SystemPrompt = SystemPrompt,
+                Temperature = Temperature,
+                TopP = TopP,
+                MaxOutputTokens = MaxOutputTokens,
+                MaxConversationLength = MaxConversationLength
+            });
+        }
     }
 }

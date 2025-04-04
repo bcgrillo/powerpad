@@ -14,10 +14,7 @@
     <Page.Resources>
         <converters:OllamaOnlineStatusToVisibilityConverter x:Key="OllamaOnlineStatusToVisibilityConverter" />
         <converters:OllamaAvailableStatusToVisibilityConverter x:Key="OllamaAvailableStatusToVisibilityConverter" />
-        <Style
-            x:Key="SettingsSectionHeaderTextBlockStyle"
-            BasedOn="{StaticResource BodyStrongTextBlockStyle}"
-            TargetType="TextBlock">
+        <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
             <Style.Setters>
                 <Setter Property="Margin" Value="1,30,0,6" />
             </Style.Setters>

@@ -23,6 +23,7 @@ using Windows.Web.AtomPub;
 using CommunityToolkit.WinUI.UI.Controls;
 using System.Diagnostics;
 using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.Dialogs;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -46,7 +47,8 @@ namespace PowerPad.WinUI.Components.Controls
             DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new PropertyMetadata(false));
 
         private AIModelViewModel? _selectedModel;
-        private AIParameters? _parameters;
+        private AIParametersViewModel? _parameters;
+        private bool _sendParameters = false;
 
         public ChatControl()
         {
@@ -86,7 +88,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
-        public void SetParameters(AIParameters? parameters)
+        public void SetParameters(AIParametersViewModel? parameters)
         {
             _parameters = parameters;
         }
@@ -183,7 +185,10 @@ namespace PowerPad.WinUI.Components.Controls
 
                 history.Insert(0, new ChatMessage(ChatRole.System, "You are a helpful assistant"));
 
-                await foreach (var messagePart in _chatService.GetStreamingResponse(history, _selectedModel?.GetModel(), cancellationToken: _cts.Token))
+                var parameters = _sendParameters ? _parameters 
+                    : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
+
+                await foreach (var messagePart in _chatService.GetStreamingResponse(history, _selectedModel?.GetModel(), parameters?.GetModel(), _cts.Token))
                 {
                     try
                     {
@@ -249,15 +254,46 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void ParametersButton_Click(object _, RoutedEventArgs __)
         {
-            ParametersPanel.Visibility = ParametersPanel.Visibility == Visibility.Visible
-                ? Visibility.Collapsed
-                : Visibility.Visible;
+            var parameterPanelVisible = ParametersPanel.Visibility == Visibility.Visible;
+
+            if (parameterPanelVisible)
+            {
+                ParametersPanel.Visibility = Visibility.Collapsed;
+                ChatInputBox.IsEnabled = true;
+                SendBtn.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
+            }
+            else
+            {
+                ParametersPanel.Visibility = Visibility.Visible;
+                ChatInputBox.IsEnabled = false;
+                SendBtn.IsEnabled = false;
+            }
         }
+
+        private void EnableParametersSwitch_Toggled(object _, RoutedEventArgs __)
+        {
+            if (EnableParametersSwitch.IsOn)
+            {
+                _sendParameters = true;
+                _parameters ??= _settings.Models.DefaultParameters.Copy();
+
+                ControlDefaultParamters.Visibility = Visibility.Collapsed;
+                ControlCustomParamters.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                _sendParameters = true;
+                ControlDefaultParamters.Visibility = Visibility.Visible;
+                ControlCustomParamters.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void CloseParametersButton_Click(object o, RoutedEventArgs eventArgs) => ParametersButton_Click(o, eventArgs);
     }
 
-    public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParameters? parameters) : EventArgs
+    public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters) : EventArgs
     {
         public AIModelViewModel? SelectedModel { get; set; } = model;
-        public AIParameters? Parameters { get; set; } = parameters;
+        public AIParametersViewModel? Parameters { get; set; } = parameters;
     }
 }

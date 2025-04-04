@@ -13,9 +13,6 @@ using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services.AI;
 using PowerPad.Core.Models.AI;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace PowerPad.WinUI.Components.Editors
 {
     public sealed partial class TextEditorControl : EditorControl

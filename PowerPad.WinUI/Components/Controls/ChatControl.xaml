@@ -13,38 +13,48 @@
             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
             Padding="16"
             CornerRadius="10"
-            Visibility="Collapsed">
-            <StackPanel Orientation="Vertical" Spacing="8">
-                <ToggleSwitch x:Name="EnableParametersSwitch"
-                              Header="Habilitar parámetros"/>
-                              <!--IsOn="{x:Bind ViewModel.ParametersEnabled, Mode=TwoWay}" -->
-                <TextBox Header="System Prompt"/>
-                        <!--Text="{x:Bind ViewModel.SystemPrompt, Mode=TwoWay}"
-                         IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" -->
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="Temperature" VerticalAlignment="Center" />
-                    <Slider Minimum="0" Maximum="1" StepFrequency="0.01"/>
-                            <!--Value="{x:Bind ViewModel.Temperature, Mode=TwoWay}"
-                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" />-->
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="Top P" VerticalAlignment="Center" />
-                    <Slider Minimum="0" Maximum="100" StepFrequency="1"/>
-                            <!--Value="{x:Bind ViewModel.TopP, Mode=TwoWay}"
-                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" -->
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="Max Output Tokens" VerticalAlignment="Center" />
-                    <Slider Minimum="1" Maximum="1000" StepFrequency="1"/>
-                            <!--Value="{x:Bind ViewModel.MaxOutputTokens, Mode=TwoWay}"
-                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" -->
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="Max Conversation Length" VerticalAlignment="Center" />
-                    <Slider Minimum="1" Maximum="100" StepFrequency="1"/>
-                    <!--Value="{x:Bind ViewModel.MaxConversationLength, Mode=TwoWay}"
-                            IsEnabled="{x:Bind ViewModel.ParametersEnabled, Mode=OneWay}" />-->
-                </StackPanel>
+            Visibility="Collapsed" >
+            <StackPanel VerticalAlignment="Stretch" Orientation="Vertical" Spacing="16">
+                <Grid 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleSwitch 
+                        x:Name="EnableParametersSwitch" 
+                        VerticalAlignment="Center"
+                        Margin="0,-6,-8,-6"
+                        MinWidth="0"
+                        Toggled="EnableParametersSwitch_Toggled">
+                        <ToggleSwitch.OnContent>
+                            <TextBlock 
+                                Text="Enviar parámetros personalizados" 
+                                Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                        </ToggleSwitch.OnContent>
+                        <ToggleSwitch.OffContent>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock 
+                                    Text="No enviar parámetros personalizados" 
+                                    Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                <TextBlock Text="(Se envían parámetros predeterminados)" Foreground="{ThemeResource TextFillColorTertiaryBrush}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ToggleSwitch.OffContent>
+                    </ToggleSwitch>
+                    <!--IsOn="{x:Bind ViewModel.ParametersEnabled, Mode=TwoWay}" -->
+                    <Button 
+                        x:Name="CloseParametersButton"
+                        Grid.Column="2" HorizontalAlignment="Right"
+                        Background="Transparent"
+                        BorderBrush="Transparent" Width="30" Height="30" Padding="0"
+                        Click="CloseParametersButton_Click">
+                        <FontIcon FontSize="16" Glyph="&#xE8BB;" 
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </Button>
+                </Grid>
+                <local:ChatControlParameters x:Name="ControlDefaultParamters" Parameters="{x:Bind _settings.Models.DefaultParameters, Mode=OneWay}" Visibility="Visible" />
+                <local:ChatControlParameters x:Name="ControlCustomParamters" Parameters="{x:Bind _parameters, Mode=TwoWay}" Visibility="Collapsed" />
             </StackPanel>
         </Grid>
         <Grid
@@ -85,7 +95,7 @@
                         </DropDownButton.Content>
                     </DropDownButton>
                     <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Ajustes">
-                        <ImageIcon Opacity="0.8" Height="18" Source="{ThemeResource SettingsSvg}"/>
+                        <ImageIcon Opacity="0.8" Height="18" Source="{ThemeResource SettingsSmallSvg}"/>
                     </ToggleButton>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">

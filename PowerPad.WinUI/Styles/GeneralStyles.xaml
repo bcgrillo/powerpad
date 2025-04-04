@@ -32,6 +32,7 @@
             <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Icons/huggingface_w.svg</ImageSource>
             <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Icons/azureai_w.svg</ImageSource>
             <ImageSource x:Key="SettingsSvg">ms-appx:///Assets/Icons/settings_w.svg</ImageSource>
+            <ImageSource x:Key="SettingsSmallSvg">ms-appx:///Assets/Icons/settings_s_w.svg</ImageSource>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Light">
@@ -48,6 +49,7 @@
             <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Icons/huggingface_b.svg</ImageSource>
             <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Icons/azureai_b.svg</ImageSource>
             <ImageSource x:Key="SettingsSvg">ms-appx:///Assets/Icons/settings_b.svg</ImageSource>
+            <ImageSource x:Key="SettingsSmallSvg">ms-appx:///Assets/Icons/settings_s_b.svg</ImageSource>
         </ResourceDictionary>
 
     </ResourceDictionary.ThemeDictionaries>

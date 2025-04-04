@@ -28,9 +28,6 @@ using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace PowerPad.WinUI
 {
     /// <summary>

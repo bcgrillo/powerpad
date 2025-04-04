@@ -9,8 +9,8 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:winuiex="using:WinUIEx"
     Width="1280"
-    MinWidth="640"
-    MinHeight="480"
+    MinWidth="960"
+    MinHeight="720"
     mc:Ignorable="d"
     Title="PowerPad">
     <Grid>

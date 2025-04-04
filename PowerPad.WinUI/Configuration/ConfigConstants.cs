@@ -52,7 +52,15 @@ namespace PowerPad.WinUI.Configuration
                 var defaultModelSettings = new ModelsSettingsViewModel()
                 {
                     DefaultModel = new(new AIModel("gemma3:latest", ModelProvider.Ollama, 3338801718), true),
-                    DefaultParameters = new AIParametersViewModel(new AIParameters()),
+                    DefaultParameters = new AIParametersViewModel(new AIParameters
+                    {
+                        SystemPrompt = "Eres PowerPad, un asistente de inteligencia artificial amable y resolutivo.",
+                        Temperature = 0.7f,
+                        TopP = 1,
+                        MaxOutputTokens = 1000,
+                        MaxConversationLength = 50
+                    }),
+                    SendDefaultParameters = true,
                     AvailableModels = []
                 };
 

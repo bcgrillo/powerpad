@@ -9,7 +9,7 @@ namespace PowerPad.Core.Models.AI
 
         public float? Temperature { get; set; }
 
-        public int? TopP { get; set; }
+        public float? TopP { get; set; }
 
         public int? MaxOutputTokens { get; set; }
 
