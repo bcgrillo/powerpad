@@ -10,7 +10,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         private readonly AIParameters _aiParameters = aiParameters;
 
         [JsonConstructor]
-        public AIParametersViewModel(string? SystemPrompt = null, float? Temperature = null, int? TopP = null, int? MaxOutputTokens = null, int? MaxConversationLength = null)
+        public AIParametersViewModel(string? SystemPrompt = null, float? Temperature = null, float? TopP = null, int? MaxOutputTokens = null, int? MaxConversationLength = null)
             : this(new AIParameters
             {
                 SystemPrompt = SystemPrompt,
@@ -52,18 +52,38 @@ namespace PowerPad.WinUI.ViewModels.AI
             set => SetProperty(_aiParameters.MaxConversationLength, value, _aiParameters, (x, y) => x.MaxConversationLength = y);
         }
 
+        public override bool Equals(object? other)
+        {
+            if (other is null) return false;
+
+            if (other is AIParametersViewModel otherAIViewModel)
+            {
+                return GetModel() == otherAIViewModel.GetModel();
+            }
+            else return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return GetModel().GetHashCode();
+        }
+
+        public static bool operator ==(AIParametersViewModel? left, AIParametersViewModel? right)
+        {
+            if (left is null) return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(AIParametersViewModel? left, AIParametersViewModel? right)
+        {
+            return !(left == right);
+        }
+
         public AIParameters GetModel() => _aiParameters;
 
         public AIParametersViewModel Copy()
         {
-            return new (new AIParameters
-            {
-                SystemPrompt = SystemPrompt,
-                Temperature = Temperature,
-                TopP = TopP,
-                MaxOutputTokens = MaxOutputTokens,
-                MaxConversationLength = MaxConversationLength
-            });
+            return new (GetModel() with { });
         }
     }
 }

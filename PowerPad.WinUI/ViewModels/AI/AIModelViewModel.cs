@@ -24,7 +24,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         private bool _enabled = enabled;
 
-        [JsonIgnore, ObservableProperty]
+        [JsonIgnore, ObservableProperty] //TODO: Check, these fields are serializing
         private bool _available = available;
 
         [JsonIgnore, ObservableProperty]

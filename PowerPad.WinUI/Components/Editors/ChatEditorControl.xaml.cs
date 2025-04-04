@@ -73,6 +73,8 @@ namespace PowerPad.WinUI.Components.Editors
             ChatControl.SetParameters(_chat!.Parameters);
             if (_chat.Messages.Any()) HideLandingAndExpandChat();
 
+            ChatControl.ChatOptionsChanged += ChatControl_ChatOptionsChanged;
+
             if (error)
             {
                 DialogHelper.Alert
@@ -225,12 +227,12 @@ namespace PowerPad.WinUI.Components.Editors
             ChatControl.StartStreamingChat(_chat!.Messages, () => _document.Status = DocumentStatus.Dirty);
         }
 
-        private void ChatControl_ChatOptionsChanged(object _, ChatOptionChangedEventArgs eventArgs)
+        private void ChatControl_ChatOptionsChanged(object? _, ChatOptionChangedEventArgs eventArgs)
         {
             if (_chat!.Model != eventArgs.SelectedModel || _chat!.Parameters != eventArgs.Parameters)
             {
                 _chat!.Model = eventArgs.SelectedModel;
-                _chat!.Parameters = eventArgs.Parameters;
+                _chat!.Parameters = eventArgs.Parameters?.Copy();
                 _document.Status = DocumentStatus.Dirty;
             }
         }

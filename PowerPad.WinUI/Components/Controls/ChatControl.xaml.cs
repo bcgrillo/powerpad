@@ -24,6 +24,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using System.Diagnostics;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.Dialogs;
+using System.ComponentModel;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -48,7 +49,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private AIModelViewModel? _selectedModel;
         private AIParametersViewModel? _parameters;
-        private bool _sendParameters = false;
+        private bool _sendParameters;
 
         public ChatControl()
         {
@@ -69,6 +70,9 @@ namespace PowerPad.WinUI.Components.Controls
                 ModelName.Text = _settings.Models.DefaultModel!.CardName;
                 SetModelsMenu();
             }
+
+            _parameters = _settings.Models.DefaultParameters.Copy();
+            _parameters.PropertyChanged += Parameters_PropertyChanged;
         }
 
         public void SetFocus()
@@ -82,7 +86,7 @@ namespace PowerPad.WinUI.Components.Controls
             {
                 if (item.Tag as AIModelViewModel == model)
                 {
-                    SetModelItem_Click(item, null!);
+                    if (_selectedModel != model) SetModelItem_Click(item, null!);
                     return;
                 }
             }
@@ -90,7 +94,12 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void SetParameters(AIParametersViewModel? parameters)
         {
-            _parameters = parameters;
+            if (parameters != null)
+            {
+                _parameters = parameters.Copy();
+                _sendParameters = true;
+            }
+            else _sendParameters = false;
         }
 
         private void SetModelsMenu()
@@ -150,7 +159,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
 
             ((RadioMenuFlyoutItem)sender).IsChecked = true;
-            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _parameters));
+            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
         }
 
         private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
@@ -275,20 +284,30 @@ namespace PowerPad.WinUI.Components.Controls
             if (EnableParametersSwitch.IsOn)
             {
                 _sendParameters = true;
-                _parameters ??= _settings.Models.DefaultParameters.Copy();
-
                 ControlDefaultParamters.Visibility = Visibility.Collapsed;
                 ControlCustomParamters.Visibility = Visibility.Visible;
             }
             else
             {
-                _sendParameters = true;
+                _sendParameters = false;
                 ControlDefaultParamters.Visibility = Visibility.Visible;
                 ControlCustomParamters.Visibility = Visibility.Collapsed;
             }
+
+            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
         }
 
-        private void CloseParametersButton_Click(object o, RoutedEventArgs eventArgs) => ParametersButton_Click(o, eventArgs);
+        private void CloseParametersButton_Click(object o, RoutedEventArgs eventArgs)
+        {
+            ParametersButton.IsChecked = false;
+            ParametersButton_Click(o, eventArgs);
+        }
+
+        private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __)
+        {
+            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
+        }
+
     }
 
     public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters) : EventArgs

@@ -17,6 +17,7 @@
             x:Name="SystemPromptTextBox"
             Header="Instrucciones de sistema"
             AcceptsReturn="True"
+            TextWrapping="Wrap"
             Height="100"
             Text="{x:Bind Parameters.SystemPrompt, Mode=TwoWay}"
             IsEnabled="{x:Bind IsEnabled}"/>

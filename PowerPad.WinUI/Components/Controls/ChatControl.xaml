@@ -53,7 +53,7 @@
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </Button>
                 </Grid>
-                <local:ChatControlParameters x:Name="ControlDefaultParamters" Parameters="{x:Bind _settings.Models.DefaultParameters, Mode=OneWay}" Visibility="Visible" />
+                <local:ChatControlParameters x:Name="ControlDefaultParamters" Parameters="{x:Bind _settings.Models.DefaultParameters, Mode=OneWay}" Visibility="Visible" IsEnabled="False" />
                 <local:ChatControlParameters x:Name="ControlCustomParamters" Parameters="{x:Bind _parameters, Mode=TwoWay}" Visibility="Collapsed" />
             </StackPanel>
         </Grid>
@@ -94,7 +94,7 @@
                             </StackPanel>
                         </DropDownButton.Content>
                     </DropDownButton>
-                    <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Ajustes">
+                    <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Parámetros">
                         <ImageIcon Opacity="0.8" Height="18" Source="{ThemeResource SettingsSmallSvg}"/>
                     </ToggleButton>
                 </StackPanel>

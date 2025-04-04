@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace PowerPad.Core.Models.AI
 {
-    public class AIParameters
+    public record AIParameters
     {
         public string? SystemPrompt { get; set; }
 

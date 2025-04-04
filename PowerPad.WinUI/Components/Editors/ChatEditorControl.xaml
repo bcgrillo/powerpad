@@ -160,8 +160,7 @@
                 Grid.Row="1"
                 Margin="36,24,36,12"
                 ChatPlaceHolder="Escribe lo que quieras..."
-                SendButtonClicked="ChatControl_SendButtonClicked"
-                ChatOptionsChanged="ChatControl_ChatOptionsChanged"/>
+                SendButtonClicked="ChatControl_SendButtonClicked"/>
         </Grid>
     </Grid>
 </local:EditorControl>
