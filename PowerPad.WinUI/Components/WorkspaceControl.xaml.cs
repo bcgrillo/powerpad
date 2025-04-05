@@ -113,8 +113,8 @@ namespace PowerPad.WinUI.Components
         private FolderEntryViewModel? GetParentForNewElement()
         {
             var parent = TreeView.SelectedItem as FolderEntryViewModel;
-            if (parent != null && parent.Type != EntryType.Folder) parent = (FolderEntryViewModel)TreeView.SelectedNode.Parent.Content;
-            if (parent != null) parent.IsExpanded = true;
+            if (parent is not null && parent.Type != EntryType.Folder) parent = (FolderEntryViewModel)TreeView.SelectedNode.Parent.Content;
+            if (parent is not null) parent.IsExpanded = true;
             return parent;
         }
 
@@ -124,7 +124,7 @@ namespace PowerPad.WinUI.Components
 
             var result = await DialogHelper.Imput(this.XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
 
-            if (result != null)
+            if (result is not null)
             {
                 var newName = result;
 
@@ -182,7 +182,7 @@ namespace PowerPad.WinUI.Components
 
             StorageFolder folder = await openPicker.PickSingleFolderAsync();
 
-            if (folder != null)
+            if (folder is not null)
             {
                 _workspace.OpenWorkspaceCommand.Execute(folder.Path);
                 ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(null));
@@ -212,7 +212,7 @@ namespace PowerPad.WinUI.Components
                 {
                     var result = FindFolderEntryByPathRecursive(entry.Children, path);
 
-                    if (result != null)
+                    if (result is not null)
                     {
                         entry.IsExpanded = true;
                         return result;
@@ -225,11 +225,11 @@ namespace PowerPad.WinUI.Components
 
         private void TreeView_Loaded(object _, RoutedEventArgs __)
         {
-            if (_workspace.CurrentDocumentPath != null)
+            if (_workspace.CurrentDocumentPath is not null)
             {
                 var entry = FindFolderEntryByPathRecursive(_workspace.Root.Children, _workspace.CurrentDocumentPath);
 
-                if (entry == null) _workspace.CurrentDocumentPath = null;
+                if (entry is null) _workspace.CurrentDocumentPath = null;
                 else
                 {
                     DispatcherQueue.TryEnqueue(async () =>

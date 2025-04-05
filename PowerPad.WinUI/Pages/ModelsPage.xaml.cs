@@ -114,7 +114,7 @@ namespace PowerPad.WinUI.Pages
         {
             var firstItem = NavView.MenuItems.FirstOrDefault(mi => ((NavigationViewItem)mi).Visibility == Visibility.Visible) as NavigationViewItem;
 
-            if (firstItem != null)
+            if (firstItem is not null)
             {
                 firstItem.IsExpanded = true;
                 NavView.SelectedItem = firstItem.MenuItems.First();

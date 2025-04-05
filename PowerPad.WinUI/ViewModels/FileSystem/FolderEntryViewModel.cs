@@ -58,7 +58,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
             var children = new List<FolderEntryViewModel>();
 
-            if (folder.Folders != null)
+            if (folder.Folders is not null)
             {
                 foreach (var f in folder.Folders)
                 {
@@ -66,7 +66,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
                 }
             }
 
-            if (folder.Documents != null)
+            if (folder.Documents is not null)
             {
                 foreach (var d in folder.Documents)
                 {

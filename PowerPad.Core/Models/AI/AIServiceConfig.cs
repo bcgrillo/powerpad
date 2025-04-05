@@ -3,10 +3,9 @@ using System.Collections.ObjectModel;
 
 namespace PowerPad.Core.Models.AI
 {
-    public class AIServiceConfig
+    public record AIServiceConfig
     {
-        public string? BaseUrl { get; set; }
-
-        public string? Key { get; set; }
+        public string? BaseUrl { get; set; } = null;
+        public string? Key { get; set; } = null;
     }
 }

@@ -3,11 +3,11 @@ using PowerPad.Core.Services;
 
 namespace PowerPad.Core.Models.FileSystem
 {
-    public class Document : IFolderEntry
+    public class Document(string name, string extension) : IFolderEntry
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = name;
 
-        public string Extension { get; set; }
+        public string Extension { get; set; } = extension;
 
         public EntryType Type => EntryType.Document;
 
@@ -22,12 +22,6 @@ namespace PowerPad.Core.Models.FileSystem
         public int? Position
         {
             get => Parent?.PositionOf($"{Name}{Extension}");
-        }
-
-        public Document(string name, string extension)
-        {
-            Name = name;
-            Extension = extension;
         }
     }
 }

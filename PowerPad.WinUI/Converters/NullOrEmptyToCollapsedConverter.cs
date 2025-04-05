@@ -12,7 +12,7 @@ namespace PowerPad.WinUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value == null || (value is string str && string.IsNullOrEmpty(str)))
+            if (value is null || (value is string str && string.IsNullOrEmpty(str)))
             {
                 return Visibility.Collapsed;
             }

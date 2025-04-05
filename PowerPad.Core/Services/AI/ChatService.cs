@@ -83,17 +83,25 @@ namespace PowerPad.Core.Services.AI
             ChatOptions? chatOption = null;
             var messagesAux = chatMessages;
 
-            if (parameters != null)
+            if (parameters is not null)
             {
                 chatOption = new ChatOptions
                 {
                     Temperature = parameters.Temperature,
+                    TopP = parameters.TopP,
                     MaxOutputTokens = parameters.MaxOutputTokens,
                 };
 
                 if (!string.IsNullOrEmpty(parameters.SystemPrompt))
                 {
-                    messagesAux = [new ChatMessage(ChatRole.System, parameters.SystemPrompt), .. chatMessages];
+                    messagesAux = 
+                    [
+                        new ChatMessage(ChatRole.System, parameters.SystemPrompt), 
+                        ..
+                        parameters.MaxConversationLength.HasValue
+                        ? messagesAux.TakeLast(parameters.MaxConversationLength.Value)
+                        : messagesAux
+                    ];
                 }
             }
 

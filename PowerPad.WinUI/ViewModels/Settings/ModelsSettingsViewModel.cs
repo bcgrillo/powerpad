@@ -48,7 +48,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             switch (eventArgs.PropertyName)
             {
                 case nameof(DefaultModel):
-                    if (DefaultModel != null)
+                    if (DefaultModel is not null)
                         DefaultModel.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
             }
@@ -83,7 +83,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         private void ValidateDefaultModel()
         {
-            if (DefaultModel == null || !AvailableModels.Contains(DefaultModel)) DefaultModel = null;
+            if (DefaultModel is null || !AvailableModels.Contains(DefaultModel)) DefaultModel = null;
         }
     }
 }

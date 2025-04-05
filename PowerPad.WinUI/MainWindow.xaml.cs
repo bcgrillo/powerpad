@@ -103,7 +103,7 @@ namespace PowerPad.WinUI
 
                 _activeNavPage = NavFrame.Content as INavigationPage;
 
-                if (_activeNavPage != null)
+                if (_activeNavPage is not null)
                 {
                     _activeNavPage.NavigationVisibilityChanged += NavigationVisibilityChanged;
                     (NavFrame.Content as Page)!.Loaded += (s, e) => NavigationVisibilityChanged(null, null);

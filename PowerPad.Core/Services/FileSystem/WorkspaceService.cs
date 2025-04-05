@@ -54,18 +54,18 @@ namespace PowerPad.Core.Services.FileSystem
             _root = InitializeRootFolder(rootFolder);
         }
 
-        private Folder InitializeRootFolder(string rootFolder)
+        private Root InitializeRootFolder(string rootFolder)
         {
             if (!Directory.Exists(_configFolder)) Directory.CreateDirectory(_configFolder);
             if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
 
-            var folder = Folder.CreateRoot(rootFolder);
-            folder.AddFolders(GetFoldersRecursive(rootFolder));
-            folder.AddDocuments(GetDocuments(rootFolder));
+            var root = new Root(rootFolder);
+            root.AddFolders(GetFoldersRecursive(rootFolder));
+            root.AddDocuments(GetDocuments(rootFolder));
 
-            _orderService.LoadOrderRecursive(folder);
+            _orderService.LoadOrderRecursive(root);
 
-            return folder;
+            return root;
         }
 
         private Collection<Folder> GetFoldersRecursive(string path)

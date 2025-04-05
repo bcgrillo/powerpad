@@ -30,6 +30,6 @@ namespace PowerPad.WinUI.ViewModels.Settings
             set => SetProperty(_aiServiceConfig.Key, value, _aiServiceConfig, (x, y) => x.Key = y);
         }
 
-        public AIServiceConfig GetModel() => _aiServiceConfig;
+        public AIServiceConfig GetRecord() => _aiServiceConfig;
     }
 }

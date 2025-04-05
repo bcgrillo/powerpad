@@ -45,9 +45,9 @@ namespace PowerPad.WinUI.Components
 
         public void OpenFile(FolderEntryViewModel? document)
         {
-            if (document == null)
+            if (document is null)
             {
-                if (_currentEditor != null) _currentEditor.Visibility = Visibility.Collapsed;
+                if (_currentEditor is not null) _currentEditor.Visibility = Visibility.Collapsed;
                 _currentEditor = null;
 
                 Landing.Visibility = Visibility.Visible;
@@ -57,18 +57,18 @@ namespace PowerPad.WinUI.Components
             {
                 _editors.TryGetValue(document, out EditorControl? _requestedEditor);
 
-                if (_currentEditor != null && _currentEditor == _requestedEditor)
+                if (_currentEditor is not null && _currentEditor == _requestedEditor)
                 {
                     return;
                 }
                 else
                 {
-                    if (_currentEditor != null)
+                    if (_currentEditor is not null)
                     {
                         _currentEditor.Visibility = Visibility.Collapsed;
                     }
 
-                    if (_requestedEditor != null)
+                    if (_requestedEditor is not null)
                     {
                         _requestedEditor.Visibility = Visibility.Visible;
                         _currentEditor = _requestedEditor;
@@ -138,7 +138,7 @@ namespace PowerPad.WinUI.Components
                 if (kvp.Key.ModelEntry == message.Value) key = kvp.Key;
             }
 
-            if (key != null)
+            if (key is not null)
             {
                 EditorGrid.Children.Remove(_editors[key]);
                 _editors[key].Dispose();

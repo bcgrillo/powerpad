@@ -52,20 +52,32 @@ namespace PowerPad.WinUI.ViewModels.AI
             set => SetProperty(_aiParameters.MaxConversationLength, value, _aiParameters, (x, y) => x.MaxConversationLength = y);
         }
 
+        public AIParameters GetRecord() => _aiParameters;
+
+        public void Set(AIParameters parameters)
+        {
+            SystemPrompt = parameters.SystemPrompt;
+            Temperature = parameters.Temperature;
+            TopP = parameters.TopP;
+            MaxOutputTokens = parameters.MaxOutputTokens;
+            MaxConversationLength = parameters.MaxConversationLength;
+        }
+
         public override bool Equals(object? other)
         {
             if (other is null) return false;
 
             if (other is AIParametersViewModel otherAIViewModel)
             {
-                return GetModel() == otherAIViewModel.GetModel();
+                if (ReferenceEquals(this, other)) return true;
+                return GetRecord() == otherAIViewModel.GetRecord();
             }
             else return false;
         }
 
         public override int GetHashCode()
         {
-            return GetModel().GetHashCode();
+            return GetRecord().GetHashCode();
         }
 
         public static bool operator ==(AIParametersViewModel? left, AIParametersViewModel? right)
@@ -79,11 +91,9 @@ namespace PowerPad.WinUI.ViewModels.AI
             return !(left == right);
         }
 
-        public AIParameters GetModel() => _aiParameters;
-
         public AIParametersViewModel Copy()
         {
-            return new (GetModel() with { });
+            return new (GetRecord() with { }); //Shallow copy
         }
     }
 }

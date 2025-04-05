@@ -2,28 +2,20 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using PowerPad.Core.Models.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
 using System.Threading.Tasks;
 using System;
 using Windows.System;
 using Windows.UI.Core;
-using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Extensions.AI;
 using System.Threading;
 using System.Linq;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.Core.Services;
-using static PowerPad.WinUI.Configuration.ConfigConstants;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
-using Windows.Web.AtomPub;
-using CommunityToolkit.WinUI.UI.Controls;
 using System.Diagnostics;
-using PowerPad.Core.Models.AI;
-using PowerPad.WinUI.Dialogs;
 using System.ComponentModel;
 
 namespace PowerPad.WinUI.Components.Controls
@@ -37,6 +29,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
         public event EventHandler<ChatOptionChangedEventArgs>? ChatOptionsChanged;
+        public event EventHandler<bool>? ParametersVisibilityChanged;
 
         public string ChatPlaceHolder
         {
@@ -48,7 +41,7 @@ namespace PowerPad.WinUI.Components.Controls
             DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new PropertyMetadata(false));
 
         private AIModelViewModel? _selectedModel;
-        private AIParametersViewModel? _parameters;
+        private readonly AIParametersViewModel _parameters;
         private bool _sendParameters;
 
         public ChatControl()
@@ -58,7 +51,7 @@ namespace PowerPad.WinUI.Components.Controls
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
 
-            if (_settings.Models.DefaultModel == null)
+            if (_settings.Models.DefaultModel is null)
             {
                 ModelIcon.Content = null;
                 ModelName.Text = "No hay modelos disponibles :(";
@@ -94,12 +87,23 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void SetParameters(AIParametersViewModel? parameters)
         {
-            if (parameters != null)
+            if (parameters is not null)
             {
-                _parameters = parameters.Copy();
-                _sendParameters = true;
+                _parameters.Set(parameters.GetRecord());
+
+                if (!_sendParameters)
+                {
+                    _sendParameters = true;
+                    EnableParametersSwitch.IsOn = true;
+                    ToggleParameterVisibility();
+                }
             }
-            else _sendParameters = false;
+            else if (_sendParameters)
+            {
+                _sendParameters = false;
+                EnableParametersSwitch.IsOn = false;
+                ToggleParameterVisibility();
+            }
         }
 
         private void SetModelsMenu()
@@ -146,7 +150,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             _selectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
 
-            if (_selectedModel != null)
+            if (_selectedModel is not null)
             {
                 ModelIcon.Content = _selectedModel.ModelProvider.GetIcon();
                 ModelName.Text = _selectedModel.CardName;
@@ -192,12 +196,10 @@ namespace PowerPad.WinUI.Components.Controls
 
                 _cts = new CancellationTokenSource();
 
-                history.Insert(0, new ChatMessage(ChatRole.System, "You are a helpful assistant"));
-
                 var parameters = _sendParameters ? _parameters 
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
 
-                await foreach (var messagePart in _chatService.GetStreamingResponse(history, _selectedModel?.GetModel(), parameters?.GetModel(), _cts.Token))
+                await foreach (var messagePart in _chatService.GetStreamingResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
                 {
                     try
                     {
@@ -277,9 +279,18 @@ namespace PowerPad.WinUI.Components.Controls
                 ChatInputBox.IsEnabled = false;
                 SendBtn.IsEnabled = false;
             }
+
+            ParametersVisibilityChanged?.Invoke(this, !parameterPanelVisible);
         }
 
         private void EnableParametersSwitch_Toggled(object _, RoutedEventArgs __)
+        {
+            ToggleParameterVisibility();
+
+            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
+        }
+
+        private void ToggleParameterVisibility()
         {
             if (EnableParametersSwitch.IsOn)
             {
@@ -293,8 +304,6 @@ namespace PowerPad.WinUI.Components.Controls
                 ControlDefaultParamters.Visibility = Visibility.Visible;
                 ControlCustomParamters.Visibility = Visibility.Collapsed;
             }
-
-            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
         }
 
         private void CloseParametersButton_Click(object o, RoutedEventArgs eventArgs)

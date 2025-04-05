@@ -31,7 +31,7 @@ namespace PowerPad.Core.Services.AI
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
-            if (_openAI == null) return [];
+            if (_openAI is null) return [];
 
             var models = await _openAI.GetOpenAIModelClient().GetModelsAsync();
 

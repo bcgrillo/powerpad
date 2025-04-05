@@ -36,7 +36,7 @@ namespace PowerPad.Core.Services.AI
 
         public async Task<OllamaStatus> GetStatus()
         {
-            if (_ollama == null) return OllamaStatus.Unknown;
+            if (_ollama is null) return OllamaStatus.Unknown;
 
             bool connected;
 
@@ -83,7 +83,7 @@ namespace PowerPad.Core.Services.AI
 
         public async Task<IEnumerable<AIModel>> GetAvailableModels()
         {
-            if (_ollama == null) return [];
+            if (_ollama is null) return [];
 
             var models = await _ollama.ListLocalModelsAsync();
 
@@ -110,7 +110,7 @@ namespace PowerPad.Core.Services.AI
 
         public IChatClient? ChatClient(AIModel model)
         {
-            if (_ollama == null) return null;
+            if (_ollama is null) return null;
 
             _ollama.SelectedModel = model.Name;
 

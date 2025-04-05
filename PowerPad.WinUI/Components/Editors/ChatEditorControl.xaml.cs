@@ -151,7 +151,7 @@ namespace PowerPad.WinUI.Components.Editors
         private void InvertedListView_Loaded(object _, RoutedEventArgs __)
         {
             ItemsStackPanel? itemsStackPanel = FindElement<ItemsStackPanel>(InvertedListView);
-            if (itemsStackPanel != null)
+            if (itemsStackPanel is not null)
             {
                 itemsStackPanel.SizeChanged += ItemsStackPanel_SizeChanged;
             }
@@ -169,7 +169,7 @@ namespace PowerPad.WinUI.Components.Editors
             {
                 var child = VisualTreeHelper.GetChild(element, i);
                 var result = FindElement<T>(child);
-                if (result != null)
+                if (result is not null)
                 {
                     return result;
                 }
@@ -194,7 +194,7 @@ namespace PowerPad.WinUI.Components.Editors
         {
             var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
 
-            if (scrollViewer != null)
+            if (scrollViewer is not null)
             {
                 bool isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
 
@@ -213,7 +213,7 @@ namespace PowerPad.WinUI.Components.Editors
         {
             var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
 
-            if (scrollViewer != null)
+            if (scrollViewer is not null)
             {
                 while (Math.Ceiling(scrollViewer.VerticalOffset) < scrollViewer.ScrollableHeight)
                 {
@@ -234,6 +234,15 @@ namespace PowerPad.WinUI.Components.Editors
                 _chat!.Model = eventArgs.SelectedModel;
                 _chat!.Parameters = eventArgs.Parameters?.Copy();
                 _document.Status = DocumentStatus.Dirty;
+            }
+        }
+
+        private void ChatControl_ParametersVisibilityChanged(object _, bool parametersPanelVisible)
+        {
+            //TODO: Error if it is called multiple times
+            if (Landing.Visibility == Visibility.Visible)
+            {
+                LandingContent.Visibility = parametersPanelVisible ? Visibility.Collapsed : Visibility.Visible;
             }
         }
     }

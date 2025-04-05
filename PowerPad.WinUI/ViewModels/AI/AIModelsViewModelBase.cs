@@ -88,7 +88,7 @@ namespace PowerPad.WinUI.ViewModels.AI
             SearchResultModels.Clear();
             SearchResultModels.AddRange(resultModels.Select(m =>
             {
-                var existingModel = _settingsViewModel.Models.AvailableModels.FirstOrDefault(am => am.GetModel() == m);
+                var existingModel = _settingsViewModel.Models.AvailableModels.FirstOrDefault(am => am.GetRecord() == m);
 
                 return new AIModelViewModel
                 (

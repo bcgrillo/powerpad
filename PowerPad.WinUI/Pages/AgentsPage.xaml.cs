@@ -26,7 +26,7 @@ namespace PowerPad.WinUI.Pages
 
         private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs args)
         {
-            if (args.SelectedItem != null) 
+            if (args.SelectedItem is not null) 
                 NavigateToPage((ModelProvider)((NavigationViewItem)args.SelectedItem)!.Tag);
         }
 

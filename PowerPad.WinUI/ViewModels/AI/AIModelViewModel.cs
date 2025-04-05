@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Models.AI;
-using PowerPad.WinUI.Messages;
 using System;
 using System.Text.Json.Serialization;
 
@@ -24,10 +22,12 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         private bool _enabled = enabled;
 
-        [JsonIgnore, ObservableProperty] //TODO: Check, these fields are serializing
+        [ObservableProperty]
+        [property: JsonIgnore]
         private bool _available = available;
 
-        [JsonIgnore, ObservableProperty]
+        [ObservableProperty]
+        [property: JsonIgnore]
         private bool _downloading = downloading;
 
         public long? Size => _aiModel.Size;
@@ -37,45 +37,10 @@ namespace PowerPad.WinUI.ViewModels.AI
         [JsonIgnore]
         public bool CanAdd => !Available && !Downloading;
 
-        public AIModel GetModel() => _aiModel;
+        public AIModel GetRecord() => _aiModel;
 
         [JsonIgnore]
         public string? CardName => DisplayName ?? Name;
-
-        [JsonIgnore]
-        public string SizeAsString
-        {
-            get
-            {
-                if (Size == null) return string.Empty;
-
-                const long kiloByte = 1024;
-                const long megaByte = kiloByte * 1024;
-                const long gigaByte = megaByte * 1024;
-                const long teraByte = gigaByte * 1024;
-
-                if (Size >= teraByte)
-                {
-                    return $"{(double)Size / teraByte:F1}TB";
-                }
-                else if (Size >= gigaByte)
-                {
-                    return $"{(double)Size / gigaByte:F1}GB";
-                }
-                else if (Size >= megaByte)
-                {
-                    return $"{(double)Size / megaByte:F1}MB";
-                }
-                else if (Size >= kiloByte)
-                {
-                    return $"{(double)Size / kiloByte:F1}KB";
-                }
-                else
-                {
-                    return $"{Size} Bytes";
-                }
-            }
-        }
 
         public override bool Equals(object? other)
         {
@@ -84,14 +49,14 @@ namespace PowerPad.WinUI.ViewModels.AI
             if (other is AIModelViewModel otherAIViewModel)
             {
                 if (ReferenceEquals(this, other)) return true;
-                return Name == otherAIViewModel.Name && ModelProvider == otherAIViewModel.ModelProvider;
+                return GetRecord() == otherAIViewModel.GetRecord();
             }
             else return false;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Name, ModelProvider);
+            return GetRecord().GetHashCode();
         }
 
         public static bool operator ==(AIModelViewModel? left, AIModelViewModel? right)

@@ -32,7 +32,7 @@ namespace PowerPad.WinUI.Helpers
 
         static public Window? GetWindowForElement(UIElement element)
         {
-            if (element.XamlRoot != null)
+            if (element.XamlRoot is not null)
             {
                 foreach (Window window in _activeWindows)
                 {

@@ -65,15 +65,15 @@ namespace PowerPad.WinUI.ViewModels.Settings
             switch(eventArgs.PropertyName)
             {
                 case nameof(OllamaConfig):
-                    if (OllamaConfig != null)
+                    if (OllamaConfig is not null)
                         OllamaConfig.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
                 case nameof(AzureAIConfig):
-                    if (AzureAIConfig != null)
+                    if (AzureAIConfig is not null)
                         AzureAIConfig.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
                 case nameof(OpenAIConfig):
-                    if (OpenAIConfig != null)
+                    if (OpenAIConfig is not null)
                         OpenAIConfig.PropertyChanged += SecondaryPropertyChangedHandler;
                     break;
             }

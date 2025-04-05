@@ -2,6 +2,7 @@
 using System.Text.Json;
 using static PowerPad.Core.Services.Conventions;
 using static PowerPad.Core.Constants;
+using PowerPad.Core.Models.FileSystem;
 
 namespace PowerPad.Core.Services.FileSystem
 {
@@ -20,7 +21,7 @@ namespace PowerPad.Core.Services.FileSystem
         {
             LoadOrder(folder);
 
-            if (folder.Folders != null)
+            if (folder.Folders is not null)
             {
                 foreach (var subFolder in folder.Folders) LoadOrderRecursive(subFolder);
             }
@@ -71,7 +72,7 @@ namespace PowerPad.Core.Services.FileSystem
 
             sourceOrderedEntries.Remove(movedEntryName);
 
-            if (targetFolder != null)
+            if (targetFolder is not null)
             {
                 var targetOrderedEntries = LoadOrder(targetFolder);
 
@@ -96,13 +97,13 @@ namespace PowerPad.Core.Services.FileSystem
             var order = parentFolder.Order;
 
             //Initialize order
-            if (order == null)
+            if (order is null)
             {
                 var orderAux = new List<string>();
 
-                if (parentFolder.Folders != null) foreach (var folder in parentFolder.Folders) orderAux.Add(folder.Name);
+                if (parentFolder.Folders is not null) foreach (var folder in parentFolder.Folders) orderAux.Add(folder.Name);
 
-                if (parentFolder.Documents != null) foreach (var document in parentFolder.Documents) orderAux.Add($"{document.Name}{document.Extension}");
+                if (parentFolder.Documents is not null) foreach (var document in parentFolder.Documents) orderAux.Add($"{document.Name}{document.Extension}");
 
                 var orderFilePath = Path.Combine(parentFolder.Path, ORDER_FILE_NAME);
 

@@ -39,7 +39,7 @@ namespace PowerPad.WinUI.Configuration
 
                 var ollama = new OllamaService();
 
-                if (config != null) ollama.Initialize(config.GetModel());
+                if (config is not null) ollama.Initialize(config.GetRecord());
 
                 return ollama;
             });
@@ -53,7 +53,7 @@ namespace PowerPad.WinUI.Configuration
 
                 var azureAI = new AzureAIService();
 
-                if (config != null) azureAI.Initialize(config.GetModel());
+                if (config is not null) azureAI.Initialize(config.GetRecord());
 
                 return azureAI;
             });
@@ -67,7 +67,7 @@ namespace PowerPad.WinUI.Configuration
 
                 var openAI = new OpenAIService();
 
-                if (config != null) openAI.Initialize(config.GetModel());
+                if (config is not null) openAI.Initialize(config.GetRecord());
 
                 return openAI;
             });
@@ -85,8 +85,8 @@ namespace PowerPad.WinUI.Configuration
 
                 var modelSettings = GetModelSettings(app.AppConfigStore);
 
-                if (modelSettings.DefaultModel != null) aiService.SetDefaultModel(modelSettings.DefaultModel.GetModel());
-                if (modelSettings.DefaultParameters != null) aiService.SetDefaultParameters(modelSettings.DefaultParameters.GetModel());
+                if (modelSettings.DefaultModel is not null) aiService.SetDefaultModel(modelSettings.DefaultModel.GetRecord());
+                if (modelSettings.DefaultParameters is not null) aiService.SetDefaultParameters(modelSettings.DefaultParameters.GetRecord());
 
                 return aiService;
             });
@@ -104,7 +104,7 @@ namespace PowerPad.WinUI.Configuration
         {
             var recentlyWorkspaces = app.AppConfigStore.TryGet<string[]>(StoreKey.RecentlyWorkspaces);
 
-            if (recentlyWorkspaces == null)
+            if (recentlyWorkspaces is null)
             {
                 recentlyWorkspaces = [ StoreDefault.WorkspaceFolder ];
                 app.AppConfigStore.Set(StoreKey.RecentlyWorkspaces, recentlyWorkspaces);
@@ -117,7 +117,7 @@ namespace PowerPad.WinUI.Configuration
         {
             var general = config.TryGet<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
 
-            if (general == null)
+            if (general is null)
             {
                 general = StoreDefault.GeneralSettings;
                 config.Set(StoreKey.GeneralSettings, general);
@@ -130,7 +130,7 @@ namespace PowerPad.WinUI.Configuration
         {
             var models = config.TryGet<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
 
-            if (models == null)
+            if (models is null)
             {
                 models = StoreDefault.GenerateDefaultModelsSettings();
                 config.Set(StoreKey.ModelsSettings, models);

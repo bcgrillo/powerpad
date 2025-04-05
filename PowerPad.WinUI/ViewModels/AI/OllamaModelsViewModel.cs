@@ -46,7 +46,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
                 foreach (var newAvailableModel in newAvailableModels)
                 {
-                    if (!currentAvailableModels.Any(m => m.GetModel() == newAvailableModel))
+                    if (!currentAvailableModels.Any(m => m.GetRecord() == newAvailableModel))
                     {
                         currentAvailableModels.Add(new(newAvailableModel));
                     }
@@ -58,9 +58,9 @@ namespace PowerPad.WinUI.ViewModels.AI
 
                     if (currentAvailableModel.ModelProvider is ModelProvider.Ollama or ModelProvider.HuggingFace)
                     {
-                        var newAvailableModel = newAvailableModels.FirstOrDefault(m => m == currentAvailableModel.GetModel());
+                        var newAvailableModel = newAvailableModels.FirstOrDefault(m => m == currentAvailableModel.GetRecord());
 
-                        if (newAvailableModel == null)
+                        if (newAvailableModel is null)
                         {
                             if (!currentAvailableModel.Downloading) currentAvailableModels.RemoveAt(i);
                         }

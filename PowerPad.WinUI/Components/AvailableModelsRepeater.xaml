@@ -4,7 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI">
+    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters">
+    <UserControl.Resources>
+        <converters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
+    </UserControl.Resources>
     <Grid>
         <ScrollViewer x:Name="ModelsScrollViewer">
             <Grid Padding="36,0,36,36">
@@ -24,7 +28,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                Text="{x:Bind SizeAsString}"/>
+                                                Text="{x:Bind Size, Converter={StaticResource FileSizeToFriendlyStringConverter}}"/>
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"

@@ -53,7 +53,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             //Control for change the default model
             if (propertyName == nameof(Models.DefaultModel))
             {
-                if (Models.DefaultModel == null)
+                if (Models.DefaultModel is null)
                 {
                     var availableModelProviders = General.GetAvailableModelProviders();
 
@@ -61,11 +61,11 @@ namespace PowerPad.WinUI.ViewModels.Settings
                     {
                         Models.DefaultModel = Models.AvailableModels.Where(m => m.ModelProvider == modelProvider).FirstOrDefault();
 
-                        if (Models.DefaultModel != null) break;
+                        if (Models.DefaultModel is not null) break;
                     }
                 }
 
-                App.Get<IChatService>().SetDefaultModel(Models.DefaultModel?.GetModel());
+                App.Get<IChatService>().SetDefaultModel(Models.DefaultModel?.GetRecord());
             }
 
             _configStore.Set(StoreKey.ModelsSettings, Models);

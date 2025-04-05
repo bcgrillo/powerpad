@@ -2,16 +2,14 @@
 using PowerPad.Core.Models.FileSystem;
 using System.Collections.ObjectModel;
 
-namespace PowerPad.Core.Models
+namespace PowerPad.Core.Models.FileSystem
 {
-    public class Folder : IFolderEntry
+    public class Folder(string name) : IFolderEntry
     {
-        private string? _rootPath;
+        private readonly Collection<Folder> _folders = [];
+        private readonly Collection<Document> _documents = [];
 
-        private Collection<Folder>? _folders;
-        private Collection<Document>? _documents;
-
-        public string Name { get; set; }
+        public string Name { get; set; } = name;
 
         public EntryType Type => EntryType.Folder;
 
@@ -19,7 +17,7 @@ namespace PowerPad.Core.Models
 
         public Folder? Parent { get; internal set; }
 
-        public string Path => _rootPath ?? $"{Parent?.Path}\\{Name}";
+        public virtual string Path => $"{Parent?.Path}\\{Name}";
 
         public ReadOnlyCollection<Folder>? Folders => _folders?.AsReadOnly();
 
@@ -32,19 +30,8 @@ namespace PowerPad.Core.Models
 
         public IList<string>? Order;
 
-        private Folder()
-        {
-            Name = null!;
-        }
-
-        public Folder(string name)
-        {
-            Name = name;
-        }
         internal void AddFolder(Folder folder)
         {
-            if (_folders == null) _folders = new Collection<Folder>();
-
             folder.Parent = this;
 
             _folders.Add(folder);
@@ -52,8 +39,6 @@ namespace PowerPad.Core.Models
 
         internal void AddDocument(Document document)
         {
-            if (_documents == null) _documents = new Collection<Document>();
-
             document.Parent = this;
 
             _documents.Add(document);
@@ -73,7 +58,6 @@ namespace PowerPad.Core.Models
 
         internal void AddFolders(IEnumerable<Folder> folders)
         {
-            if (_folders == null) _folders = new Collection<Folder>();
             foreach (var folder in folders)
             {
                 folder.Parent = this;
@@ -83,19 +67,11 @@ namespace PowerPad.Core.Models
 
         internal void AddDocuments(IEnumerable<Document> documents)
         {
-            if (_documents == null) _documents = new Collection<Document>();
             foreach (var document in documents)
             {
                 document.Parent = this;
                 _documents.Add(document);
             }
-        }
-
-        public static Folder CreateRoot(string rootPath)
-        {
-            var root = new Folder();
-            root._rootPath = rootPath;
-            return root;
         }
 
         public int? PositionOf(string entryName)

@@ -122,6 +122,7 @@
             </Grid.RowDefinitions>
             <Grid x:Name="Landing">
                 <StackPanel
+                    x:Name="LandingContent"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Orientation="Vertical"
@@ -160,7 +161,8 @@
                 Grid.Row="1"
                 Margin="36,24,36,12"
                 ChatPlaceHolder="Escribe lo que quieras..."
-                SendButtonClicked="ChatControl_SendButtonClicked"/>
+                SendButtonClicked="ChatControl_SendButtonClicked"
+                ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged" />
         </Grid>
     </Grid>
 </local:EditorControl>
