@@ -14,11 +14,16 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.WinUI.Messages;
+using PowerPad.WinUI.ViewModels.Settings;
+using System.Threading;
 
 namespace PowerPad.WinUI.Components
 {
     public sealed partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>
     {
+        private static WorkspaceControl? _registredInstance = null;
+        private readonly Lock _registredInstenceLock = new();
+
         private readonly WorkspaceViewModel _workspace;
         private readonly List<MenuFlyoutItem> _menuFlyoutItems;
 
@@ -33,7 +38,14 @@ namespace PowerPad.WinUI.Components
 
             UpdateWorkspacesMenu();
 
-            WeakReferenceMessenger.Default.Register(this);
+            lock(_registredInstenceLock)
+            {
+                if (_registredInstance is not null)
+                    WeakReferenceMessenger.Default.Unregister<FolderEntryCreated>(_registredInstance);
+
+                WeakReferenceMessenger.Default.Register(this);
+                _registredInstance = this;
+            }
         }
 
         private void UpdateWorkspacesMenu()
@@ -268,7 +280,6 @@ namespace PowerPad.WinUI.Components
             {
                 ItemInvoked?.Invoke(this, new(message.Value));
                 _workspace.CurrentDocumentPath = message.Value.ModelEntry.Path;
-
             }
         }
 

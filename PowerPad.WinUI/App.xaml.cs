@@ -9,6 +9,7 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI
 {
@@ -63,5 +64,7 @@ namespace PowerPad.WinUI
         private Window? m_window;
 
         public static T Get<T>() where T : notnull => Ioc.Default.GetRequiredService<T>();
+
+
     }
 }

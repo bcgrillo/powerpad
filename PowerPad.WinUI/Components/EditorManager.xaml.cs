@@ -7,19 +7,22 @@ using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using PowerPad.WinUI.Helpers;
+using System.Threading;
 
 namespace PowerPad.WinUI.Components
 {
     public sealed partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     {
+        private static EditorManager? _registredInstance = null;
+        private readonly Lock _registredInstenceLock = new();
+
         private readonly WorkspaceViewModel _workspace;
         private const long AUTO_SAVE_INTERVAL = 3000;
         private EditorControl? _currentEditor;
 
-        private readonly Dictionary<FolderEntryViewModel, EditorControl> _editors;
         private readonly DispatcherTimer _timer;
-
-        public event EventHandler? EditorUnloaded; //TODO: Remove?
 
         public EditorManager()
         {
@@ -27,16 +30,21 @@ namespace PowerPad.WinUI.Components
 
             _workspace = App.Get<WorkspaceViewModel>();
 
-            _editors = [];
-
             _timer = new()
             {
                 Interval = TimeSpan.FromMilliseconds(AUTO_SAVE_INTERVAL)
             };
-            _timer.Tick += (o, e) => AutoSaveEditors();
+            _timer.Tick += (o, e) => EditorManagerHelper.AutoSaveEditors();
             _timer.Start();
 
-            WeakReferenceMessenger.Default.Register(this);
+            lock (_registredInstenceLock)
+            {
+                if (_registredInstance is not null)
+                    WeakReferenceMessenger.Default.Unregister<FolderEntryDeleted>(_registredInstance);
+
+                WeakReferenceMessenger.Default.Register(this);
+                _registredInstance = this;
+            }
         }
 
         public void OpenFile(FolderEntryViewModel? document)
@@ -51,7 +59,7 @@ namespace PowerPad.WinUI.Components
             }
             else
             {
-                _editors.TryGetValue(document, out EditorControl? _requestedEditor);
+                EditorManagerHelper.Editors.TryGetValue(document, out EditorControl? _requestedEditor);
 
                 if (_currentEditor is not null && _currentEditor == _requestedEditor)
                 {
@@ -61,12 +69,15 @@ namespace PowerPad.WinUI.Components
                 {
                     if (_currentEditor is not null)
                     {
-                        _currentEditor.Visibility = Visibility.Collapsed;
+                        _currentEditor.IsActive = false;
+                        EditorGrid.Children.Remove(_currentEditor);
                     }
 
                     if (_requestedEditor is not null)
                     {
-                        _requestedEditor.Visibility = Visibility.Visible;
+                        _requestedEditor.IsActive = true;
+                        EditorGrid.Children.Add(_requestedEditor);
+
                         _currentEditor = _requestedEditor;
                     }
                     else
@@ -74,24 +85,20 @@ namespace PowerPad.WinUI.Components
                         EditorControl newEditor;
 
                         if (document.DocumentType == DocumentType.Chat)
-                        {
                             newEditor = new ChatEditorControl((Document)document.ModelEntry);
-                        }
                         else
-                        {
                             newEditor = new TextEditorControl((Document)document.ModelEntry);
-                        }
 
-                        newEditor.Visibility = Visibility.Collapsed;
+                        EditorManagerHelper.Editors.Add(document, newEditor);
 
-                        _editors.Add(document, newEditor);
                         EditorGrid.Children.Add(newEditor);
                         _currentEditor = newEditor;
+                    }
 
+                    if (Landing.Visibility == Visibility.Visible)
+                    {
                         Landing.Visibility = Visibility.Collapsed;
                         EditorGrid.Visibility = Visibility.Visible;
-
-                        newEditor.Visibility = Visibility.Visible;
                     }
                 }
 
@@ -99,54 +106,29 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void AutoSaveEditors(bool forceSaveCurrent = false)
-        {
-            var editorsToRemove = new List<FolderEntryViewModel>();
-
-            foreach (var kvp in _editors)
-            {
-                var editor = kvp.Value;
-                if (editor.IsDirty || (forceSaveCurrent && _currentEditor == editor))
-                {
-                    editor.AutoSave();
-                }
-                else if ((DateTime.Now - editor.LastSaveTime).TotalMinutes > 10
-                    && _currentEditor != editor)
-                {
-                    editorsToRemove.Add(kvp.Key);
-                }
-            }
-
-            foreach (var key in editorsToRemove)
-            {
-                EditorGrid.Children.Remove(_editors[key]);
-                _editors[key].Dispose();
-                _editors.Remove(key);
-            }
-        }
-
         public void Receive(FolderEntryDeleted message)
         {
             FolderEntryViewModel? key = null;
 
-            foreach (var kvp in _editors)
+            foreach (var kvp in EditorManagerHelper.Editors)
             {
                 if (kvp.Key.ModelEntry == message.Value) key = kvp.Key;
             }
 
             if (key is not null)
             {
-                EditorGrid.Children.Remove(_editors[key]);
-                _editors[key].Dispose();
+                var removedEditor = EditorManagerHelper.Editors[key];
 
-                if (_currentEditor == _editors[key])
+                EditorGrid.Children.Remove(removedEditor);
+                removedEditor.Dispose();
+                EditorManagerHelper.Editors.Remove(key);
+
+                if (_currentEditor == removedEditor)
                 {
                     _currentEditor = null;
                     Landing.Visibility = Visibility.Visible;
                     EditorGrid.Visibility = Visibility.Collapsed;
                 }
-                
-                _editors.Remove(key);
             }
         }
 
@@ -160,9 +142,13 @@ namespace PowerPad.WinUI.Components
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Text));
         }
 
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        private void UserControl_Unloaded(object _, RoutedEventArgs __)
         {
-            AutoSaveEditors(true);
+            if (_currentEditor is not null)
+            {
+                _currentEditor.IsActive = false;
+                EditorGrid.Children.Remove(_currentEditor);
+            }
         }
     }
 }

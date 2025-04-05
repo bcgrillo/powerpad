@@ -10,6 +10,7 @@ using Microsoft.UI.Composition;
 using PowerPad.WinUI.Pages;
 using Microsoft.UI.Windowing;
 using Windows.UI;
+using PowerPad.WinUI.Helpers;
 
 namespace PowerPad.WinUI
 {
@@ -57,6 +58,8 @@ namespace PowerPad.WinUI
                 _acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
                 _acrylicController.SetSystemBackdropConfiguration(_configurationSource);
             }
+            
+            Closed += (s, e) => EditorManagerHelper.AutoSaveEditors();
         }
 
         private void SetTitleBar()

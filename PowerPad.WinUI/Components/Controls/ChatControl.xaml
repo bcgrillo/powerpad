@@ -93,13 +93,13 @@
                         </DropDownButton.Flyout>
                         <DropDownButton.Content>
                             <StackPanel Orientation="Horizontal">
-                                <ContentControl x:Name="ModelIcon" />
+                                <local:ButtonIcon x:Name="ModelIcon" />
                                 <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
                             </StackPanel>
                         </DropDownButton.Content>
                     </DropDownButton>
                     <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Parámetros">
-                        <ImageIcon Opacity="0.8" Height="18" Source="{ThemeResource SettingsSmallSvg}"/>
+                        <local:ButtonIcon Height="18" Source="{ThemeResource SettingsSmallSvg}"/>
                     </ToggleButton>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">

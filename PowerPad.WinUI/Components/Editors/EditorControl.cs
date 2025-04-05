@@ -13,5 +13,6 @@ namespace PowerPad.WinUI.Components.Editors
         public abstract void AutoSave();
         public abstract DateTime LastSaveTime { get; }
         public abstract void Dispose();
+        public bool IsActive { get; set; } = true;
     }
 }

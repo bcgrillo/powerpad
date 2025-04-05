@@ -30,8 +30,7 @@
             Background="{ThemeResource PowerPadEditorColor}"
             CornerRadius="10,0,0,0">
             <components:EditorManager 
-                x:Name="EditorManager"
-                EditorUnloaded="EditorManager_EditorUnloaded"/>
+                x:Name="EditorManager" />
         </Border>
     </Grid>
 </Page>

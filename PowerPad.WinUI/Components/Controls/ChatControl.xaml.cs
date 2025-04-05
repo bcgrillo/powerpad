@@ -53,19 +53,21 @@ namespace PowerPad.WinUI.Components.Controls
 
             if (_settings.Models.DefaultModel is null)
             {
-                ModelIcon.Content = null;
+                ModelIcon.Source = null;
                 ModelName.Text = "No hay modelos disponibles :(";
                 ChatInputBox.IsEnabled = false;
             }
             else
             {
-                ModelIcon.Content = _settings.Models.DefaultModel.ModelProvider.GetIcon();
+                ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
                 ModelName.Text = _settings.Models.DefaultModel!.CardName;
                 SetModelsMenu();
             }
 
             _parameters = _settings.Models.DefaultParameters.Copy();
             _parameters.PropertyChanged += Parameters_PropertyChanged;
+
+            _settings.Models.PropertyChanged += (s, e) => SetModelsMenu();
         }
 
         public void SetFocus()
@@ -75,13 +77,32 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void SetModel(AIModelViewModel? model)
         {
-            foreach (var item in ModelFlyoutMenu.Items)
+            if (model != _selectedModel)
             {
-                if (item.Tag as AIModelViewModel == model)
+                _selectedModel = model;
+
+                if (model is null)
                 {
-                    if (_selectedModel != model) SetModelItem_Click(item, null!);
-                    return;
+                    ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
                 }
+                else
+                {
+                    var menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == model);
+                    
+                    if (menuItem != null)
+                    {
+                        menuItem.IsChecked = true;
+                    }
+                    else
+                    {
+                        //Selected model is not available
+                        _selectedModel = null;
+                        ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
+                        OnChatOptionChanged();
+                    }
+                }
+
+                UpdateModelButtonContent();
             }
         }
 
@@ -108,13 +129,16 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void SetModelsMenu()
         {
+            var currentSelectedModel = _selectedModel;
+            SetModel(null);
+
             ModelFlyoutMenu.Items.Clear();
 
             var firstItem = new RadioMenuFlyoutItem
             {
                 Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})",
                 Tag = null,
-                Icon = _settings.Models.DefaultModel!.ModelProvider.GetIcon(),
+                Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() },
                 IsChecked = true
             };
 
@@ -134,7 +158,7 @@ namespace PowerPad.WinUI.Components.Controls
                     {
                         Text = item.CardName,
                         Tag = item,
-                        Icon = provider.GetIcon()
+                        Icon = new ImageIcon() { Source = provider.GetIcon() }
                     };
 
                     ModelFlyoutMenu.Items.Add(menuItem);
@@ -148,26 +172,33 @@ namespace PowerPad.WinUI.Components.Controls
             }
 
             ModelFlyoutMenu.Items.RemoveAt(ModelFlyoutMenu.Items.Count - 1);
+
+            SetModel(currentSelectedModel);
         }
 
         private void SetModelItem_Click(object sender, RoutedEventArgs _)
         {
             _selectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
 
+            UpdateModelButtonContent();
+
+            ((RadioMenuFlyoutItem)sender).IsChecked = true;
+            OnChatOptionChanged();
+        }
+
+        private void UpdateModelButtonContent()
+        {
             if (_selectedModel is not null)
             {
-                ModelIcon.Content = _selectedModel.ModelProvider.GetIcon();
+                ModelIcon.Source = _selectedModel.ModelProvider.GetIcon();
                 ModelName.Text = _selectedModel.CardName;
                 ChatInputBox.IsEnabled = true;
             }
             else
             {
-                ModelIcon.Content = _settings.Models.DefaultModel!.ModelProvider.GetIcon();
+                ModelIcon.Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon();
                 ModelName.Text = _settings.Models.DefaultModel!.CardName;
             }
-
-            ((RadioMenuFlyoutItem)sender).IsChecked = true;
-            ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
         }
 
         private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
@@ -296,8 +327,7 @@ namespace PowerPad.WinUI.Components.Controls
         private void EnableParametersSwitch_Toggled(object _, RoutedEventArgs __)
         {
             ToggleParameterVisibility();
-
-            ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
+            OnChatOptionChanged();
         }
 
         private void ToggleParameterVisibility()
@@ -322,11 +352,9 @@ namespace PowerPad.WinUI.Components.Controls
             ParametersButton_Click(o, eventArgs);
         }
 
-        private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __)
-        {
-            ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
-        }
+        private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __) => OnChatOptionChanged();
 
+        private void OnChatOptionChanged() => ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
     }
 
     public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters) : EventArgs

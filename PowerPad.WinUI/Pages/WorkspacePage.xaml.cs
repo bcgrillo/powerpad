@@ -32,7 +32,5 @@ namespace PowerPad.WinUI.Pages
         {
             NavigationVisibilityChanged?.Invoke(this, null!);
         }
-
-        private void EditorManager_EditorUnloaded(object _, EventArgs __) => WorkspaceControl.ClearSelection();
     }
 }

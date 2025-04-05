@@ -96,7 +96,9 @@ namespace PowerPad.Core.Services.AI
                 model.Name, 
                 provider,
                 model.Size,
-                model.Name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty)
+                provider == ModelProvider.HuggingFace
+                    ? model.Name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty)
+                    : null
             );
         }
 
