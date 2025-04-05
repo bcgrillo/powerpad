@@ -1,18 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
-using PowerPad.Core.Models;
 using PowerPad.Core.Services;
 using PowerPad.Core.Services.AI;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.Configuration
@@ -27,7 +21,7 @@ namespace PowerPad.WinUI.Configuration
                 var configStoreService = sp.GetRequiredService<IConfigStoreService>();
                 var orderService = sp.GetRequiredService<IOrderService>();
 
-                return new WorkspaceService(lastWorkspace, configStoreService, orderService);
+                return new(lastWorkspace, configStoreService, orderService);
             });
         }
 

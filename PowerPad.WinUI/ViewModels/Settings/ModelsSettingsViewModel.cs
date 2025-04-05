@@ -1,11 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {

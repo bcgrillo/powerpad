@@ -15,7 +15,7 @@ namespace PowerPad.WinUI.Components
         }
 
         public static readonly DependencyProperty ModelsProperty =
-            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AIModelsRepeater), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AIModelsRepeater), new(null));
 
         public event EventHandler<AIModelClickEventArgs>? DeleteClick;
         public event EventHandler<AIModelClickEventArgs>? SetDefaultClick;
@@ -27,12 +27,12 @@ namespace PowerPad.WinUI.Components
 
         private void OnDeleteClick(object? sender, RoutedEventArgs _)
         {
-            DeleteClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
+            DeleteClick?.Invoke(sender, new((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
         }
 
         private void OnSetDefaultClick(object? sender, RoutedEventArgs _)
         {
-            SetDefaultClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
+            SetDefaultClick?.Invoke(sender, new((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
         }
     }
 

@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.AI;
-using OllamaSharp.Models;
 using OpenAI;
 using OpenAI.Models;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using System.ClientModel;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using Uri = System.Uri;
 
 namespace PowerPad.Core.Services.AI
@@ -24,7 +21,7 @@ namespace PowerPad.Core.Services.AI
             ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
             ArgumentException.ThrowIfNullOrEmpty(config.Key);
 
-            _openAI = new OpenAIClient(new ApiKeyCredential(config.Key), new OpenAIClientOptions { Endpoint = new Uri(config.BaseUrl) });
+            _openAI = new(new(config.Key), new() { Endpoint = new(config.BaseUrl) });
         }
 
         public IChatClient? ChatClient(AIModel model) => _openAI?.AsChatClient(model.Name);
@@ -42,7 +39,7 @@ namespace PowerPad.Core.Services.AI
 
         private static AIModel CreateAIModel(OpenAIModel openAIModel)
         {
-            return new AIModel(openAIModel.Id, ModelProvider.OpenAI);
+            return new(openAIModel.Id, ModelProvider.OpenAI);
         }
     }
 }

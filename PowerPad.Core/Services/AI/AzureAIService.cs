@@ -20,7 +20,7 @@ namespace PowerPad.Core.Services.AI
             ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
             ArgumentException.ThrowIfNullOrEmpty(config.Key);
 
-            _azureAI = new ChatCompletionsClient(new Uri(config.BaseUrl), new AzureKeyCredential(config.Key));
+            _azureAI = new(new(config.BaseUrl), new AzureKeyCredential(config.Key));
         }
 
         public async Task<IEnumerable<AIModel>> GetAvailableModels()
@@ -36,9 +36,9 @@ namespace PowerPad.Core.Services.AI
 
             return Task.FromResult<IEnumerable<AIModel>>(
             [
-                new AIModel(query ?? "xxx", modelProvider),
-                new AIModel("yyy", modelProvider),
-                new AIModel("zzz", modelProvider),
+                new(query ?? "xxx", modelProvider),
+                new("yyy", modelProvider),
+                new("zzz", modelProvider),
             ]);
         }
     }

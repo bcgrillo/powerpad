@@ -1,16 +1,12 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models.FileSystem;
-using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Windows.Web.AtomPub;
 
 namespace PowerPad.WinUI.Components
 {

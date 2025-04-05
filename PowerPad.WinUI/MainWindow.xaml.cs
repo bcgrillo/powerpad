@@ -1,25 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using WinUIEx;
 using Microsoft.UI.Composition.SystemBackdrops;
 using WinRT;
 using Microsoft.UI.Composition;
 using PowerPad.WinUI.Pages;
 using Microsoft.UI.Windowing;
-using System.Xml.Linq;
-using Microsoft.UI.Xaml.Media.Animation;
 using Windows.UI;
 
 namespace PowerPad.WinUI
@@ -52,13 +41,13 @@ namespace PowerPad.WinUI
 
             if (DesktopAcrylicController.IsSupported())
             {
-                _configurationSource = new SystemBackdropConfiguration
+                _configurationSource = new()
                 {
                     IsInputActive = true,
                     Theme = (SystemBackdropTheme)((FrameworkElement)Content).ActualTheme
                 };
 
-                _acrylicController = new DesktopAcrylicController
+                _acrylicController = new()
                 {
                     Kind = DesktopAcrylicKind.Thin,
                     TintColor = (Color)Application.Current.Resources["PowerPadBackGroundColor"],
@@ -117,7 +106,7 @@ namespace PowerPad.WinUI
         {
             var navWidth = _activeNavPage?.NavigationWidth ?? 0;
 
-            TitleBar.Margin = new Thickness(navWidth, 0, 0, 0);
+            TitleBar.Margin = new(navWidth, 0, 0, 0);
 
             if (navWidth > 0) Splitter.Visibility = Visibility.Visible;
             else Splitter.Visibility = Visibility.Collapsed;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Timer = System.Timers.Timer;
+﻿using Timer = System.Timers.Timer;
 
 namespace PowerPad.Core.Services.Config
 {
@@ -25,7 +19,7 @@ namespace PowerPad.Core.Services.Config
         {
             AppDomain.CurrentDomain.ProcessExit += async (s, e) => await StoreConfigs();
 
-            _timer = new Timer(STORE_INTERVAL);
+            _timer = new(STORE_INTERVAL);
             _timer.Elapsed += async (s, e) => await StoreConfigs();
             _timer.Start();
         }

@@ -15,7 +15,7 @@ namespace PowerPad.WinUI.Components
         }
 
         public static readonly DependencyProperty ModelsProperty =
-            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AIModelsRepeater), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AIModelsRepeater), new(null));
 
         public bool SearchingFlag
         {
@@ -24,7 +24,7 @@ namespace PowerPad.WinUI.Components
         }
 
         public static readonly DependencyProperty SearchingFlagProperty =
-            DependencyProperty.Register(nameof(SearchingFlag), typeof(bool), typeof(SearchModelsResultRepeater), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(SearchingFlag), typeof(bool), typeof(SearchModelsResultRepeater), new(false));
 
 
         public event EventHandler<AIModelClickEventArgs>? AddModelClick;
@@ -36,8 +36,7 @@ namespace PowerPad.WinUI.Components
 
         private void OnAddModelClick(object? sender, RoutedEventArgs e)
         {
-            AddModelClick?.Invoke(sender, new AIModelClickEventArgs((AIModelViewModel)((Button)sender!).Tag));
+            AddModelClick?.Invoke(sender, new((AIModelViewModel)((Button)sender!).Tag));
         }
-
     }
 }

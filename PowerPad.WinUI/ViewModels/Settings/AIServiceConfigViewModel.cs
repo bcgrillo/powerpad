@@ -10,7 +10,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         [JsonConstructor]
         public AIServiceConfigViewModel(string? baseUrl, string? key)
-            : this(new AIServiceConfig
+            : this(new()
             {
                 BaseUrl = baseUrl,
                 Key = key

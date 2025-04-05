@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using System.Collections.ObjectModel;
-
-namespace PowerPad.Core.Models.AI
+﻿namespace PowerPad.Core.Models.AI
 {
     public record AIParameters
     {

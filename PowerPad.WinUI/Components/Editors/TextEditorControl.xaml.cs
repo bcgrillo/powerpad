@@ -2,10 +2,8 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using PowerPad.WinUI.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.Extensions.AI;
-using Microsoft.UI.Input;
 using PowerPad.WinUI.Dialogs;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
@@ -31,7 +29,7 @@ namespace PowerPad.WinUI.Components.Editors
 
             this.InitializeComponent();
 
-            _document = new DocumentViewModel(document, this);
+            _document = new(document, this);
 
             TextEditor.TextChanged += (s, e) => _document.Status = DocumentStatus.Dirty;
         }

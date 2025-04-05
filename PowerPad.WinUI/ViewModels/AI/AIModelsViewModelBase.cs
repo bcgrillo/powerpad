@@ -2,13 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
-using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels.AI

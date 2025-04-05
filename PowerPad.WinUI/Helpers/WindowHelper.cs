@@ -1,36 +1,29 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using System;
+﻿using Microsoft.UI.Xaml;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Windows.Storage;
-using WinRT.Interop;
 
 namespace PowerPad.WinUI.Helpers
 {
-    public class WindowHelper
+    public static class WindowHelper
     {
-        static public IReadOnlyList<Window> ActiveWindows { get { return _activeWindows.AsReadOnly(); } }
+        public static IReadOnlyList<Window> ActiveWindows { get { return _activeWindows.AsReadOnly(); } }
 
-        static private List<Window> _activeWindows = new List<Window>();
+        private static List<Window> _activeWindows = [];
 
-        static public T CreateWindow<T>() where T : Window, new()
+        public static T CreateWindow<T>() where T : Window, new()
         {
-            T newWindow = new T();
+            var newWindow = new T();
             TrackWindow(newWindow);
             return newWindow;
         }
 
-        static public void TrackWindow(Window window)
+        public static void TrackWindow(Window window)
         {
             window.Closed += (s, e) => _activeWindows.Remove(window);
 
             _activeWindows.Add(window);
         }
 
-        static public Window? GetWindowForElement(UIElement element)
+        public static Window? GetWindowForElement(UIElement element)
         {
             if (element.XamlRoot is not null)
             {

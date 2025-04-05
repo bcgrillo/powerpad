@@ -1,15 +1,7 @@
-﻿using ABI.System;
-using Azure.AI.Inference;
-using Azure;
-using Microsoft.Extensions.AI;
+﻿using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OllamaSharp.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Exception = System.Exception;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Models.Config;
@@ -31,7 +23,7 @@ namespace PowerPad.Core.Services.AI
         {
             ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
 
-            _ollama = new OllamaApiClient(config.BaseUrl);
+            _ollama = new(config.BaseUrl);
         }
 
         public async Task<OllamaStatus> GetStatus()
@@ -125,9 +117,9 @@ namespace PowerPad.Core.Services.AI
             await Task.Delay(2000);
 
             return [
-                new AIModel(query ?? "xxx", modelProvider),
-                new AIModel("yyy", modelProvider),
-                new AIModel("zzz", modelProvider),
+                new(query ?? "xxx", modelProvider),
+                new("yyy", modelProvider),
+                new("zzz", modelProvider),
             ];
         }
     }

@@ -48,7 +48,7 @@ namespace PowerPad.Core.Services.AI
 
         public Task<ChatResponse> GetResponse(string message, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default)
         {
-            return GetResponse([new ChatMessage(ChatRole.User, message)], model, config, cancellationToken);
+            return GetResponse([new(ChatRole.User, message)], model, config, cancellationToken);
         }
 
 
@@ -61,7 +61,7 @@ namespace PowerPad.Core.Services.AI
 
         public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponse(string message, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default)
         {
-            return GetStreamingResponse([new ChatMessage(ChatRole.User, message)], model, config, cancellationToken);
+            return GetStreamingResponse([new(ChatRole.User, message)], model, config, cancellationToken);
         }
 
         public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default)
@@ -85,7 +85,7 @@ namespace PowerPad.Core.Services.AI
 
             if (parameters is not null)
             {
-                chatOption = new ChatOptions
+                chatOption = new()
                 {
                     Temperature = parameters.Temperature,
                     TopP = parameters.TopP,
@@ -96,7 +96,7 @@ namespace PowerPad.Core.Services.AI
                 {
                     messagesAux = 
                     [
-                        new ChatMessage(ChatRole.System, parameters.SystemPrompt), 
+                        new(ChatRole.System, parameters.SystemPrompt), 
                         ..
                         parameters.MaxConversationLength.HasValue
                         ? messagesAux.TakeLast(parameters.MaxConversationLength.Value)

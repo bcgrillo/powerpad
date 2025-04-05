@@ -1,12 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
-using PowerPad.Core.Models.AI;
 using PowerPad.Core.Models.Config;
 using PowerPad.Core.Services;
 using PowerPad.Core.Services.AI;
-using PowerPad.WinUI.Messages;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static PowerPad.WinUI.Configuration.ConfigConstants;

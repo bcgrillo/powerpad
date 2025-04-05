@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Contracts;
-using PowerPad.Core.Models;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.Helpers;
@@ -62,7 +61,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             {
                 foreach (var f in folder.Folders)
                 {
-                    children.Add(new FolderEntryViewModel(f, this));
+                    children.Add(new(f, this));
                 }
             }
 
@@ -70,7 +69,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             {
                 foreach (var d in folder.Documents)
                 {
-                    children.Add(new FolderEntryViewModel(d, this));
+                    children.Add(new(d, this));
                 }
             }
 

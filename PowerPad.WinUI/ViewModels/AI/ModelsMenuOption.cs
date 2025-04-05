@@ -8,18 +8,8 @@ namespace PowerPad.WinUI.ViewModels.AI
         AddModels
     }
 
-    public struct ModelsMenuOption
+    public readonly record struct ModelsMenuOption(ModelProvider ModelProvider, MenuOption Option)
     {
-        public ModelProvider ModelProvider { get; set; }
-        public MenuOption Option { get; set; }
-
-        public static ModelsMenuOption Create(ModelProvider modelProvider, MenuOption option)
-        {
-            return new ModelsMenuOption
-            {
-                ModelProvider = modelProvider,
-                Option = option
-            };
-        }
+        public static ModelsMenuOption Create(ModelProvider ModelProvider, MenuOption Option) => new(ModelProvider, Option);
     }
 }

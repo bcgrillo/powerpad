@@ -8,14 +8,14 @@ namespace PowerPad.WinUI.Helpers
 {
     public static class ServiceProviderIconResolver
     {
-        public static IconElement GetIcon(this ModelProvider provider)
+        public static ImageIcon GetIcon(this ModelProvider provider)
         {
             return provider switch
             {
-                ModelProvider.Ollama => new ImageIcon { Source = (ImageSource)Application.Current.Resources["OllamaSvg"] },
-                ModelProvider.HuggingFace => new ImageIcon { Source = (ImageSource)Application.Current.Resources["HuggingFaceSvg"] },
-                ModelProvider.GitHub => new ImageIcon { Source = (ImageSource)Application.Current.Resources["GithubSvg"] },
-                ModelProvider.OpenAI => new ImageIcon { Source = (ImageSource)Application.Current.Resources["OpenAISvg"] },
+                ModelProvider.Ollama => new() { Source = (ImageSource)Application.Current.Resources["OllamaSvg"] },
+                ModelProvider.HuggingFace => new() { Source = (ImageSource)Application.Current.Resources["HuggingFaceSvg"] },
+                ModelProvider.GitHub => new() { Source = (ImageSource)Application.Current.Resources["GithubSvg"] },
+                ModelProvider.OpenAI => new() { Source = (ImageSource)Application.Current.Resources["OpenAISvg"] },
                 _ => throw new ArgumentOutOfRangeException(nameof(provider), provider, null)
             };
         }

@@ -9,15 +9,11 @@ using PowerPad.WinUI.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.Core.Models.FileSystem;
-using CommunityToolkit.WinUI;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.WinUI.Messages;
-using Windows.Web.AtomPub;
 
 namespace PowerPad.WinUI.Components
 {
@@ -67,7 +63,7 @@ namespace PowerPad.WinUI.Components
 
             if (invokedEntry.Type == EntryType.Document)
             {
-                ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(invokedEntry));
+                ItemInvoked?.Invoke(this, new(invokedEntry));
                 _workspace.CurrentDocumentPath = invokedEntry.ModelEntry.Path;
             }
         }
@@ -185,7 +181,7 @@ namespace PowerPad.WinUI.Components
             if (folder is not null)
             {
                 _workspace.OpenWorkspaceCommand.Execute(folder.Path);
-                ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(null));
+                ItemInvoked?.Invoke(this, new(null));
 
                 UpdateWorkspacesMenu();
             }
@@ -194,7 +190,7 @@ namespace PowerPad.WinUI.Components
         private void OpenRecentlyFlyoutItem_Click(object sender, RoutedEventArgs _)
         {
             _workspace.OpenWorkspaceCommand.Execute(((MenuFlyoutItem)sender).Tag);
-            ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(null));
+            ItemInvoked?.Invoke(this, new(null));
 
             UpdateWorkspacesMenu();
         }
@@ -242,7 +238,7 @@ namespace PowerPad.WinUI.Components
                         }
                     });
 
-                    ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(entry));
+                    ItemInvoked?.Invoke(this, new(entry));
                 }
             }
         }
@@ -270,7 +266,7 @@ namespace PowerPad.WinUI.Components
 
             if (!message.Value.IsFolder)
             {
-                ItemInvoked?.Invoke(this, new WorkspaceControlItemInvokedEventArgs(message.Value));
+                ItemInvoked?.Invoke(this, new(message.Value));
                 _workspace.CurrentDocumentPath = message.Value.ModelEntry.Path;
 
             }

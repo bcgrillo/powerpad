@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Models.AI;
-using System;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
@@ -11,7 +10,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         [JsonConstructor]
         public AIModelViewModel(string Name, ModelProvider ModelProvider, long? Size = null, string? DisplayName = null, bool enabled = false)
-            : this(new AIModel(Name, ModelProvider, Size, DisplayName), enabled)
+            : this(new(Name, ModelProvider, Size, DisplayName), enabled)
         {
         }
 

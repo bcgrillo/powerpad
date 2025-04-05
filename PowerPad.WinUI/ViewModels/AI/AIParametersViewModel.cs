@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Models.AI;
-using System;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
@@ -11,7 +10,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         [JsonConstructor]
         public AIParametersViewModel(string? SystemPrompt = null, float? Temperature = null, float? TopP = null, int? MaxOutputTokens = null, int? MaxConversationLength = null)
-            : this(new AIParameters
+            : this(new()
             {
                 SystemPrompt = SystemPrompt,
                 Temperature = Temperature,
@@ -93,7 +92,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         public AIParametersViewModel Copy()
         {
-            return new (GetRecord() with { }); //Shallow copy
+            return new(GetRecord() with { }); //Shallow copy
         }
     }
 }

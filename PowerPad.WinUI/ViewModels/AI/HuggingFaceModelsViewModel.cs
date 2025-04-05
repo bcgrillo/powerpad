@@ -1,5 +1,4 @@
 ﻿using PowerPad.Core.Models.AI;
-using PowerPad.Core.Models.Config;
 using PowerPad.Core.Services.AI;
 
 namespace PowerPad.WinUI.ViewModels.AI

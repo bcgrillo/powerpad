@@ -6,8 +6,6 @@ using PowerPad.WinUI.Pages.Providers;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.AI;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Pages
 {

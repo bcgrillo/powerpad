@@ -103,7 +103,7 @@
                     </ToggleButton>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="SendBtn"
+                    <Button x:Name="SendButton"
                         Click="SendBtn_Click"
                         Style="{StaticResource AccentButtonStyle}"
                         Height="32"
@@ -113,7 +113,7 @@
                             <FontIcon FontSize="20" Glyph="&#xE725;" />
                         </StackPanel>
                     </Button>
-                    <Button x:Name="StopBtn"
+                    <Button x:Name="StopButton"
                         Style="{ThemeResource AccentButtonStyle}"
                         Visibility="Collapsed"
                         Height="32"

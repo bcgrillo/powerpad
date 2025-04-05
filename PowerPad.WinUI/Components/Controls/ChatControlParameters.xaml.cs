@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Components.Controls
@@ -14,7 +13,7 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty ParametersProperty =
-            DependencyProperty.Register(nameof(Parameters), typeof(AIParametersViewModel), typeof(ChatControlParameters), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Parameters), typeof(AIParametersViewModel), typeof(ChatControlParameters), new(null));
 
         public ChatControlParameters()
         {

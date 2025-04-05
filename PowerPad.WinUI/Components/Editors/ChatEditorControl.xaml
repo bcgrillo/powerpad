@@ -46,14 +46,14 @@
                 <StackPanel
                     MaxWidth="486"
                     Padding="12"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
                     CornerRadius="{StaticResource OverlayCornerRadius}"
                     Spacing="8">
                     <controls:MarkdownTextBlock
-                        HorizontalAlignment="Right"
+                        HorizontalAlignment="Left"
                         Background="Transparent"
                         IsTextSelectionEnabled="True"
                         Text="{x:Bind Content, Mode=OneWay}"

@@ -1,6 +1,4 @@
-﻿using PowerPad.Core.Contracts;
-using PowerPad.Core.Models;
-using PowerPad.Core.Models.FileSystem;
+﻿using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services.Config;
 using System.Collections.ObjectModel;
 using static PowerPad.Core.Services.Conventions;
@@ -95,7 +93,7 @@ namespace PowerPad.Core.Services.FileSystem
 
                 if (extension != AUTO_SAVE_EXTENSION && extension != ORDER_FILE_NAME)
                 {
-                    documents.Add(new Document(filename, extension));
+                    documents.Add(new(filename, extension));
                 }
             }
             return documents;

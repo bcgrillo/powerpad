@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using PowerPad.Core.Models;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services;
 using PowerPad.Core.Services.FileSystem;
@@ -39,7 +38,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             _workspaceService = App.Get<IWorkspaceService>();
             _appConfigStore = App.Get<IConfigStore>();
 
-            Root = new FolderEntryViewModel(_workspaceService.Root, null);
+            Root = new(_workspaceService.Root, null);
 
             MoveEntryCommand = new RelayCommand<MoveEntryParameters>(MoveEntry);
 
@@ -55,10 +54,10 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         {
             ArgumentNullException.ThrowIfNull(parameters, nameof(parameters));
 
-            parameters.NewParent ??= Root;
-            var targetPosition = parameters.NewParent.Children!.IndexOf(parameters.Entry);
+            var newParent = parameters.NewParent ?? Root;
+            var targetPosition = newParent.Children!.IndexOf(parameters.Entry);
 
-            if (parameters.NewParent.ModelEntry == parameters.Entry.ModelEntry.Parent)
+            if (newParent.ModelEntry == parameters.Entry.ModelEntry.Parent)
             {
                 if (parameters.Entry.Type == EntryType.Document)
                 {
@@ -76,13 +75,13 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
                 if (parameters.Entry.Type == EntryType.Document)
                 {
                     var document = (Document)parameters.Entry.ModelEntry;
-                    var targetFolder = (Folder)parameters.NewParent.ModelEntry;
+                    var targetFolder = (Folder)newParent.ModelEntry;
                     _workspaceService.MoveDocument(document, targetFolder, targetPosition);
                 }
                 else
                 {
                     var folder = (Folder)parameters.Entry.ModelEntry;
-                    var targetFolder = (Folder)parameters.NewParent.ModelEntry;
+                    var targetFolder = (Folder)newParent.ModelEntry;
                     _workspaceService.MoveFolder(folder, targetFolder, targetPosition);
                 }
             }
@@ -103,7 +102,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
                 _workspaceService.CreateFolder(folderModel, newFolderModel);
 
-                createdEntry = new FolderEntryViewModel(newFolderModel, parent);
+                createdEntry = new(newFolderModel, parent);
                 parent.Children!.Add(createdEntry);
             }
             else
@@ -114,7 +113,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
                 _workspaceService.CreateDocument(folderModel, newDocumentModel);
 
-                createdEntry = new FolderEntryViewModel(newDocumentModel, parent);
+                createdEntry = new(newDocumentModel, parent);
                 parent.Children!.Add(createdEntry);
             }
 
@@ -127,7 +126,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
             _workspaceService.OpenWorkspace(path);
 
-            Root = new FolderEntryViewModel(_workspaceService.Root, null);
+            Root = new(_workspaceService.Root, null);
 
             RecentlyWorkspaces.Remove(path);
             RecentlyWorkspaces.Insert(0, path);
@@ -157,7 +156,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentType documentType, string? name = null)
         {
-            return new NewEntryParameters(name ?? NewEntryNameHelper.NewDocumentName(documentType))
+            return new(name ?? NewEntryNameHelper.NewDocumentName(documentType))
             {
                 Parent = parent,
                 Type = EntryType.Document,
@@ -167,7 +166,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public static NewEntryParameters NewFolder(FolderEntryViewModel? parent, string? name = null)
         {
-            return new NewEntryParameters(name ?? NewEntryNameHelper.NewFolderName())
+            return new(name ?? NewEntryNameHelper.NewFolderName())
             {
                 Parent = parent,
                 Type = EntryType.Folder,
@@ -175,9 +174,5 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         }
     }
 
-    public class MoveEntryParameters(FolderEntryViewModel entry, FolderEntryViewModel? newParent)
-    {
-        public FolderEntryViewModel Entry { get; set; } = entry;
-        public FolderEntryViewModel? NewParent { get; set; } = newParent;
-    }
+    public record MoveEntryParameters(FolderEntryViewModel Entry, FolderEntryViewModel? NewParent);
 }

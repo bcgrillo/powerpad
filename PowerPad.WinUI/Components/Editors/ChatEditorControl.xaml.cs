@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System.Text.Json;
-using System.Collections.ObjectModel;
 using PowerPad.WinUI.Dialogs;
 using static PowerPad.Core.Constants;
 using PowerPad.WinUI.ViewModels.FileSystem;
@@ -30,7 +29,7 @@ namespace PowerPad.WinUI.Components.Editors
 
         public ChatEditorControl(Document document)
         {
-            _document = new DocumentViewModel(document, this);
+            _document = new(document, this);
         }
 
         public override string GetContent()
@@ -187,7 +186,7 @@ namespace PowerPad.WinUI.Components.Editors
         {
             Landing.Visibility = Visibility.Collapsed;
             ChatGrid.VerticalAlignment = VerticalAlignment.Stretch;
-            ChatRowDefinition.Height = new GridLength(1, GridUnitType.Star);
+            ChatRowDefinition.Height = new(1, GridUnitType.Star);
         }
 
         private void ItemsStackPanel_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -200,11 +199,11 @@ namespace PowerPad.WinUI.Components.Editors
 
                 if (isScrollbarVisible)
                 {
-                    InvertedListView.Padding = new Thickness(-12, 0, 12, 24);
+                    InvertedListView.Padding = new(-12, 0, 12, 24);
                 }
                 else
                 {
-                    InvertedListView.Padding = new Thickness(-12, 0, -12, 24);
+                    InvertedListView.Padding = new(-12, 0, -12, 24);
                 }
             }
         }

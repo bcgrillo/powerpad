@@ -3,7 +3,6 @@ using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Models.Config;
 using PowerPad.Core.Services.AI;
-using PowerPad.WinUI.ViewModels.Settings;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace PowerPad.WinUI.ViewModels.AI
     {
         public OllamaStatus OllamaStatus { get; private set; }
 
-        public RelayCommand RefreshModelsCommand { get; }
+        public IRelayCommand RefreshModelsCommand { get; }
 
         public OllamaModelsViewModel()
             : this(App.Get<IOllamaService>(), ModelProvider.Ollama)
@@ -24,7 +23,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         protected OllamaModelsViewModel(IAIService aiService, ModelProvider modelProvider)
             : base(aiService, modelProvider)
         {
-            RefreshModelsCommand = new(async () => await RefreshModels());
+            RefreshModelsCommand = new RelayCommand(async () => await RefreshModels());
 
             _ = RefreshModels();
         }

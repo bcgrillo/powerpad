@@ -38,7 +38,7 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty ChatPlaceHolderProperty =
-            DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new(false));
 
         private AIModelViewModel? _selectedModel;
         private readonly AIParametersViewModel _parameters;
@@ -126,6 +126,8 @@ namespace PowerPad.WinUI.Components.Controls
 
             foreach (var provider in availableProviders)
             {
+                var elementAdded = false;
+
                 foreach (var item in _settings.Models.AvailableModels.Where(m => m.ModelProvider == provider && m.Enabled))
                 {
                     var menuItem = new RadioMenuFlyoutItem
@@ -138,9 +140,11 @@ namespace PowerPad.WinUI.Components.Controls
                     ModelFlyoutMenu.Items.Add(menuItem);
 
                     menuItem.Click += SetModelItem_Click;
+
+                    elementAdded = true;
                 }
 
-                ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
+                if (elementAdded) ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
             }
 
             ModelFlyoutMenu.Items.RemoveAt(ModelFlyoutMenu.Items.Count - 1);
@@ -163,12 +167,12 @@ namespace PowerPad.WinUI.Components.Controls
             }
 
             ((RadioMenuFlyoutItem)sender).IsChecked = true;
-            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
+            ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
         }
 
         private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
         {
-            SendBtn.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
+            SendButton.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
             if (string.IsNullOrEmpty(ChatInputBox.Text)) ChatInputBox.AcceptsReturn = false;
         }
 
@@ -179,7 +183,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void StartStreamingChat(ICollection<MessageViewModel> messageList, Action? endAction)
         {
-            messageList.Add(new MessageViewModel(ChatInputBox.Text.Trim().Replace("\r", "  \r"), DateTime.Now, ChatRole.User));
+            messageList.Add(new(ChatInputBox.Text.Trim().Replace("\r", "  \r"), DateTime.Now, ChatRole.User));
 
             _ = Task.Run(async () =>
             {
@@ -189,12 +193,14 @@ namespace PowerPad.WinUI.Components.Controls
                 DispatcherQueue.TryEnqueue(() =>
                 {
                     messageList.Add(responseMessage);
-                    SendBtn.Visibility = Visibility.Collapsed;
-                    StopBtn.Visibility = Visibility.Visible;
-                    ChatInputBox.IsEnabled = false;
+                    SendButton.Visibility = Visibility.Collapsed;
+                    StopButton.Visibility = Visibility.Visible;
+                    ChatInputBox.IsReadOnly = true;
+                    ModelButton.IsEnabled = false;
+                    ParametersButton.IsEnabled = false;
                 });
 
-                _cts = new CancellationTokenSource();
+                _cts = new();
 
                 var parameters = _sendParameters ? _parameters 
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
@@ -220,10 +226,12 @@ namespace PowerPad.WinUI.Components.Controls
 
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    StopBtn.Visibility = Visibility.Collapsed;
-                    SendBtn.Visibility = Visibility.Visible;
+                    StopButton.Visibility = Visibility.Collapsed;
+                    SendButton.Visibility = Visibility.Visible;
                     ChatInputBox.Text = string.Empty;
-                    ChatInputBox.IsEnabled = true;
+                    ChatInputBox.IsReadOnly = false;
+                    ModelButton.IsEnabled = true;
+                    ParametersButton.IsEnabled = true;
                     ChatInputBox.Focus(FocusState.Keyboard);
 
                     endAction?.Invoke();
@@ -233,8 +241,8 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void StopBtn_Click(object _, RoutedEventArgs __)
         {
-            StopBtn.Visibility = Visibility.Collapsed;
-            SendBtn.Visibility = Visibility.Visible;
+            StopButton.Visibility = Visibility.Collapsed;
+            SendButton.Visibility = Visibility.Visible;
             ChatInputBox.Text = string.Empty;
             ChatInputBox.IsEnabled = true;
             _cts?.Cancel();
@@ -242,23 +250,25 @@ namespace PowerPad.WinUI.Components.Controls
             _cts = null;
         }
 
-        private void ChatInputBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void ChatInputBox_KeyDown(object _, KeyRoutedEventArgs e)
         {
-            if (e.Key == VirtualKey.Enter)
+            if (!ChatInputBox.IsReadOnly)
             {
-                if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
-                    .HasFlag(CoreVirtualKeyStates.Down) &&
-                    sender is TextBox &&
-                    !string.IsNullOrWhiteSpace(ChatInputBox.Text))
+                if (e.Key == VirtualKey.Enter)
                 {
-                    SendButtonClicked?.Invoke(this, e);
-                }
-                else
-                {
-                    ChatInputBox.AcceptsReturn = true;
-                    var cursorPosition = ChatInputBox.SelectionStart;
-                    ChatInputBox.Text = ChatInputBox.Text.Insert(cursorPosition, Environment.NewLine);
-                    ChatInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
+                    if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
+                        .HasFlag(CoreVirtualKeyStates.Down) &&
+                        !string.IsNullOrWhiteSpace(ChatInputBox.Text))
+                    {
+                        SendButtonClicked?.Invoke(this, e);
+                    }
+                    else
+                    {
+                        ChatInputBox.AcceptsReturn = true;
+                        var cursorPosition = ChatInputBox.SelectionStart;
+                        ChatInputBox.Text = ChatInputBox.Text.Insert(cursorPosition, Environment.NewLine);
+                        ChatInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
+                    }
                 }
             }
         }
@@ -271,13 +281,13 @@ namespace PowerPad.WinUI.Components.Controls
             {
                 ParametersPanel.Visibility = Visibility.Collapsed;
                 ChatInputBox.IsEnabled = true;
-                SendBtn.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
+                SendButton.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
             }
             else
             {
                 ParametersPanel.Visibility = Visibility.Visible;
                 ChatInputBox.IsEnabled = false;
-                SendBtn.IsEnabled = false;
+                SendButton.IsEnabled = false;
             }
 
             ParametersVisibilityChanged?.Invoke(this, !parameterPanelVisible);
@@ -287,7 +297,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             ToggleParameterVisibility();
 
-            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
+            ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
         }
 
         private void ToggleParameterVisibility()
@@ -314,7 +324,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __)
         {
-            ChatOptionsChanged?.Invoke(this, new ChatOptionChangedEventArgs(_selectedModel, _sendParameters ? _parameters : null));
+            ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
         }
 
     }

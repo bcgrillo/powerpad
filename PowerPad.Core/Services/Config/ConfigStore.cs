@@ -36,7 +36,7 @@ namespace PowerPad.Core.Services
 
         public void Set<T>(Enum key, T config)
         {
-            _store[key.ToString()] = new ConfigEntry(JsonSerializer.Serialize(config, JSON_SERIALIZER_OPTIONS), true);
+            _store[key.ToString()] = new(JsonSerializer.Serialize(config, JSON_SERIALIZER_OPTIONS), true);
         }
 
         public T? TryGet<T>(Enum key)
@@ -70,7 +70,7 @@ namespace PowerPad.Core.Services
             {
                 var key = Path.GetFileNameWithoutExtension(file);
                 var config = File.ReadAllText(file);
-                _store[key] = new ConfigEntry(config, false);
+                _store[key] = new(config, false);
             }
         }
 
