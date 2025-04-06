@@ -38,7 +38,7 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty ChatPlaceHolderProperty =
-            DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new(false));
+            DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new(null));
 
         private AIModelViewModel? _selectedModel;
         private readonly AIParametersViewModel _parameters;

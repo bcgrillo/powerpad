@@ -9,7 +9,6 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
-using System.Threading.Tasks;
 
 namespace PowerPad.WinUI
 {
@@ -55,7 +54,7 @@ namespace PowerPad.WinUI
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override void OnLaunched(LaunchActivatedEventArgs _)
         {
             m_window = WindowHelper.CreateWindow<MainWindow>();
             m_window.Activate();
@@ -64,7 +63,5 @@ namespace PowerPad.WinUI
         private Window? m_window;
 
         public static T Get<T>() where T : notnull => Ioc.Default.GetRequiredService<T>();
-
-
     }
 }

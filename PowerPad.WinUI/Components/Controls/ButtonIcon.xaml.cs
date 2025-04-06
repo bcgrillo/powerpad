@@ -28,7 +28,7 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.Register(nameof(Source), typeof(ImageSource), typeof(ButtonIcon), new(false));
+            DependencyProperty.Register(nameof(Source), typeof(ImageSource), typeof(ButtonIcon), new(null));
 
         public ButtonIcon()
         {

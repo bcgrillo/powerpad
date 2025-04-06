@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<toolkit:SettingsCard
+    x:Class="PowerPad.WinUI.Components.Controls.FullRowSettingCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PowerPad.WinUI.Components.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d"
+    Margin="0,1,0,0">
+    <toolkit:SettingsCard.Resources>
+        <x:Double x:Key="SettingsCardWrapThreshold">100000</x:Double>
+        <ControlTemplate x:Key="CustomSettingsCardTemplate" TargetType="toolkit:SettingsCard">
+            <Grid x:Name="ContentGrid" Padding="58,8,58,8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Width="1000">
+                <ContentPresenter Content="{TemplateBinding Content}"/>
+            </Grid>
+        </ControlTemplate>
+    </toolkit:SettingsCard.Resources>
+    <toolkit:SettingsCard.Template>
+        <StaticResource ResourceKey="CustomSettingsCardTemplate"/>
+    </toolkit:SettingsCard.Template>
+</toolkit:SettingsCard>

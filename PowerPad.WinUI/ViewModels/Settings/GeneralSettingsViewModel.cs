@@ -21,6 +21,9 @@ namespace PowerPad.WinUI.ViewModels.Settings
         private AIServiceConfigViewModel? _ollamaConfig;
 
         [ObservableProperty]
+        private bool _ollamaAutostart;
+
+        [ObservableProperty]
         private AIServiceConfigViewModel? _azureAIConfig;
 
         [ObservableProperty]
