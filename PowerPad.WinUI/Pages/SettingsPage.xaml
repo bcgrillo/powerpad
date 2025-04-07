@@ -16,9 +16,14 @@
         <converters:OllamaOnlineStatusToVisibilityConverter x:Key="OllamaOnlineStatusToVisibilityConverter" />
         <converters:OllamaAvailableStatusToVisibilityConverter x:Key="OllamaAvailableStatusToVisibilityConverter" />
         <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="Margin" Value="1,30,0,6" />
-            </Style.Setters>
+            <Setter Property="Margin" Value="1,30,0,6" />
+        </Style>
+        <Style x:Key="FullRowSettingCard" TargetType="Border">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="58,8,44,8" />
+            <Setter Property="BorderThickness" Value="0,1,0,0" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SettingsCardBorderBrush}" />
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
         </Style>
     </Page.Resources>
     <Grid Margin="0,0,0,2">
@@ -66,7 +71,6 @@
                                         </StackPanel>
                                     </toolkit:SettingsCard.Header>
                                     <StackPanel
-                                        Margin="0,0,16,0"
                                         Orientation="Horizontal"
                                         Spacing="8">
                                         <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
@@ -83,7 +87,7 @@
                                         </Button>
                                     </StackPanel>
                                 </toolkit:SettingsCard>
-                                <localc:FullRowSettingCard>
+                                <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
@@ -94,9 +98,15 @@
                                             Grid.Column="1"
                                             Value="{x:Bind _settings.General.OllamaConfig.BaseUrl, Mode=TwoWay}" />
                                     </Grid>
-                                </localc:FullRowSettingCard>
+                                </Border>
+                                <toolkit:SettingsCard ContentAlignment="Left">
+                                    <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
+                                        <CheckBox>
+                                            <TextBlock Margin="8,2,0,0">Iniciar Ollama automáticamente al abrir</TextBlock>
+                                        </CheckBox>
+                                    </StackPanel>
+                                </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>
-
                         </toolkit:SettingsExpander>
 
                         <!-- Cloud Services Section -->
@@ -117,34 +127,31 @@
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                             <toolkit:SettingsExpander.Items>
-                                <toolkit:SettingsCard HorizontalContentAlignment="Stretch">
-                                    <toolkit:SettingsCard.Resources>
-                                        <x:Double x:Key="SettingsCardWrapThreshold">100000</x:Double>
-                                    </toolkit:SettingsCard.Resources>
-                                    <Grid Background="Red" HorizontalAlignment="Stretch">
+                                <Border Style="{StaticResource FullRowSettingCard}">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock>URL:</TextBlock>
+                                        <TextBlock VerticalAlignment="Center">URL:</TextBlock>
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
                                             Value="{x:Bind _settings.General.AzureAIConfig.BaseUrl, Mode=TwoWay}" />
                                     </Grid>
-                                </toolkit:SettingsCard>
-                                <toolkit:SettingsCard HorizontalContentAlignment="Stretch">
-                                    <Grid Background="Red" HorizontalAlignment="Stretch">
+                                </Border>
+                                <Border Style="{StaticResource FullRowSettingCard}">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock>ClaveX:</TextBlock>
+                                        <TextBlock VerticalAlignment="Center">Clave:</TextBlock>
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
                                             Value="{x:Bind _settings.General.AzureAIConfig.Key, Mode=TwoWay}"
                                             PasswordMode="True" />
                                     </Grid>
-                                </toolkit:SettingsCard>
+                                </Border>
                                 <toolkit:SettingsCard ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0"
                                         Orientation="Vertical">
@@ -167,39 +174,31 @@
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" />
                             </StackPanel>
                             <toolkit:SettingsExpander.Items>
-                                <toolkit:SettingsCard ContentAlignment="Vertical" HorizontalContentAlignment="Stretch">
-                                    <toolkit:SettingsCard.Resources>
-                                        <x:Double x:Key="SettingsCardWrapThreshold">100000</x:Double>
-                                    </toolkit:SettingsCard.Resources>
-                                    <Grid Background="Red" HorizontalAlignment="Stretch">
+                                <Border Style="{StaticResource FullRowSettingCard}">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock>URLc:</TextBlock>
+                                        <TextBlock VerticalAlignment="Center">URL:</TextBlock>
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
                                             Value="{x:Bind _settings.General.OpenAIConfig.BaseUrl, Mode=TwoWay}" />
                                     </Grid>
-                                </toolkit:SettingsCard>
-                                <toolkit:SettingsCard>
-                                    <toolkit:SettingsCard.Header>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Width="150">Clave:</TextBlock>
-                                            <TextBlock Foreground="{ThemeResource TextFillColorTertiaryBrush}">●●●●●●●●</TextBlock>
-                                        </StackPanel>
-                                    </toolkit:SettingsCard.Header>
-                                    <StackPanel
-                                        Margin="0,0,16,0"
-                                        Orientation="Horizontal"
-                                        Spacing="8">
-                                        <Button ToolTipService.ToolTip="Parar" Visibility="{x:Bind _settings.OllamaStatus, Converter={StaticResource OllamaOnlineStatusToVisibilityConverter}}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock>Editar</TextBlock>
-                                            </StackPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </toolkit:SettingsCard>
+                                </Border>
+                                <Border Style="{StaticResource FullRowSettingCard}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center">Clave:</TextBlock>
+                                        <localc:EditableTextBlock
+                                            Grid.Column="1"
+                                            Value="{x:Bind _settings.General.OpenAIConfig.Key, Mode=TwoWay}"
+                                            PasswordMode="True" />
+                                    </Grid>
+                                </Border>
                                 <toolkit:SettingsCard ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0"
                                         Orientation="Vertical">
@@ -280,24 +279,13 @@
                         <!-- About Section -->
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                            Text="Acerca de PowerPad" />
-                        <toolkit:SettingsExpander Description="Licencia MIT"
-                                           Header="PowerPad"
-                                           HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/StoreLogo.scale-200.png}">
+                        <toolkit:SettingsCard Description="2025 · Trabajo Fin de Grado · Ingenieria de Software · ETSISI UPM"
+                            Header="PowerPad"
+                            HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/StoreLogo.scale-200.png}">
                             <TextBlock
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Text="Versión 1.0.0" />
-                            <toolkit:SettingsExpander.Items>
-                                <toolkit:SettingsCard ContentAlignment="Left">
-                                    <StackPanel Margin="-12,0,0,0"
-                                        Orientation="Vertical">
-                                        <HyperlinkButton Content="Link 1" />
-                                        <HyperlinkButton Content="Link 2" />
-                                        <HyperlinkButton Content="Link 3" />
-                                    </StackPanel>
-                                </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.Items>
-                        </toolkit:SettingsExpander>
-
+                        </toolkit:SettingsCard>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

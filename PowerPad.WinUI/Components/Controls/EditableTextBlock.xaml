@@ -7,12 +7,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:CommunityToolkit.WinUI.Converters"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    PointerEntered="UserControl_PointerEntered"
+    PointerExited="UserControl_PointerExited"
+    GotFocus="UserControl_GotFocus"
+    LostFocus="UserControl_LostFocus">
     <UserControl.Resources>
         <converters:BoolNegationConverter x:Key="BoolNegationConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
-    <Grid ColumnSpacing="8">
+    <Grid ColumnSpacing="8" Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
@@ -38,6 +42,7 @@
             ToolTipService.ToolTip="Editar"
             Background="Transparent"
             BorderBrush="Transparent"
+            Opacity="0"
             Visibility="{x:Bind _state.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
             <FontIcon Glyph="&#xE70F;" />
         </Button>

@@ -20,6 +20,8 @@ namespace PowerPad.WinUI.Components.Controls
     public sealed partial class EditableTextBlock : UserControl
     {
         private readonly EditableTextBlockState _state;
+        private bool _focus;
+        private bool _pointerOver;
 
         public string? Value
         {
@@ -70,7 +72,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void IntegratedTextBox_LostFocus(object _, RoutedEventArgs __)
         {
-            if (ConfirmOnLostFocus) Confirm();
+            if (_state.IsEditing && ConfirmOnLostFocus) Confirm();
         }
 
         private void EnterEditMode()
@@ -104,9 +106,35 @@ namespace PowerPad.WinUI.Components.Controls
         private static string MaskedValue(string? value)
         {
             if (string.IsNullOrEmpty(value)) return string.Empty;
-            var maskedValue = new string('•', value.Length);
+            var maskedValue = new string('•', Math.Min(value.Length, 50));
             return maskedValue;
         }
+
+        private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            _pointerOver = true;
+            UpdateEditButtonOpacity();
+        }
+
+        private void UserControl_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            _pointerOver = false;
+            UpdateEditButtonOpacity();
+        }
+
+        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+        {
+            _focus = true;
+            UpdateEditButtonOpacity();
+        }
+
+        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
+        {
+            _focus = false;
+            UpdateEditButtonOpacity();
+        }
+
+        private void UpdateEditButtonOpacity() => EditButton.Opacity = _focus || _pointerOver ? 1 : 0;
     }
 
     public partial class EditableTextBlockState : ObservableObject
