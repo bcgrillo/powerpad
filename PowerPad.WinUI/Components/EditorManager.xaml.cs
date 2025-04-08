@@ -6,8 +6,6 @@ using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PowerPad.WinUI.Helpers;
 using System.Threading;
 

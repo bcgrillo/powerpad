@@ -14,7 +14,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.WinUI.Messages;
-using PowerPad.WinUI.ViewModels.Settings;
 using System.Threading;
 
 namespace PowerPad.WinUI.Components

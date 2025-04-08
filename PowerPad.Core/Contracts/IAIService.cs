@@ -5,7 +5,11 @@ namespace PowerPad.Core.Contracts
 {
     public interface IAIService
     {
+        void Initialize(AIServiceConfig config);
+        Task<TestConnectionResult> TestConection();
         IChatClient? ChatClient(AIModel model);
         Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query);
     }
+
+    public readonly record struct TestConnectionResult(bool Success, string? ErrorMessage = null);
 }

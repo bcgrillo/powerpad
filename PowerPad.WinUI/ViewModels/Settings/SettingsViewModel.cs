@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using PowerPad.Core.Models.Config;
+using PowerPad.Core.Contracts;
+using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services;
 using PowerPad.Core.Services.AI;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
@@ -11,9 +13,6 @@ namespace PowerPad.WinUI.ViewModels.Settings
     public partial class SettingsViewModel : ObservableObject
     {
         private readonly IConfigStore _configStore;
-        private readonly IOllamaService _ollama;
-        private readonly IAzureAIService _azureAI;
-        private readonly IOpenAIService _openAI;
 
         public GeneralSettingsViewModel General { get; private init; }
 
@@ -25,34 +24,59 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public SettingsViewModel()
         {
             _configStore = App.Get<IConfigStore>();
-            _ollama = App.Get<IOllamaService>();
-            _azureAI = App.Get<IAzureAIService>();
-            _openAI = App.Get<IOpenAIService>();
 
             General = _configStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
             Models = _configStore.Get<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
+            
+            _ = UpdateOllamaStatus();
 
-            _ = Task.Run(async() =>
-            {
-                OllamaStatus = await _ollama.GetStatus();
-            });
-
-            General.PropertyChanged += (s, e) => SaveGeneralSettings();
-            Models.PropertyChanged += (s, e) => SaveModelsSettings(e.PropertyName);
+            General.PropertyChanged += SaveGeneralSettings;
+            Models.PropertyChanged += SaveModelsSettings;
         }
 
-        private void SaveGeneralSettings() => _configStore.Set(StoreKey.GeneralSettings, General);
+        public static async Task<TestConnectionResult> TestConnection<TService>()
+            where TService : IAIService
+        {
+            var service = App.Get<TService>();
 
-        private void SaveModelsSettings(string? propertyName)
+            return await service.TestConection();
+        }
+
+        public async Task UpdateOllamaStatus()
+        {
+            OllamaStatus = await App.Get<IOllamaService>().GetStatus();
+        }
+
+        private void SaveGeneralSettings(object? _, PropertyChangedEventArgs eventArgs)
+        {
+            //Control for services config changes
+            if (eventArgs.PropertyName == nameof(General.OllamaConfig))
+            {
+                App.Get<IOllamaService>().Initialize(General.OllamaConfig.GetRecord());
+                _ = UpdateOllamaStatus();
+            }
+            else if (eventArgs.PropertyName == nameof(General.AzureAIConfig))
+            {
+                App.Get<IAzureAIService>().Initialize(General.AzureAIConfig.GetRecord());
+            }
+            else if (eventArgs.PropertyName == nameof(General.OpenAIConfig))
+            {
+                App.Get<IOpenAIService>().Initialize(General.OpenAIConfig.GetRecord());
+            }
+
+            _configStore.Set(StoreKey.GeneralSettings, General);
+        }
+
+        private void SaveModelsSettings(object? _, PropertyChangedEventArgs eventArgs)
         {
             //Control for change the default model
-            if (propertyName == nameof(Models.DefaultModel))
+            if (eventArgs.PropertyName == nameof(Models.DefaultModel))
             {
                 if (Models.DefaultModel is null)
                 {
                     var availableModelProviders = General.GetAvailableModelProviders();
 
-                    foreach(var modelProvider in availableModelProviders)
+                    foreach (var modelProvider in availableModelProviders)
                     {
                         Models.DefaultModel = Models.AvailableModels.Where(m => m.ModelProvider == modelProvider).FirstOrDefault();
 
@@ -61,6 +85,15 @@ namespace PowerPad.WinUI.ViewModels.Settings
                 }
 
                 App.Get<IChatService>().SetDefaultModel(Models.DefaultModel?.GetRecord());
+            }
+            //Control for change the default AI parameters
+            else if (eventArgs.PropertyName == nameof(Models.SendDefaultParameters)
+                 || eventArgs.PropertyName == nameof(Models.DefaultParameters))
+            {
+                if (Models.SendDefaultParameters)
+                    App.Get<IChatService>().SetDefaultParameters(Models.DefaultParameters.GetRecord());
+                else
+                    App.Get<IChatService>().SetDefaultParameters(null);
             }
 
             _configStore.Set(StoreKey.ModelsSettings, Models);

@@ -2,18 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -122,13 +113,13 @@ namespace PowerPad.WinUI.Components.Controls
             UpdateEditButtonOpacity();
         }
 
-        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+        private void EditButton_GotFocus(object sender, RoutedEventArgs e)
         {
             _focus = true;
             UpdateEditButtonOpacity();
         }
 
-        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
+        private void EditButton_LostFocus(object sender, RoutedEventArgs e)
         {
             _focus = false;
             UpdateEditButtonOpacity();

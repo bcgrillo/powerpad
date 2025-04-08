@@ -4,7 +4,6 @@ using OllamaSharp.Models;
 using System.Diagnostics;
 using Exception = System.Exception;
 using PowerPad.Core.Models.AI;
-using PowerPad.Core.Models.Config;
 using PowerPad.Core.Contracts;
 
 namespace PowerPad.Core.Services.AI
@@ -13,6 +12,8 @@ namespace PowerPad.Core.Services.AI
     {
         Task<OllamaStatus> GetStatus();
         Task<IEnumerable<AIModel>> GetAvailableModels();
+        Task Start();
+        Task Stop();
     }
 
     public class OllamaService : IOllamaService
@@ -24,6 +25,22 @@ namespace PowerPad.Core.Services.AI
             ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
 
             _ollama = new(config.BaseUrl);
+        }
+
+        public async Task<TestConnectionResult> TestConection()
+        {
+            if (_ollama is null) return new(false, "Ollama is not initialized.");
+
+            try
+            {
+                var result = await _ollama.IsRunningAsync();
+
+                return new(result, result ? null : "Ollama is not running.");
+            }
+            catch (Exception ex)
+            {
+                return new(false, ex.Message);
+            }
         }
 
         public async Task<OllamaStatus> GetStatus()
@@ -66,7 +83,7 @@ namespace PowerPad.Core.Services.AI
                 }
                 catch (Exception)
                 {
-                    //TODO: Something
+                    return OllamaStatus.Error;
                 }
             }
 
@@ -93,7 +110,7 @@ namespace PowerPad.Core.Services.AI
 
             return new AIModel
             (
-                model.Name, 
+                model.Name,
                 provider,
                 model.Size,
                 provider == ModelProvider.HuggingFace
@@ -115,7 +132,7 @@ namespace PowerPad.Core.Services.AI
         {
             //TODO: Implement search models
             //Remember change the name of huggingface models, and set displayname (see CreateAIModel method)
-            
+
             await Task.Delay(2000);
 
             return [
@@ -123,6 +140,34 @@ namespace PowerPad.Core.Services.AI
                 new("yyy", modelProvider),
                 new("zzz", modelProvider),
             ];
+        }
+
+        public Task Start()
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "ollama app.exe",
+                UseShellExecute = true,
+                CreateNoWindow = true
+            };
+
+            Process.Start(startInfo);
+
+            return Task.CompletedTask;  
+        }
+
+        public async Task Stop()
+        {
+            List<string> processesName = ["ollama app", "ollama"];
+            foreach (var processName in processesName)
+            {
+                var processes = Process.GetProcessesByName(processName);
+                foreach (var process in processes)
+                {
+                    process.Kill();
+                    await process.WaitForExitAsync();
+                }
+            }
         }
     }
 }

@@ -9,9 +9,7 @@
     xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d"
     PointerEntered="UserControl_PointerEntered"
-    PointerExited="UserControl_PointerExited"
-    GotFocus="UserControl_GotFocus"
-    LostFocus="UserControl_LostFocus">
+    PointerExited="UserControl_PointerExited">
     <UserControl.Resources>
         <converters:BoolNegationConverter x:Key="BoolNegationConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -43,7 +41,9 @@
             Background="Transparent"
             BorderBrush="Transparent"
             Opacity="0"
-            Visibility="{x:Bind _state.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+            Visibility="{x:Bind _state.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
+            GotFocus="EditButton_GotFocus"
+            LostFocus="EditButton_LostFocus">
             <FontIcon Glyph="&#xE70F;" />
         </Button>
         <StackPanel

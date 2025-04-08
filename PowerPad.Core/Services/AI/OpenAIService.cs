@@ -3,8 +3,6 @@ using OpenAI;
 using OpenAI.Models;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
-using System.ClientModel;
-using Uri = System.Uri;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -22,6 +20,22 @@ namespace PowerPad.Core.Services.AI
             ArgumentException.ThrowIfNullOrEmpty(config.Key);
 
             _openAI = new(new(config.Key), new() { Endpoint = new(config.BaseUrl) });
+        }
+
+        public async Task<TestConnectionResult> TestConection()
+        {
+            if (_openAI is null) return new(false, "OpenAI service is not initialized.");
+
+            try
+            {
+                _ = await _openAI.GetOpenAIModelClient().GetModelsAsync();
+
+                return new(true);
+            }
+            catch (Exception ex)
+            {
+                return new(false, ex.Message);
+            }
         }
 
         public IChatClient? ChatClient(AIModel model) => _openAI?.AsChatClient(model.Name);

@@ -18,14 +18,17 @@ namespace PowerPad.WinUI.Components.Controls
             this.Resources["TextControlBackgroundFocused"] = new SolidColorBrush(Colors.Transparent);
             this.Resources["TextControlBackgroundDisabled"] = new SolidColorBrush(Colors.Transparent);
             
-            this.RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, OnIsReadOnlyChanged);
+            this.RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, UpdateForeground);
+            this.RegisterPropertyChangedCallback(TextBox.IsEnabledProperty, UpdateForeground);
         }
 
-        private void OnIsReadOnlyChanged(DependencyObject sender, DependencyProperty dp)
+        private void UpdateForeground(DependencyObject sender, DependencyProperty dp)
         {
-            var foregroundBrush = IsReadOnly
-                ? (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"]
-                : (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+            var foregroundBrush = IsEnabled
+                ?  (IsReadOnly
+                    ? (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"]
+                    : (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"])
+                : (Brush)Application.Current.Resources["TextFillColorDisabledBrush"];
 
             this.Foreground = foregroundBrush;
             this.Resources["TextControlForeground"] = foregroundBrush;

@@ -65,7 +65,7 @@
                     Text="Top P" 
                     VerticalAlignment="Center" />
                 <TextBlock 
-                    Text="(nucleo de palabras candidatas)" 
+                    Text="(núcleo de palabras candidatas)" 
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
                     VerticalAlignment="Center" />
             </StackPanel>

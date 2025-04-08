@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
-using PowerPad.Core.Models.Config;
 using PowerPad.Core.Services.AI;
 using System.Collections.Generic;
 using System.Linq;

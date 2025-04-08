@@ -3,7 +3,6 @@ using Azure.AI.Inference;
 using Microsoft.Extensions.AI;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
-using Uri = System.Uri;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -21,6 +20,22 @@ namespace PowerPad.Core.Services.AI
             ArgumentException.ThrowIfNullOrEmpty(config.Key);
 
             _azureAI = new(new(config.BaseUrl), new AzureKeyCredential(config.Key));
+        }
+
+        public async Task<TestConnectionResult> TestConection()
+        {
+            if (_azureAI is null) return new(false, "Azure AI is not initialized.");
+
+            try
+            {
+                var result = await _azureAI.AsChatClient(string.Empty).GetResponseAsync("test");
+
+                return new(true);
+            }
+            catch (Exception ex)
+            {
+                return new(false, ex.Message);
+            }
         }
 
         public async Task<IEnumerable<AIModel>> GetAvailableModels()

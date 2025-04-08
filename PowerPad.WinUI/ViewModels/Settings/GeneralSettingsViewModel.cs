@@ -17,17 +17,38 @@ namespace PowerPad.WinUI.ViewModels.Settings
         [ObservableProperty]
         private bool _openAIEnabled;
 
-        [ObservableProperty]
-        private AIServiceConfigViewModel? _ollamaConfig;
+        public required AIServiceConfigViewModel OllamaConfig
+        { 
+            get; 
+            init
+            {
+                field = value;
+                field.PropertyChanged += (s, e) => OnPropertyChanged(nameof(OllamaConfig));
+            }
+        }
 
         [ObservableProperty]
         private bool _ollamaAutostart;
 
-        [ObservableProperty]
-        private AIServiceConfigViewModel? _azureAIConfig;
+        public required AIServiceConfigViewModel AzureAIConfig
+        {
+            get;
+            init
+            {
+                field = value;
+                field.PropertyChanged += (s, e) => OnPropertyChanged(nameof(AzureAIConfig));
+            }
+        }
 
-        [ObservableProperty]
-        private AIServiceConfigViewModel? _openAIConfig; //TODO: Make readonly
+        public required AIServiceConfigViewModel OpenAIConfig
+        {
+            get;
+            init
+            {
+                field = value;
+                field.PropertyChanged += (s, e) => OnPropertyChanged(nameof(OpenAIConfig));
+            }
+        }
 
         [ObservableProperty]
         private ApplicationTheme? _appTheme;
@@ -37,7 +58,6 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         public GeneralSettingsViewModel()
         {
-            PropertyChanged += PropertyChangedHandler;
         }
 
         public IEnumerable<ModelProvider> GetAvailableModelProviders()
@@ -61,25 +81,6 @@ namespace PowerPad.WinUI.ViewModels.Settings
             return providers;
         }
 
-        private void PropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
-        {
-            switch(eventArgs.PropertyName)
-            {
-                case nameof(OllamaConfig):
-                    if (OllamaConfig is not null)
-                        OllamaConfig.PropertyChanged += SecondaryPropertyChangedHandler;
-                    break;
-                case nameof(AzureAIConfig):
-                    if (AzureAIConfig is not null)
-                        AzureAIConfig.PropertyChanged += SecondaryPropertyChangedHandler;
-                    break;
-                case nameof(OpenAIConfig):
-                    if (OpenAIConfig is not null)
-                        OpenAIConfig.PropertyChanged += SecondaryPropertyChangedHandler;
-                    break;
-            }
-        }
-
-        private void SecondaryPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
+        private void SecondaryPropertyChangedHandler(object? _, PropertyChangedEventArgs e) => OnPropertyChanged();
     };
 }

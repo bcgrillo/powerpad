@@ -40,7 +40,7 @@
                                     Style="{StaticResource BodyStrongTextBlockStyle}"/>
                                 <TextBlock 
                                     Text="(Se envían parámetros predeterminados)" 
-                                    Visibility="{x:Bind _settings.Models.SendDefaultParameters}"
+                                    Visibility="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}"
                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
                                     VerticalAlignment="Center" />
                             </StackPanel>
