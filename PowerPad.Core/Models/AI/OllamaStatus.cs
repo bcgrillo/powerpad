@@ -5,6 +5,8 @@
         Unknown,
         Available,
         Online,
-        Error
+        Error,
+        Unreachable,
+        Updating
     }
 }

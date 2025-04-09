@@ -8,7 +8,7 @@ using System;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public sealed partial class EditableTextBlock : UserControl
+    public partial class EditableTextBlock : UserControl
     {
         private readonly EditableTextBlockState _state;
         private bool _focus;

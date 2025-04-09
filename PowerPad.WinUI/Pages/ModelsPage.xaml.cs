@@ -9,7 +9,7 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages
 {
-    public sealed partial class ModelsPage : Page, INavigationPage
+    public partial class ModelsPage : DisposablePage, INavigationPage
     {
         private IDisposable? _currentPage;
 
@@ -120,5 +120,9 @@ namespace PowerPad.WinUI.Pages
         }
 
         private void HideMenuBtn_Click(object _, RoutedEventArgs __) => ToggleNavigationVisibility();
+
+        public override void Dispose()
+        {
+        }
     }
 }

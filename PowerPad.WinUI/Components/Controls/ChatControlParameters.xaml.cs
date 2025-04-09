@@ -4,7 +4,7 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public sealed partial class ChatControlParameters : UserControl
+    public partial class ChatControlParameters : UserControl
     {
         public AIParametersViewModel Parameters
         {

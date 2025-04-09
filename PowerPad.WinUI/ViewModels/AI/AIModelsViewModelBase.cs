@@ -42,33 +42,35 @@ namespace PowerPad.WinUI.ViewModels.AI
             AddModelCommand = new RelayCommand<AIModelViewModel>(AddModel);
             SearchModelCommand = new RelayCommand<string>(SearchModels);
 
-            _settingsViewModel.Models.AvailableModels.CollectionChanged += FilterModels;
+            FilteredModels = [.. _settingsViewModel.Models.AvailableModels.Where(m => m.ModelProvider == _modelProvider)];
 
-            FilteredModels = [];
-            FilterModels(null, null);
+            _settingsViewModel.Models.AvailableModels.CollectionChanged += FilterModels;
 
             SearchResultModels = [];
         }
 
-        protected void FilterModels(object? _, NotifyCollectionChangedEventArgs? __)
+        protected void FilterModels(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
             var newAvailableModels = _settingsViewModel.Models.AvailableModels;
 
-            foreach (var model in newAvailableModels)
+            switch (eventArgs.Action)
             {
-                if (!FilteredModels.Any(m => m == model) && model.ModelProvider == _modelProvider)
-                {
-                    FilteredModels.Add(model);
-                }
-            }
-
-            for (int i = FilteredModels.Count - 1; i >= 0; i--)
-            {
-                var model = FilteredModels[i];
-                if (!newAvailableModels.Any(m => m == model) && model.ModelProvider == _modelProvider)
-                {
-                    FilteredModels.RemoveAt(i);
-                }
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AIModelViewModel model in eventArgs.NewItems!)
+                    {
+                        if (model.ModelProvider == _modelProvider && !FilteredModels.Any(m => m == model))
+                            FilteredModels.Add(model);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AIModelViewModel model in eventArgs.OldItems!)
+                    {
+                        if (FilteredModels.Any(m => m == model)) FilteredModels.Remove(FilteredModels.Single(m => m == model));
+                    }
+                    break;
+                default:
+                    FilteredModels.Clear();
+                    break;
             }
         }
 

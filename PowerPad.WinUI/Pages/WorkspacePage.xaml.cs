@@ -5,7 +5,7 @@ using PowerPad.WinUI.Components;
 
 namespace PowerPad.WinUI.Pages
 {
-    internal sealed partial class WorkspacePage : Page, INavigationPage
+    internal partial class WorkspacePage : Page, INavigationPage
     {
         public double NavigationWidth => WorkspaceControl.Visibility == Visibility.Visible ? WorkspaceControl.ActualWidth : 0;
 

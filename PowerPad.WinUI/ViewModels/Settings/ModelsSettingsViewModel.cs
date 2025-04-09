@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
@@ -35,6 +36,8 @@ namespace PowerPad.WinUI.ViewModels.Settings
                 foreach (AIModelViewModel model in field) model.PropertyChanged += CollectionPropertyChangedHandler;
             }
         }
+
+        public Collection<AIModelViewModel> RecoverableModels = [];
 
         public ModelsSettingsViewModel()
         {
@@ -77,11 +80,15 @@ namespace PowerPad.WinUI.ViewModels.Settings
             ValidateDefaultModel();
         }
 
-        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
+        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __)
+        {
+            ValidateDefaultModel();
+            OnPropertyChanged();
+        }
 
         private void ValidateDefaultModel()
         {
-            if (DefaultModel is null || !AvailableModels.Contains(DefaultModel)) DefaultModel = null;
+            if (!AvailableModels.Where(m => m.Enabled).Contains(DefaultModel)) DefaultModel = null;
         }
     }
 }

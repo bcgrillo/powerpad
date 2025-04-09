@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using static PowerPad.Core.Constants;
 
-namespace PowerPad.Core.Services
+namespace PowerPad.Core.Services.Config
 {
     public interface IConfigStore
     {

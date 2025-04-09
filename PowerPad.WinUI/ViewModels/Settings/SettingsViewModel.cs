@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
-using PowerPad.Core.Services;
 using PowerPad.Core.Services.AI;
+using PowerPad.Core.Services.Config;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,9 +49,10 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         private void SaveGeneralSettings(object? _, PropertyChangedEventArgs eventArgs)
         {
-            //Control for services config changes
+            // Control for services config changes  
             if (eventArgs.PropertyName == nameof(General.OllamaConfig))
             {
+                OllamaStatus = OllamaStatus.Updating;
                 App.Get<IOllamaService>().Initialize(General.OllamaConfig.GetRecord());
                 _ = UpdateOllamaStatus();
             }
@@ -63,6 +64,34 @@ namespace PowerPad.WinUI.ViewModels.Settings
             {
                 App.Get<IOpenAIService>().Initialize(General.OpenAIConfig.GetRecord());
             }
+            else if (eventArgs.PropertyName == nameof(General.OllamaEnabled)
+                  || eventArgs.PropertyName == nameof(General.AzureAIEnabled)
+                  || eventArgs.PropertyName == nameof(General.OpenAIEnabled))
+            {
+                var availableProviders = General.GetAvailableModelProviders();
+
+                var disabledModels = Models.AvailableModels
+                    .Where(model => !availableProviders.Contains(model.ModelProvider))
+                    .ToList();
+
+                foreach (var model in disabledModels)
+                {
+                    Models.AvailableModels.Remove(model);
+                    Models.RecoverableModels.Add(model);
+                }
+
+                var recoverableModelsToEnable = Models.RecoverableModels
+                    .Where(model => availableProviders.Contains(model.ModelProvider))
+                    .ToList();
+
+                foreach (var model in recoverableModelsToEnable)
+                {
+                    Models.RecoverableModels.Remove(model);
+                    Models.AvailableModels.Add(model);
+                }
+
+                SetDefaultModelFromAvailableProviders();
+            }
 
             _configStore.Set(StoreKey.GeneralSettings, General);
         }
@@ -72,17 +101,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             //Control for change the default model
             if (eventArgs.PropertyName == nameof(Models.DefaultModel))
             {
-                if (Models.DefaultModel is null)
-                {
-                    var availableModelProviders = General.GetAvailableModelProviders();
-
-                    foreach (var modelProvider in availableModelProviders)
-                    {
-                        Models.DefaultModel = Models.AvailableModels.Where(m => m.ModelProvider == modelProvider).FirstOrDefault();
-
-                        if (Models.DefaultModel is not null) break;
-                    }
-                }
+                SetDefaultModelFromAvailableProviders();
 
                 App.Get<IChatService>().SetDefaultModel(Models.DefaultModel?.GetRecord());
             }
@@ -97,6 +116,21 @@ namespace PowerPad.WinUI.ViewModels.Settings
             }
 
             _configStore.Set(StoreKey.ModelsSettings, Models);
+        }
+
+        private void SetDefaultModelFromAvailableProviders()
+        {
+            if (Models.AvailableModels.Where(m => m.Enabled).Any() && Models.DefaultModel is null)
+            {
+                var availableModelProviders = General.GetAvailableModelProviders();
+
+                foreach (var modelProvider in availableModelProviders)
+                {
+                    Models.DefaultModel = Models.AvailableModels.Where(m => m.Enabled && m.ModelProvider == modelProvider).FirstOrDefault();
+
+                    if (Models.DefaultModel is not null) break;
+                }
+            }
         }
     }
 }

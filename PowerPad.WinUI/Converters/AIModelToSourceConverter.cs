@@ -10,11 +10,11 @@ namespace PowerPad.WinUI.Converters
 {
     public class AIModelToSourceConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public object? Convert(object value, Type targetType, object parameter, string language)
         {
-            var model = (AIModelViewModel)value;
+            var model = (AIModelViewModel?)value;
 
-            return model.ModelProvider.GetIcon();
+            return model?.ModelProvider.GetIcon();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

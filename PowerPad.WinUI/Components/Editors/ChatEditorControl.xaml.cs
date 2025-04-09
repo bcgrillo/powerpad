@@ -18,7 +18,7 @@ using PowerPad.WinUI.Components.Controls;
 
 namespace PowerPad.WinUI.Components.Editors
 {
-    public sealed partial class ChatEditorControl : EditorControl
+    public partial class ChatEditorControl : EditorControl
     {
         private DocumentViewModel _document;
         private ChatViewModel? _chat;
@@ -140,11 +140,13 @@ namespace PowerPad.WinUI.Components.Editors
             //Chat elements always save automatically (instead of autosaving)
             _document.SaveCommand.Execute(null);
         }
-
+        
         public override void Dispose()
         {
             _document = null!;
             _chat!.Messages.Clear();
+
+            GC.SuppressFinalize(this);
         }
 
         private void InvertedListView_Loaded(object _, RoutedEventArgs __)

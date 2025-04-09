@@ -3,7 +3,7 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public sealed partial class OllamaAddModelPage : AIAddModelPageBase
+    public partial class OllamaAddModelPage : AIAddModelPageBase
     {
         private OllamaModelsViewModel OllamaModelViewModel => (OllamaModelsViewModel)_modelsViewModel;
 

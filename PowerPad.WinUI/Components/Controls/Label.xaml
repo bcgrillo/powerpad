@@ -8,10 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     IsEnabledChanged="Label_IsEnabledChanged"
     Loaded="Label_Loaded"
-    IsTabStop="False">
-    <UserControl.Resources>
-        <SolidColorBrush x:Key="EnabledColour" Color="{ThemeResource TextFillColorPrimary}"/>
-        <SolidColorBrush x:Key="DisabledColour" Color="{ThemeResource TextFillColorDisabled}"/>
-    </UserControl.Resources>
+    IsTabStop="False"
+    VerticalAlignment="Center">
     <TextBlock x:Name="TextBlock" Text="{x:Bind Text, Mode=OneWay}"/>
 </UserControl>

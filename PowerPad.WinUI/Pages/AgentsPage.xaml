@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<local:DisposablePage
     x:Class="PowerPad.WinUI.Pages.AgentsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -104,4 +104,4 @@
             <Frame x:Name="NavFrame"/>
         </NavigationView>
     </Grid>
-</Page>
+</local:DisposablePage>

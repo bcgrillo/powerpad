@@ -1,16 +1,20 @@
 ﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using OllamaSharp.Models;
+using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 
 namespace PowerPad.WinUI.Pages
 {
-    internal sealed partial class SettingsPage : Page
+    public partial class SettingsPage : DisposablePage
     {
         private readonly SettingsViewModel _settings;
 
@@ -20,11 +24,12 @@ namespace PowerPad.WinUI.Pages
 
             _settings = App.Get<SettingsViewModel>();
 
-            _settings.General.AzureAIConfig.PropertyChanged += (s, e) => TestAzureAI();
-            _settings.General.OpenAIConfig.PropertyChanged += (s, e) => TestOpenAI();
+            _settings.General.OllamaConfig.PropertyChanged += TestOllama;
+            _settings.General.AzureAIConfig.PropertyChanged += TestAzureAI;
+            _settings.General.OpenAIConfig.PropertyChanged += TestOpenAI;
 
-            SetModelsMenu();
-            _settings.Models.AvailableModels.CollectionChanged += (s, e) => SetModelsMenu();
+            SetModelsMenu(null, null!);
+            _settings.Models.AvailableModels.CollectionChanged += SetModelsMenu;
         }
 
         private async void StartOllama_Click(object _, RoutedEventArgs __)
@@ -73,7 +78,34 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        private async void TestAzureAI()
+        private async void TestOllama(object? _, PropertyChangedEventArgs __)
+        {
+            var protectedCursorAux = ProtectedCursor;
+
+            try
+            {
+                ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Wait);
+
+                var result = await App.Get<IOllamaService>().TestConection();
+
+                if (!result.Success)
+                {
+                    OllamaInfoBar.IsOpen = true;
+                    OllamaInfoBar.Message = result.ErrorMessage;
+                    OllamaInfoBar.Severity = InfoBarSeverity.Error;
+                }
+                else
+                {
+                    OllamaInfoBar.IsOpen = false;
+                }
+            }
+            finally
+            {
+                ProtectedCursor = protectedCursorAux;
+            }
+        }
+
+        private async void TestAzureAI(object? _, PropertyChangedEventArgs __)
         {
             var protectedCursorAux = ProtectedCursor;
 
@@ -89,6 +121,10 @@ namespace PowerPad.WinUI.Pages
                     AzureAIInfoBar.Message = result.ErrorMessage;
                     AzureAIInfoBar.Severity = InfoBarSeverity.Error;
                 }
+                else
+                {
+                    AzureAIInfoBar.IsOpen = false;
+                }
             }
             finally
             {
@@ -96,7 +132,7 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        private async void TestOpenAI()
+        private async void TestOpenAI(object? _, PropertyChangedEventArgs __)
         {
             var protectedCursorAux = ProtectedCursor;
 
@@ -112,6 +148,10 @@ namespace PowerPad.WinUI.Pages
                     OpenAIInfoBar.Message = result.ErrorMessage;
                     OpenAIInfoBar.Severity = InfoBarSeverity.Error;
                 }
+                else
+                {
+                    OpenAIInfoBar.IsOpen = false;
+                }
             }
             finally
             {
@@ -119,7 +159,7 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        private void SetModelsMenu()
+        private void SetModelsMenu(object? _, NotifyCollectionChangedEventArgs __)
         {
             DefaultModelFlyoutMenu.Items.Clear();
 
@@ -150,13 +190,67 @@ namespace PowerPad.WinUI.Pages
                 if (elementAdded) DefaultModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
             }
 
-            DefaultModelFlyoutMenu.Items.RemoveAt(DefaultModelFlyoutMenu.Items.Count - 1);
+            if (DefaultModelFlyoutMenu.Items.Any())
+            {
+                DefaultModelFlyoutMenu.Items.RemoveAt(DefaultModelFlyoutMenu.Items.Count - 1);
+
+                DefaultModelCard.IsEnabled = true;
+                DefaultParameterCard.IsEnabled = true;
+                FakeButton.Visibility = Visibility.Collapsed;
+                DefaultModelButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DefaultModelCard.IsEnabled = false;
+                DefaultParameterCard.IsEnabled = false;
+                FakeButton.Visibility = Visibility.Visible;
+                DefaultModelButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void SetModelItem_Click(object sender, RoutedEventArgs _)
         {
             ((RadioMenuFlyoutItem)sender).IsChecked = true;
             _settings.Models.DefaultModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
+        }
+
+        ~SettingsPage()
+        {
+            Dispose(false);
+        }
+
+        public override void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // Desuscribir eventos
+                    _settings.General.OllamaConfig.PropertyChanged -= TestOllama;
+                    _settings.General.AzureAIConfig.PropertyChanged -= TestAzureAI;
+                    _settings.General.OpenAIConfig.PropertyChanged -= TestOpenAI;
+
+                    _settings.Models.AvailableModels.CollectionChanged -= SetModelsMenu;
+                }
+
+                _disposed = true;
+            }
+        }
+
+        private void DefaultModelButton_Click(object _, RoutedEventArgs __)
+        {
+            if (_settings.Models.DefaultModel is not null)
+            {
+                var menuItem = (RadioMenuFlyoutItem?)DefaultModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == _settings.Models.DefaultModel);
+
+                if (menuItem is not null && !menuItem.IsChecked) menuItem.IsChecked = true;
+            }
         }
     }
 }

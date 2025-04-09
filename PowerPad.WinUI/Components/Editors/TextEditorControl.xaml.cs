@@ -13,7 +13,7 @@ using PowerPad.Core.Models.AI;
 
 namespace PowerPad.WinUI.Components.Editors
 {
-    public sealed partial class TextEditorControl : EditorControl
+    public partial class TextEditorControl : EditorControl
     {
         private DocumentViewModel _document;
 

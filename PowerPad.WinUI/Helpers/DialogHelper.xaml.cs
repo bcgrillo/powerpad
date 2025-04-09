@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Dialogs
 {
-    public sealed partial class DialogHelper : ContentDialog
+    public partial class DialogHelper : ContentDialog
     {
         private const string LABEL_OK = "Aceptar";
         private const string LABEL_CANCEL = "Cancelar";

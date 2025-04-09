@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace PowerPad.WinUI.Components
 {
-    public sealed partial class SearchModelsResultRepeater : UserControl
+    public partial class SearchModelsResultRepeater : UserControl
     {
         public ObservableCollection<AIModelViewModel> Models
         {

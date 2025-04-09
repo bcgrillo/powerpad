@@ -7,10 +7,8 @@ using System;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public abstract class AIAddModelPageBase(AIModelsViewModelBase aIModelsViewModel) : Page, IDisposable
+    public abstract class AIAddModelPageBase(AIModelsViewModelBase aIModelsViewModel) : DisposablePage
     {
-        private bool _disposed;
-
         protected AIModelsViewModelBase _modelsViewModel = aIModelsViewModel;
 
         protected void Search_Click(object _, RoutedEventArgs __)
@@ -38,7 +36,7 @@ namespace PowerPad.WinUI.Pages.Providers
             Dispose(false);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

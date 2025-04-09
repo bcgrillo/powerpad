@@ -6,7 +6,7 @@ using PowerPad.Core.Models.AI;
 
 namespace PowerPad.WinUI.Pages
 {
-    public sealed partial class AgentsPage : Page, INavigationPage
+    public partial class AgentsPage : DisposablePage, INavigationPage
     {
 
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
@@ -44,5 +44,9 @@ namespace PowerPad.WinUI.Pages
         }
 
         private void HideMenuBtn_Click(object _, RoutedEventArgs __) => ToggleNavigationVisibility();
+
+        public override void Dispose()
+        {
+        }
     }
 }

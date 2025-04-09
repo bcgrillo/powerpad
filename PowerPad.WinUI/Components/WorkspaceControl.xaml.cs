@@ -18,7 +18,7 @@ using System.Threading;
 
 namespace PowerPad.WinUI.Components
 {
-    public sealed partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>
+    public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>
     {
         private static WorkspaceControl? _registredInstance = null;
         private readonly Lock _registredInstenceLock = new();

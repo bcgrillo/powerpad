@@ -19,21 +19,32 @@ namespace PowerPad.Core.Services.AI
     public class OllamaService : IOllamaService
     {
         private OllamaApiClient? _ollama;
+        private AIServiceConfig? _config;
 
         public void Initialize(AIServiceConfig config)
         {
             ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
 
-            _ollama = new(config.BaseUrl);
+            _config = config;
+            _ollama = null;
+        }
+
+        public OllamaApiClient? GetClient()
+        {
+            if (_ollama is not null) return _ollama;
+            if (_config is null) return null;
+
+            _ollama = new(_config.BaseUrl!);
+            return _ollama;
         }
 
         public async Task<TestConnectionResult> TestConection()
         {
-            if (_ollama is null) return new(false, "Ollama is not initialized.");
+            if (_config is null) return new(false, "Ollama is not initialized.");
 
             try
             {
-                var result = await _ollama.IsRunningAsync();
+                var result = await GetClient()!.IsRunningAsync();
 
                 return new(result, result ? null : "Ollama is not running.");
             }
@@ -45,45 +56,52 @@ namespace PowerPad.Core.Services.AI
 
         public async Task<OllamaStatus> GetStatus()
         {
-            if (_ollama is null) return OllamaStatus.Unknown;
+            bool connected = false;
 
-            bool connected;
-
-            try
-            {
-                connected = await _ollama.IsRunningAsync();
-            }
-            catch (Exception)
-            {
-                connected = false;
-            }
-
-            if (connected)
-            {
-                return OllamaStatus.Online;
-            }
-            else
+            if (_config is not null)
             {
                 try
                 {
-                    var startInfo = new ProcessStartInfo
-                    {
-                        FileName = "ollama",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-
-                    using var process = Process.Start(startInfo)!;
-
-                    await process.WaitForExitAsync();
-
-                    if (process.ExitCode == 0) return OllamaStatus.Available;
+                    connected = await GetClient()!.IsRunningAsync();
                 }
                 catch (Exception)
                 {
-                    return OllamaStatus.Error;
+                }
+
+                if (connected)
+                {
+                    return OllamaStatus.Online;
+                }
+                else
+                {
+                    try
+                    {
+                        if (GetProcesses().Any())
+                        {
+                            return OllamaStatus.Unreachable;
+                        }
+                        else
+                        {
+                            var startInfo = new ProcessStartInfo
+                            {
+                                FileName = "ollama",
+                                RedirectStandardOutput = true,
+                                RedirectStandardError = true,
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            };
+
+                            using var process = Process.Start(startInfo)!;
+
+                            await process.WaitForExitAsync();
+
+                            if (process.ExitCode == 0) return OllamaStatus.Available;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        return OllamaStatus.Error;
+                    }
                 }
             }
 
@@ -158,14 +176,22 @@ namespace PowerPad.Core.Services.AI
 
         public async Task Stop()
         {
+            foreach (var process in GetProcesses())
+            {
+                process.Kill();
+                await process.WaitForExitAsync();
+            }
+        }
+
+        private static IEnumerable<Process> GetProcesses()
+        {
             List<string> processesName = ["ollama app", "ollama"];
+
             foreach (var processName in processesName)
             {
-                var processes = Process.GetProcessesByName(processName);
-                foreach (var process in processes)
+                foreach (var process in Process.GetProcessesByName(processName))
                 {
-                    process.Kill();
-                    await process.WaitForExitAsync();
+                    yield return process;
                 }
             }
         }

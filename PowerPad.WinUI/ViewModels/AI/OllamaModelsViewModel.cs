@@ -80,8 +80,6 @@ namespace PowerPad.WinUI.ViewModels.AI
                     }
                 }
             }
-
-            FilterModels(null, null);
         }
     }
 }

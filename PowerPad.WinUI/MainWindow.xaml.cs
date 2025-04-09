@@ -17,7 +17,7 @@ namespace PowerPad.WinUI
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : WindowEx
+    public partial class MainWindow : WindowEx
     {
         private readonly DesktopAcrylicController? _acrylicController;
         private readonly SystemBackdropConfiguration? _configurationSource;

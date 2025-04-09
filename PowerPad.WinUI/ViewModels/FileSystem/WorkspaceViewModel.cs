@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Models.FileSystem;
-using PowerPad.Core.Services;
+using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Messages;

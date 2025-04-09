@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace PowerPad.WinUI.Components
 {
-    public sealed partial class AIModelsRepeater : UserControl
+    public partial class AIModelsRepeater : UserControl
     {
         public ObservableCollection<AIModelViewModel> Models
         {

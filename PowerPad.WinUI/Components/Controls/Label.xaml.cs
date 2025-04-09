@@ -4,8 +4,10 @@ using Microsoft.UI.Xaml.Media;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public sealed partial class Label : UserControl
+    public partial class Label : UserControl
     {
+        private Brush? _previousForegroundBrush;
+
         public string? Text
         {
             get => (string?)GetValue(TextProperty);
@@ -24,7 +26,13 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void Label_Loaded(object _, RoutedEventArgs __) => UpdateForeground();
 
-        public void UpdateForeground() =>
-            TextBlock.Foreground = Resources[IsEnabled ? "EnabledColour" : "DisabledColour"] as SolidColorBrush;
+        public void UpdateForeground()
+        {
+            _previousForegroundBrush ??= TextBlock.Foreground;
+
+            TextBlock.Foreground = IsEnabled 
+                ? _previousForegroundBrush
+                : (Brush)Application.Current.Resources["TextFillColorDisabledBrush"];
+        } 
     }
 }

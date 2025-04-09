@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public sealed partial class ButtonIcon : UserControl
+    public partial class ButtonIcon : UserControl
     {
         private readonly float ENABLED_OPACITY = 0.9f;
         private readonly float DISABLED_OPACITY = 0.5f;

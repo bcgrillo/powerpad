@@ -12,6 +12,8 @@ namespace PowerPad.Core.Services.AI
 
     public class AzureAIService : IAzureAIService
     {
+        private const string TEST_MODEL = "gpt-4o";
+
         private ChatCompletionsClient? _azureAI;
 
         public void Initialize(AIServiceConfig config)
@@ -28,7 +30,8 @@ namespace PowerPad.Core.Services.AI
 
             try
             {
-                var result = await _azureAI.AsChatClient(string.Empty).GetResponseAsync("test");
+                //TODO: Check a better way to do this
+                var result = await _azureAI.AsChatClient(TEST_MODEL).GetResponseAsync("test");
 
                 return new(true);
             }

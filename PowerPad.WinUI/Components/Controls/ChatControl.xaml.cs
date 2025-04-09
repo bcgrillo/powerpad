@@ -20,10 +20,13 @@ using System.ComponentModel;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public sealed partial class ChatControl : UserControl
+    public partial class ChatControl : UserControl
     {
+        private const double DEBOURCE_INTERVAL = 200;
+
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
+        private readonly DispatcherTimer _debounceTimer;
 
         private CancellationTokenSource? _cts;
 
@@ -51,13 +54,7 @@ namespace PowerPad.WinUI.Components.Controls
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
 
-            if (_settings.Models.DefaultModel is null)
-            {
-                ModelIcon.Source = null;
-                ModelName.Text = "No hay modelos disponibles :(";
-                ChatInputBox.IsEnabled = false;
-            }
-            else
+            if (_settings.Models.DefaultModel is not null)
             {
                 ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
                 ModelName.Text = _settings.Models.DefaultModel!.CardName;
@@ -67,7 +64,25 @@ namespace PowerPad.WinUI.Components.Controls
             _parameters = _settings.Models.DefaultParameters.Copy();
             _parameters.PropertyChanged += Parameters_PropertyChanged;
 
-            _settings.Models.PropertyChanged += (s, e) => SetModelsMenu();
+            _debounceTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(200)
+            };
+            _debounceTimer.Tick += DebounceTimer_Tick;
+
+            _settings.Models.PropertyChanged += Models_PropertyChanged;
+        }
+
+        private void Models_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            _debounceTimer.Stop();
+            _debounceTimer.Start();
+        }
+
+        private void DebounceTimer_Tick(object? sender, object e)
+        {
+            _debounceTimer.Stop();
+            SetModelsMenu();
         }
 
         public void SetFocus()
@@ -89,7 +104,7 @@ namespace PowerPad.WinUI.Components.Controls
                 {
                     var menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == model);
                     
-                    if (menuItem != null)
+                    if (menuItem is not null)
                     {
                         menuItem.IsChecked = true;
                     }
@@ -134,46 +149,49 @@ namespace PowerPad.WinUI.Components.Controls
 
             ModelFlyoutMenu.Items.Clear();
 
-            var firstItem = new RadioMenuFlyoutItem
+            if (_settings.Models.DefaultModel is not null)
             {
-                Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})",
-                Tag = null,
-                Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() },
-                IsChecked = true
-            };
-
-            firstItem.Click += SetModelItem_Click;
-            ModelFlyoutMenu.Items.Add(firstItem);
-            ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
-
-            var availableProviders = _settings.General.GetAvailableModelProviders();
-
-            foreach (var provider in availableProviders)
-            {
-                var elementAdded = false;
-
-                foreach (var item in _settings.Models.AvailableModels.Where(m => m.ModelProvider == provider && m.Enabled))
+                var firstItem = new RadioMenuFlyoutItem
                 {
-                    var menuItem = new RadioMenuFlyoutItem
+                    Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})",
+                    Tag = null,
+                    Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() },
+                    IsChecked = true
+                };
+
+                firstItem.Click += SetModelItem_Click;
+                ModelFlyoutMenu.Items.Add(firstItem);
+                ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
+
+                var availableProviders = _settings.General.GetAvailableModelProviders();
+
+                foreach (var provider in availableProviders)
+                {
+                    var elementAdded = false;
+
+                    foreach (var item in _settings.Models.AvailableModels.Where(m => m.ModelProvider == provider && m.Enabled))
                     {
-                        Text = item.CardName,
-                        Tag = item,
-                        Icon = new ImageIcon() { Source = provider.GetIcon() }
-                    };
+                        var menuItem = new RadioMenuFlyoutItem
+                        {
+                            Text = item.CardName,
+                            Tag = item,
+                            Icon = new ImageIcon() { Source = provider.GetIcon() }
+                        };
 
-                    ModelFlyoutMenu.Items.Add(menuItem);
+                        ModelFlyoutMenu.Items.Add(menuItem);
 
-                    menuItem.Click += SetModelItem_Click;
+                        menuItem.Click += SetModelItem_Click;
 
-                    elementAdded = true;
+                        elementAdded = true;
+                    }
+
+                    if (elementAdded) ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
                 }
 
-                if (elementAdded) ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
+                ModelFlyoutMenu.Items.RemoveAt(ModelFlyoutMenu.Items.Count - 1);
+
+                SetModel(currentSelectedModel);
             }
-
-            ModelFlyoutMenu.Items.RemoveAt(ModelFlyoutMenu.Items.Count - 1);
-
-            SetModel(currentSelectedModel);
         }
 
         private void SetModelItem_Click(object sender, RoutedEventArgs _)
@@ -194,10 +212,15 @@ namespace PowerPad.WinUI.Components.Controls
                 ModelName.Text = _selectedModel.CardName;
                 ChatInputBox.IsEnabled = true;
             }
+            else if (_settings.Models.DefaultModel is not null)
+            {
+                ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
+                ModelName.Text = _settings.Models.DefaultModel.CardName;
+            }
             else
             {
-                ModelIcon.Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon();
-                ModelName.Text = _settings.Models.DefaultModel!.CardName;
+                ModelIcon.Source = null;
+                ModelName.Text = "Unavailable";
             }
         }
 

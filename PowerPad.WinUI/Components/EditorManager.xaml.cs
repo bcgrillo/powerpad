@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace PowerPad.WinUI.Components
 {
-    public sealed partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
+    public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     {
         private static EditorManager? _registredInstance = null;
         private readonly Lock _registredInstenceLock = new();
