@@ -3,6 +3,7 @@ using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
 using PowerPad.Core.Services.Config;
+using PowerPad.WinUI.Helpers;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -91,6 +92,10 @@ namespace PowerPad.WinUI.ViewModels.Settings
                 }
 
                 SetDefaultModelFromAvailableProviders();
+            }
+            else if (eventArgs.PropertyName == nameof(General.AcrylicBackground))
+            {
+                WindowHelper.MainWindow.SetBackdrop();
             }
 
             _configStore.Set(StoreKey.GeneralSettings, General);

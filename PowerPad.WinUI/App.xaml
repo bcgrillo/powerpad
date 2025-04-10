@@ -10,8 +10,6 @@
                 <XamlControlsResources />
                 <ResourceDictionary Source="Styles/GeneralStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
-            <!-- Other app resources here -->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

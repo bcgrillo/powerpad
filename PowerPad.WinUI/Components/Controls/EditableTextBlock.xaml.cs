@@ -45,6 +45,15 @@ namespace PowerPad.WinUI.Components.Controls
         public static readonly DependencyProperty PasswordModeProperty =
             DependencyProperty.Register(nameof(PasswordMode), typeof(bool), typeof(EditableTextBlockState), new(false));
 
+        public string? PlaceholderText
+        {
+            get => (string)GetValue(PlaceholderTextProperty);
+            set => SetValue(PlaceholderTextProperty, value);
+        }
+
+        public static readonly DependencyProperty PlaceholderTextProperty =
+            DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(EditableTextBlockState), new(null));
+
         public EditableTextBlock()
         {
             this.InitializeComponent();

@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:mux="using:Microsoft.UI.Xaml"
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:converters="using:PowerPad.WinUI.Converters"
@@ -21,6 +22,7 @@
         <converters:AIModelToSourceConverter x:Key="AIModelToSourceConverter" />
         <converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
         <converters:FloatToDoubleConverter x:Key="FloatToDoubleConverter"/>
+        <converters:AppThemeToBooleanConverter x:Key="AppThemeToBooleanConverter" />
         <toolkitconverters:StringFormatConverter x:Key="StringFormatConverter" />
         <toolkitconverters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
         <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
@@ -147,7 +149,8 @@
                         <!-- AzureAI -->
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderAzureAI"
-                            Header="Azure AI">
+                            Header="Azure AI"
+                            Description="Utiliza los modelos de GitHub con el API de Azure AI">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource AzureAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
@@ -204,7 +207,8 @@
                         <!-- OpenAI -->
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderOpenAI"
-                            Header="OpenAI">
+                            Header="OpenAI"
+                            Description="Utiliza modelos de OpenAI a través de su API">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
@@ -265,7 +269,7 @@
                             Text="Configuración por defecto" />
                         <toolkit:SettingsCard 
                             x:Name="DefaultModelCard"
-                            Description="Modelo predeterminado para edición, chats y agentes"
+                            Description="Modelo predeterminado nuevos chats y agentes"
                             Header="Modelo"
                             HeaderIcon="{ui:FontIcon Glyph=&#xF158;}">
                             <StackPanel>
@@ -304,6 +308,17 @@
                                 <ToggleSwitch IsOn="{x:Bind _settings.Models.SendDefaultParameters, Mode=TwoWay}" />
                             </StackPanel>
                             <toolkit:SettingsExpander.Items>
+                                <Border Style="{StaticResource FullRowSettingCard}">
+                                    <StackPanel Spacing="0" Margin="0,8,0,0">
+                                        <localc:Label
+                                            IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}"
+                                            Text="Instrucciones de sistema:" />
+                                        <localc:EditableTextBlock
+                                            Value="{x:Bind _settings.Models.DefaultParameters.SystemPrompt, Mode=TwoWay}"
+                                            PlaceholderText="Escriba aquí las indicaciones para el modelo"
+                                            IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}"/>
+                                    </StackPanel>
+                                </Border>
                                 <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
                                     <toolkit:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal">
@@ -354,6 +369,34 @@
                                             Text="{x:Bind _settings.Models.DefaultParameters.TopP, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.00}'}" />
                                     </StackPanel>
                                 </toolkit:SettingsCard>
+                                <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Margin="0,0,8,0">Número máximo de tokens generados</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <NumberBox 
+                                        SpinButtonPlacementMode="Inline"
+                                        Width="296"
+                                        SmallChange="10"
+                                        LargeChange="100"
+                                        Minimum="10"
+                                        Value="{x:Bind _settings.Models.DefaultParameters.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"/>
+                                </toolkit:SettingsCard>
+                                <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
+                                    <toolkit:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Margin="0,0,8,0">Tamaño máximo de la conversación</TextBlock>
+                                        </StackPanel>
+                                    </toolkit:SettingsCard.Header>
+                                    <NumberBox 
+                                        SpinButtonPlacementMode="Inline"
+                                        Width="296"
+                                        SmallChange="10"
+                                        LargeChange="100"
+                                        Minimum="1"
+                                        Value="{x:Bind _settings.Models.DefaultParameters.MaxConversationLength, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"/>
+                                </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>
                         </toolkit:SettingsExpander>
 
@@ -363,18 +406,46 @@
                         <toolkit:SettingsExpander Description="Seleccionar el tema que se mostrará en la aplicación"
                                            Header="Tema de la aplicación"
                                            HeaderIcon="{ui:FontIcon Glyph=&#xE790;}">
+                            <toolkit:SettingsExpander.ItemsHeader>
+                                <muxc:InfoBar 
+                                    Style="{StaticResource InfoBarServiceStyle}"
+                                    x:Name="ThemeInfoBar">
+                                    <muxc:InfoBar.ActionButton>
+                                        <Button x:Name="ThemeInfoBarButton" Click="ThemeInfoBarButton_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
+                                                <TextBlock>Reiniciar ahora</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </muxc:InfoBar.ActionButton>
+                                </muxc:InfoBar>
+                            </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <toolkit:SettingsCard ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0"
                                         Orientation="Vertical">
-                                        <RadioButton><TextBlock Margin="8,0,0,0">Claro</TextBlock></RadioButton>
-                                        <RadioButton><TextBlock Margin="8,0,0,0">Oscuro</TextBlock></RadioButton>
-                                        <RadioButton><TextBlock Margin="8,0,0,0">Configuración del sistema</TextBlock></RadioButton>
+                                        <RadioButton
+                                            x:Name="LightThemeRadioButton"
+                                            Content="Claro"
+                                            Tag="{x:Bind mux:ApplicationTheme.Light}"
+                                            Checked="ThemeRadioButton_Checked" />
+                                        <RadioButton
+                                            x:Name="DarkThemeRadioButton"
+                                            Content="Oscuro"
+                                            Tag="{x:Bind mux:ApplicationTheme.Dark}"
+                                            Checked="ThemeRadioButton_Checked" />
+                                        <RadioButton
+                                            x:Name="SystemThemeRadioButton"
+                                            Content="Configuración del sistema"
+                                            Checked="ThemeRadioButton_Checked" />
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                                 <toolkit:SettingsCard ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
-                                        <CheckBox><TextBlock Margin="8,2,0,0">Fondo con efecto transparente</TextBlock></CheckBox>
+                                        <CheckBox
+                                            IsChecked="{x:Bind _settings.General.AcrylicBackground, Mode=TwoWay}">
+                                            <TextBlock Margin="8,2,0,0">Fondo con efecto transparente</TextBlock>
+                                        </CheckBox>
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>

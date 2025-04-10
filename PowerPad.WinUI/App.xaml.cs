@@ -10,6 +10,7 @@ using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.Core.Services.AI;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PowerPad.WinUI
 {
@@ -49,6 +50,9 @@ namespace PowerPad.WinUI
             Ioc.Default.ConfigureServices(_serviceProvider);
 
             _appConfigStore = this.InitializeAppConfigStore();
+
+            var appTheme = Get<SettingsViewModel>().General.AppTheme;
+            if (appTheme is not null) Current.RequestedTheme = appTheme.Value;
         }
 
         /// <summary>

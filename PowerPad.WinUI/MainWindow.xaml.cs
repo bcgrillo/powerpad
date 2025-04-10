@@ -14,16 +14,16 @@ using PowerPad.WinUI.Helpers;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.WinUI.Dialogs;
+using Microsoft.UI;
+using Microsoft.UI.Xaml.Media;
 
 namespace PowerPad.WinUI
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public partial class MainWindow : WindowEx
     {
-        private readonly DesktopAcrylicController? _acrylicController;
-        private readonly SystemBackdropConfiguration? _configurationSource;
+        private DesktopAcrylicController? _acrylicController;
+        private SystemBackdropConfiguration? _configurationSource;
+        private readonly GeneralSettingsViewModel _generalSettings;
 
         private string? _activePageName;
         private INavigationPage? _activeNavPage;
@@ -38,35 +38,21 @@ namespace PowerPad.WinUI
 
         public MainWindow()
         {
+            _generalSettings = App.Get<SettingsViewModel>().General;
+
             this.InitializeComponent();
+            SetBackdrop();
             SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
-
-            if (DesktopAcrylicController.IsSupported())
-            {
-                _configurationSource = new()
-                {
-                    IsInputActive = true,
-                    Theme = (SystemBackdropTheme)((FrameworkElement)Content).ActualTheme
-                };
-
-                _acrylicController = new()
-                {
-                    Kind = DesktopAcrylicKind.Thin,
-                    TintColor = (Color)Application.Current.Resources["PowerPadBackGroundColor"],
-                    TintOpacity = 0.4F
-                };
-
-                _acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
-                _acrylicController.SetSystemBackdropConfiguration(_configurationSource);
-            }
-            
             Closed += (s, e) => EditorManagerHelper.AutoSaveEditors();
 
+            StartOllama();
+        }
 
-            var settings = App.Get<SettingsViewModel>();
-            if (settings.General.OllamaEnabled && settings.General.OllamaAutostart)
+        private void StartOllama()
+        {
+            if (_generalSettings.OllamaEnabled && _generalSettings.OllamaAutostart)
             {
                 try
                 {
@@ -76,6 +62,35 @@ namespace PowerPad.WinUI
                 {
                     //TODO: Something
                 }
+            }
+        }
+
+        public void SetBackdrop()
+        {
+            if (_generalSettings.AcrylicBackground && DesktopAcrylicController.IsSupported())
+            {
+                _configurationSource ??= new()
+                {
+                    IsInputActive = true,
+                    Theme = _generalSettings.AppTheme is null
+                        ? (SystemBackdropTheme)((FrameworkElement)Content).ActualTheme
+                        : (_generalSettings.AppTheme == ApplicationTheme.Light ? SystemBackdropTheme.Light : SystemBackdropTheme.Dark)
+                };
+
+                _acrylicController ??= new()
+                {
+                    Kind = DesktopAcrylicKind.Thin,
+                    TintColor = (Color)Application.Current.Resources["PowerPadBackGroundColor"],
+                    TintOpacity = 0.4F
+                };
+
+                MainPage.Background = null;
+                _acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
+                _acrylicController.SetSystemBackdropConfiguration(_configurationSource);
+            }
+            else
+            {
+                MainPage.Background = new SolidColorBrush((Color)Application.Current.Resources["PowerPadBackGroundColor"]);
             }
         }
 

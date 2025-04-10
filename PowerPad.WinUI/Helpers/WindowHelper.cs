@@ -7,12 +7,16 @@ namespace PowerPad.WinUI.Helpers
     {
         public static IReadOnlyList<Window> ActiveWindows { get { return _activeWindows.AsReadOnly(); } }
 
-        private static List<Window> _activeWindows = [];
+        private readonly static List<Window> _activeWindows = [];
+        private static MainWindow? _mainWindow;
 
         public static T CreateWindow<T>() where T : Window, new()
         {
             var newWindow = new T();
             TrackWindow(newWindow);
+
+            if (newWindow is MainWindow mainWindow) _mainWindow = mainWindow;
+
             return newWindow;
         }
 
@@ -37,5 +41,7 @@ namespace PowerPad.WinUI.Helpers
             }
             return null;
         }
+
+        public static MainWindow MainWindow => _mainWindow!;
     }
 }

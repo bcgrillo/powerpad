@@ -13,99 +13,101 @@
     MinHeight="720"
     mc:Ignorable="d"
     Title="PowerPad">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="48" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="48" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <Page x:Name="MainPage">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="48" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <Border
-            x:Name="AppIcon"
-            Height="38"
-            Width="48"
-            Margin="0,-6,0,0"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Image
-                    Width="22"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Source="/Assets/notepad.ico"
-                    Margin="0,6,0,0"/>
-                <TextBlock
-                    Text="✨"
-                    FontSize="14"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Center"
-                    Margin="4,-20,0,0"/>
-            </StackPanel>
-        </Border>
+            <Border
+                x:Name="AppIcon"
+                Height="38"
+                Width="48"
+                Margin="0,-6,0,0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image
+                        Width="22"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Source="/Assets/notepad.ico"
+                        Margin="0,6,0,0"/>
+                    <TextBlock
+                        Text="✨"
+                        FontSize="14"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
+                        Margin="4,-20,0,0"/>
+                </StackPanel>
+            </Border>
 
-        <NavigationView
-            x:Name="NavView"
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="2"
-            Canvas.ZIndex="0"
-            IsTabStop="False"
-            IsTitleBarAutoPaddingEnabled="True"
-            IsPaneToggleButtonVisible="False"
-            IsBackButtonVisible="Collapsed"
-            IsSettingsVisible="True"
-            PaneDisplayMode="LeftCompact"
-            SelectionChanged="NavView_SelectionChanged"
-            Margin="0,0,0,-2">
-            <NavigationView.MenuItems>
-                <NavigationViewItem
-                    Margin="0,44,0,0"
-                    Content="Workspace"
-                    Icon="{ui:FontIcon Glyph=&#xE821;}"
-                    Tag="WorkspacePage"
-                    PointerPressed="NavigationViewItem_PointerPressed"/>
-                <NavigationViewItem
-                    Content="Modelos"
-                    Icon="{ui:FontIcon Glyph=&#xF158;}"
-                    Tag="ModelsPage"
-                    PointerPressed="NavigationViewItem_PointerPressed"/>
-                <NavigationViewItem
-                    Content="Agentes"
-                    Icon="{ui:FontIcon Glyph=&#xE99A;}"
-                    Tag="AgentsPage"
-                    PointerPressed="NavigationViewItem_PointerPressed"/>
-            </NavigationView.MenuItems>
-            <NavigationView.FooterMenuItems>
-            </NavigationView.FooterMenuItems>
+            <NavigationView
+                x:Name="NavView"
+                Grid.RowSpan="2"
+                Grid.ColumnSpan="2"
+                Canvas.ZIndex="0"
+                IsTabStop="False"
+                IsTitleBarAutoPaddingEnabled="True"
+                IsPaneToggleButtonVisible="False"
+                IsBackButtonVisible="Collapsed"
+                IsSettingsVisible="True"
+                PaneDisplayMode="LeftCompact"
+                SelectionChanged="NavView_SelectionChanged"
+                Margin="0,0,0,-2">
+                <NavigationView.MenuItems>
+                    <NavigationViewItem
+                        Margin="0,44,0,0"
+                        Content="Workspace"
+                        Icon="{ui:FontIcon Glyph=&#xE821;}"
+                        Tag="WorkspacePage"
+                        PointerPressed="NavigationViewItem_PointerPressed"/>
+                    <NavigationViewItem
+                        Content="Modelos"
+                        Icon="{ui:FontIcon Glyph=&#xF158;}"
+                        Tag="ModelsPage"
+                        PointerPressed="NavigationViewItem_PointerPressed"/>
+                    <NavigationViewItem
+                        Content="Agentes"
+                        Icon="{ui:FontIcon Glyph=&#xE99A;}"
+                        Tag="AgentsPage"
+                        PointerPressed="NavigationViewItem_PointerPressed"/>
+                </NavigationView.MenuItems>
+                <NavigationView.FooterMenuItems>
+                </NavigationView.FooterMenuItems>
 
-            <NavigationView.Resources>
-                <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
-                <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
-                <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
-                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
-            </NavigationView.Resources>
+                <NavigationView.Resources>
+                    <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
+                    <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
+                    <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
+                    <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                    <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
+                </NavigationView.Resources>
 
-            <Frame x:Name="NavFrame" />
-        </NavigationView>
+                <Frame x:Name="NavFrame" />
+            </NavigationView>
 
-        <Border 
-            x:Name="Splitter"
-            Grid.Column="2" 
-            Grid.RowSpan="2" 
-            Width="1" 
-            HorizontalAlignment="Left" 
-            Background="{StaticResource PowerPadStrokeColorDefault}" />
+            <Border 
+                x:Name="Splitter"
+                Grid.Column="2" 
+                Grid.RowSpan="2" 
+                Width="1" 
+                HorizontalAlignment="Left" 
+                Background="{StaticResource PowerPadStrokeColorDefault}" />
 
-        <winuiex:TitleBar
-            x:Name="TitleBar"
-            Title="PowerPad"
-            Subtitle="Notas"
-            Grid.Column="2"
-            Height="48"
-            IsTabStop="False">
-        </winuiex:TitleBar>
-    </Grid>
+            <winuiex:TitleBar
+                x:Name="TitleBar"
+                Title="PowerPad"
+                Subtitle="Notas"
+                Grid.Column="2"
+                Height="48"
+                IsTabStop="False">
+            </winuiex:TitleBar>
+        </Grid>
+    </Page>
 </winuiex:WindowEx>

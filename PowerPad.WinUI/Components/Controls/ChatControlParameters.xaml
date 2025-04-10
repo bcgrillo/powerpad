@@ -95,6 +95,7 @@
                 SpinButtonPlacementMode="Inline"
                 SmallChange="10"
                 LargeChange="100"
+                Minimum="10"
                 Value="{x:Bind Parameters.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
                 IsEnabled="{x:Bind IsEnabled}"/>
 
@@ -109,6 +110,7 @@
                 SpinButtonPlacementMode="Inline"
                 SmallChange="1"
                 LargeChange="10"
+                Minimum="1"
                 Value="{x:Bind Parameters.MaxConversationLength, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
                 IsEnabled="{x:Bind IsEnabled}"/>
         </Grid>

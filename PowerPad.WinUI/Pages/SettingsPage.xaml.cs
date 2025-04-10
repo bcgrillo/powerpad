@@ -10,6 +10,7 @@ using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace PowerPad.WinUI.Pages
@@ -30,6 +31,10 @@ namespace PowerPad.WinUI.Pages
 
             SetModelsMenu(null, null!);
             _settings.Models.AvailableModels.CollectionChanged += SetModelsMenu;
+
+            LightThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Light;
+            DarkThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Dark;
+            SystemThemeRadioButton.IsChecked = _settings.General.AppTheme is null;
         }
 
         private async void StartOllama_Click(object _, RoutedEventArgs __)
@@ -231,11 +236,9 @@ namespace PowerPad.WinUI.Pages
             {
                 if (disposing)
                 {
-                    // Desuscribir eventos
                     _settings.General.OllamaConfig.PropertyChanged -= TestOllama;
                     _settings.General.AzureAIConfig.PropertyChanged -= TestAzureAI;
                     _settings.General.OpenAIConfig.PropertyChanged -= TestOpenAI;
-
                     _settings.Models.AvailableModels.CollectionChanged -= SetModelsMenu;
                 }
 
@@ -250,6 +253,33 @@ namespace PowerPad.WinUI.Pages
                 var menuItem = (RadioMenuFlyoutItem?)DefaultModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == _settings.Models.DefaultModel);
 
                 if (menuItem is not null && !menuItem.IsChecked) menuItem.IsChecked = true;
+            }
+        }
+
+        private void ThemeInfoBarButton_Click(object _, RoutedEventArgs __)
+        {
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty,
+                UseShellExecute = true
+            };
+
+            Process.Start(processStartInfo);
+            Application.Current.Exit();
+        }
+
+        private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var radioButton = ((RadioButton)sender);
+            var newThemeChoice = radioButton.Tag as ApplicationTheme?;
+
+            if (radioButton.IsChecked == true && _settings.General.AppTheme != newThemeChoice)
+            {
+                _settings.General.AppTheme = newThemeChoice;
+
+                ThemeInfoBar.IsOpen = true;
+                ThemeInfoBar.Message = "Reinicia la aplicación para aplicar los cambios.";
+                ThemeInfoBar.Severity = InfoBarSeverity.Informational;
             }
         }
     }
