@@ -35,6 +35,9 @@ namespace PowerPad.WinUI.Pages
             LightThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Light;
             DarkThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Dark;
             SystemThemeRadioButton.IsChecked = _settings.General.AppTheme is null;
+            LightThemeRadioButton.Checked += ThemeRadioButton_Checked;
+            DarkThemeRadioButton.Checked += ThemeRadioButton_Checked;
+            SystemThemeRadioButton.Checked += ThemeRadioButton_Checked;
         }
 
         private async void StartOllama_Click(object _, RoutedEventArgs __)

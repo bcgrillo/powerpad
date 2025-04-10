@@ -105,7 +105,7 @@
                             </DropDownButton.Content>
                         </DropDownButton>
                         <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Parámetros">
-                            <local:ButtonIcon Height="18" Source="{ThemeResource SettingsSmallSvg}"/>
+                            <local:ButtonIcon Source="{ThemeResource SettingsSmallSvg}"/>
                         </ToggleButton>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">

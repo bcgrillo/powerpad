@@ -426,17 +426,14 @@
                                         <RadioButton
                                             x:Name="LightThemeRadioButton"
                                             Content="Claro"
-                                            Tag="{x:Bind mux:ApplicationTheme.Light}"
-                                            Checked="ThemeRadioButton_Checked" />
+                                            Tag="{x:Bind mux:ApplicationTheme.Light}" />
                                         <RadioButton
                                             x:Name="DarkThemeRadioButton"
                                             Content="Oscuro"
-                                            Tag="{x:Bind mux:ApplicationTheme.Dark}"
-                                            Checked="ThemeRadioButton_Checked" />
+                                            Tag="{x:Bind mux:ApplicationTheme.Dark}" />
                                         <RadioButton
                                             x:Name="SystemThemeRadioButton"
-                                            Content="Configuración del sistema"
-                                            Checked="ThemeRadioButton_Checked" />
+                                            Content="Configuración del sistema" />
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                                 <toolkit:SettingsCard ContentAlignment="Left">
