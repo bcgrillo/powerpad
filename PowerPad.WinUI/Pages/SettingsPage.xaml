@@ -22,7 +22,6 @@
         <converters:AIModelToSourceConverter x:Key="AIModelToSourceConverter" />
         <converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
         <converters:FloatToDoubleConverter x:Key="FloatToDoubleConverter"/>
-        <converters:AppThemeToBooleanConverter x:Key="AppThemeToBooleanConverter" />
         <toolkitconverters:StringFormatConverter x:Key="StringFormatConverter" />
         <toolkitconverters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
         <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
