@@ -11,6 +11,9 @@ using PowerPad.WinUI.Pages;
 using Microsoft.UI.Windowing;
 using Windows.UI;
 using PowerPad.WinUI.Helpers;
+using PowerPad.Core.Services.AI;
+using PowerPad.WinUI.ViewModels.Settings;
+using PowerPad.WinUI.Dialogs;
 
 namespace PowerPad.WinUI
 {
@@ -60,6 +63,20 @@ namespace PowerPad.WinUI
             }
             
             Closed += (s, e) => EditorManagerHelper.AutoSaveEditors();
+
+
+            var settings = App.Get<SettingsViewModel>();
+            if (settings.General.OllamaEnabled && settings.General.OllamaAutostart)
+            {
+                try
+                {
+                    App.Get<IOllamaService>().Start();
+                }
+                catch
+                {
+                    //TODO: Something
+                }
+            }
         }
 
         private void SetTitleBar()

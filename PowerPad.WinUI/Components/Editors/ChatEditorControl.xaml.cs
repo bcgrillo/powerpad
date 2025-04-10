@@ -46,7 +46,7 @@ namespace PowerPad.WinUI.Components.Editors
                 {
                     _chat = JsonSerializer.Deserialize<ChatViewModel>(content, JSON_SERIALIZER_OPTIONS);
                 }
-                catch (JsonException)
+                catch
                 {
                     //TODO: Quitar esto
                     try
@@ -55,7 +55,7 @@ namespace PowerPad.WinUI.Components.Editors
 
                         _chat = new() { Messages = [.. chatMessages ?? []] };
                     }
-                    catch (JsonException)
+                    catch(JsonException)
                     {
                         error = true;
                     }
@@ -117,7 +117,7 @@ namespace PowerPad.WinUI.Components.Editors
             {
                 _document.RenameCommand.Execute(EditableTextBox.Text);
             }
-            catch (Exception)
+            catch
             {
                 EditableTextBox.Text = _document.Name;
 

@@ -64,7 +64,7 @@ namespace PowerPad.Core.Services.AI
                 {
                     connected = await GetClient()!.IsRunningAsync();
                 }
-                catch (Exception)
+                catch
                 {
                 }
 
@@ -98,7 +98,7 @@ namespace PowerPad.Core.Services.AI
                             if (process.ExitCode == 0) return OllamaStatus.Available;
                         }
                     }
-                    catch (Exception)
+                    catch
                     {
                         return OllamaStatus.Error;
                     }

@@ -139,7 +139,7 @@ namespace PowerPad.WinUI.Components
                 {
                     entry.RenameCommand.Execute(newName);
                 }
-                catch (Exception)
+                catch
                 {
                     await DialogHelper.Alert
                     (
@@ -163,7 +163,7 @@ namespace PowerPad.WinUI.Components
                 {
                     entry.DeleteCommand.Execute(null);
                 }
-                catch (Exception)
+                catch
                 {
                     await DialogHelper.Alert
                     (

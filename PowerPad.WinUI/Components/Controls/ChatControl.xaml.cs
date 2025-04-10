@@ -44,6 +44,7 @@ namespace PowerPad.WinUI.Components.Controls
             DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new(null));
 
         private AIModelViewModel? _selectedModel;
+        private AIModelViewModel? _currentDefaultModel;
         private readonly AIParametersViewModel _parameters;
         private bool _sendParameters;
 
@@ -63,6 +64,7 @@ namespace PowerPad.WinUI.Components.Controls
 
             _parameters = _settings.Models.DefaultParameters.Copy();
             _parameters.PropertyChanged += Parameters_PropertyChanged;
+            _currentDefaultModel = _settings.Models.DefaultModel;
 
             _debounceTimer = new DispatcherTimer
             {
@@ -117,6 +119,11 @@ namespace PowerPad.WinUI.Components.Controls
                     }
                 }
 
+                UpdateModelButtonContent();
+            }
+            else if (_currentDefaultModel != _settings.Models.DefaultModel)
+            {
+                _currentDefaultModel = _settings.Models.DefaultModel;
                 UpdateModelButtonContent();
             }
         }

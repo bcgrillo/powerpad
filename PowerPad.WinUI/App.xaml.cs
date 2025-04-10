@@ -9,6 +9,7 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
+using PowerPad.Core.Services.AI;
 
 namespace PowerPad.WinUI
 {

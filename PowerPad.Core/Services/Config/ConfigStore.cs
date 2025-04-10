@@ -48,10 +48,7 @@ namespace PowerPad.Core.Services.Config
                     return JsonSerializer.Deserialize<T>(config.Value, JSON_SERIALIZER_OPTIONS);
                 }
             }
-            catch (Exception)
-            {
-                //It's ok
-            }
+            catch { } //It's ok
 
             return default;
         }

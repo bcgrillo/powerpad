@@ -145,7 +145,7 @@
             <muxc:InfoBar 
                 IsOpen="True"
                 Severity="Informational"
-                Content="No hay modelos disponibles, revisa la configuración."
+                Content="No hay modelos disponibles, revise la configuración."
                 IsClosable="False" />
         </StackPanel>
     </Grid>

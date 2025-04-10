@@ -20,11 +20,12 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Orientation="Vertical"
-                    Spacing="8">
-                    <muxc:ProgressRing IsActive="{x:Bind SearchingFlag, Mode=OneWay}" />
+                    Spacing="16">
+                    <muxc:ProgressRing IsActive="{x:Bind SearchingFlag, Mode=OneWay}" Height="60" Width="60" />
                     <TextBlock HorizontalAlignment="Center"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{StaticResource CaptionTextBlockStyle}"
+                        FontSize="18"
                         Text="Buscando..." />
                 </StackPanel>
             </toolkit:Case>

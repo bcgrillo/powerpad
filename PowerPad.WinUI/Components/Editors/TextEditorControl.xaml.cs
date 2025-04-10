@@ -78,7 +78,7 @@ namespace PowerPad.WinUI.Components.Editors
             {
                 _document.RenameCommand.Execute(EditableTextBox.Text);
             }
-            catch(Exception)
+            catch
             {
                 EditableTextBox.Text = _document.Name;
 

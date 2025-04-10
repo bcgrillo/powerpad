@@ -43,7 +43,7 @@ namespace PowerPad.WinUI.Pages
                 await App.Get<IOllamaService>().Start();
                 await _settings.UpdateOllamaStatus();
             }
-            catch(Exception)
+            catch
             {
                 OllamaInfoBar.IsOpen = true;
                 OllamaInfoBar.Message = "No se ha podido iniciar Ollama.";
@@ -66,7 +66,7 @@ namespace PowerPad.WinUI.Pages
                 await App.Get<IOllamaService>().Stop();
                 await _settings.UpdateOllamaStatus();
             }
-            catch (Exception)
+            catch
             {
                 OllamaInfoBar.IsOpen = true;
                 OllamaInfoBar.Message = "No se ha podido detener Ollama.";
