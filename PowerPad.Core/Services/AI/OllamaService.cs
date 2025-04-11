@@ -5,6 +5,8 @@ using System.Diagnostics;
 using Exception = System.Exception;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Contracts;
+using PowerPad.Core.Helpers;
+using Windows.Media.Protection.PlayReady;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -14,10 +16,14 @@ namespace PowerPad.Core.Services.AI
         Task<IEnumerable<AIModel>> GetAvailableModels();
         Task Start();
         Task Stop();
+        Task Download(AIModel model, Action<double> updateAction, Action<Exception> errorAction);
+        Task RemoveModel(AIModel model);
     }
 
     public class OllamaService : IOllamaService
     {
+        private const int DOWNLOAD_UPDATE_INTERVAL = 200;
+
         private OllamaApiClient? _ollama;
         private AIServiceConfig? _config;
 
@@ -148,16 +154,12 @@ namespace PowerPad.Core.Services.AI
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
-            //TODO: Implement search models
-            //Remember change the name of huggingface models, and set displayname (see CreateAIModel method)
-
-            await Task.Delay(2000);
-
-            return [
-                new(query ?? "xxx", modelProvider),
-                new("yyy", modelProvider),
-                new("zzz", modelProvider),
-            ];
+            return modelProvider switch
+            {
+                ModelProvider.Ollama => await OllamaLibraryHelper.Search(query),
+                ModelProvider.HuggingFace => await HuggingFaceLibraryHelper.Search(query),
+                _ => throw new NotImplementedException($"Model provider {modelProvider} is not implemented in OllamaService Search.")
+            };
         }
 
         public Task Start()
@@ -181,6 +183,41 @@ namespace PowerPad.Core.Services.AI
                 process.Kill();
                 await process.WaitForExitAsync();
             }
+        }
+
+        public async Task Download(AIModel model, Action<double> updateAction, Action<Exception> errorAction)
+        {
+            if (_config is null)
+            {
+                errorAction(new Exception("Ollama is not initialized."));
+            }
+            else
+            {
+                try
+                {
+                    await foreach (var status in GetClient()!.PullModelAsync(model.Name))
+                    {
+                        var progress = Math.Clamp(status?.Percent ?? 0.0D, 0, 99.5);
+                        
+                        updateAction(progress);
+
+                        await Task.Delay(DOWNLOAD_UPDATE_INTERVAL);
+                    }
+
+                    updateAction(100);
+                }
+                catch (Exception ex)
+                {
+                    errorAction(ex);
+                }
+            }
+        }
+
+        public async Task RemoveModel(AIModel model)
+        {
+            if (_ollama is null) return;
+
+            await GetClient()!.DeleteModelAsync(model.Name);
         }
 
         private static IEnumerable<Process> GetProcesses()

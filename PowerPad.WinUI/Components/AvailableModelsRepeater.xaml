@@ -5,9 +5,11 @@
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters">
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
     <UserControl.Resources>
         <converters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
         <ScrollViewer x:Name="ModelsScrollViewer">
@@ -25,22 +27,27 @@
                                         <TextBlock Text="{x:Bind CardName}"/>
                                     </toolkit:SettingsCard.Header>
                                     <toolkit:SettingsCard.Description>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
                                             <TextBlock
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                 Text="{x:Bind Size, Converter={StaticResource FileSizeToFriendlyStringConverter}}"/>
-                                            <TextBlock
-                                                VerticalAlignment="Center"
-                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                Visibility="{x:Bind Downloading, Mode=OneWay}"
-                                                Text="Descarga en curso" />
                                         </StackPanel>
                                     </toolkit:SettingsCard.Description>
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
                                         <ToggleSwitch 
                                             IsOn="{x:Bind Enabled, Mode=TwoWay}" 
-                                            IsEnabled="{x:Bind Available, Mode=OneWay}" 
-                                            Margin="0,0,8,0"/>
+                                            IsEnabled="{x:Bind Available, Mode=OneWay}"
+                                            Visibility="{x:Bind Downloading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                            Visibility="{x:Bind Downloading, Mode=OneWay}"
+                                            Text="Descarga en curso..." />
+                                        <muxc:ProgressRing Height="40" Width="40"
+                                            Background="Gray"
+                                            Visibility="{x:Bind Downloading, Mode=OneWay}"
+                                            Value="{x:Bind Progress, Mode=OneWay}"
+                                            IsIndeterminate="False" />
                                         <Button
                                             Content="{ui:FontIcon Glyph=&#xE712;,FontSize=14}"
                                             ToolTipService.ToolTip="Más opciones"

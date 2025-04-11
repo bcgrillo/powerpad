@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.AI
 {
@@ -20,9 +21,9 @@ namespace PowerPad.WinUI.ViewModels.AI
         protected readonly ModelProvider _modelProvider;
 
         public IRelayCommand<AIModelViewModel> SetDefaultModelCommand { get; }
-        public IRelayCommand<AIModelViewModel> RemoveModelCommand { get; }
-        public IRelayCommand<AIModelViewModel> AddModelCommand { get; }
-        public IRelayCommand<string> SearchModelCommand { get; }
+        public IAsyncRelayCommand<AIModelViewModel> RemoveModelCommand { get; }
+        public IAsyncRelayCommand<AIModelViewModel> AddModelCommand { get; }
+        public IAsyncRelayCommand<string> SearchModelCommand { get; }
 
         public ObservableCollection<AIModelViewModel> FilteredModels { get; }
 
@@ -38,9 +39,9 @@ namespace PowerPad.WinUI.ViewModels.AI
             _modelProvider = modelProvider;
 
             SetDefaultModelCommand = new RelayCommand<AIModelViewModel>(SetDefaultModel);
-            RemoveModelCommand = new RelayCommand<AIModelViewModel>(m => _settingsViewModel.Models.AvailableModels.Remove(m!));
-            AddModelCommand = new RelayCommand<AIModelViewModel>(AddModel);
-            SearchModelCommand = new RelayCommand<string>(SearchModels);
+            RemoveModelCommand = new AsyncRelayCommand<AIModelViewModel>(RemoveModel);
+            AddModelCommand = new AsyncRelayCommand<AIModelViewModel>(AddModel);
+            SearchModelCommand = new AsyncRelayCommand<string>(SearchModels);
 
             FilteredModels = [.. _settingsViewModel.Models.AvailableModels.Where(m => m.ModelProvider == _modelProvider)];
 
@@ -79,7 +80,7 @@ namespace PowerPad.WinUI.ViewModels.AI
             _settingsViewModel.Models.DefaultModel = aiModel;
         }
 
-        private async void SearchModels(string? query)
+        protected virtual async Task SearchModels(string? query)
         {
             Searching = true;
 
@@ -101,17 +102,27 @@ namespace PowerPad.WinUI.ViewModels.AI
             Searching = false;
         }
 
-        private void AddModel(AIModelViewModel? aiModel)
+        protected virtual Task AddModel(AIModelViewModel? aiModel)
         {
             ArgumentNullException.ThrowIfNull(aiModel);
 
             if (!_settingsViewModel.Models.AvailableModels.Any(m => m == aiModel))
             {
-                if (aiModel.ModelProvider is ModelProvider.Ollama or ModelProvider.HuggingFace) aiModel.Downloading = true;
-                else aiModel.Available = true;
+                aiModel.Available = true;
 
                 _settingsViewModel.Models.AvailableModels.Add(aiModel);
             }
+
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task RemoveModel(AIModelViewModel? aiModel)
+        {
+            ArgumentNullException.ThrowIfNull(aiModel);
+
+            _settingsViewModel.Models.AvailableModels.Remove(aiModel);
+
+            return Task.CompletedTask;
         }
 
         ~AIModelsViewModelBase()

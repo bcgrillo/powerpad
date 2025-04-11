@@ -1,9 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PowerPad.WinUI.Components;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
@@ -22,7 +24,14 @@ namespace PowerPad.WinUI.Pages.Providers
 
         protected void AddModel_Click(object _, AIModelClickEventArgs eventArgs)
         {
-            _modelsViewModel.AddModelCommand.Execute(eventArgs.Model);
+            // Use Task.Run to offload the work to a background thread and avoid blocking the UI thread.
+            Task.Run(() =>
+            {
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await _modelsViewModel.AddModelCommand.ExecuteAsync(eventArgs.Model);
+                });
+            });
         }
 
         protected abstract TextBox GetSearchTextBox();

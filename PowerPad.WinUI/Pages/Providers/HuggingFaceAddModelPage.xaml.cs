@@ -4,12 +4,12 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public partial class OllamaAddModelPage : AIAddModelPageBase
+    public partial class HuggingFaceAddModelPage : AIAddModelPageBase
     {
-        private OllamaModelsViewModel OllamaModelsViewModel => (OllamaModelsViewModel)_modelsViewModel;
+        private HuggingFaceModelsViewModel HuggingFaceModelsViewModel => (HuggingFaceModelsViewModel)_modelsViewModel;
 
-        public OllamaAddModelPage()
-            : base(new OllamaModelsViewModel())
+        public HuggingFaceAddModelPage()
+            : base(new HuggingFaceModelsViewModel())
         {
             this.InitializeComponent();
         }

@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml;
 using PowerPad.Core.Models.AI;
+using System;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
@@ -28,6 +30,14 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         [property: JsonIgnore]
         private bool _downloading = downloading;
+
+        [ObservableProperty]
+        [property: JsonIgnore]
+        private double _progress;
+
+        [ObservableProperty]
+        [property: JsonIgnore]
+        private bool _downloadError;
 
         public long? Size => _aiModel.Size;
 
@@ -71,5 +81,25 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         partial void OnAvailableChanged(bool value) => OnPropertyChanged(nameof(CanAdd));
         partial void OnDownloadingChanged(bool value) => OnPropertyChanged(nameof(CanAdd));
+
+        public void UpdateDownloadProgess(double progress)
+        {
+            if (progress < 100)
+            {
+                Progress = progress; 
+            }
+            else
+            {
+                Progress = 100;
+                Downloading = false;
+                Available = true;
+            }
+        }
+
+        public void UpdateDownloadError(Exception _)
+        {
+            //TODO: Handle error or show message
+            DownloadError = true;
+        }
     }
 }

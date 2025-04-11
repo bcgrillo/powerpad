@@ -92,6 +92,8 @@ namespace PowerPad.WinUI.Pages
                         _currentPage = (OllamaAddModelPage)NavFrame.Content;
                         break;
                     case ModelProvider.HuggingFace:
+                        NavFrame.Navigate(typeof(HuggingFaceAddModelPage));
+                        _currentPage = (HuggingFaceAddModelPage)NavFrame.Content;
                         break;
                     case ModelProvider.GitHub:
                         break;
