@@ -25,7 +25,7 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register(nameof(Value), typeof(string), typeof(EditableTextBlockState), new(null));
+            DependencyProperty.Register(nameof(Value), typeof(string), typeof(EditableTextBlock), new(null));
 
         public bool ConfirmOnLostFocus
         {
@@ -34,7 +34,7 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty ConfirmOnLostFocusProperty =
-            DependencyProperty.Register(nameof(ConfirmOnLostFocus), typeof(bool), typeof(EditableTextBlockState), new(false));
+            DependencyProperty.Register(nameof(ConfirmOnLostFocus), typeof(bool), typeof(EditableTextBlock), new(false));
 
         public bool PasswordMode
         {
@@ -43,7 +43,7 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty PasswordModeProperty =
-            DependencyProperty.Register(nameof(PasswordMode), typeof(bool), typeof(EditableTextBlockState), new(false));
+            DependencyProperty.Register(nameof(PasswordMode), typeof(bool), typeof(EditableTextBlock), new(false));
 
         public string? PlaceholderText
         {
@@ -52,7 +52,18 @@ namespace PowerPad.WinUI.Components.Controls
         }
 
         public static readonly DependencyProperty PlaceholderTextProperty =
-            DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(EditableTextBlockState), new(null));
+            DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(EditableTextBlock), new(null));
+
+        public Brush? ForcedForeground
+        {
+            get => (Brush?)GetValue(ForcedForegroundProperty);
+            set => SetValue(ForcedForegroundProperty, value);
+        }
+
+        public static readonly DependencyProperty ForcedForegroundProperty =
+            DependencyProperty.Register(nameof(ForcedForeground), typeof(Brush), typeof(EditableTextBlock), new(null));
+
+        public event EventHandler? Edited;
 
         public EditableTextBlock()
         {
@@ -88,6 +99,8 @@ namespace PowerPad.WinUI.Components.Controls
             _state.ExitEditMode();
             Value = IntegratedTextBox.Text;
             if (PasswordMode) IntegratedTextBox.Text = MaskedValue(Value);
+
+            Edited?.Invoke(this, null!);
         }
 
         private void Cancel()
@@ -110,25 +123,25 @@ namespace PowerPad.WinUI.Components.Controls
             return maskedValue;
         }
 
-        private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
+        private void UserControl_PointerEntered(object _, PointerRoutedEventArgs __)
         {
             _pointerOver = true;
             UpdateEditButtonOpacity();
         }
 
-        private void UserControl_PointerExited(object sender, PointerRoutedEventArgs e)
+        private void UserControl_PointerExited(object _, PointerRoutedEventArgs __)
         {
             _pointerOver = false;
             UpdateEditButtonOpacity();
         }
 
-        private void EditButton_GotFocus(object sender, RoutedEventArgs e)
+        private void EditButton_GotFocus(object _, RoutedEventArgs __)
         {
             _focus = true;
             UpdateEditButtonOpacity();
         }
 
-        private void EditButton_LostFocus(object sender, RoutedEventArgs e)
+        private void EditButton_LostFocus(object _, RoutedEventArgs __)
         {
             _focus = false;
             UpdateEditButtonOpacity();

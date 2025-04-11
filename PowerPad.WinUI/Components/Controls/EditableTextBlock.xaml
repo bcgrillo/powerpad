@@ -30,6 +30,9 @@
                 IsReadOnly="{x:Bind _state.IsEditing, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
                 KeyDown="IntegratedTextBox_KeyDown"
                 LostFocus="IntegratedTextBox_LostFocus"
+                FontSize="{x:Bind FontSize}"
+                FontWeight="{x:Bind FontWeight}"
+                ForcedForeground="{x:Bind ForcedForeground}"
                 PlaceholderText="{x:Bind PlaceholderText, Mode=OneWay}"
                 Padding="6,7,6,5"
                 TextWrapping="Wrap"/>

@@ -19,8 +19,8 @@
     <ResourceDictionary.ThemeDictionaries>
 
         <ResourceDictionary x:Key="Default">
-            <Color x:Key="PowerPadBackGroundColor">#FF202020</Color>
-            <Color x:Key="PowerPadEditorColor">#90000000</Color>
+            <Color x:Key="PowerPadBackgroundColor">#FF202020</Color>
+            <Color x:Key="PowerPadEditorColor">#80000000</Color>
 
             <SolidColorBrush x:Key="PowerPadEditorBrush" Color="{StaticResource PowerPadEditorColor}" />
 
@@ -36,7 +36,7 @@
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Light">
-            <Color x:Key="PowerPadBackGroundColor">#FFD3D3D3</Color>
+            <Color x:Key="PowerPadBackgroundColor">#FFD3D3D3</Color>
             <Color x:Key="PowerPadEditorColor">#90FFFFFF</Color>
 
             <SolidColorBrush x:Key="PowerPadEditorBrush" Color="{StaticResource PowerPadEditorColor}" />

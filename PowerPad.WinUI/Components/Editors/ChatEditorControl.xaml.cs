@@ -87,53 +87,27 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override void SetFocus() => ChatControl.SetFocus();
 
-        #region ChatName
-        private void EditableTextBlock_PointerPressed(object _, PointerRoutedEventArgs __)
+        private void EditableTextBlock_Edited(object _, EventArgs __)
         {
-            EditableTextBlock.Visibility = Visibility.Collapsed;
-            EditableTextBox.Visibility = Visibility.Visible;
-            EditableTextBox.Focus(FocusState.Programmatic);
-        }
-
-        private void EditableTextBox_KeyDown(object _, KeyRoutedEventArgs args)
-        {
-            if (args.Key == VirtualKey.Enter)
-            {
-                FinalizeEditing();
-            }
-        }
-
-        private void EditableTextBox_LostFocus(object _, RoutedEventArgs __)
-        {
-            FinalizeEditing();
-        }
-
-        private void FinalizeEditing()
-        {
-            EditableTextBlock.Visibility = Visibility.Visible;
-            EditableTextBox.Visibility = Visibility.Collapsed;
-
             try
             {
-                _document.RenameCommand.Execute(EditableTextBox.Text);
+                _document.RenameCommand.Execute(EditableTextBlock.Value);
             }
             catch
             {
-                EditableTextBox.Text = _document.Name;
+                EditableTextBlock.Value = _document.Name;
 
-                DialogHelper.Alert
-                (
-                    this.XamlRoot,
-                    "Error",
-                    "No ha sido posible cambiar el nombre del documento."
-                ).Wait();
+                DispatcherQueue.TryEnqueue(async() =>
+                {
+                    await DialogHelper.Alert
+                    (
+                        this.XamlRoot,
+                        "Error",
+                        "No ha sido posible cambiar el nombre del documento."
+                    );
+                });
             }
         }
-
-        private void CopyBtn_Click(object _, RoutedEventArgs __)
-        {
-        }
-        #endregion
 
         public override void AutoSave()
         {

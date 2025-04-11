@@ -7,6 +7,15 @@ namespace PowerPad.WinUI.Components.Controls
 {
     public class IntegratedTextBox : TextBox
     {
+        public Brush? ForcedForeground
+        {
+            get => (Brush?)GetValue(ForcedForegroundProperty);
+            set => SetValue(ForcedForegroundProperty, value);
+        }
+
+        public static readonly DependencyProperty ForcedForegroundProperty =
+            DependencyProperty.Register(nameof(ForcedForeground), typeof(Brush), typeof(IntegratedTextBox), new(null));
+
         public IntegratedTextBox()
         {
             this.DefaultStyleKey = typeof(IntegratedTextBox);
@@ -20,13 +29,14 @@ namespace PowerPad.WinUI.Components.Controls
             
             this.RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, UpdateForeground);
             this.RegisterPropertyChangedCallback(TextBox.IsEnabledProperty, UpdateForeground);
+            this.RegisterPropertyChangedCallback(IntegratedTextBox.ForcedForegroundProperty, UpdateForeground);
         }
 
         private void UpdateForeground(DependencyObject sender, DependencyProperty dp)
         {
             var foregroundBrush = IsEnabled
                 ?  (IsReadOnly
-                    ? (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"]
+                    ? (ForcedForeground ?? (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"])
                     : (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"])
                 : (Brush)Application.Current.Resources["TextFillColorDisabledBrush"];
 

@@ -11,10 +11,6 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
     <local:EditorControl.Resources>
-        <Style TargetType="TextBox" x:Key="TransparentTextBoxStyle" BasedOn="{StaticResource DefaultTextBoxStyle}">
-            <Setter Property="FontSize" Value="27.5" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
         <local:ChatTemplateSelector
             x:Key="ChatTemplateSelector"
             AssistantTemplate="{StaticResource AssistantDataTemplate}"
@@ -69,53 +65,17 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock
+        <lcontrols:EditableTextBlock
             x:Name="EditableTextBlock"
-            Style="{StaticResource TitleTextBlockStyle}"
-            Text="{x:Bind _document.Name, Mode=OneWay}"
-            TextTrimming="CharacterEllipsis"
-            TextWrapping="NoWrap"
+            FontSize="27.5"
+            FontWeight="SemiBold"
+            ForcedForeground="{ThemeResource TextFillColorPrimaryBrush}"
+            Value="{x:Bind _document.Name, Mode=OneWay}"
             Margin="36,24,36,0"
-            PointerPressed="EditableTextBlock_PointerPressed"/>
-        <TextBox
-            x:Name="EditableTextBox"
-            Style="{StaticResource TransparentTextBoxStyle}"
-            Text="{x:Bind _document.Name, Mode=OneWay}"
-            Visibility="Collapsed"
-            Margin="32,24,36,0"
-            Padding="0"
-            KeyDown="EditableTextBox_KeyDown"
-            LostFocus="EditableTextBox_LostFocus"/>
-        <Grid Grid.Row="1" Margin="12">
-            <StackPanel
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-                <Button
-                    x:Name="CopyBtn"
-                    Height="32"
-                    ToolTipService.ToolTip="Copiar"
-                    Click="CopyBtn_Click"
-                    Margin="0,0,12,0">
-                    <Button.Content>
-                        <FontIcon FontSize="16" Glyph="&#xE8C8;" />
-                    </Button.Content>
-                </Button>
-                <Button
-                    x:Name="SaveBtn"
-                    Height="32"
-                    ToolTipService.ToolTip="Guardar"
-                    IsEnabled="{x:Bind _document.CanSave, Mode=OneWay}"
-                    Command="{x:Bind _document.SaveCommand}">
-                    <Button.Content>
-                        <FontIcon FontSize="16" Glyph="&#xE74E;" />
-                    </Button.Content>
-                </Button>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="2" x:Name="ChatGrid" MaxWidth="1200" VerticalAlignment="Center">
+            Edited="EditableTextBlock_Edited"/>
+        <Grid Grid.Row="1" x:Name="ChatGrid" MaxWidth="1200" VerticalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition x:Name="ChatRowDefinition" Height="auto" />
                 <RowDefinition Height="auto" />

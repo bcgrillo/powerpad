@@ -28,23 +28,15 @@
                 x:Name="AppIcon"
                 Height="38"
                 Width="48"
-                Margin="0,-6,0,0"
+                Margin="0,0,0,0"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image
-                        Width="22"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Source="/Assets/notepad.ico"
-                        Margin="0,6,0,0"/>
-                    <TextBlock
-                        Text="✨"
-                        FontSize="14"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Center"
-                        Margin="4,-20,0,0"/>
-                </StackPanel>
+                <Image
+                    Width="22"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Source="ms-appx:///Assets/StoreLogo.scale-200.png"
+                    Margin="0,0,0,0"/>
             </Border>
 
             <NavigationView
@@ -103,7 +95,7 @@
             <winuiex:TitleBar
                 x:Name="TitleBar"
                 Title="PowerPad"
-                Subtitle="Notas"
+                Subtitle=""
                 Grid.Column="2"
                 Height="48"
                 IsTabStop="False">
