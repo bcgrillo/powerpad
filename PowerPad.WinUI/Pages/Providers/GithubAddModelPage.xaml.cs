@@ -4,7 +4,7 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public partial class GitHubAddModelPage : AIAddModelPageBase
+    public partial class GitHubAddModelPage : AIAddModelPageBase, IModelProviderPage
     {
         public GitHubAddModelPage()
             : base(new GitHubModelsViewModel())
@@ -26,5 +26,7 @@ namespace PowerPad.WinUI.Pages.Providers
                 ? new(0, GridUnitType.Pixel)
                 : new(1, GridUnitType.Auto);
         }
+
+        public void CloseModelInfoViewer() => SearchModelsResultRepeater.CloseModelInfoViewer();
     }
 }

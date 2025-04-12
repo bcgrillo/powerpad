@@ -51,7 +51,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         public AIModel GetRecord() => _aiModel;
 
         [JsonIgnore]
-        public string? CardName => DisplayName ?? Name;
+        public string CardName => DisplayName ?? Name;
 
         public override bool Equals(object? other)
         {

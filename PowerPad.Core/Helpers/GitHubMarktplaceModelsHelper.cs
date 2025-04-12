@@ -1,4 +1,5 @@
 ﻿using PowerPad.Core.Models.AI;
+using System.Collections.Immutable;
 using System.Net.Http.Json;
 
 namespace PowerPad.Core.Helpers
@@ -9,6 +10,11 @@ namespace PowerPad.Core.Helpers
         private const string GITHUB_MARKETPLACE_SEARCH_URL = "https://github.com/marketplace?type=models&task=chat-completion&query=";
         private const string HEADER_ACCEPT = "Accept";
         private const string HEADER_APPLICATION_JSON = "application/json";
+
+        //Restricted models found in https://github.githubassets.com/assets/ui/packages/github-models/utils/model-access.ts
+        //These models fails with free developer key (GITHUB_TOKEN)
+        private static readonly string[] RESTRICTED_MODEL_NAMES = ["o", "o1-mini", "o1-preview", "o3-mini"];
+
         private const int MAX_RESULTS = 20;
 
         public static async Task<IEnumerable<AIModel>> Search(string? query)
@@ -22,7 +28,10 @@ namespace PowerPad.Core.Helpers
 
             var results = new List<AIModel>();
 
-            foreach (var model in searchResults.Results.Where(m => m.Name.Contains(query ?? string.Empty, StringComparison.InvariantCultureIgnoreCase)).Take(MAX_RESULTS))
+            foreach (var model in searchResults.Results
+                .Where(m => !RESTRICTED_MODEL_NAMES.Contains(m.Name))
+                .Where(m => m.Name.Contains(query ?? string.Empty, StringComparison.InvariantCultureIgnoreCase))
+                .Take(MAX_RESULTS))
             {
                 results.Add(new AIModel(
                     model.Name,

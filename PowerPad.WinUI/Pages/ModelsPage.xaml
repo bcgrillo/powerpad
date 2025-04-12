@@ -23,7 +23,8 @@
             IsSettingsVisible="False"
             OpenPaneLength="260"
             SelectionChanged="NavView_SelectionChanged"
-            Loaded="NavView_Loaded">
+            Loaded="NavView_Loaded"
+            PointerPressed="NavView_PointerPressed">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
                 <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>

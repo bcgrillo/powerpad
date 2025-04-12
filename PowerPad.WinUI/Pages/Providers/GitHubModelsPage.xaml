@@ -10,15 +10,11 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
-    <local:AIModelsPageBase.Resources>
-        <converters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
-    </local:AIModelsPageBase.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <RowDefinition x:Name="RowHeader" Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -29,27 +25,13 @@
                 Text="Modelos de GitHub" />
         </StackPanel>
 
-        <Grid Grid.Row="1">
-            <StackPanel 
-                Visibility="{x:Bind _modelsViewModel.FilteredModels, Mode=OneWay, Converter={StaticResource CollectionVisibilityConverter}, ConverterParameter=True}"
-                Orientation="Vertical" 
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Center"
-                Spacing="8">
-                <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
-                    Text="No hay modelos disponibles" />
-                <TextBlock HorizontalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Text="Pruebe a revisar la configuración o a instalar nuevos modelos." />
-                <FontIcon 
-                    Margin="0,28,0,0" FontSize="120" Opacity="0.2"  
-                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                    Glyph="&#xEA39;" />
-            </StackPanel>
-            <components:AIModelsRepeater
-                Visibility="{x:Bind _modelsViewModel.FilteredModels, Mode=OneWay, Converter={StaticResource CollectionVisibilityConverter}}"
-                Models="{x:Bind _modelsViewModel.FilteredModels, Mode=OneWay}"
-                DeleteClick="Delete_Click"
-                SetDefaultClick="SetDefault_Click" />
-        </Grid>
+        <components:AvailableModelsRepeater
+            x:Name ="AvailableModelsRepeater"
+            Grid.Row="1"
+            Models="{x:Bind _modelsViewModel.FilteredModels, Mode=OneWay}"
+            DeleteClick="Delete_Click"
+            SetDefaultClick="SetDefault_Click"
+            ModelInfoViewerVisibilityChanged="AIModelsRepeater_ModelInfoViewerVisibilityChanged"
+            ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}" />
     </Grid>
 </local:AIModelsPageBase>

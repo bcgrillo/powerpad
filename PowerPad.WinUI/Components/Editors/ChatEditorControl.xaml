@@ -9,12 +9,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:chat="using:PowerPad.WinUI.ViewModels.Chat"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d">
     <local:EditorControl.Resources>
         <local:ChatTemplateSelector
             x:Key="ChatTemplateSelector"
             AssistantTemplate="{StaticResource AssistantDataTemplate}"
             UserTemplate="{StaticResource UserDataTemplate}" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <DataTemplate x:Key="UserDataTemplate" x:DataType="chat:MessageViewModel">
             <StackPanel
                 MaxWidth="486"
@@ -32,7 +34,7 @@
                     TextWrapping="Wrap" />
                 <TextBlock
                     HorizontalAlignment="Right"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     Text="{x:Bind DateTime}" />
             </StackPanel>
@@ -47,15 +49,22 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
                     CornerRadius="{StaticResource OverlayCornerRadius}"
-                    Spacing="8">
+                    Spacing="8"
+                    MinHeight="70">
+                    <TextBlock
+                        x:Name="LoadingText"
+                        Visibility="{x:Bind Loading, Mode=OneWay}"
+                        Text="{x:Bind LoadingMessage, Mode=OneWay}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     <controls:MarkdownTextBlock
                         HorizontalAlignment="Left"
                         Background="Transparent"
                         IsTextSelectionEnabled="True"
+                        Visibility="{x:Bind Loading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
                         Text="{x:Bind Content, Mode=OneWay}"
                         TextWrapping="Wrap" />
                     <TextBlock
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind DateTime}" />
                 </StackPanel>

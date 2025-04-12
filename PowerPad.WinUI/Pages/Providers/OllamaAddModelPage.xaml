@@ -48,9 +48,12 @@
         <Grid 
             Grid.Row="1">
             <components:SearchModelsResultRepeater
+                x:Name ="SearchModelsResultRepeater"
                 SearchingFlag="{x:Bind _modelsViewModel.Searching, Mode=OneWay}"
                 Models="{x:Bind _modelsViewModel.SearchResultModels, Mode=OneWay}"
-                AddModelClick="AddModel_Click"/>
+                AddModelClick="AddModel_Click"
+                ModelInfoViewerVisibilityChanged="SearchModelsResultRepeater_ModelInfoViewerVisibilityChanged"
+                SearchEmpty="{x:Bind _modelsViewModel.SearchResultModelsEmpty, Mode=OneWay}" />
         </Grid>
     </Grid>
 </local:AIAddModelPageBase>

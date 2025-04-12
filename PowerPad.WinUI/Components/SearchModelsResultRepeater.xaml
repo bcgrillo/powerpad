@@ -11,14 +11,19 @@
     <UserControl.Resources>
         <x:Double x:Key="SettingsCardWrapThreshold">300</x:Double>
         <converters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:EmptyObjectToObjectConverter x:Key="EmptyObjectToVisibilityConverter"
+                                                 EmptyValue="Collapsed"
+                                                 NotEmptyValue="Visible" />
     </UserControl.Resources>
     <Grid>
         <toolkit:SwitchPresenter 
             x:Name="MainContent"
             HorizontalAlignment="Center"
             TargetType="x:Boolean"
-            Value="{x:Bind SearchingFlag, Mode=OneWay}">
-            <toolkit:Case Value="True">
+            Value="{x:Bind SearchingFlag, Mode=OneWay}"
+            Visibility="{x:Bind SearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+        <toolkit:Case Value="True">
                 <StackPanel
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -64,6 +69,7 @@
                                                         Grid.Column="1"
                                                         ToolTipService.ToolTip="Más información"
                                                         Tag="{x:Bind}"
+                                                        Visibility="{x:Bind InfoUrl, Converter={StaticResource EmptyObjectToVisibilityConverter}}"
                                                         Padding="0"
                                                         BorderThickness="0"
                                                         Click="HyperlinkButton_Click" CornerRadius="5">
@@ -118,6 +124,21 @@
                 </ScrollViewer>
             </toolkit:Case>
         </toolkit:SwitchPresenter>
+        <StackPanel 
+            Visibility="{x:Bind SearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            Orientation="Vertical" 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Center"
+            Spacing="8">
+            <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
+                Text="No se han encontrado modelos" />
+            <TextBlock HorizontalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="Pruebe con otro término de búsqueda." />
+            <FontIcon 
+                Margin="0,28,0,0" FontSize="120" Opacity="0.2"  
+                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                Glyph="&#xEA39;" />
+        </StackPanel>
         <localc:ModelInfoViewer x:Name="ModelInfoViewer" VisibilityChanged="ModelInfoViewer_VisibilityChanged"/>
     </Grid>
 </UserControl>

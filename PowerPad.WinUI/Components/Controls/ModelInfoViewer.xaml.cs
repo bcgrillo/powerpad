@@ -38,9 +38,12 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void Hide()
         {
-            Visibility = Visibility.Collapsed;
-            LoadingSpinner.Visibility = Visibility.Visible;
-            WebView.Visibility = Visibility.Collapsed;
+            if (Visibility != Visibility.Collapsed)
+            {
+                Visibility = Visibility.Collapsed;
+                LoadingSpinner.Visibility = Visibility.Visible;
+                WebView.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void CloseButton_Click(object _, RoutedEventArgs __) => Hide();

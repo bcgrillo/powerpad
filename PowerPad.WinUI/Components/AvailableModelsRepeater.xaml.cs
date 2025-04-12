@@ -1,12 +1,14 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.Extensions.AI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PowerPad.WinUI.Components.Controls;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
 
 namespace PowerPad.WinUI.Components
 {
-    public partial class AIModelsRepeater : UserControl
+    public partial class AvailableModelsRepeater : UserControl
     {
         public ObservableCollection<AIModelViewModel> Models
         {
@@ -15,12 +17,23 @@ namespace PowerPad.WinUI.Components
         }
 
         public static readonly DependencyProperty ModelsProperty =
-            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AIModelsRepeater), new(null));
+            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AvailableModelsRepeater), new(null));
+
+        public bool ModelsEmpty
+        {
+            get => (bool)GetValue(ModelsEmptyProperty);
+            set => SetValue(ModelsEmptyProperty, value);
+        }
+
+        public static readonly DependencyProperty ModelsEmptyProperty =
+            DependencyProperty.Register(nameof(ModelsEmpty), typeof(bool), typeof(AvailableModelsRepeater), new(false));
 
         public event EventHandler<AIModelClickEventArgs>? DeleteClick;
         public event EventHandler<AIModelClickEventArgs>? SetDefaultClick;
 
-        public AIModelsRepeater()
+        public event EventHandler<ModelInfoViewerVisibilityEventArgs>? ModelInfoViewerVisibilityChanged;
+
+        public AvailableModelsRepeater()
         {
             this.InitializeComponent();
         }
@@ -34,6 +47,21 @@ namespace PowerPad.WinUI.Components
         {
             SetDefaultClick?.Invoke(sender, new((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
         }
+
+        private void HyperlinkButton_Click(object sender, RoutedEventArgs __)
+        {
+            var model = (AIModelViewModel)((HyperlinkButton)sender!).Tag;
+
+            ModelInfoViewer.Show(model.CardName, model.InfoUrl!);
+        }
+
+        private void ModelInfoViewer_VisibilityChanged(object sender, ModelInfoViewerVisibilityEventArgs e)
+        {
+            ModelsScrollViewer.Visibility = e.IsVisible ? Visibility.Collapsed : Visibility.Visible;
+            ModelInfoViewerVisibilityChanged?.Invoke(sender, e);
+        }
+
+        public void CloseModelInfoViewer() => ModelInfoViewer.Hide();
     }
 
     public class AIModelClickEventArgs(AIModelViewModel model) : RoutedEventArgs

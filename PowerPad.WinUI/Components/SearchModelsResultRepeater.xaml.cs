@@ -19,7 +19,7 @@ namespace PowerPad.WinUI.Components
         }
 
         public static readonly DependencyProperty ModelsProperty =
-            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AIModelsRepeater), new(null));
+            DependencyProperty.Register(nameof(Models), typeof(ObservableCollection<AIModelViewModel>), typeof(AvailableModelsRepeater), new(null));
 
         public bool SearchingFlag
         {
@@ -30,6 +30,14 @@ namespace PowerPad.WinUI.Components
         public static readonly DependencyProperty SearchingFlagProperty =
             DependencyProperty.Register(nameof(SearchingFlag), typeof(bool), typeof(SearchModelsResultRepeater), new(false));
 
+        public bool SearchEmpty
+        {
+            get => (bool)GetValue(SearchEmptyProperty);
+            set => SetValue(SearchEmptyProperty, value);
+        }
+
+        public static readonly DependencyProperty SearchEmptyProperty =
+            DependencyProperty.Register(nameof(SearchEmpty), typeof(bool), typeof(AvailableModelsRepeater), new(false));
 
         public event EventHandler<AIModelClickEventArgs>? AddModelClick;
         public event EventHandler<ModelInfoViewerVisibilityEventArgs>? ModelInfoViewerVisibilityChanged;
@@ -48,7 +56,7 @@ namespace PowerPad.WinUI.Components
         {
             var model = (AIModelViewModel)((HyperlinkButton)sender!).Tag;
 
-            ModelInfoViewer.Show(model.Name, model.InfoUrl!);
+            ModelInfoViewer.Show(model.CardName, model.InfoUrl!);
         }
 
         private void ModelInfoViewer_VisibilityChanged(object sender, ModelInfoViewerVisibilityEventArgs e)

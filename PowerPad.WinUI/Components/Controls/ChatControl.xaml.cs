@@ -23,12 +23,18 @@ namespace PowerPad.WinUI.Components.Controls
     public partial class ChatControl : UserControl
     {
         private const double DEBOURCE_INTERVAL = 200;
+        private const double LOADING_ANIMATION_INTERVAL = 200;
 
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
         private readonly DispatcherTimer _debounceTimer;
+        private readonly DispatcherTimer _loadingAnimationTimer;
+        private readonly CancellationTokenSource _cts;
 
-        private CancellationTokenSource? _cts;
+        private int _loadingStep = 0;
+        private Action? _finalizeChatAction;
+        private ICollection<MessageViewModel>? _messageList;
+        private MessageViewModel? _lastMessage;
 
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
         public event EventHandler<ChatOptionChangedEventArgs>? ChatOptionsChanged;
@@ -54,6 +60,7 @@ namespace PowerPad.WinUI.Components.Controls
 
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
+            _cts = new();
 
             if (_settings.Models.DefaultModel is not null)
             {
@@ -68,9 +75,15 @@ namespace PowerPad.WinUI.Components.Controls
 
             _debounceTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(200)
+                Interval = TimeSpan.FromMilliseconds(DEBOURCE_INTERVAL)
             };
             _debounceTimer.Tick += DebounceTimer_Tick;
+
+            _loadingAnimationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(LOADING_ANIMATION_INTERVAL)
+            };
+            _loadingAnimationTimer.Tick += LoadingAnimationTimer_Tick;
 
             _settings.Models.PropertyChanged += Models_PropertyChanged;
         }
@@ -244,16 +257,20 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void StartStreamingChat(ICollection<MessageViewModel> messageList, Action? endAction)
         {
+            _messageList = messageList;
+            _finalizeChatAction = endAction;
+            _loadingAnimationTimer.Start();
+
             messageList.Add(new(ChatInputBox.Text.Trim().Replace("\r", "  \r"), DateTime.Now, ChatRole.User));
 
             _ = Task.Run(async () =>
             {
                 var history = messageList.Select(m => new ChatMessage(m.Role, m.Content)).ToList();
-                var responseMessage = new MessageViewModel(string.Empty, DateTime.Now, ChatRole.Assistant);
+                _lastMessage = new MessageViewModel(string.Empty, DateTime.Now, ChatRole.Assistant);
 
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    messageList.Add(responseMessage);
+                    messageList.Add(_lastMessage);
                     SendButton.Visibility = Visibility.Collapsed;
                     StopButton.Visibility = Visibility.Visible;
                     ChatInputBox.IsReadOnly = true;
@@ -261,9 +278,9 @@ namespace PowerPad.WinUI.Components.Controls
                     ParametersButton.IsEnabled = false;
                 });
 
-                _cts = new();
+                _cts.TryReset();
 
-                var parameters = _sendParameters ? _parameters 
+                var parameters = _sendParameters ? _parameters
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
 
                 await foreach (var messagePart in _chatService.GetStreamingResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
@@ -272,7 +289,8 @@ namespace PowerPad.WinUI.Components.Controls
                     {
                         DispatcherQueue.TryEnqueue(() =>
                         {
-                            responseMessage.Content += messagePart.Text;
+                            _lastMessage.Content += messagePart.Text;
+                            if (_lastMessage.Loading) _lastMessage.Loading = false;
                         });
                     }
                     catch (Exception ex)
@@ -282,33 +300,37 @@ namespace PowerPad.WinUI.Components.Controls
                     }
                 }
 
-                _cts?.Dispose();
-                _cts = null;
+                if (!_cts.IsCancellationRequested) FinalizeChat();
+            });
+        }
 
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    StopButton.Visibility = Visibility.Collapsed;
-                    SendButton.Visibility = Visibility.Visible;
-                    ChatInputBox.Text = string.Empty;
-                    ChatInputBox.IsReadOnly = false;
-                    ModelButton.IsEnabled = true;
-                    ParametersButton.IsEnabled = true;
-                    ChatInputBox.Focus(FocusState.Keyboard);
+        private void FinalizeChat()
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (_lastMessage is not null && string.IsNullOrWhiteSpace(_lastMessage.Content))
+                    _messageList!.Remove(_lastMessage);
 
-                    endAction?.Invoke();
-                });
+                StopButton.Visibility = Visibility.Collapsed;
+                SendButton.Visibility = Visibility.Visible;
+                ChatInputBox.Text = string.Empty;
+                ChatInputBox.IsReadOnly = false;
+                ModelButton.IsEnabled = true;
+                ParametersButton.IsEnabled = true;
+                ChatInputBox.Focus(FocusState.Keyboard);
+
+                _finalizeChatAction?.Invoke();
+                _finalizeChatAction = null;
+                _messageList = null;
+                _lastMessage = null;
+                _loadingAnimationTimer.Stop();
             });
         }
 
         private void StopBtn_Click(object _, RoutedEventArgs __)
         {
-            StopButton.Visibility = Visibility.Collapsed;
-            SendButton.Visibility = Visibility.Visible;
-            ChatInputBox.Text = string.Empty;
-            ChatInputBox.IsEnabled = true;
-            _cts?.Cancel();
-            _cts?.Dispose();
-            _cts = null;
+            _cts.Cancel();
+            FinalizeChat();
         }
 
         private void ChatInputBox_KeyDown(object _, KeyRoutedEventArgs e)
@@ -385,6 +407,18 @@ namespace PowerPad.WinUI.Components.Controls
         private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __) => OnChatOptionChanged();
 
         private void OnChatOptionChanged() => ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
+
+        private void LoadingAnimationTimer_Tick(object? sender, object e)
+        {
+            if (_lastMessage is not null)
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    _loadingStep = (_loadingStep + 1) % 4;
+                    _lastMessage.LoadingMessage = new string('.', _loadingStep);
+                });
+            }
+        }
     }
 
     public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters) : EventArgs

@@ -130,5 +130,10 @@ namespace PowerPad.WinUI.Pages
         public override void Dispose()
         {
         }
+
+        private void NavView_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (NavFrame.Content is IModelProviderPage modelsPage) modelsPage.CloseModelInfoViewer();
+        }
     }
 }

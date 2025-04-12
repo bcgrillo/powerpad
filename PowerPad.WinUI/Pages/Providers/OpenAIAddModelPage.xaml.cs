@@ -4,7 +4,7 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public partial class OpenAIAddModelPage : AIAddModelPageBase
+    public partial class OpenAIAddModelPage : AIAddModelPageBase, IModelProviderPage
     {
         public OpenAIAddModelPage()
             : base(new OpenAIModelsViewModel())
@@ -19,5 +19,13 @@ namespace PowerPad.WinUI.Pages.Providers
             RowHeader.Height = new(1, GridUnitType.Auto);
             base.Search();
         }
+
+        private void SearchModelsResultRepeater_ModelInfoViewerVisibilityChanged(object _, Components.Controls.ModelInfoViewerVisibilityEventArgs eventArgs)
+        {
+            RowHeader.Height = eventArgs.IsVisible
+                ? new(0, GridUnitType.Pixel)
+                : new(1, GridUnitType.Auto);
+        }
+        public void CloseModelInfoViewer() => SearchModelsResultRepeater.CloseModelInfoViewer();
     }
 }

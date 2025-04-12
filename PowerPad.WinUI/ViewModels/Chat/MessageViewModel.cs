@@ -13,6 +13,12 @@ namespace PowerPad.WinUI.ViewModels.Chat
 
         public ChatRole Role { get; set; } = role;
 
+        [ObservableProperty]
+        private bool _loading = true;
+
+        [ObservableProperty]
+        private string _loadingMessage = string.Empty;
+
         public override string ToString()
         {
             return $"{DateTime} {Content}";

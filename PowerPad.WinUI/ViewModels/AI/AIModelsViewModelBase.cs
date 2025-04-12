@@ -15,6 +15,7 @@ namespace PowerPad.WinUI.ViewModels.AI
     public abstract partial class AIModelsViewModelBase : ObservableObject, IDisposable
     {
         private bool _disposed;
+        private bool _searchCompleted;
 
         protected readonly IAIService _aiService;
         protected readonly SettingsViewModel _settingsViewModel;
@@ -31,6 +32,10 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         [ObservableProperty]
         private bool _searching;
+
+        public bool FilteredModelsEmpty => !FilteredModels.Any();
+
+        public bool SearchResultModelsEmpty => _searchCompleted && !SearchResultModels.Any();
 
         public AIModelsViewModelBase(IAIService aiService, ModelProvider modelProvider)
         {
@@ -73,6 +78,8 @@ namespace PowerPad.WinUI.ViewModels.AI
                     FilteredModels.Clear();
                     break;
             }
+
+            OnPropertyChanged(nameof(FilteredModelsEmpty));
         }
 
         private void SetDefaultModel(AIModelViewModel? aiModel)
@@ -83,23 +90,23 @@ namespace PowerPad.WinUI.ViewModels.AI
         protected virtual async Task SearchModels(string? query)
         {
             Searching = true;
+            _searchCompleted = false;
+            OnPropertyChanged(nameof(SearchResultModelsEmpty));
 
             var resultModels = await _aiService.SearchModels(_modelProvider, query);
 
             SearchResultModels.Clear();
             SearchResultModels.AddRange(resultModels.Select(m =>
             {
-                var existingModel = _settingsViewModel.Models.AvailableModels.FirstOrDefault(am => am.GetRecord() == m);
+                var existingModel = _settingsViewModel.Models.AvailableModels
+                    .FirstOrDefault(am => am.Name == m.Name && am.ModelProvider == m.ModelProvider);
 
-                return new AIModelViewModel
-                (
-                    m,
-                    available: existingModel?.Available ?? false,
-                    downloading: existingModel?.Downloading ?? false
-                );
+                return existingModel ?? new AIModelViewModel(m) { Available = false };
             }));
 
             Searching = false;
+            _searchCompleted = true;
+            OnPropertyChanged(nameof(SearchResultModelsEmpty));
         }
 
         protected virtual Task AddModel(AIModelViewModel? aiModel)
@@ -120,7 +127,10 @@ namespace PowerPad.WinUI.ViewModels.AI
         {
             ArgumentNullException.ThrowIfNull(aiModel);
 
-            _settingsViewModel.Models.AvailableModels.Remove(aiModel);
+            if (_settingsViewModel.Models.AvailableModels.Any(m => m == aiModel))
+            {
+                _settingsViewModel.Models.AvailableModels.Remove(aiModel);
+            }
 
             return Task.CompletedTask;
         }
