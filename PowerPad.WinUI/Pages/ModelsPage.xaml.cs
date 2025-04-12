@@ -96,8 +96,12 @@ namespace PowerPad.WinUI.Pages
                         _currentPage = (HuggingFaceAddModelPage)NavFrame.Content;
                         break;
                     case ModelProvider.GitHub:
+                        NavFrame.Navigate(typeof(GitHubAddModelPage));
+                        _currentPage = (GitHubAddModelPage)NavFrame.Content;
                         break;
                     case ModelProvider.OpenAI:
+                        NavFrame.Navigate(typeof(OpenAIAddModelPage));
+                        _currentPage = (OpenAIAddModelPage)NavFrame.Content;
                         break;
                 }
             }

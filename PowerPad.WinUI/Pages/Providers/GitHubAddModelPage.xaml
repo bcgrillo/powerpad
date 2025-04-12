@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <local:AIAddModelPageBase
-    x:Class="PowerPad.WinUI.Pages.Providers.HuggingFaceAddModelPage"
+    x:Class="PowerPad.WinUI.Pages.Providers.GitHubAddModelPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Pages.Providers"
@@ -20,10 +20,10 @@
 
         <StackPanel Orientation="Vertical" Margin="36,36,36,36" VerticalAlignment="Center" Spacing="24">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
-                <Image Source="{ThemeResource HuggingFaceSvg}" Width="42" Height="42" />
+                <Image Source="{ThemeResource GithubSvg}" Width="42" Height="42" />
                 <TextBlock
                     Style="{StaticResource TitleTextBlockStyle}"
-                    Text="Buscar modelos en Hugging Face" />
+                    Text="Buscar modelos en GitHub Models" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBox 
@@ -44,13 +44,14 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-
+        
         <Grid 
             Grid.Row="1">
             <components:SearchModelsResultRepeater
                 SearchingFlag="{x:Bind _modelsViewModel.Searching, Mode=OneWay}"
                 Models="{x:Bind _modelsViewModel.SearchResultModels, Mode=OneWay}"
-                AddModelClick="AddModel_Click"/>
+                AddModelClick="AddModel_Click"
+                ModelInfoViewerVisibilityChanged="SearchModelsResultRepeater_ModelInfoViewerVisibilityChanged"/>
         </Grid>
     </Grid>
 </local:AIAddModelPageBase>

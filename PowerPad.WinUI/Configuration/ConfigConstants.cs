@@ -22,10 +22,24 @@ namespace PowerPad.WinUI.Configuration
 
         public class StoreDefault
         {
-            private static readonly string[] _initialGitHubModels =
-                ["gpt-4o", "gpt-4o-mini", "DeepSeek-R1", "DeepSeek-V3", "Llama-3-3-70B-Instruct", "Phi-4"];
-            private static readonly string[] _initialOpenAIModels =
-                ["gpt-4o", "gpt-4o-mini", "o3-mini", "o1-mini", "o1"];
+            private static readonly (string Name, string Url)[] _initialGitHubModels =
+            {
+                ("gpt-4o", "https://github.com/marketplace/models/azure-openai/gpt-4o"),
+                ("gpt-4o-mini", "https://github.com/marketplace/models/azure-openai/gpt-4o-mini"),
+                ("DeepSeek-R1", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-R1"),
+                ("DeepSeek-V3", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-V3"),
+                ("Llama-3-3-70B-Instruct", "https://github.com/marketplace/models/azureml-meta/Llama-3-3-70B-Instruct"),
+                ("Phi-4", "https://github.com/marketplace/models/azureml/Phi-4")
+            };
+
+            private static readonly (string Name, string Url)[] _initialOpenAIModels =
+            {
+                ("gpt-4o", "https://platform.openai.com/docs/models/gpt-4o"),
+                ("gpt-4o-mini", "https://platform.openai.com/docs/models/gpt-4o-mini"),
+                ("o3-mini", "https://platform.openai.com/docs/models/o3-mini"),
+                ("o1-mini", "https://platform.openai.com/docs/models/o1-mini"),
+                ("o1", "https://platform.openai.com/docs/models/o1")
+            };
 
             public static readonly string WorkspaceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nameof(PowerPad));
 
@@ -49,7 +63,7 @@ namespace PowerPad.WinUI.Configuration
             {
                 var defaultModelSettings = new ModelsSettingsViewModel
                 {
-                    DefaultModel = new(new("gemma3:latest", ModelProvider.Ollama, 3338801718), true),
+                    DefaultModel = new(new("gemma3:latest", ModelProvider.Ollama, "https://ollama.com/library/gemma3", 3338801718), true),
                     DefaultParameters = new(new()
                     {
                         SystemPrompt = "Eres PowerPad, un asistente de inteligencia artificial amable y resolutivo.",
@@ -63,8 +77,8 @@ namespace PowerPad.WinUI.Configuration
                 };
 
                 defaultModelSettings.AvailableModels.Add(defaultModelSettings.DefaultModel);
-                defaultModelSettings.AvailableModels.AddRange(_initialGitHubModels.Select(m => new AIModelViewModel(new(m, ModelProvider.GitHub), true)));
-                defaultModelSettings.AvailableModels.AddRange(_initialOpenAIModels.Select(m => new AIModelViewModel(new(m, ModelProvider.OpenAI), true)));
+                defaultModelSettings.AvailableModels.AddRange(_initialGitHubModels.Select(m => new AIModelViewModel(new(m.Name, ModelProvider.GitHub, m.Url), true)));
+                defaultModelSettings.AvailableModels.AddRange(_initialOpenAIModels.Select(m => new AIModelViewModel(new(m.Name, ModelProvider.OpenAI, m.Url), true)));
 
                 return defaultModelSettings;
             }

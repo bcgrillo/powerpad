@@ -6,13 +6,16 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters">
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:localc="using:PowerPad.WinUI.Components.Controls">
     <UserControl.Resources>
         <x:Double x:Key="SettingsCardWrapThreshold">300</x:Double>
         <converters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
     </UserControl.Resources>
     <Grid>
-        <toolkit:SwitchPresenter HorizontalAlignment="Center"
+        <toolkit:SwitchPresenter 
+            x:Name="MainContent"
+            HorizontalAlignment="Center"
             TargetType="x:Boolean"
             Value="{x:Bind SearchingFlag, Mode=OneWay}">
             <toolkit:Case Value="True">
@@ -44,10 +47,29 @@
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="ai:AIModelViewModel">
                                         <toolkit:SettingsCard
-                                            x:Name="ModelsExpander"
-                                            HeaderIcon="{ui:FontIcon Glyph=&#xF158;}">
+                                            HeaderIcon="{ui:FontIcon Glyph=&#xF158;}" Padding="18, 0">
                                             <toolkit:SettingsCard.Header>
-                                                <TextBlock Text="{x:Bind CardName}"/>
+                                                <Grid ColumnSpacing="8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock
+                                                        Text="{x:Bind CardName}" 
+                                                        ToolTipService.ToolTip="{x:Bind CardName}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        TextWrapping="Wrap"
+                                                        MaxLines="2"/>
+                                                    <HyperlinkButton
+                                                        Grid.Column="1"
+                                                        ToolTipService.ToolTip="Más información"
+                                                        Tag="{x:Bind}"
+                                                        Padding="0"
+                                                        BorderThickness="0"
+                                                        Click="HyperlinkButton_Click" CornerRadius="5">
+                                                        <FontIcon Glyph="&#xE946;" FontSize="18" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                                                    </HyperlinkButton>
+                                                </Grid>
                                             </toolkit:SettingsCard.Header>
                                             <toolkit:SettingsCard.Description>
                                                 <StackPanel Orientation="Horizontal">
@@ -96,5 +118,6 @@
                 </ScrollViewer>
             </toolkit:Case>
         </toolkit:SwitchPresenter>
+        <localc:ModelInfoViewer x:Name="ModelInfoViewer" VisibilityChanged="ModelInfoViewer_VisibilityChanged"/>
     </Grid>
 </UserControl>

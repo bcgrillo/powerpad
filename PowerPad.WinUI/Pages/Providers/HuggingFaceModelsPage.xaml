@@ -10,11 +10,15 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:converters="using:PowerPad.WinUI.Converters"
+    xmlns:toolkitconverters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
     <local:AIModelsPageBase.Resources>
-        <converters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
+        <converters:OllamaStatusOnlineToBoolConverter x:Key="OllamaStatusOnlineToBoolConverter" />
+        <converters:OllamaStatusToColorBrushConverter x:Key="OllamaStatusToColorBrushConverter" />
+        <converters:OllamaStatusToStringConverter x:Key="OllamaStatusToStringConverter" />
+        <toolkitconverters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
     </local:AIModelsPageBase.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -28,20 +32,24 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Source="{ThemeResource HuggingFaceSvg}" Width="42" Height="42" Margin="0,0,24,0"/>
+            <Image Grid.Column="0" Source="{ThemeResource HuggingFaceSvg}" Width="42" Height="42" Margin="0,0,24,0" />
             <TextBlock
                 Grid.Column="1"
                 Style="{StaticResource TitleTextBlockStyle}"
-                Text="Modelos de Hugging Face"
-                TextTrimming="CharacterEllipsis"
-                TextWrapping="NoWrap"/>
+                Text="Modelos de Hugging Face" />
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <TextBlock Height="32" Margin="0,6,6,-6" Foreground="{ThemeResource TextFillColorSecondaryBrush}">Estado Ollama:</TextBlock>
-                <TextBlock Height="32" Margin="0,6,12,-6" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind HuggingFaceModelsViewModel.OllamaStatus, Mode=OneWay}" />
+                <TextBlock 
+                    Height="32" 
+                    Margin="0,6,0,-6" 
+                    Foreground="{x:Bind HuggingFaceModelsViewModel.OllamaStatus, Mode=OneWay, Converter={StaticResource OllamaStatusToColorBrushConverter}}"
+                    Text="{x:Bind HuggingFaceModelsViewModel.OllamaStatus, Mode=OneWay, Converter={StaticResource OllamaStatusToStringConverter}}" />
                 <Button
                     Height="32"
                     ToolTipService.ToolTip="Refrescar"
-                    Command="{x:Bind HuggingFaceModelsViewModel.RefreshModelsCommand}">
+                    Margin="12,0,0,0"
+                    Command="{x:Bind HuggingFaceModelsViewModel.RefreshModelsCommand}"
+                    IsEnabled="{x:Bind HuggingFaceModelsViewModel.OllamaStatus, Mode=OneWay, Converter={StaticResource OllamaStatusOnlineToBoolConverter}}">
                     <Button.Content>
                         <FontIcon Glyph="&#xE72C;" FontSize="14" />
                     </Button.Content>

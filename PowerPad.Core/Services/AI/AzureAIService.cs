@@ -2,6 +2,7 @@
 using Azure.AI.Inference;
 using Microsoft.Extensions.AI;
 using PowerPad.Core.Contracts;
+using PowerPad.Core.Helpers;
 using PowerPad.Core.Models.AI;
 
 namespace PowerPad.Core.Services.AI
@@ -41,23 +42,11 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public async Task<IEnumerable<AIModel>> GetAvailableModels()
-        {
-            return await Task.FromResult<IEnumerable<AIModel>>([]);
-        }
-
         public IChatClient? ChatClient(AIModel model) => _azureAI?.AsChatClient(model.Name);
 
-        public Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
+        public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
-            //TODO: Implement search models
-
-            return Task.FromResult<IEnumerable<AIModel>>(
-            [
-                new(query ?? "xxx", modelProvider),
-                new("yyy", modelProvider),
-                new("zzz", modelProvider),
-            ]);
+            return await GitHubMarktplaceModelsHelper.Search(query);
         }
     }
 }

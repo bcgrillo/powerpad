@@ -73,7 +73,7 @@
             FontWeight="SemiBold"
             ForcedForeground="{ThemeResource TextFillColorPrimaryBrush}"
             Value="{x:Bind _document.Name, Mode=OneWay}"
-            Margin="36,24,36,0"
+            Margin="36,24,36,18"
             Edited="EditableTextBlock_Edited"/>
         <Grid Grid.Row="1" x:Name="ChatGrid" MaxWidth="1200" VerticalAlignment="Center">
             <Grid.RowDefinitions>
@@ -119,7 +119,7 @@
             <lcontrols:ChatControl
                 x:Name="ChatControl"
                 Grid.Row="1"
-                Margin="36,24,36,12"
+                Margin="36,18,36,12"
                 ChatPlaceHolder="Escribe lo que quieras..."
                 SendButtonClicked="ChatControl_SendButtonClicked"
                 ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged" />

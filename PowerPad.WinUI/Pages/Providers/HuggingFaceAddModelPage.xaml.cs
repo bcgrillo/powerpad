@@ -6,8 +6,6 @@ namespace PowerPad.WinUI.Pages.Providers
 {
     public partial class HuggingFaceAddModelPage : AIAddModelPageBase
     {
-        private HuggingFaceModelsViewModel HuggingFaceModelsViewModel => (HuggingFaceModelsViewModel)_modelsViewModel;
-
         public HuggingFaceAddModelPage()
             : base(new HuggingFaceModelsViewModel())
         {

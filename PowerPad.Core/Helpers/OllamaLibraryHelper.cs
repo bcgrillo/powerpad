@@ -9,8 +9,9 @@ namespace PowerPad.Core.Helpers
     public static class OllamaLibraryHelper
     {
         private const string OLLAMA_BASE_URL = "https://ollama.com";
+        private const string OLLAMA_LIBRARY_URL = "https://ollama.com/library";
         private const string OLLAMA_SEARCH_URL = "https://ollama.com/search?q=";
-        private const int MAX_RESULS = 5;
+        private const int MAX_RESULS = 20;
 
         public static async Task<IEnumerable<AIModel>> Search(string? query)
         {
@@ -22,19 +23,22 @@ namespace PowerPad.Core.Helpers
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(response);
 
-            var modelLinks = htmlDoc.DocumentNode.SelectNodes("//a[starts-with(@href, '/library/')]").Take(MAX_RESULS);
+            var modelNodes = htmlDoc.DocumentNode.SelectNodes("//li[@x-test-model]").Take(MAX_RESULS);
 
             var results = new List<AIModel>();
 
-            if (modelLinks is null) return [];
+            if (modelNodes is null) return results;
 
-            foreach (var modelLink in modelLinks)
+            foreach (var modelNode in modelNodes)
             {
-                var href = modelLink.GetAttributeValue("href", "");
-                var name = href.Split('/').LastOrDefault() ?? "";
+                var linkNode = modelNode.SelectSingleNode(".//a[1]");
+                if (linkNode is null) continue;
+
+                var href = linkNode.GetAttributeValue("href", "");
+                var name = href.Trim('/').Replace("library/", string.Empty);
                 if (results.Any(m => m.Name == name)) continue;
 
-                var responseAux = await httpClient.GetStringAsync(OLLAMA_BASE_URL + href);
+                var responseAux = await httpClient.GetStringAsync($"{OLLAMA_BASE_URL}{href}");
                 var auxDoc = new HtmlDocument();
                 auxDoc.LoadHtml(responseAux);
 
@@ -50,6 +54,7 @@ namespace PowerPad.Core.Helpers
                     results.Add(new AIModel(
                             $"{name}:{tagName}",
                             ModelProvider.Ollama,
+                            GetModelUrl(name),
                             tagSize
                         ));
                 }
@@ -57,6 +62,15 @@ namespace PowerPad.Core.Helpers
 
             return results;
         }
+
+        public static string GetModelUrl(string modelName)
+        {
+            var colonIndex = modelName.IndexOf(':');
+            modelName = colonIndex >= 0 ? modelName[..colonIndex] : modelName;
+
+            if (modelName.Contains('/')) return $"{OLLAMA_BASE_URL}/{modelName}";
+            return $"{OLLAMA_LIBRARY_URL}/{modelName}";
+        } 
 
         private static long ConvertSizeToBytes(string size)
         {

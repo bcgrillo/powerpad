@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="PowerPad.WinUI.Components.Controls.ModelInfoViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PowerPad.WinUI.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Visibility="Collapsed"
+    Background="{ThemeResource PowerPadEditorColor}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid ColumnSpacing="8"  Margin="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Click="CloseButton_Click"
+                ToolTipService.ToolTip="Volver"
+                Background="Transparent"
+                BorderBrush="Transparent">
+                <FontIcon Glyph="&#xE72B;" Margin="0,1,0,-1" />
+            </Button>
+            <TextBlock 
+                Text="Información del modelo:"
+                Grid.Column="1" 
+                VerticalAlignment="Center" 
+                FontSize="16" />
+            <TextBlock 
+                x:Name="TitleTextBlock" 
+                Grid.Column="2" 
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                FontSize="16" />
+            <Button 
+                Grid.Column="3" 
+                Click="OpenInBrowserButton_Click" 
+                ToolTipService.ToolTip="Abrir en el navegador"
+                Background="Transparent"
+                BorderBrush="Transparent">
+                <FontIcon Glyph="&#xE8A7;" Margin="0,1,0,-1" />
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <ProgressRing x:Name="LoadingSpinner" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <WebView2 x:Name="WebView" Visibility="Collapsed" NavigationCompleted="WebView_NavigationCompleted" />
+        </Grid>
+    </Grid>
+</UserControl>

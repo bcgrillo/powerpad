@@ -11,14 +11,16 @@ namespace PowerPad.WinUI.ViewModels.AI
         private readonly AIModel _aiModel = aiModel;
 
         [JsonConstructor]
-        public AIModelViewModel(string Name, ModelProvider ModelProvider, long? Size = null, string? DisplayName = null, bool enabled = false)
-            : this(new(Name, ModelProvider, Size, DisplayName), enabled)
+        public AIModelViewModel(string name, ModelProvider modelProvider, string infoUrl, long? size = null, string? displayName = null, bool enabled = false)
+            : this(new(name, modelProvider, infoUrl, size, displayName), enabled)
         {
         }
 
         public string Name => _aiModel.Name;
 
         public ModelProvider ModelProvider => _aiModel.ModelProvider;
+
+        public string? InfoUrl => _aiModel.InfoUrl;
 
         [ObservableProperty]
         private bool _enabled = enabled;

@@ -12,6 +12,10 @@ namespace PowerPad.Core.Services.AI
 
     public class OpenAIService : IOpenAIService
     {
+        private const string GPT_MODEL_PREFIX = "gpt";
+        private const string OX_MODEL_PREFIX = "o";
+        private const string OPENAI_MODELS_BASE_URL = "https://platform.openai.com/docs/models/";
+
         private OpenAIClient? _openAI;
 
         public void Initialize(AIServiceConfig config)
@@ -46,14 +50,34 @@ namespace PowerPad.Core.Services.AI
 
             var models = await _openAI.GetOpenAIModelClient().GetModelsAsync();
 
+            // Compatible models are those that start with "gpt" or "oX" where X is a digit
+            // By now this is the only way to filter models compatible with chat completions
+            var compatibleModels = models.Value.Where(m =>
+                m.Id.StartsWith(GPT_MODEL_PREFIX, StringComparison.InvariantCultureIgnoreCase) ||
+                (m.Id.Length > 1 && m.Id[0] == OX_MODEL_PREFIX[0] && char.IsDigit(m.Id[1]))
+            ).OrderByDescending(m => m.CreatedAt);
+
             return string.IsNullOrEmpty(query)
-                ? models.Value.Select(CreateAIModel)
-                : models.Value.Where(m => m.Id.Contains(query)).Select(CreateAIModel);
+                ? compatibleModels.Select(CreateAIModel)
+                : compatibleModels.Where(m => m.Id.Contains(query)).Select(CreateAIModel);
         }
 
         private static AIModel CreateAIModel(OpenAIModel openAIModel)
         {
-            return new(openAIModel.Id, ModelProvider.OpenAI);
+            string modelId = openAIModel.Id;
+            string infoUrl = $"{OPENAI_MODELS_BASE_URL}{modelId}";
+
+            if (modelId.Length > 10 && DateTime.TryParseExact(modelId[^10..], "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out _))
+            {
+                infoUrl = $"{OPENAI_MODELS_BASE_URL}{modelId[..^11]}";
+            }
+
+            return new
+            (
+                modelId,
+                ModelProvider.OpenAI,
+                infoUrl
+            );
         }
     }
 }

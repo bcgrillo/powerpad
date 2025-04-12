@@ -26,9 +26,7 @@
             <Image Source="{ThemeResource OpenAISvg}" Width="42" Height="42" Margin="0,0,24,0"/>
             <TextBlock
                 Style="{StaticResource TitleTextBlockStyle}"
-                Text="Modelos de OpenAI"
-                TextTrimming="CharacterEllipsis"
-                TextWrapping="NoWrap"/>
+                Text="Modelos de OpenAI" />
         </StackPanel>
 
         <Grid Grid.Row="1">

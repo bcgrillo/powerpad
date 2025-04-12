@@ -4,10 +4,10 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public partial class OllamaAddModelPage : AIAddModelPageBase
+    public partial class OpenAIAddModelPage : AIAddModelPageBase
     {
-        public OllamaAddModelPage()
-            : base(new OllamaModelsViewModel())
+        public OpenAIAddModelPage()
+            : base(new OpenAIModelsViewModel())
         {
             this.InitializeComponent();
         }

@@ -5,35 +5,38 @@ namespace PowerPad.Core.Helpers
 {
     public static class HuggingFaceLibraryHelper
     {
-        private const string HUGGINGFACE_SEARCH_URL = "https://huggingface.co/api/models?filter=gguf&search=";
+        private const string HF_OLLAMA_PREFIX = "hf.co";
+        private const string HUGGINGFACE_BASE_URL = "https://huggingface.co/";
+        private const string HUGGINGFACE_SEARCH_URL = "https://huggingface.co/api/models?filter=gguf,chat&search=";
         private const string HUGGINGFACE_MODEL_URL = "https://huggingface.co/api/models/";
-        private const int MAX_RESULTS = 5;
+        private const int MAX_RESULTS = 20;
 
         public static async Task<IEnumerable<AIModel>> Search(string? query)
         {
             var url = HUGGINGFACE_SEARCH_URL + Uri.EscapeDataString(query ?? string.Empty);
             var httpClient = new HttpClient();
 
-            // Realizar la búsqueda inicial
             var searchResults = await httpClient.GetFromJsonAsync<List<HuggingFaceModel>>(url);
-            if (searchResults is null) return Enumerable.Empty<AIModel>();
+            if (searchResults is null) return [];
 
             var results = new List<AIModel>();
 
             foreach (var model in searchResults.Take(MAX_RESULTS))
             {
-                var modelDetailsUrl = HUGGINGFACE_MODEL_URL + model.id + "/tree/main";
+                var modelDetailsUrl = $"{HUGGINGFACE_MODEL_URL}{model.Id}/tree/main";
                 var modelFiles = await httpClient.GetFromJsonAsync<List<HuggingFaceFile>>(modelDetailsUrl);
                 if (modelFiles is null) continue;
 
-                var ggufFiles = modelFiles.Where(file => file.path.EndsWith(".gguf", StringComparison.OrdinalIgnoreCase));
+                var ggufFiles = modelFiles.Where(file => file.Path.EndsWith(".gguf", StringComparison.OrdinalIgnoreCase));
                 foreach (var file in ggufFiles)
                 {
+                    var tag = ExtractTagFromFileName(file.Path);
                     results.Add(new AIModel(
-                        $"hf.co/{model.id}:{file.path}",
+                        $"{HF_OLLAMA_PREFIX}/{model.Id}:{tag}",
                         ModelProvider.HuggingFace,
-                        file.size,
-                        $"{model.id}:{file.path}"
+                        GetModelUrl(model.Id),
+                        file.Size,
+                        $"{model.Id}:{tag}"
                     ));
                 }
             }
@@ -41,7 +44,22 @@ namespace PowerPad.Core.Helpers
             return results;
         }
 
-        private record HuggingFaceModel(string id);
-        private record HuggingFaceFile(string path, long size);
+        public static string GetModelUrl(string modelName)
+        {
+            var colonIndex = modelName.IndexOf(':');
+            modelName = colonIndex >= 0 ? modelName[..colonIndex] : modelName;
+
+            return $"{HUGGINGFACE_BASE_URL}{modelName}";
+        }
+
+        private static string ExtractTagFromFileName(string filePath)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var lastDashIndex = fileName.LastIndexOf('-');
+            return lastDashIndex >= 0 ? fileName[(lastDashIndex + 1)..] : fileName;
+        }
+
+        private record HuggingFaceModel(string Id);
+        private record HuggingFaceFile(string Path, long Size);
     }
 }

@@ -22,6 +22,9 @@ namespace PowerPad.Core.Services.AI
 
     public class OllamaService : IOllamaService
     {
+        private const string HF_OLLAMA_PREFIX = "hf.co";
+        private const string HF_OLLAMA_PREFIX_AUX = "huggingface.co";
+
         private const int DOWNLOAD_UPDATE_INTERVAL = 200;
 
         private OllamaApiClient? _ollama;
@@ -127,7 +130,7 @@ namespace PowerPad.Core.Services.AI
         {
             ModelProvider provider;
 
-            if (model.Name.StartsWith("hf.co") || model.Name.StartsWith("huggingface.co"))
+            if (model.Name.StartsWith(HF_OLLAMA_PREFIX) || model.Name.StartsWith(HF_OLLAMA_PREFIX_AUX))
                 provider = ModelProvider.HuggingFace;
             else
                 provider = ModelProvider.Ollama;
@@ -136,9 +139,12 @@ namespace PowerPad.Core.Services.AI
             (
                 model.Name,
                 provider,
+                provider == ModelProvider.HuggingFace
+                    ? HuggingFaceLibraryHelper.GetModelUrl(model.Name)
+                    : OllamaLibraryHelper.GetModelUrl(model.Name),
                 model.Size,
                 provider == ModelProvider.HuggingFace
-                    ? model.Name.Replace("hf.co/", string.Empty).Replace("huggingface.co/", string.Empty)
+                    ? model.Name.Replace(HF_OLLAMA_PREFIX, string.Empty).Replace(HF_OLLAMA_PREFIX_AUX, string.Empty)
                     : null
             );
         }
