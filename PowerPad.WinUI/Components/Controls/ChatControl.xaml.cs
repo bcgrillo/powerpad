@@ -50,7 +50,6 @@ namespace PowerPad.WinUI.Components.Controls
             DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new(null));
 
         private AIModelViewModel? _selectedModel;
-        private AIModelViewModel? _currentDefaultModel;
         private readonly AIParametersViewModel _parameters;
         private bool _sendParameters;
 
@@ -71,7 +70,6 @@ namespace PowerPad.WinUI.Components.Controls
 
             _parameters = _settings.Models.DefaultParameters.Copy();
             _parameters.PropertyChanged += Parameters_PropertyChanged;
-            _currentDefaultModel = _settings.Models.DefaultModel;
 
             _debounceTimer = new DispatcherTimer
             {
@@ -107,38 +105,34 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void SetModel(AIModelViewModel? model)
         {
-            if (model != _selectedModel)
-            {
-                _selectedModel = model;
+            _selectedModel = model;
 
-                if (model is null)
+            if (model is null)
+            {
+                ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
+            }
+            else
+            {
+                var menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == model);
+
+                if (menuItem is not null)
                 {
-                    ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
+                    DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        await Task.Delay(100);
+                        menuItem.IsChecked = true;
+                    });
                 }
                 else
                 {
-                    var menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == model);
-                    
-                    if (menuItem is not null)
-                    {
-                        menuItem.IsChecked = true;
-                    }
-                    else
-                    {
-                        //Selected model is not available
-                        _selectedModel = null;
-                        ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
-                        OnChatOptionChanged();
-                    }
+                    //Selected model is not available
+                    _selectedModel = null;
+                    ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
+                    OnChatOptionChanged();
                 }
+            }
 
-                UpdateModelButtonContent();
-            }
-            else if (_currentDefaultModel != _settings.Models.DefaultModel)
-            {
-                _currentDefaultModel = _settings.Models.DefaultModel;
-                UpdateModelButtonContent();
-            }
+            UpdateModelButtonContent();
         }
 
         public void SetParameters(AIParametersViewModel? parameters)
@@ -164,9 +158,6 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void SetModelsMenu()
         {
-            var currentSelectedModel = _selectedModel;
-            SetModel(null);
-
             ModelFlyoutMenu.Items.Clear();
 
             if (_settings.Models.DefaultModel is not null)
@@ -176,7 +167,6 @@ namespace PowerPad.WinUI.Components.Controls
                     Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})",
                     Tag = null,
                     Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() },
-                    IsChecked = true
                 };
 
                 firstItem.Click += SetModelItem_Click;
@@ -210,7 +200,7 @@ namespace PowerPad.WinUI.Components.Controls
 
                 ModelFlyoutMenu.Items.RemoveAt(ModelFlyoutMenu.Items.Count - 1);
 
-                SetModel(currentSelectedModel);
+                SetModel(_selectedModel);
             }
         }
 

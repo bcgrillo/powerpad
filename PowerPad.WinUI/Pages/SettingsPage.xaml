@@ -207,7 +207,7 @@
                         <toolkit:SettingsExpander
                             x:Name="ModelsExpanderOpenAI"
                             Header="OpenAI"
-                            Description="Utiliza modelos de OpenAI a través de su API">
+                            Description="Utiliza modelos de ChatGPT a través de su API">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
