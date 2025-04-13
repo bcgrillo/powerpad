@@ -78,6 +78,8 @@ namespace PowerPad.WinUI.Components.Controls
         private void WebView_PermissionRequested(CoreWebView2 sender, CoreWebView2PermissionRequestedEventArgs args)
         {
             args.State = CoreWebView2PermissionState.Deny;
+            args.SavesInProfile = true;
+            args.Handled = true;
         }
     }
 
