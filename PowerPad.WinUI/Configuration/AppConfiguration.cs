@@ -17,7 +17,7 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IWorkspaceService, WorkspaceService>(sp =>
             {
-                var lastWorkspace = GetLastWorkspace(app);
+                var lastWorkspace = app.AppConfigStore.Get<string[]>(StoreKey.RecentlyWorkspaces).First();
                 var configStoreService = sp.GetRequiredService<IConfigStoreService>();
                 var orderService = sp.GetRequiredService<IOrderService>();
 
@@ -29,7 +29,7 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IOllamaService, OllamaService>(sp =>
             {
-                var config = GetGeneralSettings(app.AppConfigStore).OllamaConfig;
+                var config = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings).OllamaConfig;
 
                 var ollama = new OllamaService();
 
@@ -43,7 +43,7 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IAzureAIService, AzureAIService>(sp =>
             {
-                var config = GetGeneralSettings(app.AppConfigStore).AzureAIConfig;
+                var config = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings).AzureAIConfig;
 
                 var azureAI = new AzureAIService();
 
@@ -57,7 +57,7 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IOpenAIService, OpenAIService>(sp =>
             {
-                var config = GetGeneralSettings(app.AppConfigStore).OpenAIConfig;
+                var config = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings).OpenAIConfig;
 
                 var openAI = new OpenAIService();
 
@@ -77,7 +77,7 @@ namespace PowerPad.WinUI.Configuration
 
                 var aiService = new ChatService(ollamaService, azureAIService, openAIService);
 
-                var modelSettings = GetModelSettings(app.AppConfigStore);
+                var modelSettings = app.AppConfigStore.Get<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
 
                 if (modelSettings.DefaultModel is not null) aiService.SetDefaultModel(modelSettings.DefaultModel.GetRecord());
                 if (modelSettings.DefaultParameters is not null) aiService.SetDefaultParameters(modelSettings.DefaultParameters.GetRecord());
@@ -91,46 +91,36 @@ namespace PowerPad.WinUI.Configuration
             var appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $".{nameof(PowerPad).ToLower()}");
             var configStoreService = app.ServiceProvider.GetRequiredService<IConfigStoreService>();
 
-            return configStoreService.GetConfigStore(appDataFolder);
-        }
+            var appConfigStore = configStoreService.GetConfigStore(appDataFolder);
 
-        private static string GetLastWorkspace(App app)
-        {
-            var recentlyWorkspaces = app.AppConfigStore.TryGet<string[]>(StoreKey.RecentlyWorkspaces);
+            //Initialize recently workspaces if necessary
+            var recentlyWorkspaces = appConfigStore.TryGet<string[]>(StoreKey.RecentlyWorkspaces);
 
             if (recentlyWorkspaces is null)
             {
-                recentlyWorkspaces = [ StoreDefault.WorkspaceFolder ];
-                app.AppConfigStore.Set(StoreKey.RecentlyWorkspaces, recentlyWorkspaces);
+                recentlyWorkspaces = [StoreDefault.WorkspaceFolder];
+                appConfigStore.Set(StoreKey.RecentlyWorkspaces, recentlyWorkspaces);
             }
 
-            return recentlyWorkspaces.First();
-        }
+            //Initialize general settings if necessary
+            var generalSettings = appConfigStore.TryGet<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
 
-        private static GeneralSettingsViewModel GetGeneralSettings(IConfigStore config)
-        {
-            var general = config.TryGet<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
-
-            if (general is null)
+            if (generalSettings is null)
             {
-                general = StoreDefault.GeneralSettings;
-                config.Set(StoreKey.GeneralSettings, general);
+                generalSettings = StoreDefault.GeneralSettings;
+                appConfigStore.Set(StoreKey.GeneralSettings, generalSettings);
             }
 
-            return general;
-        }
+            //Initizalize models settings if necessary
+            var modelsSettings = appConfigStore.TryGet<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
 
-        private static ModelsSettingsViewModel GetModelSettings(IConfigStore config)
-        {
-            var models = config.TryGet<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
-
-            if (models is null)
+            if (modelsSettings is null)
             {
-                models = StoreDefault.GenerateDefaultModelsSettings();
-                config.Set(StoreKey.ModelsSettings, models);
+                modelsSettings = StoreDefault.GenerateDefaultModelsSettings();
+                appConfigStore.Set(StoreKey.ModelsSettings, modelsSettings);
             }
 
-            return models;
+            return appConfigStore;
         }
     }
 }
