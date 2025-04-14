@@ -1,14 +1,16 @@
-﻿using static PowerPad.Core.Constants.AgentConfig;
-
-namespace PowerPad.Core.Models.AI
+﻿namespace PowerPad.Core.Models.AI
 {
     public record Agent()
     {
         public required string Name { get; set; }
 
-        public required string Description { get; set; }
+        public required string Prompt { get; set; }
 
         public string? PromptParameterName { get; set; } = null;
+
+        public string? PromptParameterDescription { get; set; } = null;
+
+        public AIModel? AIModel { get; set; }
 
         public float? Temperature { get; set; } = null;
 
@@ -16,19 +18,15 @@ namespace PowerPad.Core.Models.AI
 
         public int? MaxOutputTokens { get; set; } = null;
 
-        public AIParameters GetAgentParameters(string? parameterValue)
+        public AIParameters GetAgentParameters(string? parameterValue, string? aditionalPrompt)
         {
-            var systemPrompt = AgentPromptFormatPart1
-                .Replace(PromptReplaceToken.Description.ToString(), Description);
+            var systemPrompt = Prompt;
 
             if (PromptParameterName is not null)
-            {
-                systemPrompt += AgentPromptFormatPart2
-                    .Replace(PromptReplaceToken.ParameterName.ToString(), PromptParameterName)
-                    .Replace(PromptReplaceToken.ParameterValue.ToString(), parameterValue);
-            }
+                systemPrompt += $"\n{PromptParameterName}: {parameterValue}";
 
-            systemPrompt += AgentPromptFormatPart3;
+            if (aditionalPrompt is not null)
+                systemPrompt += $"\n{aditionalPrompt}";
 
             return new AIParameters
             {

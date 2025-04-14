@@ -1,6 +1,4 @@
 using PowerPad.WinUI.ViewModels.AI;
-using System.Reflection.PortableExecutable;
-using System;
 using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Components;
 

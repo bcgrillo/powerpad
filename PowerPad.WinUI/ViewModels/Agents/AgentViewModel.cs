@@ -1,8 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models.AI;
+using System;
 using System.Text.Json.Serialization;
+using PowerPad.WinUI.Helpers;
 
-namespace PowerPad.WinUI.ViewModels.AI
+namespace PowerPad.WinUI.ViewModels.Agents
 {
     public partial class AgentViewModel(Agent agent) : ObservableObject
     {
@@ -12,23 +15,25 @@ namespace PowerPad.WinUI.ViewModels.AI
         public AgentViewModel(string name,
                               string description,
                               string? promptParameterName = null,
+                              string? promptParameterDescription = null,
+                              AIModel? aiModel = null,
                               float? temperature = null,
                               float? topP = null,
                               int? maxOutputTokens = null,
-                              AgentIcon? agentIcon = null,
-                              string? promptParameterPlaceholder = null)
+                              AgentIcon? agentIcon = null)
             : this(new()
             {
                 Name = name,
-                Description = description,
+                Prompt = description,
                 PromptParameterName = promptParameterName,
+                PromptParameterDescription = promptParameterDescription,
+                AIModel = aiModel,
                 Temperature = temperature,
                 TopP = topP,
                 MaxOutputTokens = maxOutputTokens
             })
         {
             _agentIcon = agentIcon;
-            _promptParameterPlaceholder = promptParameterPlaceholder;
         }
 
         public string Name
@@ -39,14 +44,26 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         public string Description
         {
-            get => _agent.Description;
-            set => SetProperty(_agent.Description, value, _agent, (x, y) => x.Description = y);
+            get => _agent.Prompt;
+            set => SetProperty(_agent.Prompt, value, _agent, (x, y) => x.Prompt = y);
         }
 
         public string? PromptParameterName
         {
             get => _agent.PromptParameterName;
             set => SetProperty(_agent.PromptParameterName, value, _agent, (x, y) => x.PromptParameterName = y);
+        }
+
+        public string? PromptParameterDescription
+        {
+            get => _agent.PromptParameterDescription;
+            set => SetProperty(_agent.PromptParameterDescription, value, _agent, (x, y) => x.PromptParameterDescription = y);
+        }
+
+        public AIModel? AIModel
+        {
+            get => _agent.AIModel;
+            set => SetProperty(_agent.AIModel, value, _agent, (x, y) => x.AIModel = y);
         }
 
         public float? Temperature
@@ -71,8 +88,19 @@ namespace PowerPad.WinUI.ViewModels.AI
         private AgentIcon? _agentIcon;
 
         [ObservableProperty]
-        private string? _promptParameterPlaceholder;
+        private bool _enabled;
+
+        [JsonIgnore]
+        public IconElement? IconElement => AgentIcon?.IconType switch
+        {
+            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Value.IconSource) },
+            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = AgentIcon.Value.IconSource },
+            AgentIconType.FontIconGlyph => new FontIcon { Glyph = AgentIcon.Value.IconSource },
+            _ => null,
+        };
 
         public Agent GetRecord() => _agent;
+
+        partial void OnAgentIconChanged(AgentIcon? oldValue, AgentIcon? newValue) => OnPropertyChanged(nameof(IconElement));
     }
 }

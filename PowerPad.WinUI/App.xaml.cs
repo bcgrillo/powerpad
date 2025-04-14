@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using PowerPad.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using PowerPad.WinUI.Configuration;
 using PowerPad.WinUI.Helpers;
@@ -9,8 +8,7 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
-using PowerPad.Core.Services.AI;
-using Microsoft.UI.Xaml.Controls;
+using PowerPad.WinUI.ViewModels.Agents;
 
 namespace PowerPad.WinUI
 {
@@ -44,6 +42,7 @@ namespace PowerPad.WinUI
                 .AddSingleton<IOrderService, OrderService>()
                 .AddSingleton<SettingsViewModel>()
                 .AddSingleton<WorkspaceViewModel>()
+                .AddSingleton<AgentsCollectionViewModel>()
                 .AddSingleton(_ => AppConfigStore)
                 .BuildServiceProvider();
 

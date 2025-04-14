@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.AI;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.Components.Controls;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
-using Windows.UI.Core;
-using Windows.UI.WebUI;
 
 namespace PowerPad.WinUI.Components
 {

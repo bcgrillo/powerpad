@@ -398,7 +398,27 @@
                                 </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>
                         </toolkit:SettingsExpander>
-
+                        <toolkit:SettingsExpander
+                            Header="Agentes"
+                            Description="Configuración específica para los agentes"
+                            HeaderIcon="{ui:FontIcon Glyph=&#xE99A;}">
+                            <toolkit:SettingsExpander.Items>
+                                <Border Style="{StaticResource FullRowSettingCard}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <localc:Label
+                                            Text="Prompt adicional:" />
+                                        <localc:EditableTextBlock
+                                            Grid.Column="1"
+                                            Value="{x:Bind _settings.General.AgentPrompt, Mode=TwoWay}" />
+                                    </Grid>
+                                </Border>
+                            </toolkit:SettingsExpander.Items>
+                        </toolkit:SettingsExpander>
+                        
                         <!-- Visual Settings -->
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                            Text="Aparencia" />

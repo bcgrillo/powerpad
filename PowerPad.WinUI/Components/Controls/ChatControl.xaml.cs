@@ -179,7 +179,9 @@ namespace PowerPad.WinUI.Components.Controls
                 {
                     var elementAdded = false;
 
-                    foreach (var item in _settings.Models.AvailableModels.Where(m => m.ModelProvider == provider && m.Enabled))
+                    foreach (var item in _settings.Models.AvailableModels
+                        .Where(m => m.ModelProvider == provider && m.Enabled)
+                        .OrderBy(m => m.Name))
                     {
                         var menuItem = new RadioMenuFlyoutItem
                         {

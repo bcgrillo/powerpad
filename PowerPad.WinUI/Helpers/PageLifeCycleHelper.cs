@@ -1,5 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using PowerPad.WinUI.Pages;
+﻿using PowerPad.WinUI.Pages;
 using System;
 using System.Collections.Generic;
 

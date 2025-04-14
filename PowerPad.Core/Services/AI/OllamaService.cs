@@ -6,7 +6,6 @@ using Exception = System.Exception;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Helpers;
-using Windows.Media.Protection.PlayReady;
 
 namespace PowerPad.Core.Services.AI
 {

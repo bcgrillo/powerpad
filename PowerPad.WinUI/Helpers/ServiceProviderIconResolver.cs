@@ -2,7 +2,6 @@
 using PowerPad.Core.Models.AI;
 using System;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 namespace PowerPad.WinUI.Helpers
 {

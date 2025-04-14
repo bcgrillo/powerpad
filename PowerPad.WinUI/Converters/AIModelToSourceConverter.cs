@@ -1,7 +1,4 @@
 ﻿using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI;
-using PowerPad.Core.Models.AI;
 using System;
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.Helpers;

@@ -13,8 +13,6 @@ using Windows.UI;
 using PowerPad.WinUI.Helpers;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.WinUI.Dialogs;
-using Microsoft.UI;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Services.Config;
 

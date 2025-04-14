@@ -4,7 +4,6 @@ using Microsoft.Web.WebView2.Core;
 using System;
 using System.Threading.Tasks;
 using Windows.System;
-using Windows.UI.WebUI;
 
 namespace PowerPad.WinUI.Components.Controls
 {

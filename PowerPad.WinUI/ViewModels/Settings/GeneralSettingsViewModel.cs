@@ -56,6 +56,9 @@ namespace PowerPad.WinUI.ViewModels.Settings
         [ObservableProperty]
         private bool _acrylicBackground;
 
+        [ObservableProperty]
+        private string? _agentPrompt;
+
         public GeneralSettingsViewModel()
         {
         }

@@ -8,7 +8,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:m="using:PowerPad.Core.Models.AI"
+    xmlns:vm="using:PowerPad.WinUI.ViewModels.Agents"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
     <Grid Margin="0,0,0,2">
         <NavigationView
@@ -22,7 +23,8 @@
             IsSettingsVisible="False"
             OpenPaneLength="260"
             SelectionChanged="NavView_SelectionChanged"
-            Loaded="NavView_Loaded">
+            Loaded="NavView_Loaded"
+            MenuItemsSource="{x:Bind _agentsCollection.Agents, Mode=OneWay}">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
                 <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
@@ -30,6 +32,14 @@
                 <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">10,0,0,0</CornerRadius>
             </NavigationView.Resources>
+            <NavigationView.MenuItemTemplate>
+                <DataTemplate x:DataType="vm:AgentViewModel">
+                    <NavigationViewItem
+                        Content="{x:Bind Name}"
+                        Tag="{x:Bind}"
+                        Icon="{x:Bind IconElement}" />
+                </DataTemplate>
+            </NavigationView.MenuItemTemplate>
             <NavigationView.PaneHeader>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -62,33 +72,6 @@
                     </Button>
                 </Grid>
             </NavigationView.PaneHeader>
-            <NavigationView.MenuItems>
-                <NavigationViewItem
-                    Content="Agente 1"
-                    Margin="0,6,0,0"
-                    Tag="{x:Bind m:ModelProvider.Ollama}"
-                    Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE709;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem
-                    Content="Agente 2"
-                    Tag="{x:Bind m:ModelProvider.HuggingFace}"
-                    Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE716;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem
-                    Content="Agente 3"
-                    Tag="{x:Bind m:ModelProvider.GitHub}"
-                    Visibility="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE719;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
             <NavigationView.PaneFooter>
                 <Button
                     Margin="4,8,4,-4"

@@ -3,7 +3,6 @@ using System;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 using PowerPad.Core.Models.AI;
-using Microsoft.UI.Xaml;
 
 namespace PowerPad.WinUI.Converters
 {

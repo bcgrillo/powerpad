@@ -1,5 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using PowerPad.WinUI.Components;
+﻿using PowerPad.WinUI.Components;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 

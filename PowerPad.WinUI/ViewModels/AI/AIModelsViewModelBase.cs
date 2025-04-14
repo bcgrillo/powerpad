@@ -48,7 +48,12 @@ namespace PowerPad.WinUI.ViewModels.AI
             AddModelCommand = new AsyncRelayCommand<AIModelViewModel>(AddModel);
             SearchModelCommand = new AsyncRelayCommand<string>(SearchModels);
 
-            FilteredModels = [.. _settingsViewModel.Models.AvailableModels.Where(m => m.ModelProvider == _modelProvider)];
+            FilteredModels = 
+            [.. 
+                _settingsViewModel.Models.AvailableModels
+                    .Where(m => m.ModelProvider == _modelProvider)
+                    .OrderBy(m => m.Name) 
+            ];
 
             _settingsViewModel.Models.AvailableModels.CollectionChanged += FilterModels;
 

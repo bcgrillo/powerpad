@@ -1,8 +1,5 @@
 ﻿using HtmlAgilityPack;
-using OllamaSharp;
-using OllamaSharp.Models;
 using PowerPad.Core.Models.AI;
-using System.Threading.Tasks;
 
 namespace PowerPad.Core.Helpers
 {

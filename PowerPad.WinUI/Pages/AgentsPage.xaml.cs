@@ -3,29 +3,27 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.ViewModels.Agents;
 
 namespace PowerPad.WinUI.Pages
 {
     public partial class AgentsPage : DisposablePage, INavigationPage
     {
+        private readonly AgentsCollectionViewModel _agentsCollection;
 
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
-
-        private readonly SettingsViewModel _settings;
 
         public AgentsPage()
         {
             this.InitializeComponent();
 
-            _settings = App.Get<SettingsViewModel>();
+            _agentsCollection = App.Get<AgentsCollectionViewModel>();
         }
 
         public event EventHandler? NavigationVisibilityChanged;
 
         private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs args)
         {
-            if (args.SelectedItem is not null) 
-                NavigateToPage((ModelProvider)((NavigationViewItem)args.SelectedItem)!.Tag);
         }
 
         private void NavigateToPage(ModelProvider _)

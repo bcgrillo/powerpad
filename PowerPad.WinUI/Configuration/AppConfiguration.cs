@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PowerPad.Core.Services;
 using PowerPad.Core.Services.AI;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
+using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
@@ -118,6 +119,15 @@ namespace PowerPad.WinUI.Configuration
             {
                 modelsSettings = StoreDefault.GenerateDefaultModelsSettings();
                 appConfigStore.Set(StoreKey.ModelsSettings, modelsSettings);
+            }
+
+            //Initizalize agents if necessary
+            var agents = appConfigStore.TryGet<ObservableCollection<AgentViewModel>>(StoreKey.Agents);
+
+            if (agents is null)
+            {
+                agents = StoreDefault.AgentsCollection;
+                appConfigStore.Set(StoreKey.Agents, agents);
             }
 
             return appConfigStore;
