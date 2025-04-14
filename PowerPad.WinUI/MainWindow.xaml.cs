@@ -16,6 +16,7 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.WinUI.Dialogs;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Media;
+using PowerPad.Core.Services.Config;
 
 namespace PowerPad.WinUI
 {
@@ -45,7 +46,12 @@ namespace PowerPad.WinUI
             SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            Closed += (s, e) => EditorManagerHelper.AutoSaveEditors();
+
+            Closed += (s, e) =>
+            {
+                App.Get<IConfigStoreService>().StoreConfigs();
+                EditorManagerHelper.AutoSaveEditors();
+            };
 
             StartOllama();
         }

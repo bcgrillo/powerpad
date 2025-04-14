@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.UI.Xaml;
 using PowerPad.Core.Models.AI;
 using System;
 using System.Text.Json.Serialization;
@@ -25,6 +24,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         private bool _enabled = enabled;
 
+#pragma warning disable CS0657
         [ObservableProperty]
         [property: JsonIgnore]
         private bool _available = available;
@@ -40,6 +40,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         [property: JsonIgnore]
         private bool _downloadError;
+#pragma warning restore CS0657
 
         public long? Size => _aiModel.Size;
 

@@ -5,6 +5,7 @@ namespace PowerPad.Core.Services.Config
     public interface IConfigStoreService
     {
         IConfigStore GetConfigStore(string configFolder);
+        Task StoreConfigs();
     }
 
     public class ConfigStoreService : IConfigStoreService
@@ -38,7 +39,7 @@ namespace PowerPad.Core.Services.Config
             }
         }
 
-        private async Task StoreConfigs()
+        public async Task StoreConfigs()
         {
             var tasks = _configStores.Values.Select(cs => cs.Save());
             await Task.WhenAll(tasks);
