@@ -4,6 +4,10 @@ using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.Agents;
+using PowerPad.WinUI.Components;
+using PowerPad.WinUI.ViewModels.FileSystem;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Web.AtomPub;
 
 namespace PowerPad.WinUI.Pages
 {
@@ -11,7 +15,7 @@ namespace PowerPad.WinUI.Pages
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
 
-        public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
+        public double NavigationWidth => AgentsMenu.Visibility == Visibility.Visible ? TreeView.ActualWidth : 0;
 
         public AgentsPage()
         {
@@ -22,7 +26,7 @@ namespace PowerPad.WinUI.Pages
 
         public event EventHandler? NavigationVisibilityChanged;
 
-        private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs args)
+        private void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs args)
         {
         }
 
@@ -32,12 +36,12 @@ namespace PowerPad.WinUI.Pages
 
         public void ToggleNavigationVisibility()
         {
-            NavView.IsPaneVisible = !NavView.IsPaneVisible;
+            AgentsMenu.Visibility = AgentsMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
 
             NavigationVisibilityChanged?.Invoke(this, null!);
         }
 
-        private void NavView_Loaded(object _, RoutedEventArgs __)
+        private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
         }
 
@@ -46,5 +50,13 @@ namespace PowerPad.WinUI.Pages
         public override void Dispose()
         {
         }
+
+        //private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs args)
+        //{
+        //    if (args.DropResult == DataPackageOperation.Move && args.Items.Count == 1 && args.Items[0] is AgentViewModel agent)
+        //    {
+        //        _agentsCollection.Agents.Move(_agentsCollection.Agents.IndexOf(agent), TreeView.);
+        //    }
+        //}
     }
 }

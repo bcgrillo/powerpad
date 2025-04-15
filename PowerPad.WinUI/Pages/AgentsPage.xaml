@@ -12,79 +12,92 @@
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
     <Grid Margin="0,0,0,2">
-        <NavigationView
-            x:Name="NavView"
-            CompactModeThresholdWidth="0"
-            ExpandedModeThresholdWidth="0"
-            IsBackButtonVisible="Collapsed"
-            IsPaneOpen="True"
-            IsPaneToggleButtonVisible="False"
-            IsPaneVisible="True"
-            IsSettingsVisible="False"
-            OpenPaneLength="260"
-            SelectionChanged="NavView_SelectionChanged"
-            Loaded="NavView_Loaded"
-            MenuItemsSource="{x:Bind _agentsCollection.Agents, Mode=OneWay}">
-            <NavigationView.Resources>
-                <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
-                <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
-                <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
-                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">10,0,0,0</CornerRadius>
-            </NavigationView.Resources>
-            <NavigationView.MenuItemTemplate>
-                <DataTemplate x:DataType="vm:AgentViewModel">
-                    <NavigationViewItem
-                        Content="{x:Bind Name}"
-                        Tag="{x:Bind}"
-                        Icon="{x:Bind IconElement}" />
-                </DataTemplate>
-            </NavigationView.MenuItemTemplate>
-            <NavigationView.PaneHeader>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Border Margin="0,-4,0,0">
-                        <TextBlock
-                            Style="{StaticResource WSTitleStyle}"
-                            Text="Agentes"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap"/>
-                    </Border>
-                    <Button
-                        x:Name="HideMenuBtn"
-                        Grid.Column="1"
-                        Height="30"
-                        Width="30"
-                        ToolTipService.ToolTip="Ocultar Workspace"
-                        Margin="0,4,10,0"
-                        Padding="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Click="HideMenuBtn_Click"
-                        Canvas.ZIndex="1"
-                        IsHitTestVisible="True">
-                        <Button.Content>
-                            <FontIcon FontSize="16" Glyph="&#xE973;"/>
-                        </Button.Content>
-                    </Button>
-                </Grid>
-            </NavigationView.PaneHeader>
-            <NavigationView.PaneFooter>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid x:Name="AgentsMenu" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Style="{StaticResource WSTitleStyle}"
+                    Text="Agentes"/>
                 <Button
-                    Margin="4,8,4,-4"
+                    x:Name="HideMenuBtn"
+                    Grid.Column="2"
+                    Height="30"
+                    Width="30"
+                    ToolTipService.ToolTip="Ocultar menu"
+                    Margin="0,0,10,0"
+                    Padding="0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="HideMenuBtn_Click"
+                    Canvas.ZIndex="1"
+                    IsHitTestVisible="True">
+                    <Button.Content>
+                        <FontIcon FontSize="16" Glyph="&#xE973;"/>
+                    </Button.Content>
+                </Button>
+            </Grid>
+            <ScrollViewer Width="260" Grid.Row="1" VerticalScrollMode="Auto" HorizontalScrollMode="Auto">
+                <TreeView 
+                    Name="TreeView" 
+                    ItemsSource="{x:Bind _agentsCollection.Agents, Mode=OneWay}" 
+                    ItemInvoked="TreeView_ItemInvoked"
+                    CanDrag="False"
+                    CanReorderItems="True">
+                    <!--DragItemsCompleted="TreeView_DragItemsCompleted">-->
+                    <TreeView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AgentViewModel">
+                            <TreeViewItem 
+                                Padding="0,0,8,0"
+                                AllowDrop="{x:Bind AllowDropFalse}">
+                                <StackPanel Padding="3" Orientation="Horizontal">
+                                    <ContentControl Margin="-30,2,10,0" Height="20" Width="20" HorizontalAlignment="Center" Content="{x:Bind IconElement, Mode=OneWay}" />
+                                    <TextBlock Margin="0,2,8,-2" Text="{x:Bind Name, Mode=OneWay}"/>
+                                </StackPanel>
+                            </TreeViewItem>
+                        </DataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </ScrollViewer>
+            <Grid Grid.Row="2" Margin="4,8,4,4">
+                <Button 
+                    x:Name="NewAgentButton"
                     Height="36"
                     HorizontalAlignment="Stretch"
-                    BorderThickness="0">
+                    BorderThickness="0"
+                    Click="NewAgentButton_Click"
+                    ToolTipService.ToolTip="Nuevo agente">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <FontIcon FontSize="16" Glyph="&#xE710;" />
                         <TextBlock Text="Añadir agente" />
                     </StackPanel>
                 </Button>
-            </NavigationView.PaneFooter>
-            <Frame x:Name="NavFrame"/>
-        </NavigationView>
+            </Grid>
+        </Grid>
+
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Background="{ThemeResource PowerPadEditorColor}"
+            CornerRadius="10,0,0,0">
+            <Frame x:Name="AgentsFrame" />
+        </Border>
     </Grid>
 </local:DisposablePage>

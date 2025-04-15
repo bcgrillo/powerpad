@@ -4,6 +4,8 @@ using PowerPad.Core.Models.AI;
 using System;
 using System.Text.Json.Serialization;
 using PowerPad.WinUI.Helpers;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {
@@ -91,11 +93,14 @@ namespace PowerPad.WinUI.ViewModels.Agents
         private bool _enabled;
 
         [JsonIgnore]
-        public IconElement? IconElement => AgentIcon?.IconType switch
+        public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant
+
+        [JsonIgnore]
+        public FrameworkElement? IconElement => AgentIcon?.IconType switch
         {
-            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Value.IconSource) },
-            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = AgentIcon.Value.IconSource },
-            AgentIconType.FontIconGlyph => new FontIcon { Glyph = AgentIcon.Value.IconSource },
+            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Value.IconSource), HorizontalAlignment = HorizontalAlignment.Center },
+            AgentIconType.CharacterOrEmoji => new TextBlock { Text = AgentIcon.Value.IconSource, FontSize = 18, Padding = new Thickness(0), TextAlignment = TextAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center },
+            AgentIconType.FontIconGlyph => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center },
             _ => null,
         };
 

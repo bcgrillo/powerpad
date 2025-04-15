@@ -241,7 +241,7 @@ namespace PowerPad.WinUI.Components
                 {
                     DispatcherQueue.TryEnqueue(async () =>
                     {
-                        //TODO: Check it, sometimes the entry is not selected because treview is not loaded yet
+                        //TODO: Check it, sometimes the entry is not selected because treeview is not loaded yet
                         for (int i = 0; i < 5; i++)
                         {
                             await Task.Delay(100);

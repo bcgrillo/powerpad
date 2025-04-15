@@ -130,8 +130,8 @@ namespace PowerPad.WinUI.Configuration
 
             public readonly static AgentViewModel DefaultAgent3 = new(new()
             {
-                Name = "Resumidor",
-                Prompt = "Eres un resumidor de texto que resume el texto solicitado por el usuario.",
+                Name = "Hazlo más corto",
+                Prompt = "Eres experto en resumir textos, haciendo los textos más cortos pero sin omitir nada importante.",
                 MaxOutputTokens = 10000,
                 Temperature = 0.1f,
                 TopP = 1
@@ -139,8 +139,8 @@ namespace PowerPad.WinUI.Configuration
             {
                 AgentIcon = new AgentIcon
                 {
-                    IconType = AgentIconType.FontIconGlyph,
-                    IconSource = "\uE8C9",
+                    IconType = AgentIconType.CharacterOrEmoji,
+                    IconSource = "✂️",
                 }
             };
 

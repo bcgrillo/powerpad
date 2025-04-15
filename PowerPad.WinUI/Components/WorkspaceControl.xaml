@@ -61,7 +61,7 @@
                 Grid.Column="2"
                 Height="30"
                 Width="30"
-                ToolTipService.ToolTip="Ocultar Workspace"
+                ToolTipService.ToolTip="Ocultar menu"
                 Margin="0,0,10,0"
                 Padding="0"
                 Background="Transparent"
