@@ -133,7 +133,7 @@
                 </Grid>
             </Grid>
             <TextBlock 
-                Text="Texto generado por inteligencia artificial generativa, puede contener errores." 
+                Text="El contenido generado por inteligencia artificial puede contener errores." 
                 VerticalAlignment="Stretch"
                 TextAlignment="Center"
                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"

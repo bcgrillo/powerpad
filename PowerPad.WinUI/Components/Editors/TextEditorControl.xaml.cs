@@ -1,7 +1,6 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.Extensions.AI;
 using PowerPad.WinUI.Dialogs;
@@ -9,7 +8,7 @@ using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services.AI;
-using PowerPad.Core.Models.AI;
+using System.Text;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -49,45 +48,25 @@ namespace PowerPad.WinUI.Components.Editors
             TextEditor.Focus(FocusState.Programmatic);
         }
 
-        private void EditableTextBlock_PointerPressed(object _, PointerRoutedEventArgs __)
+        private void EditableTextBlock_Edited(object _, EventArgs __)
         {
-            EditableTextBlock.Visibility = Visibility.Collapsed;
-            EditableTextBox.Visibility = Visibility.Visible;
-            EditableTextBox.Focus(FocusState.Programmatic);
-        }
-
-        private void EditableTextBox_KeyDown(object _, KeyRoutedEventArgs args)
-        {
-            if (args.Key == Windows.System.VirtualKey.Enter)
-            {
-                FinalizeEditing();
-            }
-        }
-
-        private void EditableTextBox_LostFocus(object _, RoutedEventArgs __)
-        {
-            FinalizeEditing();
-        }
-
-        private void FinalizeEditing()
-        {
-            EditableTextBlock.Visibility = Visibility.Visible;
-            EditableTextBox.Visibility = Visibility.Collapsed;
-
             try
             {
-                _document.RenameCommand.Execute(EditableTextBox.Text);
+                _document.RenameCommand.Execute(EditableTextBlock.Value);
             }
             catch
             {
-                EditableTextBox.Text = _document.Name;
+                EditableTextBlock.Value = _document.Name;
 
-                DialogHelper.Alert
-                (
-                    this.XamlRoot,
-                    "Error",
-                    "No ha sido posible cambiar el nombre del documento."
-                ).Wait();
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await DialogHelper.Alert
+                    (
+                        this.XamlRoot,
+                        "Error",
+                        "No ha sido posible cambiar el nombre del documento."
+                    );
+                });
             }
         }
 
@@ -109,20 +88,17 @@ namespace PowerPad.WinUI.Components.Editors
         {
             _document = null!;
             TextEditor = null;
+
+            GC.SuppressFinalize(this);
         }
 
-        private async void SendBtn_Click(object _, RoutedEventArgs __)
+        private async void AgentControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
-            var result = await _chatService.GetResponse
-            (
-                message: TextEditor.Text == string.Empty ? " " : TextEditor.Text,
-                config: new AIParameters
-                {
-                    SystemPrompt = $"Eres un editor de textos, realizas la acción sin incluir mensajes adicionales como 'Aquí está lo que me has pedido' ni nada similar. Si se te pide una modificación debes devolver el contenido completo. Esta es tu orden actual: {InputBox.Text}"
-                }
-            );
+            var stringBuilder = new StringBuilder();
 
-            TextEditor.Text = result.Text;
+            await AgentControl.StartAgentAction(TextEditor.Text, stringBuilder);
+
+            TextEditor.Text = stringBuilder.ToString();
         }
     }
 

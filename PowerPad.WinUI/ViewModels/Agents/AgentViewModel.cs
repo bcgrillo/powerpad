@@ -53,7 +53,11 @@ namespace PowerPad.WinUI.ViewModels.Agents
         public string? PromptParameterName
         {
             get => _agent.PromptParameterName;
-            set => SetProperty(_agent.PromptParameterName, value, _agent, (x, y) => x.PromptParameterName = y);
+            set
+            {
+                SetProperty(_agent.PromptParameterName, value, _agent, (x, y) => x.PromptParameterName = y);
+                OnPropertyChanged(nameof(HasPromptParameter));
+            }
         }
 
         public string? PromptParameterDescription
@@ -96,13 +100,16 @@ namespace PowerPad.WinUI.ViewModels.Agents
         public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant
 
         [JsonIgnore]
-        public FrameworkElement? IconElement => AgentIcon?.IconType switch
+        public IconElement? IconElement => AgentIcon?.IconType switch
         {
             AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Value.IconSource), HorizontalAlignment = HorizontalAlignment.Center },
-            AgentIconType.CharacterOrEmoji => new TextBlock { Text = AgentIcon.Value.IconSource, FontSize = 18, Padding = new Thickness(0), TextAlignment = TextAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center },
+            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center, FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
             AgentIconType.FontIconGlyph => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center },
             _ => null,
         };
+
+        [JsonIgnore]
+        public bool HasPromptParameter => !string.IsNullOrEmpty(PromptParameterName);
 
         public Agent GetRecord() => _agent;
 

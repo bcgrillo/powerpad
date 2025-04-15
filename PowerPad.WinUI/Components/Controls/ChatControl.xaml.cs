@@ -222,7 +222,6 @@ namespace PowerPad.WinUI.Components.Controls
             {
                 ModelIcon.Source = _selectedModel.ModelProvider.GetIcon();
                 ModelName.Text = _selectedModel.CardName;
-                ChatInputBox.IsEnabled = true;
             }
             else if (_settings.Models.DefaultModel is not null)
             {
@@ -275,7 +274,7 @@ namespace PowerPad.WinUI.Components.Controls
                 var parameters = _sendParameters ? _parameters
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
 
-                await foreach (var messagePart in _chatService.GetStreamingResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
+                await foreach (var messagePart in _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
                 {
                     try
                     {
