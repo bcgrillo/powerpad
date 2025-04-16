@@ -30,11 +30,11 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IOllamaService, OllamaService>(sp =>
             {
-                var config = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings).OllamaConfig;
+                var generalSettings = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
 
                 var ollama = new OllamaService();
 
-                if (config is not null) ollama.Initialize(config.GetRecord());
+                if (generalSettings.OllamaEnabled) ollama.Initialize(generalSettings.OllamaConfig.GetRecord());
 
                 return ollama;
             });
@@ -44,11 +44,11 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IAzureAIService, AzureAIService>(sp =>
             {
-                var config = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings).AzureAIConfig;
+                var generalSettings = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
 
                 var azureAI = new AzureAIService();
 
-                if (config is not null) azureAI.Initialize(config.GetRecord());
+                if (generalSettings.AzureAIEnabled) azureAI.Initialize(generalSettings.AzureAIConfig.GetRecord());
 
                 return azureAI;
             });
@@ -58,11 +58,11 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IOpenAIService, OpenAIService>(sp =>
             {
-                var config = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings).OpenAIConfig;
+                var generalSettings = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
 
                 var openAI = new OpenAIService();
 
-                if (config is not null) openAI.Initialize(config.GetRecord());
+                if (generalSettings.OpenAIEnabled) openAI.Initialize(generalSettings.OpenAIConfig.GetRecord());
 
                 return openAI;
             });

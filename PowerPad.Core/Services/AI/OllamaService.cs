@@ -21,8 +21,8 @@ namespace PowerPad.Core.Services.AI
 
     public class OllamaService : IOllamaService
     {
-        private const string HF_OLLAMA_PREFIX = "hf.co";
-        private const string HF_OLLAMA_PREFIX_AUX = "huggingface.co";
+        private const string HF_OLLAMA_PREFIX = "hf.co/";
+        private const string HF_OLLAMA_PREFIX_AUX = "huggingface.co/";
 
         private const int DOWNLOAD_UPDATE_INTERVAL = 200;
 
@@ -31,9 +31,7 @@ namespace PowerPad.Core.Services.AI
 
         public void Initialize(AIServiceConfig config)
         {
-            ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
-
-            _config = config;
+            _config = !string.IsNullOrEmpty(config.BaseUrl) ? config : null;
             _ollama = null;
         }
 
@@ -118,9 +116,9 @@ namespace PowerPad.Core.Services.AI
 
         public async Task<IEnumerable<AIModel>> GetAvailableModels()
         {
-            if (_ollama is null) return [];
+            if (_config is null) return [];
 
-            var models = await _ollama.ListLocalModelsAsync();
+            var models = await GetClient()!.ListLocalModelsAsync();
 
             return models.Select(m => CreateAIModel(m));
         }
@@ -150,11 +148,11 @@ namespace PowerPad.Core.Services.AI
 
         public IChatClient? ChatClient(AIModel model)
         {
-            if (_ollama is null) return null;
+            if (_config is null) return null;
 
-            _ollama.SelectedModel = model.Name;
+            GetClient()!.SelectedModel = model.Name;
 
-            return _ollama;
+            return GetClient();
         }
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
@@ -220,7 +218,7 @@ namespace PowerPad.Core.Services.AI
 
         public async Task RemoveModel(AIModel model)
         {
-            if (_ollama is null) return;
+            if (_config is null) return;
 
             await GetClient()!.DeleteModelAsync(model.Name);
         }

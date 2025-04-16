@@ -18,6 +18,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="48" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="48" />
@@ -41,7 +42,7 @@
 
             <NavigationView
                 x:Name="NavView"
-                Grid.RowSpan="2"
+                Grid.RowSpan="3"
                 Grid.ColumnSpan="2"
                 Canvas.ZIndex="0"
                 IsTabStop="False"
@@ -52,6 +53,15 @@
                 PaneDisplayMode="LeftCompact"
                 SelectionChanged="NavView_SelectionChanged"
                 Margin="0,0,0,-2">
+                
+                <NavigationView.Resources>
+                    <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
+                    <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
+                    <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
+                    <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                    <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
+                </NavigationView.Resources>
+                
                 <NavigationView.MenuItems>
                     <NavigationViewItem
                         Margin="0,44,0,0"
@@ -60,34 +70,35 @@
                         Tag="WorkspacePage"
                         PointerPressed="NavigationViewItem_PointerPressed"/>
                     <NavigationViewItem
+                        x:Name="ModelsNavViewItem"
                         Content="Modelos"
                         Icon="{ui:FontIcon Glyph=&#xF158;}"
                         Tag="ModelsPage"
                         PointerPressed="NavigationViewItem_PointerPressed"/>
                     <NavigationViewItem
+                        x:Name="AgentesNavViewItem"
                         Content="Agentes"
                         Icon="{ui:FontIcon Glyph=&#xE99A;}"
                         Tag="AgentsPage"
                         PointerPressed="NavigationViewItem_PointerPressed"/>
                 </NavigationView.MenuItems>
-                <NavigationView.FooterMenuItems>
-                </NavigationView.FooterMenuItems>
-
-                <NavigationView.Resources>
-                    <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
-                    <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
-                    <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
-                    <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                    <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
-                </NavigationView.Resources>
-
                 <Frame x:Name="NavFrame" />
             </NavigationView>
 
+            <FontIcon 
+                x:Name="ErrorBadge"
+                Grid.Row="2" 
+                FontSize="14" 
+                Foreground="{ThemeResource AccentFillColorDefaultBrush}" 
+                Margin="20,0,0,22"
+                IsHitTestVisible="False"
+                Glyph="&#xF167;"
+                Visibility="Collapsed"/>
+            
             <Border 
                 x:Name="Splitter"
                 Grid.Column="2" 
-                Grid.RowSpan="2" 
+                Grid.RowSpan="3" 
                 Width="1" 
                 HorizontalAlignment="Left" 
                 Background="{StaticResource PowerPadStrokeColorDefault}" />

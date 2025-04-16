@@ -16,12 +16,14 @@ namespace PowerPad.WinUI.Pages
     public partial class SettingsPage : DisposablePage
     {
         private readonly SettingsViewModel _settings;
+        private InputCursor _defaultCursor;
 
         public SettingsPage()
         {
             this.InitializeComponent();
 
             _settings = App.Get<SettingsViewModel>();
+            _defaultCursor = ProtectedCursor;
 
             _settings.General.OllamaConfig.PropertyChanged += TestOllama;
             _settings.General.AzureAIConfig.PropertyChanged += TestAzureAI;
@@ -36,6 +38,22 @@ namespace PowerPad.WinUI.Pages
             LightThemeRadioButton.Checked += ThemeRadioButton_Checked;
             DarkThemeRadioButton.Checked += ThemeRadioButton_Checked;
             SystemThemeRadioButton.Checked += ThemeRadioButton_Checked;
+
+            ModelsExpanderOllama.IsExpanded = _settings.General.OllamaEnabled && _settings.General.OllamaConfig.HasError;
+            ModelsExpanderAzureAI.IsExpanded = _settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.HasError;
+            ModelsExpanderOpenAI.IsExpanded = _settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.HasError;
+
+            Unloaded += (s, e) =>
+            {
+                if (_settings.General.OllamaEnabled && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
+                    _settings.General.OllamaEnabled = false;
+
+                if (_settings.General.AzureAIEnabled && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl))
+                    _settings.General.AzureAIEnabled = false;
+
+                if (_settings.General.OpenAIEnabled && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl))
+                    _settings.General.OpenAIEnabled = false;
+            };
         }
 
         private async void StartOllama_Click(object _, RoutedEventArgs __)
@@ -52,12 +70,12 @@ namespace PowerPad.WinUI.Pages
             catch
             {
                 OllamaInfoBar.IsOpen = true;
-                OllamaInfoBar.Message = "No se ha podido iniciar Ollama.";
+                OllamaInfoBar.Content = "No se ha podido iniciar Ollama.";
                 OllamaInfoBar.Severity = InfoBarSeverity.Error;
             }
             finally
             {
-                ProtectedCursor = protectedCursorAux;
+                ProtectedCursor = _defaultCursor;
             }
         }
 
@@ -75,18 +93,18 @@ namespace PowerPad.WinUI.Pages
             catch
             {
                 OllamaInfoBar.IsOpen = true;
-                OllamaInfoBar.Message = "No se ha podido detener Ollama.";
+                OllamaInfoBar.Content = "No se ha podido detener Ollama.";
                 OllamaInfoBar.Severity = InfoBarSeverity.Error;
             }
             finally
             {
-                ProtectedCursor = protectedCursorAux;
+                ProtectedCursor = _defaultCursor;
             }
         }
 
         private async void TestOllama(object? _, PropertyChangedEventArgs __)
         {
-            var protectedCursorAux = ProtectedCursor;
+            if (string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl)) return;
 
             try
             {
@@ -94,26 +112,18 @@ namespace PowerPad.WinUI.Pages
 
                 var result = await App.Get<IOllamaService>().TestConection();
 
-                if (!result.Success)
-                {
-                    OllamaInfoBar.IsOpen = true;
-                    OllamaInfoBar.Message = result.ErrorMessage;
-                    OllamaInfoBar.Severity = InfoBarSeverity.Error;
-                }
-                else
-                {
-                    OllamaInfoBar.IsOpen = false;
-                }
+                _settings.General.OllamaConfig.HasError = !result.Success;
             }
             finally
             {
-                ProtectedCursor = protectedCursorAux;
+                ProtectedCursor = _defaultCursor;
             }
         }
 
         private async void TestAzureAI(object? _, PropertyChangedEventArgs __)
         {
-            var protectedCursorAux = ProtectedCursor;
+            if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl)
+                || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key)) return;
 
             try
             {
@@ -121,26 +131,18 @@ namespace PowerPad.WinUI.Pages
 
                 var result = await App.Get<IAzureAIService>().TestConection();
 
-                if (!result.Success)
-                {
-                    AzureAIInfoBar.IsOpen = true;
-                    AzureAIInfoBar.Message = result.ErrorMessage;
-                    AzureAIInfoBar.Severity = InfoBarSeverity.Error;
-                }
-                else
-                {
-                    AzureAIInfoBar.IsOpen = false;
-                }
+                _settings.General.AzureAIConfig.HasError = !result.Success;
             }
             finally
             {
-                ProtectedCursor = protectedCursorAux;
+                ProtectedCursor = _defaultCursor;
             }
         }
 
         private async void TestOpenAI(object? _, PropertyChangedEventArgs __)
         {
-            var protectedCursorAux = ProtectedCursor;
+            if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl)
+                || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key)) return;
 
             try
             {
@@ -148,20 +150,11 @@ namespace PowerPad.WinUI.Pages
 
                 var result = await App.Get<IOpenAIService>().TestConection();
 
-                if (!result.Success)
-                {
-                    OpenAIInfoBar.IsOpen = true;
-                    OpenAIInfoBar.Message = result.ErrorMessage;
-                    OpenAIInfoBar.Severity = InfoBarSeverity.Error;
-                }
-                else
-                {
-                    OpenAIInfoBar.IsOpen = false;
-                }
+                _settings.General.OpenAIConfig.HasError = !result.Success;
             }
             finally
             {
-                ProtectedCursor = protectedCursorAux;
+                ProtectedCursor = _defaultCursor;
             }
         }
 
@@ -204,6 +197,7 @@ namespace PowerPad.WinUI.Pages
 
                 DefaultModelCard.IsEnabled = true;
                 DefaultParameterCard.IsEnabled = true;
+                AgentConfigCard.IsEnabled = true;
                 FakeButton.Visibility = Visibility.Collapsed;
                 DefaultModelButton.Visibility = Visibility.Visible;
             }
@@ -211,6 +205,7 @@ namespace PowerPad.WinUI.Pages
             {
                 DefaultModelCard.IsEnabled = false;
                 DefaultParameterCard.IsEnabled = false;
+                AgentConfigCard.IsEnabled = false;
                 FakeButton.Visibility = Visibility.Visible;
                 DefaultModelButton.Visibility = Visibility.Collapsed;
             }
@@ -281,8 +276,46 @@ namespace PowerPad.WinUI.Pages
                 _settings.General.AppTheme = newThemeChoice;
 
                 ThemeInfoBar.IsOpen = true;
-                ThemeInfoBar.Message = "Reinicia la aplicación para aplicar los cambios.";
+                ThemeInfoBar.Content = "Reinicia la aplicación para aplicar los cambios.";
                 ThemeInfoBar.Severity = InfoBarSeverity.Informational;
+            }
+        }
+
+        private void ModelsExpanderOllama_Toggled(object _, RoutedEventArgs __)
+        {
+            if (!ModelsExpanderOllama.IsExpanded 
+                && !_settings.General.OllamaEnabled 
+                && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
+            {
+                ModelsExpanderOllama.IsExpanded = true;
+                OllamaUrlTextBox.Focus(FocusState.Keyboard);
+                OllamaUrlTextBox.EnterEditMode();
+            }
+        }
+
+        private void ModelsExpanderAzureAI_Toggled(object _, RoutedEventArgs __)
+        {
+            if (!ModelsExpanderAzureAI.IsExpanded
+                && !_settings.General.AzureAIEnabled
+                && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl))
+            {
+                ModelsExpanderAzureAI.IsExpanded = true;
+                AzureAIKeyTextBox.EnterEditMode();
+                AzureAIUrlTextBox.Focus(FocusState.Keyboard);
+                AzureAIUrlTextBox.EnterEditMode();
+            }
+        }
+
+        private void ModelsExpanderOpenAI_Toggled(object _, RoutedEventArgs __)
+        {
+            if (!ModelsExpanderOpenAI.IsExpanded
+                && !_settings.General.OpenAIEnabled
+                && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl))
+            {
+                ModelsExpanderOpenAI.IsExpanded = true;
+                OpenAIKeyTextBox.EnterEditMode();
+                OpenAIUrlTextBox.Focus(FocusState.Keyboard);
+                OpenAIUrlTextBox.EnterEditMode();
             }
         }
     }

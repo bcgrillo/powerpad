@@ -4,8 +4,10 @@ using CommunityToolkit.Mvvm.Messaging;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services.FileSystem;
+using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Messages;
 using System;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.FileSystem
 {
@@ -43,6 +45,10 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public IRelayCommand RenameCommand { get; }
 
+        public IAsyncRelayCommand GenerateNameCommand { get; }
+
+        public bool Untitled;
+
         public DocumentViewModel(Document document, IEditorContract editorControl)
         {
             _document = document;
@@ -55,6 +61,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             SaveCommand = new RelayCommand(Save);
             AutosaveCommand = new RelayCommand(Autosave);
             RenameCommand = new RelayCommand<string>(Rename);
+            GenerateNameCommand = new AsyncRelayCommand(GenerateName);
 
             WeakReferenceMessenger.Default.Register(this);
         }
@@ -87,11 +94,26 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             NameChanged();
         }
 
+        private async Task GenerateName()
+        {
+            var generatedName = await NameGenerator.Generate(_editorControl.GetContent());
+
+            if (generatedName != null)
+            {
+                var workspaceService = App.Get<IWorkspaceService>();
+
+                workspaceService.RenameDocument(_document, generatedName);
+
+                NameChanged();
+            }
+        }
+
         public void NameChanged()
         {
             WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true});
 
             OnPropertyChanged(nameof(Name));
+            Untitled = false;
         }
 
         public void Receive(FolderEntryChanged message)
@@ -99,6 +121,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             if (message.Value == _document)
             {
                 if (message.NameChanged) OnPropertyChanged(nameof(Name));
+                Untitled = false;
             }
         }
     }

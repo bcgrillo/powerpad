@@ -86,7 +86,7 @@ namespace PowerPad.WinUI.Components.Controls
             if (_state.IsEditing && ConfirmOnLostFocus) Confirm();
         }
 
-        private void EnterEditMode()
+        public void EnterEditMode()
         {
             IntegratedTextBox.Text = Value;
             _state.EnterEditMode();

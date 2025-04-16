@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.AI;
+﻿using Azure.AI.Inference;
+using Azure;
+using Microsoft.Extensions.AI;
 using OpenAI;
 using OpenAI.Models;
 using PowerPad.Core.Contracts;
@@ -17,22 +19,30 @@ namespace PowerPad.Core.Services.AI
         private const string OPENAI_MODELS_BASE_URL = "https://platform.openai.com/docs/models/";
 
         private OpenAIClient? _openAI;
+        private AIServiceConfig? _config;
 
         public void Initialize(AIServiceConfig config)
         {
-            ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
-            ArgumentException.ThrowIfNullOrEmpty(config.Key);
+            _config = !string.IsNullOrEmpty(config.BaseUrl) && !string.IsNullOrEmpty(config.Key) ? config : null;
+            _openAI = null;
+        }
 
-            _openAI = new(new(config.Key), new() { Endpoint = new(config.BaseUrl) });
+        public OpenAIClient? GetClient()
+        {
+            if (_openAI is not null) return _openAI;
+            if (_config is null) return null;
+
+            _openAI = new(new(_config.Key!), new() { Endpoint = new(_config.BaseUrl!) });
+            return _openAI;
         }
 
         public async Task<TestConnectionResult> TestConection()
         {
-            if (_openAI is null) return new(false, "OpenAI service is not initialized.");
+            if (_config is null) return new(false, "OpenAI service is not initialized.");
 
             try
             {
-                _ = await _openAI.GetOpenAIModelClient().GetModelsAsync();
+                _ = await GetClient()!.GetOpenAIModelClient().GetModelsAsync();
 
                 return new(true);
             }
@@ -42,13 +52,13 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public IChatClient? ChatClient(AIModel model) => _openAI?.AsChatClient(model.Name);
+        public IChatClient? ChatClient(AIModel model) => GetClient()?.AsChatClient(model.Name);
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
-            if (_openAI is null) return [];
+            if (_config is null) return [];
 
-            var models = await _openAI.GetOpenAIModelClient().GetModelsAsync();
+            var models = await GetClient()!.GetOpenAIModelClient().GetModelsAsync();
 
             // Compatible models are those that start with "gpt" or "oX" where X is a digit
             // By now this is the only way to filter models compatible with chat completions

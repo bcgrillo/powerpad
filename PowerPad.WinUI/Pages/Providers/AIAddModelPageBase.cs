@@ -3,14 +3,16 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PowerPad.WinUI.Components;
 using PowerPad.WinUI.ViewModels.AI;
+using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public abstract class AIAddModelPageBase(AIModelsViewModelBase aIModelsViewModel) : DisposablePage
+    public abstract class AIAddModelPageBase(AIModelsViewModelBase aiModelsViewModel) : DisposablePage
     {
-        protected AIModelsViewModelBase _modelsViewModel = aIModelsViewModel;
+        protected SettingsViewModel _settings = App.Get<SettingsViewModel>();
+        protected AIModelsViewModelBase _modelsViewModel = aiModelsViewModel;
 
         protected void Search_Click(object _, RoutedEventArgs __) => Search();
 

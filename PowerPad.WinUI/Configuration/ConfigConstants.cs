@@ -82,7 +82,8 @@ namespace PowerPad.WinUI.Configuration
                         MaxConversationLength = 50
                     }),
                     SendDefaultParameters = true,
-                    AvailableModels = []
+                    AvailableModels = [],
+                    RecoverableModels = []
                 };
 
                 defaultModelSettings.AvailableModels.Add(defaultModelSettings.DefaultModel);

@@ -1,12 +1,14 @@
 ﻿using PowerPad.WinUI.Components;
 using PowerPad.WinUI.ViewModels.AI;
+using PowerPad.WinUI.ViewModels.Settings;
 using System;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public abstract class AIModelsPageBase(AIModelsViewModelBase aIModelsViewModel) : DisposablePage
+    public abstract class AIModelsPageBase(AIModelsViewModelBase aiModelsViewModel) : DisposablePage
     {
-        protected AIModelsViewModelBase _modelsViewModel = aIModelsViewModel;
+        protected SettingsViewModel _settings = App.Get<SettingsViewModel>();
+        protected AIModelsViewModelBase _modelsViewModel = aiModelsViewModel;
 
         protected void SetDefault_Click(object _, AIModelClickEventArgs eventArgs)
         {

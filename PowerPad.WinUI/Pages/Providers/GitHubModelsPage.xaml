@@ -10,6 +10,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
     <Grid>
@@ -18,11 +19,17 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Margin="36,36,36,20">
-            <Image Source="{ThemeResource GithubSvg}" Width="42" Height="42" Margin="0,0,24,0"/>
-            <TextBlock
-                Style="{StaticResource TitleTextBlockStyle}"
-                Text="Modelos de GitHub" />
+        <StackPanel Margin="36,36,36,20" Spacing="16">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{ThemeResource GithubSvg}" Width="42" Height="42" Margin="0,0,24,0"/>
+                <TextBlock
+                    Style="{StaticResource TitleTextBlockStyle}"
+                    Text="Modelos de GitHub" />
+            </StackPanel>
+            <muxc:InfoBar 
+                IsOpen="{x:Bind _settings.General.AzureAIConfig.HasError, Mode=OneWay}"
+                IsClosable="False"
+                Content="Error al conectar a Azure AI, revise la configuración." />
         </StackPanel>
 
         <components:AvailableModelsRepeater
@@ -32,6 +39,6 @@
             DeleteClick="Delete_Click"
             SetDefaultClick="SetDefault_Click"
             ModelInfoViewerVisibilityChanged="AIModelsRepeater_ModelInfoViewerVisibilityChanged"
-            ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}" />
+            ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}"/>
     </Grid>
 </local:AIModelsPageBase>

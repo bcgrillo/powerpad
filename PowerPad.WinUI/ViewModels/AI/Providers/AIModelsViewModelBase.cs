@@ -10,7 +10,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PowerPad.WinUI.ViewModels.AI
+namespace PowerPad.WinUI.ViewModels.AI.Providers
 {
     public abstract partial class AIModelsViewModelBase : ObservableObject, IDisposable
     {
@@ -18,7 +18,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         private bool _searchCompleted;
 
         protected readonly IAIService _aiService;
-        protected readonly SettingsViewModel _settingsViewModel;
+        protected readonly SettingsViewModel _settings;
         protected readonly ModelProvider _modelProvider;
 
         public IRelayCommand<AIModelViewModel> SetDefaultModelCommand { get; }
@@ -40,7 +40,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         public AIModelsViewModelBase(IAIService aiService, ModelProvider modelProvider)
         {
             _aiService = aiService;
-            _settingsViewModel = App.Get<SettingsViewModel>();
+            _settings = App.Get<SettingsViewModel>();
             _modelProvider = modelProvider;
 
             SetDefaultModelCommand = new RelayCommand<AIModelViewModel>(SetDefaultModel);
@@ -50,20 +50,18 @@ namespace PowerPad.WinUI.ViewModels.AI
 
             FilteredModels = 
             [.. 
-                _settingsViewModel.Models.AvailableModels
+                _settings.Models.AvailableModels
                     .Where(m => m.ModelProvider == _modelProvider)
                     .OrderBy(m => m.Name) 
             ];
 
-            _settingsViewModel.Models.AvailableModels.CollectionChanged += FilterModels;
+            _settings.Models.AvailableModels.CollectionChanged += FilterModels;
 
             SearchResultModels = [];
         }
 
         protected void FilterModels(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
-            var newAvailableModels = _settingsViewModel.Models.AvailableModels;
-
             switch (eventArgs.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -89,7 +87,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         private void SetDefaultModel(AIModelViewModel? aiModel)
         {
-            _settingsViewModel.Models.DefaultModel = aiModel;
+            _settings.Models.DefaultModel = aiModel;
         }
 
         protected virtual async Task SearchModels(string? query)
@@ -103,7 +101,7 @@ namespace PowerPad.WinUI.ViewModels.AI
             SearchResultModels.Clear();
             SearchResultModels.AddRange(resultModels.Select(m =>
             {
-                var existingModel = _settingsViewModel.Models.AvailableModels
+                var existingModel = _settings.Models.AvailableModels
                     .FirstOrDefault(am => am.Name == m.Name && am.ModelProvider == m.ModelProvider);
 
                 return existingModel ?? new AIModelViewModel(m) { Available = false };
@@ -118,11 +116,12 @@ namespace PowerPad.WinUI.ViewModels.AI
         {
             ArgumentNullException.ThrowIfNull(aiModel);
 
-            if (!_settingsViewModel.Models.AvailableModels.Any(m => m == aiModel))
+            if (!_settings.Models.AvailableModels.Any(m => m == aiModel))
             {
                 aiModel.Available = true;
+                aiModel.Enabled = true;
 
-                _settingsViewModel.Models.AvailableModels.Add(aiModel);
+                _settings.Models.AvailableModels.Add(aiModel);
             }
 
             return Task.CompletedTask;
@@ -132,9 +131,9 @@ namespace PowerPad.WinUI.ViewModels.AI
         {
             ArgumentNullException.ThrowIfNull(aiModel);
 
-            if (_settingsViewModel.Models.AvailableModels.Any(m => m == aiModel))
+            if (_settings.Models.AvailableModels.Any(m => m == aiModel))
             {
-                _settingsViewModel.Models.AvailableModels.Remove(aiModel);
+                _settings.Models.AvailableModels.Remove(aiModel);
             }
 
             return Task.CompletedTask;
@@ -155,7 +154,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         {
             if (!_disposed)
             {
-                if (disposing) _settingsViewModel.Models.AvailableModels.CollectionChanged -= FilterModels;
+                if (disposing) _settings.Models.AvailableModels.CollectionChanged -= FilterModels;
 
                 _disposed = true;
             }

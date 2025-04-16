@@ -13,7 +13,11 @@
         <converters:EmptyObjectToObjectConverter x:Key="EmptyObjectToObjectConverter" EmptyValue="Collapsed" NotEmptyValue="Visible" />
     </UserControl.Resources>
     <Grid>
-        <StackPanel Orientation="Vertical" Spacing="4"  Visibility="{x:Bind _settings.Models.DefaultModel, Mode=OneWay, Converter={StaticResource EmptyObjectToObjectConverter}}">
+        <StackPanel 
+            Orientation="Vertical" 
+            Spacing="4"
+            Margin="0,0,0,-24"
+            Visibility="{x:Bind _settings.Models.DefaultModel, Mode=OneWay, Converter={StaticResource EmptyObjectToObjectConverter}}">
             <Grid
                 x:Name="ParametersPanel"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"

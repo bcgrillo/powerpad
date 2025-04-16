@@ -15,6 +15,8 @@ using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Services.Config;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace PowerPad.WinUI
 {
@@ -22,7 +24,7 @@ namespace PowerPad.WinUI
     {
         private DesktopAcrylicController? _acrylicController;
         private SystemBackdropConfiguration? _configurationSource;
-        private readonly GeneralSettingsViewModel _generalSettings;
+        private readonly SettingsViewModel _settings;
 
         private string? _activePageName;
         private INavigationPage? _activeNavPage;
@@ -37,7 +39,7 @@ namespace PowerPad.WinUI
 
         public MainWindow()
         {
-            _generalSettings = App.Get<SettingsViewModel>().General;
+            _settings = App.Get<SettingsViewModel>();
 
             this.InitializeComponent();
             SetBackdrop();
@@ -50,35 +52,34 @@ namespace PowerPad.WinUI
                 App.Get<IConfigStoreService>().StoreConfigs();
                 EditorManagerHelper.AutoSaveEditors();
             };
+            
+            UpdateNavMenuItems();
 
-            StartOllama();
+            _settings.General.PropertyChanged += (s, e) => UpdateNavMenuItems();
+            _settings.Models.PropertyChanged += (s, e) => UpdateNavMenuItems();
         }
 
-        private void StartOllama()
+        private void UpdateNavMenuItems()
         {
-            if (_generalSettings.OllamaEnabled && _generalSettings.OllamaAutostart)
-            {
-                try
-                {
-                    App.Get<IOllamaService>().Start();
-                }
-                catch
-                {
-                    //TODO: Something
-                }
-            }
+            ModelsNavViewItem.IsEnabled = _settings.General.GetAvailableModelProviders().Any();
+            AgentesNavViewItem.IsEnabled = _settings.Models.DefaultModel is not null;
+
+            ErrorBadge.Visibility = (_settings.General.OllamaEnabled && _settings.General.OllamaConfig.HasError)
+                || (_settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.HasError)
+                || (_settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.HasError)
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void SetBackdrop()
         {
-            if (_generalSettings.AcrylicBackground && DesktopAcrylicController.IsSupported())
+            if (_settings.General.AcrylicBackground && DesktopAcrylicController.IsSupported())
             {
                 _configurationSource ??= new()
                 {
                     IsInputActive = true,
-                    Theme = _generalSettings.AppTheme is null
+                    Theme = _settings.General.AppTheme is null
                         ? (SystemBackdropTheme)((FrameworkElement)Content).ActualTheme
-                        : (_generalSettings.AppTheme == ApplicationTheme.Light ? SystemBackdropTheme.Light : SystemBackdropTheme.Dark)
+                        : (_settings.General.AppTheme == ApplicationTheme.Light ? SystemBackdropTheme.Light : SystemBackdropTheme.Dark)
                 };
 
                 _acrylicController ??= new()

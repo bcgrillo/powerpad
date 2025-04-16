@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Azure.AI.Inference;
 using Microsoft.Extensions.AI;
+using OllamaSharp;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Helpers;
 using PowerPad.Core.Models.AI;
@@ -16,23 +17,31 @@ namespace PowerPad.Core.Services.AI
         private const string TEST_MODEL = "gpt-4o";
 
         private ChatCompletionsClient? _azureAI;
+        private AIServiceConfig? _config;
 
         public void Initialize(AIServiceConfig config)
         {
-            ArgumentException.ThrowIfNullOrEmpty(config.BaseUrl);
-            ArgumentException.ThrowIfNullOrEmpty(config.Key);
+            _config = !string.IsNullOrEmpty(config.BaseUrl) && !string.IsNullOrEmpty(config.Key) ? config : null;
+            _azureAI = null;
+        }
 
-            _azureAI = new(new(config.BaseUrl), new AzureKeyCredential(config.Key));
+        public ChatCompletionsClient? GetClient()
+        {
+            if (_azureAI is not null) return _azureAI;
+            if (_config is null) return null;
+
+            _azureAI = new(new(_config.BaseUrl!), new AzureKeyCredential(_config.Key!));
+            return _azureAI;
         }
 
         public async Task<TestConnectionResult> TestConection()
         {
-            if (_azureAI is null) return new(false, "Azure AI is not initialized.");
+            if (_config is null) return new(false, "Azure AI is not initialized.");
 
             try
             {
                 //TODO: Check a better way to do this
-                var result = await _azureAI.AsChatClient(TEST_MODEL).GetResponseAsync("test");
+                var result = await GetClient()!.AsChatClient(TEST_MODEL).GetResponseAsync("test");
 
                 return new(true);
             }
@@ -42,7 +51,7 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public IChatClient? ChatClient(AIModel model) => _azureAI?.AsChatClient(model.Name);
+        public IChatClient? ChatClient(AIModel model) => GetClient()?.AsChatClient(model.Name);
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {

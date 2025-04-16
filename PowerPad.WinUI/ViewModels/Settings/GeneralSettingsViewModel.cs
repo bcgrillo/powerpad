@@ -67,16 +67,16 @@ namespace PowerPad.WinUI.ViewModels.Settings
         {
             List<ModelProvider> providers = [];
 
-            if (OllamaEnabled)
+            if (OllamaEnabled && !OllamaConfig.HasError)
             {
                 providers.Add(ModelProvider.Ollama);
                 providers.Add(ModelProvider.HuggingFace);
             }
-            if (AzureAIEnabled)
+            if (AzureAIEnabled && !AzureAIConfig.HasError)
             {
                 providers.Add(ModelProvider.GitHub);
             }
-            if (OpenAIEnabled)
+            if (OpenAIEnabled && !OpenAIConfig.HasError)
             {
                 providers.Add(ModelProvider.OpenAI);
             }

@@ -10,8 +10,13 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
+    <Page.Resources>
+        <converters:BoolNegationConverter x:Key="BoolNegationConverter" />
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition x:Name="RowHeader" Height="*" />
@@ -33,16 +38,22 @@
                     PlaceholderText="Nombre del modelo" 
                     Margin="0,0,6,0"
                     KeyDown="Search_KeyDown"
-                    PlaceholderForeground="{ThemeResource TextFillColorTertiaryBrush}" />
+                    PlaceholderForeground="{ThemeResource TextFillColorTertiaryBrush}"
+                    IsEnabled="{x:Bind _settings.General.OllamaConfig.HasError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}" />
                 <Button
                     Height="32"
                     ToolTipService.ToolTip="Buscar"
-                    Click="Search_Click">
+                    Click="Search_Click"
+                    IsEnabled="{x:Bind _settings.General.OllamaConfig.HasError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
                     <Button.Content>
                         <FontIcon Glyph="&#xE721;" FontSize="14" />
                     </Button.Content>
                 </Button>
             </StackPanel>
+            <muxc:InfoBar 
+                IsOpen="{x:Bind _settings.General.OllamaConfig.HasError, Mode=OneWay}"
+                IsClosable="False"
+                Content="Error al conectar a Ollama, revise la configuración." />
         </StackPanel>
 
         <Grid 

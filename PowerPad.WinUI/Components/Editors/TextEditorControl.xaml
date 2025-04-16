@@ -69,7 +69,7 @@
         <lcontrols:AgentControl
             x:Name="AgentControl"
             Grid.Row="2"
-            Margin="36,18,36,12"
+            Margin="36,18,36,36"
             SendButtonClicked="AgentControl_SendButtonClicked" />
 
     </Grid>

@@ -32,12 +32,20 @@ namespace PowerPad.WinUI.ViewModels.Settings
             init
             {
                 field = value;
-                field.CollectionChanged += CollectionChangedHandler;
-                foreach (AIModelViewModel model in field) model.PropertyChanged += CollectionPropertyChangedHandler;
+                field.CollectionChanged += AvailableCollectionChangedHandler;
+                foreach (AIModelViewModel model in field) model.PropertyChanged += AvailableCollectionPropertyChangedHandler;
             }
         }
 
-        public Collection<AIModelViewModel> RecoverableModels = [];
+        public required ObservableCollection<AIModelViewModel> RecoverableModels
+        {
+            get;
+            init
+            {
+                field = value;
+                field.CollectionChanged += RecoverableCollectionChangedHandler;
+            }
+        }
 
         public ModelsSettingsViewModel()
         {
@@ -57,38 +65,35 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         private void SecondaryPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
 
-        private void CollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
+        private void AvailableCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
-            OnPropertyChanged($"{nameof(AvailableModels)}");
-
             if (eventArgs.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (AIModelViewModel model in eventArgs.NewItems!)
                 {
-                    model.PropertyChanged += CollectionPropertyChangedHandler;
+                    model.PropertyChanged += AvailableCollectionPropertyChangedHandler;
                 }
             }
             else if (eventArgs.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (AIModelViewModel model in eventArgs.OldItems!)
                 {
-                    model.PropertyChanged -= CollectionPropertyChangedHandler;
+                    model.PropertyChanged -= AvailableCollectionPropertyChangedHandler;
                 }
             }
             else throw new NotImplementedException("Only Add and Remove actions are supported.");
 
-            ValidateDefaultModel();
+            OnPropertyChanged(nameof(AvailableModels));
         }
 
-        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __)
+        private void AvailableCollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __)
         {
-            ValidateDefaultModel();
-            OnPropertyChanged();
+            OnPropertyChanged(nameof(AvailableModels));
         }
 
-        private void ValidateDefaultModel()
+        private void RecoverableCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
-            if (!AvailableModels.Where(m => m.Enabled).Contains(DefaultModel)) DefaultModel = null;
+            OnPropertyChanged(nameof(RecoverableModels));
         }
     }
 }

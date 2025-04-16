@@ -72,13 +72,21 @@
                                 <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" Toggled="ModelsExpanderOllama_Toggled" />
                             </StackPanel>
                             <toolkit:SettingsExpander.ItemsHeader>
-                                <muxc:InfoBar 
-                                    Style="{StaticResource InfoBarServiceStyle}"
-                                    x:Name="OllamaInfoBar">
-                                </muxc:InfoBar>
+                                <StackPanel>
+                                    <muxc:InfoBar 
+                                        Style="{StaticResource InfoBarServiceStyle}"
+                                        IsOpen="{x:Bind _settings.General.OllamaConfig.HasError, Mode=OneWay}"
+                                        IsClosable="False"
+                                        Content="Error al conectar a Ollama, revise la configuración de conexión o la instalación de Ollama.">
+                                    </muxc:InfoBar>
+                                    <muxc:InfoBar 
+                                        Style="{StaticResource InfoBarServiceStyle}"
+                                        x:Name="OllamaInfoBar">
+                                    </muxc:InfoBar>
+                                </StackPanel>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <toolkit:SettingsCard>
@@ -126,6 +134,7 @@
                                             Text="URL:" />
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
+                                            x:Name="OllamaUrlTextBox"
                                             Value="{x:Bind _settings.General.OllamaConfig.BaseUrl, Mode=TwoWay}"
                                             IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}" />
                                     </Grid>
@@ -154,12 +163,14 @@
                                 <ImageIcon Source="{ThemeResource AzureAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" Toggled="ModelsExpanderAzureAI_Toggled" />
                             </StackPanel>
                             <toolkit:SettingsExpander.ItemsHeader>
                                 <muxc:InfoBar 
                                     Style="{StaticResource InfoBarServiceStyle}"
-                                    x:Name="AzureAIInfoBar">
+                                    IsOpen="{x:Bind _settings.General.AzureAIConfig.HasError, Mode=OneWay}"
+                                    IsClosable="False"
+                                    Content="Error al conectar a Azure AI, revise la configuración o su conexión a Internet.">
                                 </muxc:InfoBar>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
@@ -174,6 +185,7 @@
                                             Text="URL:" />
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
+                                            x:Name="AzureAIUrlTextBox"
                                             Value="{x:Bind _settings.General.AzureAIConfig.BaseUrl, Mode=TwoWay}"
                                             IsEnabled="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}"/>
                                     </Grid>
@@ -189,6 +201,7 @@
                                             Text="Clave:" />
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
+                                            x:Name="AzureAIKeyTextBox"
                                             Value="{x:Bind _settings.General.AzureAIConfig.Key, Mode=TwoWay}"
                                             IsEnabled="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}"
                                             PasswordMode="True" />
@@ -212,12 +225,14 @@
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" />
+                                <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" Toggled="ModelsExpanderOpenAI_Toggled" />
                             </StackPanel>
                             <toolkit:SettingsExpander.ItemsHeader>
                                 <muxc:InfoBar 
                                     Style="{StaticResource InfoBarServiceStyle}"
-                                    x:Name="OpenAIInfoBar">
+                                    IsOpen="{x:Bind _settings.General.OpenAIConfig.HasError, Mode=OneWay}"
+                                    IsClosable="False"
+                                    Content="Error al conectar a OpenAI, revise la configuración o su conexión a Internet.">
                                 </muxc:InfoBar>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
@@ -233,6 +248,7 @@
                                             IsEnabled="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}" />
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
+                                            x:Name="OpenAIUrlTextBox"
                                             Value="{x:Bind _settings.General.OpenAIConfig.BaseUrl, Mode=TwoWay}"
                                             IsEnabled="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}"/>
                                     </Grid>
@@ -249,6 +265,7 @@
                                             IsEnabled="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}" />
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
+                                            x:Name="OpenAIKeyTextBox"
                                             Value="{x:Bind _settings.General.OpenAIConfig.Key, Mode=TwoWay}"
                                             IsEnabled="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}"
                                             PasswordMode="True" />
@@ -399,6 +416,7 @@
                             </toolkit:SettingsExpander.Items>
                         </toolkit:SettingsExpander>
                         <toolkit:SettingsExpander
+                            x:Name="AgentConfigCard"
                             Header="Agentes"
                             Description="Configuración específica para los agentes"
                             HeaderIcon="{ui:FontIcon Glyph=&#xE99A;}">

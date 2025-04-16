@@ -128,7 +128,7 @@
             <lcontrols:ChatControl
                 x:Name="ChatControl"
                 Grid.Row="1"
-                Margin="36,18,36,12"
+                Margin="36,18,36,36"
                 ChatPlaceHolder="Escribe lo que quieras..."
                 SendButtonClicked="ChatControl_SendButtonClicked"
                 ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged" />

@@ -11,6 +11,7 @@
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
     xmlns:converters="using:PowerPad.WinUI.Converters"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
     <local:AIModelsPageBase.Resources>
@@ -24,12 +25,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="36,36,36,20">
+        <Grid Margin="36,36,36,20" RowSpacing="16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
             <Image Grid.Column="0" Source="{ThemeResource HuggingFaceSvg}" Width="42" Height="42" Margin="0,0,24,0" />
             <TextBlock
                 Grid.Column="1"
@@ -53,11 +58,17 @@
                     </Button.Content>
                 </Button>
             </StackPanel>
+            <muxc:InfoBar 
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                IsOpen="{x:Bind _settings.General.OllamaConfig.HasError, Mode=OneWay}"
+                IsClosable="False"
+                Content="No estás conectado a Ollama, revise la configuración." />
         </Grid>
 
         <components:AvailableModelsRepeater
             x:Name ="AvailableModelsRepeater"
-            Grid.Row="1"
+            Grid.Row="2"
             Models="{x:Bind _modelsViewModel.FilteredModels, Mode=OneWay}"
             DeleteClick="Delete_Click"
             SetDefaultClick="SetDefault_Click"

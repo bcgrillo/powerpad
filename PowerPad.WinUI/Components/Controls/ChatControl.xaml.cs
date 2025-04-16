@@ -127,7 +127,18 @@ namespace PowerPad.WinUI.Components.Controls
                 {
                     //Selected model is not available
                     _selectedModel = null;
-                    ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
+
+                    menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault();
+
+                    if (menuItem is not null)
+                    {
+                        DispatcherQueue.TryEnqueue(async () =>
+                        {
+                            await Task.Delay(100);
+                            menuItem.IsChecked = true;
+                        });
+                    }
+
                     OnChatOptionChanged();
                 }
             }

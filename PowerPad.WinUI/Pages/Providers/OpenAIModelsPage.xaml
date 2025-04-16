@@ -10,6 +10,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
     <Grid>
@@ -17,12 +18,18 @@
             <RowDefinition x:Name="RowHeader" Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <StackPanel Orientation="Horizontal" Margin="36,36,36,20">
-            <Image Source="{ThemeResource OpenAISvg}" Width="42" Height="42" Margin="0,0,24,0"/>
-            <TextBlock
-                Style="{StaticResource TitleTextBlockStyle}"
-                Text="Modelos de OpenAI" />
+
+        <StackPanel Margin="36,36,36,20" Spacing="16">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{ThemeResource OpenAISvg}" Width="42" Height="42" Margin="0,0,24,0"/>
+                <TextBlock
+                    Style="{StaticResource TitleTextBlockStyle}"
+                    Text="Modelos de OpenAI" />
+            </StackPanel>
+            <muxc:InfoBar 
+                IsOpen="{x:Bind _settings.General.OpenAIConfig.HasError, Mode=OneWay}"
+                IsClosable="False"
+                Content="Error al conectar a OpenAI, revise la configuración." />
         </StackPanel>
 
         <components:AvailableModelsRepeater

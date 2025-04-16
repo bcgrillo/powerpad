@@ -70,13 +70,13 @@ namespace PowerPad.WinUI.Components.Controls
             {
                 AgentPanel.Visibility = Visibility.Collapsed;
                 InfoBar.IsOpen = true;
-                InfoBar.Message = "No hay agentes disponibles, revise la configuración.";
+                InfoBar.Content = "No hay agentes disponibles, revise la configuración.";
             }
             else if (_settings.Models.DefaultModel is null)
             {
                 AgentPanel.Visibility = Visibility.Collapsed;
                 InfoBar.IsOpen = true;
-                InfoBar.Message = "No hay modelos disponibles, revise la configuración.";
+                InfoBar.Content = "No hay modelos disponibles, revise la configuración.";
             }
             else if (_selectedAgent is not null && _settings.Models.DefaultModel is not null)
             {

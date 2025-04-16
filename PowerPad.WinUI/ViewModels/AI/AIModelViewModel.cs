@@ -96,6 +96,7 @@ namespace PowerPad.WinUI.ViewModels.AI
                 Progress = 100;
                 Downloading = false;
                 Available = true;
+                Enabled = true;
             }
         }
 

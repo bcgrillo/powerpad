@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
-    public class AIServiceConfigViewModel(AIServiceConfig aiServiceConfig) : ObservableObject
+    public partial class AIServiceConfigViewModel(AIServiceConfig aiServiceConfig) : ObservableObject
     {
         private readonly AIServiceConfig _aiServiceConfig = aiServiceConfig;
 
@@ -29,6 +29,9 @@ namespace PowerPad.WinUI.ViewModels.Settings
             get => _aiServiceConfig.Key;
             set => SetProperty(_aiServiceConfig.Key, value, _aiServiceConfig, (x, y) => x.Key = y);
         }
+
+        [ObservableProperty]
+        private bool _hasError;
 
         public AIServiceConfig GetRecord() => _aiServiceConfig;
     }
