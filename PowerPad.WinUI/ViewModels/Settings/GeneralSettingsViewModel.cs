@@ -1,8 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
+using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
-using System.Collections.Generic;
+using PowerPad.WinUI.Helpers;
+using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
@@ -17,18 +22,19 @@ namespace PowerPad.WinUI.ViewModels.Settings
         [ObservableProperty]
         private bool _openAIEnabled;
 
+        [ObservableProperty]
+        private bool _ollamaAutostart;
+
         public required AIServiceConfigViewModel OllamaConfig
         { 
             get; 
             init
             {
                 field = value;
-                field.PropertyChanged += (s, e) => OnPropertyChanged(nameof(OllamaConfig));
+                field.StatusChanged += ServiceStatusChanged;
+                field.ConfigChanged += ServiceConfigChanged;
             }
         }
-
-        [ObservableProperty]
-        private bool _ollamaAutostart;
 
         public required AIServiceConfigViewModel AzureAIConfig
         {
@@ -36,7 +42,8 @@ namespace PowerPad.WinUI.ViewModels.Settings
             init
             {
                 field = value;
-                field.PropertyChanged += (s, e) => OnPropertyChanged(nameof(AzureAIConfig));
+                field.StatusChanged += ServiceStatusChanged;
+                field.ConfigChanged += ServiceConfigChanged;
             }
         }
 
@@ -46,7 +53,18 @@ namespace PowerPad.WinUI.ViewModels.Settings
             init
             {
                 field = value;
-                field.PropertyChanged += (s, e) => OnPropertyChanged(nameof(OpenAIConfig));
+                field.StatusChanged += ServiceStatusChanged;
+                field.ConfigChanged += ServiceConfigChanged;
+            }
+        }
+
+        public required ObservableCollection<ModelProvider> AvailableProviders
+        {
+            get;
+            init
+            {
+                field = value;
+                field.CollectionChanged += AvailableProvidersCollectionChangedHandler;
             }
         }
 
@@ -59,31 +77,83 @@ namespace PowerPad.WinUI.ViewModels.Settings
         [ObservableProperty]
         private string? _agentPrompt;
 
-        public GeneralSettingsViewModel()
+        public event EventHandler? ProviderAvaibilityChanged;
+
+        private void ServiceStatusChanged(object? sender, EventArgs __)
         {
+            var config = (AIServiceConfigViewModel)sender!;
+
+            if (config == OllamaConfig)
+            {
+                if (config.ServiceStatus == ServiceStatus.Online)
+                {
+                    if (!AvailableProviders.Contains(ModelProvider.Ollama)) AvailableProviders.Add(ModelProvider.Ollama);
+                    if (!AvailableProviders.Contains(ModelProvider.HuggingFace)) AvailableProviders.Add(ModelProvider.HuggingFace);
+                }
+                else
+                {
+                    AvailableProviders.Remove(ModelProvider.Ollama);
+                    AvailableProviders.Remove(ModelProvider.HuggingFace);
+                }
+            }
+            else if (config == AzureAIConfig)
+            {
+                if (config.ServiceStatus == ServiceStatus.Online)
+                {
+                    if (!AvailableProviders.Contains(ModelProvider.GitHub)) AvailableProviders.Add(ModelProvider.GitHub);
+                }
+                else AvailableProviders.Remove(ModelProvider.GitHub);
+            }
+            else if (config == OpenAIConfig)
+            {
+                if (config.ServiceStatus == ServiceStatus.Online)
+                {
+                    if (!AvailableProviders.Contains(ModelProvider.OpenAI)) AvailableProviders.Add(ModelProvider.OpenAI);
+                }
+                else AvailableProviders.Remove(ModelProvider.OpenAI);
+            }
         }
 
-        public IEnumerable<ModelProvider> GetAvailableModelProviders()
+        private async void ServiceConfigChanged(object? sender, EventArgs __)
         {
-            List<ModelProvider> providers = [];
+            var config = (AIServiceConfigViewModel)sender!;
 
-            if (OllamaEnabled && !OllamaConfig.HasError)
-            {
-                providers.Add(ModelProvider.Ollama);
-                providers.Add(ModelProvider.HuggingFace);
-            }
-            if (AzureAIEnabled && !AzureAIConfig.HasError)
-            {
-                providers.Add(ModelProvider.GitHub);
-            }
-            if (OpenAIEnabled && !OpenAIConfig.HasError)
-            {
-                providers.Add(ModelProvider.OpenAI);
-            }
-
-            return providers;
+            if (config == OllamaConfig) await SetAndTestServiceConfig(OllamaEnabled, config, ModelProvider.Ollama, false);
+            else if (config == AzureAIConfig) await SetAndTestServiceConfig(AzureAIEnabled, config, ModelProvider.GitHub, true);
+            else if (config == OpenAIConfig) await SetAndTestServiceConfig(OpenAIEnabled, config, ModelProvider.OpenAI, true);
         }
 
-        private void SecondaryPropertyChangedHandler(object? _, PropertyChangedEventArgs e) => OnPropertyChanged();
+        partial void OnOllamaEnabledChanged(bool value) =>  _ = SetAndTestServiceConfig(value, OllamaConfig, ModelProvider.Ollama, false);
+
+        partial void OnAzureAIEnabledChanged(bool value) => _ = SetAndTestServiceConfig(value, AzureAIConfig, ModelProvider.GitHub, true);
+
+        partial void OnOpenAIEnabledChanged(bool value) => _ = SetAndTestServiceConfig(value, OpenAIConfig, ModelProvider.OpenAI, true);
+
+        private static async Task SetAndTestServiceConfig(bool enabled, AIServiceConfigViewModel config, ModelProvider modelProvider, bool keyIsRequired)
+        {
+            if (enabled && !string.IsNullOrEmpty(config.BaseUrl) && (!keyIsRequired || !string.IsNullOrEmpty(config.Key)))
+            {
+                var aiService = App.Get<IAIService>(modelProvider);
+                aiService.Initialize(config.GetRecord());
+                await config.TestConnection(aiService);
+            }
+            else
+            {
+                var aiService = App.Get<IAIService>(modelProvider);
+                aiService.Initialize(null);
+                config.ResetStatus();
+            }
+        }
+
+        private void AvailableProvidersCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
+        {
+            ProviderAvaibilityChanged?.Invoke(this, EventArgs.Empty);
+            OnPropertyChanged(nameof(AvailableProviders));
+        }
+
+        partial void OnAcrylicBackgroundChanging(bool value)
+        {
+            WindowHelper.MainWindow?.SetBackdrop(value);
+        }
     };
 }

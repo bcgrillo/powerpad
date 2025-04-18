@@ -96,7 +96,7 @@ namespace PowerPad.WinUI.Components.Editors
             {
                 EditableTextBlock.Value = _document.Name;
 
-                DispatcherQueue.TryEnqueue(async() =>
+                DispatcherQueue.TryEnqueue(async () =>
                 {
                     await DialogHelper.Alert
                     (

@@ -31,15 +31,17 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
         public ObservableCollection<AIModelViewModel> SearchResultModels { get; }
 
         [ObservableProperty]
-        private bool _searching;
+        protected bool _searching;
 
         public bool FilteredModelsEmpty => !FilteredModels.Any();
 
         public bool SearchResultModelsEmpty => _searchCompleted && !SearchResultModels.Any();
 
-        public AIModelsViewModelBase(IAIService aiService, ModelProvider modelProvider)
+        public bool RepeaterEnabled { get; protected set; }
+
+        public AIModelsViewModelBase(ModelProvider modelProvider)
         {
-            _aiService = aiService;
+            _aiService = App.Get<IAIService>(modelProvider);
             _settings = App.Get<SettingsViewModel>();
             _modelProvider = modelProvider;
 
@@ -55,7 +57,10 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
                     .OrderBy(m => m.Name) 
             ];
 
+            _settings.General.ProviderAvaibilityChanged += UpdateRepeaterState;
             _settings.Models.AvailableModels.CollectionChanged += FilterModels;
+
+            RepeaterEnabled = _settings.General.AvailableProviders.Contains(_modelProvider);
 
             SearchResultModels = [];
         }
@@ -85,7 +90,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             OnPropertyChanged(nameof(FilteredModelsEmpty));
         }
 
-        private void SetDefaultModel(AIModelViewModel? aiModel)
+        protected void SetDefaultModel(AIModelViewModel? aiModel)
         {
             _settings.Models.DefaultModel = aiModel;
         }
@@ -137,6 +142,12 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             }
 
             return Task.CompletedTask;
+        }
+
+        protected void UpdateRepeaterState(object? _, EventArgs __)
+        {
+            RepeaterEnabled = _settings.General.AvailableProviders.Contains(_modelProvider);
+            OnPropertyChanged(nameof(RepeaterEnabled));
         }
 
         ~AIModelsViewModelBase()

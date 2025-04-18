@@ -10,9 +10,13 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
+    xmlns:converters="using:PowerPad.WinUI.Converters"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
+    <local:AIModelsPageBase.Resources>
+        <converters:ServiceStatusToBoolNegationConverter x:Key="ServiceStatusToBoolNegationConverter"/>
+    </local:AIModelsPageBase.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition x:Name="RowHeader" Height="auto" />
@@ -27,9 +31,10 @@
                     Text="Modelos de GitHub" />
             </StackPanel>
             <muxc:InfoBar 
-                IsOpen="{x:Bind _settings.General.AzureAIConfig.HasError, Mode=OneWay}"
+                IsOpen="{x:Bind _settings.General.AzureAIConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToBoolNegationConverter}}"
                 IsClosable="False"
-                Content="Error al conectar a Azure AI, revise la configuración." />
+                Severity="Warning"
+                Content="Servicio de Azure AI no disponible, revise la configuración." />
         </StackPanel>
 
         <components:AvailableModelsRepeater
@@ -39,6 +44,7 @@
             DeleteClick="Delete_Click"
             SetDefaultClick="SetDefault_Click"
             ModelInfoViewerVisibilityChanged="AIModelsRepeater_ModelInfoViewerVisibilityChanged"
-            ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}"/>
+            ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}"
+            IsEnabled="{x:Bind _modelsViewModel.RepeaterEnabled, Mode=OneWay}" />
     </Grid>
 </local:AIModelsPageBase>

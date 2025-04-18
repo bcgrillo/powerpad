@@ -184,7 +184,7 @@ namespace PowerPad.WinUI.Components.Controls
                 ModelFlyoutMenu.Items.Add(firstItem);
                 ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
 
-                var availableProviders = _settings.General.GetAvailableModelProviders();
+                var availableProviders = _settings.General.AvailableProviders;
 
                 foreach (var provider in availableProviders)
                 {

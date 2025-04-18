@@ -10,14 +10,14 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:EmptyObjectToObjectConverter x:Key="EmptyObjectToObjectConverter" EmptyValue="Collapsed" NotEmptyValue="Visible" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
         <StackPanel 
             Orientation="Vertical" 
             Spacing="4"
             Margin="0,0,0,-24"
-            Visibility="{x:Bind _settings.Models.DefaultModel, Mode=OneWay, Converter={StaticResource EmptyObjectToObjectConverter}}">
+            Visibility="{x:Bind _settings.IsAIAvailable, Mode=OneWay}">
             <Grid
                 x:Name="ParametersPanel"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -145,7 +145,7 @@
                 Height="18" />
         </StackPanel>
         <StackPanel
-                Visibility="{x:Bind _settings.Models.DefaultModel, Mode=OneWay, Converter={StaticResource EmptyObjectToObjectConverter}, ConverterParameter=True}">
+                Visibility="{x:Bind _settings.IsAIAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
             <muxc:InfoBar 
                 IsOpen="True"
                 Severity="Informational"

@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
@@ -22,7 +22,8 @@ namespace PowerPad.WinUI.ViewModels.Settings
             init
             {
                 field = value;
-                field.PropertyChanged += SecondaryPropertyChangedHandler;
+                OnDefaultParametersChanged();
+                OnPropertyChanged(nameof(DefaultParameters));
             }
         }
 
@@ -32,68 +33,56 @@ namespace PowerPad.WinUI.ViewModels.Settings
             init
             {
                 field = value;
-                foreach (var model in field) model.PropertyChanged += AvailableCollectionPropertyChangedHandler;
-                foreach (AIModelViewModel model in field) model.PropertyChanged += AvailableCollectionPropertyChangedHandler;
+                field.CollectionChanged += AvailableModelsCollectionChangedHandler;
+                foreach (var model in field) model.PropertyChanged += AvailableModelsCollectionPropertyChangedHandler;
             }
         }
 
-        public required ObservableCollection<AIModelViewModel> RecoverableModels
-        {
-            get;
-            init
-            {
-                field = value;
-                field.CollectionChanged += RecoverableCollectionChangedHandler;
-            }
-        }
+        public event EventHandler? ModelAvaibilityChanged;
 
-        public ModelsSettingsViewModel()
-        {
-            PropertyChanged += PropertyChangedHandler;
-        }
-
-        private void PropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
-        {
-            switch (eventArgs.PropertyName)
-            {
-                case nameof(DefaultModel):
-                    if (DefaultModel is not null)
-                        DefaultModel.PropertyChanged += SecondaryPropertyChangedHandler;
-                    break;
-            }
-        }
-
-        private void SecondaryPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => OnPropertyChanged();
-
-        private void AvailableCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
+        private void AvailableModelsCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
             if (eventArgs.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (AIModelViewModel model in eventArgs.NewItems!)
                 {
-                    model.PropertyChanged += AvailableCollectionPropertyChangedHandler;
+                    model.PropertyChanged += AvailableModelsCollectionPropertyChangedHandler;
                 }
             }
             else if (eventArgs.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (AIModelViewModel model in eventArgs.OldItems!)
                 {
-                    model.PropertyChanged -= AvailableCollectionPropertyChangedHandler;
+                    model.PropertyChanged -= AvailableModelsCollectionPropertyChangedHandler;
                 }
             }
             else throw new NotImplementedException("Only Add and Remove actions are supported.");
 
+            ModelAvaibilityChanged?.Invoke(this, EventArgs.Empty);
             OnPropertyChanged(nameof(AvailableModels));
         }
 
-        private void AvailableCollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __)
+        private void AvailableModelsCollectionPropertyChangedHandler(object? sender , PropertyChangedEventArgs eventArgs)
         {
+            if (eventArgs.PropertyName == nameof(AIModelViewModel.Enabled))
+                ModelAvaibilityChanged?.Invoke(this, EventArgs.Empty);
+
             OnPropertyChanged(nameof(AvailableModels));
         }
 
-        private void RecoverableCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
+        partial void OnDefaultModelChanged(AIModelViewModel? value)
         {
-            OnPropertyChanged(nameof(RecoverableModels));
+            App.Get<IChatService>().SetDefaultModel(value?.GetRecord());
+        }
+
+        partial void OnSendDefaultParametersChanged(bool value)
+        {
+            App.Get<IChatService>().SetDefaultParameters(value ? DefaultParameters.GetRecord() : null);
+        }
+
+        private void OnDefaultParametersChanged()
+        {
+            App.Get<IChatService>().SetDefaultParameters(SendDefaultParameters ? DefaultParameters.GetRecord() : null);
         }
     }
 }

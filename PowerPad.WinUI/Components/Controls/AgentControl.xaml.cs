@@ -2,25 +2,17 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using PowerPad.WinUI.ViewModels.Chat;
 using System.Threading.Tasks;
 using System;
 using Windows.System;
 using Windows.UI.Core;
-using System.Collections.Generic;
-using Microsoft.Extensions.AI;
 using System.Threading;
 using System.Linq;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.WinUI.Helpers;
-using PowerPad.WinUI.ViewModels.AI;
-using System.Diagnostics;
-using System.ComponentModel;
 using PowerPad.WinUI.ViewModels.Agents;
 using System.Text;
 using System.Collections.Specialized;
-using OllamaSharp.Models;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -66,17 +58,17 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void UpdateVisibility()
         {
-            if (_selectedAgent is null)
-            {
-                AgentPanel.Visibility = Visibility.Collapsed;
-                InfoBar.IsOpen = true;
-                InfoBar.Content = "No hay agentes disponibles, revise la configuración.";
-            }
-            else if (_settings.Models.DefaultModel is null)
+            if (!_settings.IsAIAvailable)
             {
                 AgentPanel.Visibility = Visibility.Collapsed;
                 InfoBar.IsOpen = true;
                 InfoBar.Content = "No hay modelos disponibles, revise la configuración.";
+            }
+            else if (_selectedAgent is null)
+            {
+                AgentPanel.Visibility = Visibility.Collapsed;
+                InfoBar.IsOpen = true;
+                InfoBar.Content = "No hay agentes disponibles, revise la configuración.";
             }
             else if (_selectedAgent is not null && _settings.Models.DefaultModel is not null)
             {

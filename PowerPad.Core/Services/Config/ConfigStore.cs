@@ -12,10 +12,40 @@ namespace PowerPad.Core.Services.Config
         T? TryGet<T>(Enum key);
     }
 
-    internal class ConfigEntry(string value, bool dirty)
+    internal record struct ConfigEntry
     {
-        public string Value { get; set; } = value;
-        public bool Dirty { get; set; } = dirty;
+        private string? _serializedValue;
+
+        public object? Value { get; private set; }
+        public bool Dirty { get; set; }
+
+        public ConfigEntry(string serializedValue, bool dirty)
+        {
+            _serializedValue = serializedValue;
+            Dirty = dirty;
+            Value = null;
+        }
+
+        public ConfigEntry(object? value, bool dirty)
+        {
+            _serializedValue = null;
+            Dirty = dirty;
+            Value = value;
+        }
+
+        public T? GetValue<T>()
+        {
+            if (Value is null)
+            {
+                Value = _serializedValue != null
+                ? JsonSerializer.Deserialize<T>(_serializedValue, JSON_SERIALIZER_OPTIONS)
+                : null;
+
+                _serializedValue = null;
+            }
+
+            return (T?)Value;
+        }
     }
 
     public class ConfigStore : IConfigStore
@@ -36,7 +66,7 @@ namespace PowerPad.Core.Services.Config
 
         public void Set<T>(Enum key, T config)
         {
-            _store[key.ToString()] = new(JsonSerializer.Serialize(config, JSON_SERIALIZER_OPTIONS), true);
+            _store[key.ToString()] = new(value: config, true);
         }
 
         public T? TryGet<T>(Enum key)
@@ -45,7 +75,7 @@ namespace PowerPad.Core.Services.Config
             {
                 if (_store.TryGetValue(key.ToString(), out var config))
                 {
-                    return JsonSerializer.Deserialize<T>(config.Value, JSON_SERIALIZER_OPTIONS);
+                    return _store[key.ToString()].GetValue<T>();
                 }
             }
             catch { } //It's ok
@@ -55,8 +85,8 @@ namespace PowerPad.Core.Services.Config
 
         public T Get<T>(Enum key)
         {
-            return JsonSerializer.Deserialize<T>(_store[key.ToString()].Value, JSON_SERIALIZER_OPTIONS)
-                ?? throw new NullReferenceException($"Config value for key '{key}' is null.");
+            return _store[key.ToString()].GetValue<T>()
+                ?? throw new NullReferenceException($"Config value for key '{key}' is not found.");
         }
 
         private void Load()
@@ -67,7 +97,7 @@ namespace PowerPad.Core.Services.Config
             {
                 var key = Path.GetFileNameWithoutExtension(file);
                 var config = File.ReadAllText(file);
-                _store[key] = new(config, false);
+                _store[key] = new(serializedValue: config, false);
             }
         }
 
@@ -82,7 +112,7 @@ namespace PowerPad.Core.Services.Config
                     if (value.Dirty)
                     {
                         var path = Path.Combine(_configFolder, $"{key}.json");
-                        await File.WriteAllTextAsync(path, value.Value);
+                        await File.WriteAllTextAsync(path, JsonSerializer.Serialize(value.Value, JSON_SERIALIZER_OPTIONS));
                         value.Dirty = false;
                     }
                 }

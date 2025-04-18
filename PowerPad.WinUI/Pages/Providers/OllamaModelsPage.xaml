@@ -15,9 +15,10 @@
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorColor}">
     <local:AIModelsPageBase.Resources>
-        <converters:OllamaStatusOnlineToBoolConverter x:Key="OllamaStatusOnlineToBoolConverter" />
-        <converters:OllamaStatusToColorBrushConverter x:Key="OllamaStatusToColorBrushConverter" />
-        <converters:OllamaStatusToStringConverter x:Key="OllamaStatusToStringConverter" />
+        <converters:ServiceStatusToBoolConverter x:Key="ServiceStatusToBoolConverter" />
+        <converters:ServiceStatusToColorBrushConverter x:Key="ServiceStatusToColorBrushConverter" />
+        <converters:ServiceStatusToStringConverter x:Key="ServiceStatusToStringConverter" />
+        <converters:ServiceStatusToBoolNegationConverter x:Key="ServiceStatusToBoolNegationConverter" />
     </local:AIModelsPageBase.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -45,14 +46,14 @@
                 <TextBlock 
                     Height="32" 
                     Margin="0,6,0,-6" 
-                    Foreground="{x:Bind OllamaModelsViewModel.OllamaStatus, Mode=OneWay, Converter={StaticResource OllamaStatusToColorBrushConverter}}"
-                    Text="{x:Bind OllamaModelsViewModel.OllamaStatus, Mode=OneWay, Converter={StaticResource OllamaStatusToStringConverter}}" />
+                    Foreground="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToColorBrushConverter}}"
+                    Text="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToStringConverter}}" />
                 <Button
                     Height="32"
                     ToolTipService.ToolTip="Refrescar"
                     Margin="12,0,0,0"
-                    Command="{x:Bind OllamaModelsViewModel.RefreshModelsCommand}"
-                    IsEnabled="{x:Bind OllamaModelsViewModel.OllamaStatus, Mode=OneWay, Converter={StaticResource OllamaStatusOnlineToBoolConverter}}">
+                    Command="{x:Bind _ollamaModelsViewModel.RefreshModelsCommand}"
+                    IsEnabled="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToBoolConverter}}">
                     <Button.Content>
                         <FontIcon Glyph="&#xE72C;" FontSize="14" />
                     </Button.Content>
@@ -61,9 +62,10 @@
             <muxc:InfoBar 
                 Grid.Row="1"
                 Grid.ColumnSpan="3"
-                IsOpen="{x:Bind _settings.General.OllamaConfig.HasError, Mode=OneWay}"
+                IsOpen="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToBoolNegationConverter}}"
                 IsClosable="False"
-                Content="No estás conectado a Ollama, revise la configuración." />
+                Severity="Warning"
+                Content="Ollama no disponible, revise la configuración." />
         </Grid>
 
         <components:AvailableModelsRepeater
@@ -73,6 +75,7 @@
             DeleteClick="Delete_Click"
             SetDefaultClick="SetDefault_Click"
             ModelInfoViewerVisibilityChanged="AIModelsRepeater_ModelInfoViewerVisibilityChanged"
-            ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}" />
+            ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}"
+            IsEnabled="{x:Bind _modelsViewModel.RepeaterEnabled, Mode=OneWay}" />
     </Grid>
 </local:AIModelsPageBase>

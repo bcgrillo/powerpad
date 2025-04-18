@@ -111,7 +111,7 @@ namespace PowerPad.WinUI.Pages
         {
             NavView.IsPaneVisible = !NavView.IsPaneVisible;
 
-            NavigationVisibilityChanged?.Invoke(this, null!);
+            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void NavView_Loaded(object _, RoutedEventArgs __)

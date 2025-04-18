@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PowerPad.Core.Contracts;
+using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -28,71 +31,46 @@ namespace PowerPad.WinUI.Configuration
 
         public static IServiceCollection ConfigureOllamaService(this IServiceCollection serviceColection, App app)
         {
-            return serviceColection.AddSingleton<IOllamaService, OllamaService>(sp =>
-            {
-                var generalSettings = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
-
-                var ollama = new OllamaService();
-
-                if (generalSettings.OllamaEnabled) ollama.Initialize(generalSettings.OllamaConfig.GetRecord());
-
-                return ollama;
-            });
+            return serviceColection.AddSingleton<OllamaService>()
+                .AddSingleton<IOllamaService, OllamaService>(sp => sp.GetRequiredService<OllamaService>())
+                .AddKeyedSingleton<IAIService, OllamaService>(ModelProvider.Ollama, (sp, _) => sp.GetRequiredService<OllamaService>())
+                .AddKeyedSingleton<IAIService, OllamaService>(ModelProvider.HuggingFace, (sp, _) => sp.GetRequiredService<OllamaService>());
         }
 
         public static IServiceCollection ConfigureAzureAIService(this IServiceCollection serviceColection, App app)
         {
-            return serviceColection.AddSingleton<IAzureAIService, AzureAIService>(sp =>
-            {
-                var generalSettings = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
-
-                var azureAI = new AzureAIService();
-
-                if (generalSettings.AzureAIEnabled) azureAI.Initialize(generalSettings.AzureAIConfig.GetRecord());
-
-                return azureAI;
-            });
+            return serviceColection.AddKeyedSingleton<IAIService, AzureAIService>(ModelProvider.GitHub);
         }
 
         public static IServiceCollection ConfigureOpenAIService(this IServiceCollection serviceColection, App app)
         {
-            return serviceColection.AddSingleton<IOpenAIService, OpenAIService>(sp =>
-            {
-                var generalSettings = app.AppConfigStore.Get<GeneralSettingsViewModel>(StoreKey.GeneralSettings);
-
-                var openAI = new OpenAIService();
-
-                if (generalSettings.OpenAIEnabled) openAI.Initialize(generalSettings.OpenAIConfig.GetRecord());
-
-                return openAI;
-            });
+            return serviceColection.AddKeyedSingleton<IAIService, OpenAIService>(ModelProvider.OpenAI);
         }
 
-        public static IServiceCollection ConfigureAIService(this IServiceCollection serviceColection, App app)
+        public static IServiceCollection ConfigureAIService(this IServiceCollection serviceColection)
         {
             return serviceColection.AddSingleton<IChatService, ChatService>(sp =>
             {
-                var ollamaService = sp.GetRequiredService<IOllamaService>();
-                var azureAIService = sp.GetRequiredService<IAzureAIService>();
-                var openAIService = sp.GetRequiredService<IOpenAIService>();
+                var aiServices = new Dictionary<ModelProvider, IAIService>()
+                {
+                    { ModelProvider.Ollama, sp.GetRequiredKeyedService<IAIService>(ModelProvider.Ollama) },
+                    { ModelProvider.HuggingFace, sp.GetRequiredKeyedService<IAIService>(ModelProvider.HuggingFace) },
+                    { ModelProvider.GitHub, sp.GetRequiredKeyedService<IAIService>(ModelProvider.GitHub) },
+                    { ModelProvider.OpenAI, sp.GetRequiredKeyedService<IAIService>(ModelProvider.OpenAI) }
+                };
 
-                var aiService = new ChatService(ollamaService, azureAIService, openAIService);
-
-                var modelSettings = app.AppConfigStore.Get<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
-
-                if (modelSettings.DefaultModel is not null) aiService.SetDefaultModel(modelSettings.DefaultModel.GetRecord());
-                if (modelSettings.DefaultParameters is not null) aiService.SetDefaultParameters(modelSettings.DefaultParameters.GetRecord());
+                var aiService = new ChatService(aiServices.AsReadOnly());
 
                 return aiService;
             });
         }
 
-        public static IConfigStore InitializeAppConfigStore(this App app)
+        public static void InitializeAppConfigStore(this App app, out IConfigStore appConfigStore)
         {
             var appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $".{nameof(PowerPad).ToLower()}");
             var configStoreService = app.ServiceProvider.GetRequiredService<IConfigStoreService>();
 
-            var appConfigStore = configStoreService.GetConfigStore(appDataFolder);
+            appConfigStore = configStoreService.GetConfigStore(appDataFolder);
 
             //Initialize recently workspaces if necessary
             var recentlyWorkspaces = appConfigStore.TryGet<string[]>(StoreKey.RecentlyWorkspaces);
@@ -129,8 +107,6 @@ namespace PowerPad.WinUI.Configuration
                 agents = StoreDefault.AgentsCollection;
                 appConfigStore.Set(StoreKey.Agents, agents);
             }
-
-            return appConfigStore;
         }
     }
 }

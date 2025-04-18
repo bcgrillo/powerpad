@@ -93,7 +93,7 @@ namespace PowerPad.WinUI.Components
         {
             this.Visibility = Visibility.Collapsed;
 
-            VisibilityChanged?.Invoke(this, null!);
+            VisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void NewChatButton_Click(object _, RoutedEventArgs __)

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Services.Config;
-using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

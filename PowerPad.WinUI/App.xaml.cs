@@ -17,7 +17,7 @@ namespace PowerPad.WinUI
     /// </summary>
     public partial class App : Application
     {
-        private readonly IServiceProvider _serviceProvider;
+        private static IServiceProvider _serviceProvider = null!;
         private readonly IConfigStore _appConfigStore;
 
         public IServiceProvider ServiceProvider => _serviceProvider;
@@ -36,7 +36,7 @@ namespace PowerPad.WinUI
                 .ConfigureOllamaService(this)
                 .ConfigureAzureAIService(this)
                 .ConfigureOpenAIService(this)
-                .ConfigureAIService(this)
+                .ConfigureAIService()
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()
                 .AddSingleton<IOrderService, OrderService>()
@@ -48,7 +48,7 @@ namespace PowerPad.WinUI
 
             Ioc.Default.ConfigureServices(_serviceProvider);
 
-            _appConfigStore = this.InitializeAppConfigStore();
+            this.InitializeAppConfigStore(out _appConfigStore);
 
             var appTheme = Get<SettingsViewModel>().General.AppTheme;
             if (appTheme is not null) Current.RequestedTheme = appTheme.Value;
@@ -66,6 +66,16 @@ namespace PowerPad.WinUI
 
         private Window? m_window;
 
-        public static T Get<T>() where T : notnull => Ioc.Default.GetRequiredService<T>();
+        public static T Get<T>(object? key = null) where T : notnull
+        {
+            if (key is not null)
+            {
+                return _serviceProvider.GetRequiredKeyedService<T>(key);
+            }
+            else
+            {
+                return _serviceProvider.GetRequiredService<T>();
+            }
+        }
     }
 }

@@ -100,7 +100,7 @@ namespace PowerPad.WinUI.Components.Controls
             Value = IntegratedTextBox.Text;
             if (PasswordMode) IntegratedTextBox.Text = MaskedValue(Value);
 
-            Edited?.Invoke(this, null!);
+            Edited?.Invoke(this, EventArgs.Empty);
         }
 
         private void Cancel()

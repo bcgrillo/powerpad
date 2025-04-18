@@ -58,6 +58,8 @@ namespace PowerPad.WinUI.Configuration
                 AzureAIConfig = new(new() { BaseUrl = "https://models.inference.ai.azure.com", Key = "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" }),
                 OpenAIConfig = new(new() { BaseUrl = "https://api.openai.com/v1", Key = "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" }),
 
+                AvailableProviders = [],
+
                 AppTheme = null, //Use system configuration
                 AcrylicBackground = true,
 
@@ -66,7 +68,7 @@ namespace PowerPad.WinUI.Configuration
                     $"- El mensaje de usuario recibido es tu información de entrada.\n" +
                     $"- Si necesitas realizar una modificación, tu respuesta debe ser el texto completo modificado, manteniendo intacto lo que no sea necesario cambiar.\n" +
                     $"- No incluyas explicaciones, saludos ni mensajes adicionales, solamente el texto solicitado.",
-        };
+            };
 
             public static ModelsSettingsViewModel GenerateDefaultModelsSettings()
             {
@@ -82,8 +84,7 @@ namespace PowerPad.WinUI.Configuration
                         MaxConversationLength = 50
                     }),
                     SendDefaultParameters = true,
-                    AvailableModels = [],
-                    RecoverableModels = []
+                    AvailableModels = []
                 };
 
                 defaultModelSettings.AvailableModels.Add(defaultModelSettings.DefaultModel);

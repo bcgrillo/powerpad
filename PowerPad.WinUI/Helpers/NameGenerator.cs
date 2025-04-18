@@ -1,10 +1,6 @@
 ﻿using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
-using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,9 +23,7 @@ namespace PowerPad.WinUI.Helpers
 
         public static async Task<string?> Generate(string fileContent, CancellationToken cancellationToken = default)
         {
-            var isAIAvailable = await App.Get<SettingsViewModel>().IsAIAvailable();
-
-            if (isAIAvailable)
+            if (App.Get<SettingsViewModel>().IsAIAvailable)
             {
                 var chatService = App.Get<IChatService>();
                 var generateNameBuilder = new StringBuilder();

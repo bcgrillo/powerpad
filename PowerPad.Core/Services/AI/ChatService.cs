@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.AI;
-using OllamaSharp.Models.Chat;
-using OllamaSharp.Models;
 using PowerPad.Core.Models.AI;
 using System.Text;
 using ChatRole = Microsoft.Extensions.AI.ChatRole;
-using System.Reflection;
+using PowerPad.Core.Contracts;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -16,14 +14,12 @@ namespace PowerPad.Core.Services.AI
         Task GetAgentResponse(string input, StringBuilder output, Agent selectedAgent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default);
     }
 
-    public class ChatService(IOllamaService ollamaService, IAzureAIService azureAIService, IOpenAIService openAIService) : IChatService
+    public class ChatService(IReadOnlyDictionary<ModelProvider, IAIService> aiServices) : IChatService
     {
         private AIModel? _defaultModel;
         private AIParameters? _defaultParameters;
 
-        private readonly IOllamaService _ollamaService = ollamaService;
-        private readonly IAzureAIService _azureAIService = azureAIService;
-        private readonly IOpenAIService _openAIService = openAIService;
+        private readonly IReadOnlyDictionary<ModelProvider, IAIService> _aiServices = aiServices;
 
         public void SetDefaultModel(AIModel? defaultModel)
         {
@@ -37,15 +33,14 @@ namespace PowerPad.Core.Services.AI
 
         private IChatClient ChatClient(AIModel model)
         {
-            var chatClient = model.ModelProvider switch
+            if (_aiServices.TryGetValue(model.ModelProvider, out var aiService))
             {
-                ModelProvider.Ollama or ModelProvider.HuggingFace => _ollamaService.ChatClient(model),
-                ModelProvider.GitHub => _azureAIService.ChatClient(model),
-                ModelProvider.OpenAI => _openAIService.ChatClient(model),
-                _ => throw new NotImplementedException($"Client for provider {model.ModelProvider} not implemented."),
-            };
-
-            return chatClient ?? throw new InvalidOperationException($"Client for provider {model.ModelProvider} not initialized.");
+                return aiService.ChatClient(model);
+            }
+            else
+            {
+                throw new NotImplementedException($"Client for provider {model.ModelProvider} not implemented.");
+            }
         }
 
         public IAsyncEnumerable<ChatResponseUpdate> GetChatResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? parameters = null, CancellationToken cancellationToken = default)

@@ -11,12 +11,10 @@ using PowerPad.WinUI.Pages;
 using Microsoft.UI.Windowing;
 using Windows.UI;
 using PowerPad.WinUI.Helpers;
-using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Services.Config;
-using System.Threading.Tasks;
-using System.Linq;
+using PowerPad.Core.Models.AI;
 
 namespace PowerPad.WinUI
 {
@@ -42,7 +40,7 @@ namespace PowerPad.WinUI
             _settings = App.Get<SettingsViewModel>();
 
             this.InitializeComponent();
-            SetBackdrop();
+            SetBackdrop(_settings.General.AcrylicBackground);
             SetTitleBar();
 
             NavView.SelectedItem = NavView.MenuItems[0];
@@ -61,18 +59,19 @@ namespace PowerPad.WinUI
 
         private void UpdateNavMenuItems()
         {
-            ModelsNavViewItem.IsEnabled = _settings.General.GetAvailableModelProviders().Any();
+            //TODO: Add a better way to handle this
+            ModelsNavViewItem.IsEnabled = _settings.General.OllamaEnabled || _settings.General.AzureAIEnabled || _settings.General.OpenAIEnabled;
             AgentesNavViewItem.IsEnabled = _settings.Models.DefaultModel is not null;
 
-            ErrorBadge.Visibility = (_settings.General.OllamaEnabled && _settings.General.OllamaConfig.HasError)
-                || (_settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.HasError)
-                || (_settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.HasError)
+            ErrorBadge.Visibility = (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error)
+                || (_settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error)
+                || (_settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error)
                 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public void SetBackdrop()
+        public void SetBackdrop(bool setAcrylicBackDrop)
         {
-            if (_settings.General.AcrylicBackground && DesktopAcrylicController.IsSupported())
+            if (setAcrylicBackDrop && DesktopAcrylicController.IsSupported())
             {
                 _configurationSource ??= new()
                 {

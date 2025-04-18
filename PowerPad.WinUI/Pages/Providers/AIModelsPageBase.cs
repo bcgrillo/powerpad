@@ -1,5 +1,5 @@
 ﻿using PowerPad.WinUI.Components;
-using PowerPad.WinUI.ViewModels.AI;
+using PowerPad.WinUI.ViewModels.AI.Providers;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
 

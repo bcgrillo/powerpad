@@ -1,13 +1,8 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.Agents;
-using PowerPad.WinUI.Components;
-using PowerPad.WinUI.ViewModels.FileSystem;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Web.AtomPub;
 
 namespace PowerPad.WinUI.Pages
 {
@@ -38,7 +33,7 @@ namespace PowerPad.WinUI.Pages
         {
             AgentsMenu.Visibility = AgentsMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
 
-            NavigationVisibilityChanged?.Invoke(this, null!);
+            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void NewAgentButton_Click(object _, RoutedEventArgs __)

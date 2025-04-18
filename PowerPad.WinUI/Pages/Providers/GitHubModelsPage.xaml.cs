@@ -1,6 +1,6 @@
-using PowerPad.WinUI.ViewModels.AI;
 using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Components;
+using PowerPad.WinUI.ViewModels.AI.Providers;
 
 namespace PowerPad.WinUI.Pages.Providers
 {

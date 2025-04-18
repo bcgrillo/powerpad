@@ -9,116 +9,103 @@ using PowerPad.Core.Helpers;
 
 namespace PowerPad.Core.Services.AI
 {
-    public interface IOllamaService : IAIService
+    public interface IOllamaService
     {
-        Task<OllamaStatus> GetStatus();
-        Task<IEnumerable<AIModel>> GetAvailableModels();
+        Task<IEnumerable<AIModel>> GetInstalledModels();
         Task Start();
         Task Stop();
-        Task Download(AIModel model, Action<double> updateAction, Action<Exception> errorAction);
-        Task RemoveModel(AIModel model);
+        Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction);
+        Task DeleteModel(AIModel model);
     }
 
-    public class OllamaService : IOllamaService
+    public class OllamaService : IAIService, IOllamaService
     {
         private const string HF_OLLAMA_PREFIX = "hf.co/";
         private const string HF_OLLAMA_PREFIX_AUX = "huggingface.co/";
 
+        private const int DELAY_AFTER_START = 500;
         private const int DOWNLOAD_UPDATE_INTERVAL = 200;
 
         private OllamaApiClient? _ollama;
         private AIServiceConfig? _config;
 
-        public void Initialize(AIServiceConfig config)
+        public void Initialize(AIServiceConfig? config)
         {
-            _config = !string.IsNullOrEmpty(config.BaseUrl) ? config : null;
+            _config = config;
             _ollama = null;
         }
 
-        public OllamaApiClient? GetClient()
+        private OllamaApiClient GetClient()
         {
+            if (_config is null) throw new InvalidOperationException("Ollama is not initialized.");
             if (_ollama is not null) return _ollama;
-            if (_config is null) return null;
 
-            _ollama = new(_config.BaseUrl!);
-            return _ollama;
+            try
+            {
+                _ollama = new(_config.BaseUrl!);
+                return _ollama;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to initialize Ollama.", ex);
+            }
         }
 
         public async Task<TestConnectionResult> TestConection()
         {
-            if (_config is null) return new(false, "Ollama is not initialized.");
+            if (_config is null) return new(ServiceStatus.Unconfigured, "Ollama is not initialized.");
+
+            bool connected = false;
 
             try
             {
-                var result = await GetClient()!.IsRunningAsync();
-
-                return new(result, result ? null : "Ollama is not running.");
+                connected = await GetClient().IsRunningAsync();
             }
-            catch (Exception ex)
+            catch
             {
-                return new(false, ex.Message);
             }
-        }
 
-        public async Task<OllamaStatus> GetStatus()
-        {
-            bool connected = false;
-
-            if (_config is not null)
+            if (connected)
+            {
+                return new(ServiceStatus.Online);
+            }
+            else
             {
                 try
                 {
-                    connected = await GetClient()!.IsRunningAsync();
-                }
-                catch
-                {
-                }
-
-                if (connected)
-                {
-                    return OllamaStatus.Online;
-                }
-                else
-                {
-                    try
+                    if (GetProcesses().Any())
                     {
-                        if (GetProcesses().Any())
-                        {
-                            return OllamaStatus.Unreachable;
-                        }
-                        else
-                        {
-                            var startInfo = new ProcessStartInfo
-                            {
-                                FileName = "ollama",
-                                RedirectStandardOutput = true,
-                                RedirectStandardError = true,
-                                UseShellExecute = false,
-                                CreateNoWindow = true
-                            };
-
-                            using var process = Process.Start(startInfo)!;
-
-                            await process.WaitForExitAsync();
-
-                            if (process.ExitCode == 0) return OllamaStatus.Available;
-                        }
+                        return new(ServiceStatus.Error, "Ollama is running, but not reachable.");
                     }
-                    catch
+                    else
                     {
-                        return OllamaStatus.Error;
+                        var startInfo = new ProcessStartInfo
+                        {
+                            FileName = "ollama",
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        };
+
+                        using var process = Process.Start(startInfo)!;
+
+                        await process.WaitForExitAsync();
+
+                        if (process.ExitCode == 0) return new(ServiceStatus.Available);
+                        else return new(ServiceStatus.Error, "Ollama not found.");
                     }
+                }
+                catch(Exception ex)
+                {
+                    return new(ServiceStatus.Error, ex.Message);
                 }
             }
-
-            return OllamaStatus.Unknown;
         }
 
-        public async Task<IEnumerable<AIModel>> GetAvailableModels()
+        public async Task<IEnumerable<AIModel>> GetInstalledModels()
         {
-            if (_config is null) return [];
-
-            var models = await GetClient()!.ListLocalModelsAsync();
+            var models = await GetClient().ListLocalModelsAsync();
 
             return models.Select(m => CreateAIModel(m));
         }
@@ -146,11 +133,9 @@ namespace PowerPad.Core.Services.AI
             );
         }
 
-        public IChatClient? ChatClient(AIModel model)
+        public IChatClient ChatClient(AIModel model)
         {
-            if (_config is null) return null;
-
-            GetClient()!.SelectedModel = model.Name;
+            GetClient().SelectedModel = model.Name;
 
             return GetClient();
         }
@@ -165,7 +150,7 @@ namespace PowerPad.Core.Services.AI
             };
         }
 
-        public Task Start()
+        public async Task Start()
         {
             var startInfo = new ProcessStartInfo
             {
@@ -176,7 +161,7 @@ namespace PowerPad.Core.Services.AI
 
             Process.Start(startInfo);
 
-            return Task.CompletedTask;  
+            await Task.Delay(DELAY_AFTER_START);
         }
 
         public async Task Stop()
@@ -188,7 +173,7 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public async Task Download(AIModel model, Action<double> updateAction, Action<Exception> errorAction)
+        public async Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction)
         {
             if (_config is null)
             {
@@ -216,7 +201,7 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public async Task RemoveModel(AIModel model)
+        public async Task DeleteModel(AIModel model)
         {
             if (_config is null) return;
 

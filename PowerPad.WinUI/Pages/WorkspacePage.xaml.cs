@@ -20,7 +20,7 @@ namespace PowerPad.WinUI.Pages
         {
             WorkspaceControl.Visibility = WorkspaceControl.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
 
-            NavigationVisibilityChanged?.Invoke(this, null!);
+            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void WorkspaceControl_ItemInvoked(object sender, WorkspaceControlItemInvokedEventArgs e)
@@ -30,7 +30,7 @@ namespace PowerPad.WinUI.Pages
 
         private void WorkspaceControl_VisibilityChanged(object sender, EventArgs e)
         {
-            NavigationVisibilityChanged?.Invoke(this, null!);
+            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
