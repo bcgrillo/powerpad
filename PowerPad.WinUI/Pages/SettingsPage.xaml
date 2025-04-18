@@ -65,7 +65,7 @@
                         </StackPanel>
                         <!-- Ollama -->
                         <toolkit:SettingsExpander
-                            x:Name="ModelsExpanderOllama"
+                            x:Name="OllamaModelsExpander"
                             Header="Ollama"
                             Description="IA generativa en tu equipo local o red privada con Ollama">
                             <toolkit:SettingsExpander.HeaderIcon>
@@ -155,7 +155,7 @@
                         </StackPanel>
                         <!-- AzureAI -->
                         <toolkit:SettingsExpander
-                            x:Name="ModelsExpanderAzureAI"
+                            x:Name="AzureAIModelsExpander"
                             Header="Azure AI"
                             Description="Utiliza los modelos de GitHub con el API de Azure AI">
                             <toolkit:SettingsExpander.HeaderIcon>
@@ -217,7 +217,7 @@
                         </toolkit:SettingsExpander>
                         <!-- OpenAI -->
                         <toolkit:SettingsExpander
-                            x:Name="ModelsExpanderOpenAI"
+                            x:Name="OpenAIModelsExpander"
                             Header="OpenAI"
                             Description="Utiliza modelos de ChatGPT a través de su API">
                             <toolkit:SettingsExpander.HeaderIcon>

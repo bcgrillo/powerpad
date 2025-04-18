@@ -27,8 +27,14 @@ namespace PowerPad.WinUI.Pages
             _settings = App.Get<SettingsViewModel>();
             _defaultCursor = ProtectedCursor;
 
+            _settings.General.OllamaConfig.ConfigChanged += TestOllama;
+            _settings.General.AzureAIConfig.ConfigChanged += TestAzureAI;
+            _settings.General.OpenAIConfig.ConfigChanged += TestOpenAI;
+            _settings.General.ServiceEnablementChanged += TestEnabledService;
+
             SetModelsMenu(null, null);
-            _settings.Models.AvailableModels.CollectionChanged += SetModelsMenu;
+            _settings.General.ProviderAvaibilityChanged += SetModelsMenu;
+            _settings.Models.ModelAvaibilityChanged += SetModelsMenu;
 
             LightThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Light;
             DarkThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Dark;
@@ -37,9 +43,9 @@ namespace PowerPad.WinUI.Pages
             DarkThemeRadioButton.Checked += ThemeRadioButton_Checked;
             SystemThemeRadioButton.Checked += ThemeRadioButton_Checked;
 
-            ModelsExpanderOllama.IsExpanded = _settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error;
-            ModelsExpanderAzureAI.IsExpanded = _settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error;
-            ModelsExpanderOpenAI.IsExpanded = _settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error;
+            OllamaModelsExpander.IsExpanded = _settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error;
+            AzureAIModelsExpander.IsExpanded = _settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error;
+            OpenAIModelsExpander.IsExpanded = _settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error;
 
             //Disable providers if not configured
             Unloaded += (s, e) =>
@@ -97,11 +103,62 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        private void SetModelsMenu(object? _, NotifyCollectionChangedEventArgs? __)
+        private async void TestOllama(object? _, PropertyChangedEventArgs? __)
+        {
+            if (string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl)) return;
+
+            try
+            {
+                ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Wait);
+
+                await _settings.General.OllamaConfig.TestConnection(App.Get<IAIService>(ModelProvider.Ollama));
+
+            }
+            finally
+            {
+                ProtectedCursor = _defaultCursor;
+            }
+        }
+
+        private async void TestAzureAI(object? _, PropertyChangedEventArgs? __)
+        {
+            if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl)
+                || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key)) return;
+
+            try
+            {
+                ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Wait);
+
+                await _settings.General.AzureAIConfig.TestConnection(App.Get<IAIService>(ModelProvider.GitHub));
+            }
+            finally
+            {
+                ProtectedCursor = _defaultCursor;
+            }
+        }
+
+        private async void TestOpenAI(object? _, PropertyChangedEventArgs? __)
+        {
+            if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl)
+                || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key)) return;
+
+            try
+            {
+                ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Wait);
+
+                await _settings.General.OpenAIConfig.TestConnection(App.Get<IAIService>(ModelProvider.OpenAI));
+            }
+            finally
+            {
+                ProtectedCursor = _defaultCursor;
+            }
+        }
+
+        private void SetModelsMenu(object? _, EventArgs? __)
         {
             DefaultModelFlyoutMenu.Items.Clear();
 
-            var availableProviders = _settings.General.AvailableProviders;
+            var availableProviders = _settings.General.AvailableProviders.OrderBy(p => p);
 
             foreach (var provider in availableProviders)
             {
@@ -150,34 +207,10 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        private void SetModelItem_Click(object sender, RoutedEventArgs _)
+        private void SetModelItem_Click(object sender, RoutedEventArgs __)
         {
             ((RadioMenuFlyoutItem)sender).IsChecked = true;
             _settings.Models.DefaultModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
-        }
-
-        ~SettingsPage()
-        {
-            Dispose(false);
-        }
-
-        public override void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _settings.Models.AvailableModels.CollectionChanged -= SetModelsMenu;
-                }
-
-                _disposed = true;
-            }
         }
 
         private void DefaultModelButton_Click(object _, RoutedEventArgs __)
@@ -202,7 +235,7 @@ namespace PowerPad.WinUI.Pages
             Application.Current.Exit();
         }
 
-        private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
+        private void ThemeRadioButton_Checked(object sender, RoutedEventArgs __)
         {
             var radioButton = ((RadioButton)sender);
             var newThemeChoice = radioButton.Tag as ApplicationTheme?;
@@ -219,39 +252,80 @@ namespace PowerPad.WinUI.Pages
 
         private void OllamaModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!ModelsExpanderOllama.IsExpanded 
-                && !_settings.General.OllamaEnabled 
-                && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
+            if (!_settings.General.OllamaEnabled)
             {
-                ModelsExpanderOllama.IsExpanded = true;
-                OllamaUrlTextBox.Focus(FocusState.Keyboard);
-                OllamaUrlTextBox.EnterEditMode();
+                if (string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
+                {
+                    OllamaModelsExpander.IsExpanded = true;
+                    OllamaUrlTextBox.Focus(FocusState.Keyboard);
+                    OllamaUrlTextBox.EnterEditMode();
+                }
             }
         }
 
         private void AzureAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!ModelsExpanderAzureAI.IsExpanded
-                && !_settings.General.AzureAIEnabled
-                && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl))
+            if (!_settings.General.AzureAIEnabled)
             {
-                ModelsExpanderAzureAI.IsExpanded = true;
-                AzureAIKeyTextBox.EnterEditMode();
-                AzureAIUrlTextBox.Focus(FocusState.Keyboard);
-                AzureAIUrlTextBox.EnterEditMode();
+                if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl))
+                {
+                    AzureAIModelsExpander.IsExpanded = true;
+                    AzureAIUrlTextBox.Focus(FocusState.Keyboard);
+                    AzureAIUrlTextBox.EnterEditMode();
+                    AzureAIKeyTextBox.EnterEditMode();
+                }
             }
         }
 
         private void OpenAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!ModelsExpanderOpenAI.IsExpanded
-                && !_settings.General.OpenAIEnabled
-                && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl))
+            if (!_settings.General.OpenAIEnabled)
             {
-                ModelsExpanderOpenAI.IsExpanded = true;
-                OpenAIKeyTextBox.EnterEditMode();
-                OpenAIUrlTextBox.Focus(FocusState.Keyboard);
-                OpenAIUrlTextBox.EnterEditMode();
+                if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl))
+                {
+                    OpenAIModelsExpander.IsExpanded = true;
+                    OpenAIUrlTextBox.Focus(FocusState.Keyboard);
+                    OpenAIUrlTextBox.EnterEditMode();
+                    OpenAIKeyTextBox.EnterEditMode();
+                }
+            }
+        }
+
+        private void TestEnabledService(object? sender, EventArgs _)
+        {
+            var config = (AIServiceConfigViewModel)sender!;
+
+            if (config == _settings.General.OllamaConfig && _settings.General.OllamaEnabled) TestOllama(null, null);
+            else if (config == _settings.General.AzureAIConfig && _settings.General.AzureAIEnabled) TestAzureAI(null, null);
+            else if (config == _settings.General.OpenAIConfig && _settings.General.OpenAIEnabled) TestOpenAI(null, null);
+        }
+
+        ~SettingsPage()
+        {
+            Dispose(false);
+        }
+
+        public override void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _settings.General.OllamaConfig.ConfigChanged -= TestOllama;
+                    _settings.General.AzureAIConfig.ConfigChanged -= TestAzureAI;
+                    _settings.General.OpenAIConfig.ConfigChanged -= TestOpenAI;
+                    _settings.General.ServiceEnablementChanged -= TestEnabledService;
+                    _settings.General.ProviderAvaibilityChanged -= SetModelsMenu;
+                    _settings.Models.ModelAvaibilityChanged -= SetModelsMenu;
+                }
+
+                _disposed = true;
             }
         }
     }

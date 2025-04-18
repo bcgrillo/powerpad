@@ -39,6 +39,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         }
 
         public event EventHandler? ModelAvaibilityChanged;
+        public event EventHandler? DefaultModelChanged;
 
         private void AvailableModelsCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
@@ -73,6 +74,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         partial void OnDefaultModelChanged(AIModelViewModel? value)
         {
             App.Get<IChatService>().SetDefaultModel(value?.GetRecord());
+            DefaultModelChanged?.Invoke(this, EventArgs.Empty);
         }
 
         partial void OnSendDefaultParametersChanged(bool value)

@@ -9,6 +9,7 @@ using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Agents;
+using Microsoft.UI.Dispatching;
 
 namespace PowerPad.WinUI
 {
@@ -46,7 +47,8 @@ namespace PowerPad.WinUI
                 .AddSingleton(_ => AppConfigStore)
                 .BuildServiceProvider();
 
-            Ioc.Default.ConfigureServices(_serviceProvider);
+            //Remove?
+            //Ioc.Default.ConfigureServices(_serviceProvider);
 
             this.InitializeAppConfigStore(out _appConfigStore);
 

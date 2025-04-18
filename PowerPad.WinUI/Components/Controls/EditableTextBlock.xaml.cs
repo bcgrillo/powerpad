@@ -109,7 +109,7 @@ namespace PowerPad.WinUI.Components.Controls
             IntegratedTextBox.Text = PasswordMode ? MaskedValue(Value) : Value;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs _)
+        private void Button_Click(object sender, RoutedEventArgs __)
         {
             if ((Button)sender == EditButton) EnterEditMode();
             else if ((Button)sender == ConfirmButton) Confirm();

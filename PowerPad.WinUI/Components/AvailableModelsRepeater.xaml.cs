@@ -37,12 +37,12 @@ namespace PowerPad.WinUI.Components
             this.InitializeComponent();
         }
 
-        private void OnDeleteClick(object? sender, RoutedEventArgs _)
+        private void OnDeleteClick(object? sender, RoutedEventArgs __)
         {
             DeleteClick?.Invoke(sender, new((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
         }
 
-        private void OnSetDefaultClick(object? sender, RoutedEventArgs _)
+        private void OnSetDefaultClick(object? sender, RoutedEventArgs __)
         {
             SetDefaultClick?.Invoke(sender, new((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
         }

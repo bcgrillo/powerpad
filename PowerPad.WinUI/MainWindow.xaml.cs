@@ -50,8 +50,13 @@ namespace PowerPad.WinUI
                 App.Get<IConfigStoreService>().StoreConfigs();
                 EditorManagerHelper.AutoSaveEditors();
             };
-            
-            UpdateNavMenuItems();
+
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await _settings.TestConnections();
+
+                UpdateNavMenuItems();
+            });
 
             _settings.General.PropertyChanged += (s, e) => UpdateNavMenuItems();
             _settings.Models.PropertyChanged += (s, e) => UpdateNavMenuItems();

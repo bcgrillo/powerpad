@@ -6,7 +6,6 @@ using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.Settings
@@ -78,6 +77,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         private string? _agentPrompt;
 
         public event EventHandler? ProviderAvaibilityChanged;
+        public event EventHandler? ServiceEnablementChanged;
 
         private void ServiceStatusChanged(object? sender, EventArgs __)
         {
@@ -114,28 +114,39 @@ namespace PowerPad.WinUI.ViewModels.Settings
             }
         }
 
-        private async void ServiceConfigChanged(object? sender, EventArgs __)
+        private void ServiceConfigChanged(object? sender, EventArgs __)
         {
             var config = (AIServiceConfigViewModel)sender!;
 
-            if (config == OllamaConfig) await SetAndTestServiceConfig(OllamaEnabled, config, ModelProvider.Ollama, false);
-            else if (config == AzureAIConfig) await SetAndTestServiceConfig(AzureAIEnabled, config, ModelProvider.GitHub, true);
-            else if (config == OpenAIConfig) await SetAndTestServiceConfig(OpenAIEnabled, config, ModelProvider.OpenAI, true);
+            if (config == OllamaConfig) SetServiceConfig(OllamaEnabled, config, ModelProvider.Ollama, false);
+            else if (config == AzureAIConfig) SetServiceConfig(AzureAIEnabled, config, ModelProvider.GitHub, true);
+            else if (config == OpenAIConfig) SetServiceConfig(OpenAIEnabled, config, ModelProvider.OpenAI, true);
         }
 
-        partial void OnOllamaEnabledChanged(bool value) =>  _ = SetAndTestServiceConfig(value, OllamaConfig, ModelProvider.Ollama, false);
+        partial void OnOllamaEnabledChanged(bool value)
+        {
+            SetServiceConfig(value, OllamaConfig, ModelProvider.Ollama, false);
+            ServiceEnablementChanged?.Invoke(OllamaConfig, EventArgs.Empty);
+        }
 
-        partial void OnAzureAIEnabledChanged(bool value) => _ = SetAndTestServiceConfig(value, AzureAIConfig, ModelProvider.GitHub, true);
+        partial void OnAzureAIEnabledChanged(bool value)
+        {
+            SetServiceConfig(value, AzureAIConfig, ModelProvider.GitHub, true);
+            ServiceEnablementChanged?.Invoke(AzureAIConfig, EventArgs.Empty);
+        }
 
-        partial void OnOpenAIEnabledChanged(bool value) => _ = SetAndTestServiceConfig(value, OpenAIConfig, ModelProvider.OpenAI, true);
+        partial void OnOpenAIEnabledChanged(bool value)
+        {
+            SetServiceConfig(value, OpenAIConfig, ModelProvider.OpenAI, true);
+            ServiceEnablementChanged?.Invoke(OpenAIConfig, EventArgs.Empty);
+        }
 
-        private static async Task SetAndTestServiceConfig(bool enabled, AIServiceConfigViewModel config, ModelProvider modelProvider, bool keyIsRequired)
+        private static void SetServiceConfig(bool enabled, AIServiceConfigViewModel config, ModelProvider modelProvider, bool keyIsRequired)
         {
             if (enabled && !string.IsNullOrEmpty(config.BaseUrl) && (!keyIsRequired || !string.IsNullOrEmpty(config.Key)))
             {
                 var aiService = App.Get<IAIService>(modelProvider);
                 aiService.Initialize(config.GetRecord());
-                await config.TestConnection(aiService);
             }
             else
             {

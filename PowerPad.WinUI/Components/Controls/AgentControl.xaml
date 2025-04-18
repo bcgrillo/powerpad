@@ -8,86 +8,114 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:EmptyObjectToObjectConverter x:Key="EmptyObjectToObjectConverter" EmptyValue="Collapsed" NotEmptyValue="Visible" />
+        <x:Boolean x:Key="TrueValue">True</x:Boolean>
+        <x:Boolean x:Key="FalseValue">False</x:Boolean>
     </UserControl.Resources>
-    <Grid>
-        <StackPanel 
-            x:Name="AgentPanel"
-            Orientation="Vertical" 
-            Spacing="4"
-            Margin="0,0,0,-24">
-            <Grid
+    <toolkit:SwitchPresenter Value="{x:Bind _settings.IsAIAvailable, Mode=TwoWay}">
+        <toolkit:Case Value="{StaticResource TrueValue}">
+            <StackPanel>
+                <StackPanel 
+                    x:Name="AgentPanel"
+                    Orientation="Vertical" 
+                    Spacing="4"
+                    Margin="0,0,0,-24">
+                    <Grid
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        Padding="16"
+                        CornerRadius="10"
+                        ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <DropDownButton x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Modelo">
+                                <DropDownButton.Flyout>
+                                    <MenuFlyout x:Name="AgentFlyoutMenu" Placement="TopEdgeAlignedLeft">
+                                    </MenuFlyout>
+                                </DropDownButton.Flyout>
+                                <DropDownButton.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ContentControl x:Name="ModelIcon" />
+                                        <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
+                                    </StackPanel>
+                                </DropDownButton.Content>
+                            </DropDownButton>
+                        </StackPanel>
+
+                        <local:IntegratedTextBox
+                            x:Name="PromptParameterInputBox"
+                                Grid.Column="1"
+                            TextWrapping="Wrap" 
+                            MaxHeight="148"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            Padding="4"
+                            FontSize="16"
+                            KeyDown="PromptParameterInputBox_KeyDown"
+                            TextChanged="PromptParameterInputBox_TextChanged"/>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="SendButton"
+                                Click="SendBtn_Click"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Height="32"
+                                BorderThickness="0"
+                                IsEnabled="False">
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon FontSize="20" Glyph="&#xE725;" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="StopButton"
+                                Style="{ThemeResource AccentButtonStyle}"
+                                Visibility="Collapsed"
+                                Height="32"
+                                BorderThickness="0"
+                                Click="StopBtn_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontSize="20" Glyph="&#xE73B;" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock 
+                        Text="El contenido generado por inteligencia artificial puede contener errores." 
+                        VerticalAlignment="Stretch"
+                        TextAlignment="Center"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        FontSize="12"
+                        Height="18" />
+                </StackPanel>
+                <muxc:InfoBar 
+                    x:Name="InfoBar"
+                    Severity="Informational"
+                    IsClosable="False" />
+            </StackPanel>
+        </toolkit:Case>
+        <toolkit:Case Value="{StaticResource FalseValue}">
+            <muxc:InfoBar 
+                IsOpen="True"
+                Severity="Informational"
+                Content="No hay modelos disponibles, revise la configuración."
+                IsClosable="False" />
+        </toolkit:Case>
+        <toolkit:Case IsDefault="True">
+            <StackPanel
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 Padding="16"
-                CornerRadius="10"
-                ColumnSpacing="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <DropDownButton x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Modelo">
-                        <DropDownButton.Flyout>
-                            <MenuFlyout x:Name="AgentFlyoutMenu" Placement="TopEdgeAlignedLeft">
-                            </MenuFlyout>
-                        </DropDownButton.Flyout>
-                        <DropDownButton.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl x:Name="ModelIcon" />
-                                <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
-                            </StackPanel>
-                        </DropDownButton.Content>
-                    </DropDownButton>
-                </StackPanel>
-
-                <local:IntegratedTextBox
-                    x:Name="PromptParameterInputBox"
-                        Grid.Column="1"
-                    TextWrapping="Wrap" 
-                    MaxHeight="148"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Padding="4"
+                CornerRadius="10">
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                    <muxc:ProgressRing Height="20" Width="20" />
+                    <TextBlock  VerticalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
                     FontSize="16"
-                    KeyDown="PromptParameterInputBox_KeyDown"
-                    TextChanged="PromptParameterInputBox_TextChanged"/>
-
-                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="SendButton"
-                        Click="SendBtn_Click"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Height="32"
-                        BorderThickness="0"
-                        IsEnabled="False">
-                        <StackPanel Orientation="Horizontal">
-                            <FontIcon FontSize="20" Glyph="&#xE725;" />
-                        </StackPanel>
-                    </Button>
-                    <Button x:Name="StopButton"
-                        Style="{ThemeResource AccentButtonStyle}"
-                        Visibility="Collapsed"
-                        Height="32"
-                        BorderThickness="0"
-                        Click="StopBtn_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon FontSize="20" Glyph="&#xE73B;" />
-                        </StackPanel>
-                    </Button>
+                    Text="Cargando modelos..." />
                 </StackPanel>
-            </Grid>
-            <TextBlock 
-                Text="El contenido generado por inteligencia artificial puede contener errores." 
-                VerticalAlignment="Stretch"
-                TextAlignment="Center"
-                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                FontSize="12"
-                Height="18" />
-        </StackPanel>
-        <muxc:InfoBar 
-            x:Name="InfoBar"
-            Severity="Informational"
-            IsClosable="False" />
-    </Grid>
+            </StackPanel>
+        </toolkit:Case>
+    </toolkit:SwitchPresenter>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Dispatching;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
@@ -19,7 +20,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public ModelsSettingsViewModel Models { get; private init; }
 
         [ObservableProperty]
-        private bool _isAIAvailable;
+        private bool? _isAIAvailable;
 
         public SettingsViewModel()
         {
@@ -31,36 +32,43 @@ namespace PowerPad.WinUI.ViewModels.Settings
             General.PropertyChanged += (s, e) => _configStore.Set(StoreKey.GeneralSettings, General);
             Models.PropertyChanged += (s, e) => _configStore.Set(StoreKey.ModelsSettings, Models);
 
-            _ = Task.Run(async () =>
-            {
-                await TestConnections();
-
-                if (General.OllamaAutostart && General.OllamaConfig.ServiceStatus == ServiceStatus.Available)
-                {
-                    await App.Get<IOllamaService>().Start();
-                    await General.OllamaConfig.TestConnection(App.Get<IAIService>(ModelProvider.Ollama));
-                }
-
-                UpdateAIAvaibility();
-            });
-
-            General.ProviderAvaibilityChanged += (s, e) => UpdateAIAvaibility();
-            Models.ModelAvaibilityChanged += (s, e) => UpdateAIAvaibility();
+            General.ProviderAvaibilityChanged += UpdateAIAvaibility;
+            Models.ModelAvaibilityChanged += UpdateAIAvaibility;
         }
 
         public async Task TestConnections()
         {
-            if (General.OllamaEnabled) await General.OllamaConfig.TestConnection(App.Get<IAIService>(ModelProvider.Ollama));
-            else General.OllamaConfig.ResetStatus();
+            General.ProviderAvaibilityChanged -= UpdateAIAvaibility;
 
-            if (General.AzureAIEnabled) await General.AzureAIConfig.TestConnection(App.Get<IAIService>(ModelProvider.GitHub));
-            else General.AzureAIConfig.ResetStatus();
+            try
+            {
+                if (General.OllamaEnabled)
+                {
+                    await General.OllamaConfig.TestConnection(App.Get<IAIService>(ModelProvider.Ollama));
 
-            if (General.OpenAIEnabled) await General.OpenAIConfig.TestConnection(App.Get<IAIService>(ModelProvider.OpenAI));
-            else General.OpenAIConfig.ResetStatus();
+                    if (General.OllamaAutostart && General.OllamaConfig.ServiceStatus == ServiceStatus.Available)
+                    {
+                        await App.Get<IOllamaService>().Start();
+                        await General.OllamaConfig.TestConnection(App.Get<IAIService>(ModelProvider.Ollama));
+                    }
+                }
+                else General.OllamaConfig.ResetStatus();
+
+                if (General.AzureAIEnabled) await General.AzureAIConfig.TestConnection(App.Get<IAIService>(ModelProvider.GitHub));
+                else General.AzureAIConfig.ResetStatus();
+
+                if (General.OpenAIEnabled) await General.OpenAIConfig.TestConnection(App.Get<IAIService>(ModelProvider.OpenAI));
+                else General.OpenAIConfig.ResetStatus();
+            }
+            finally
+            {
+                UpdateAIAvaibility(null, null);
+
+                General.ProviderAvaibilityChanged += UpdateAIAvaibility;
+            }
         }
 
-        private void UpdateAIAvaibility()
+        private void UpdateAIAvaibility(object? _, EventArgs? __)
         {
             var availableModels = Models.AvailableModels
                 .Where(m => General.AvailableProviders.Contains(m.ModelProvider) && m.Enabled);

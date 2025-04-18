@@ -6,151 +6,167 @@
     xmlns:local="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <x:Boolean x:Key="TrueValue">True</x:Boolean>
+        <x:Boolean x:Key="FalseValue">False</x:Boolean>
     </UserControl.Resources>
-    <Grid>
-        <StackPanel 
-            Orientation="Vertical" 
-            Spacing="4"
-            Margin="0,0,0,-24"
-            Visibility="{x:Bind _settings.IsAIAvailable, Mode=OneWay}">
-            <Grid
-                x:Name="ParametersPanel"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                Padding="16"
-                CornerRadius="10"
-                Visibility="Collapsed" >
-                <StackPanel VerticalAlignment="Stretch" Orientation="Vertical" Spacing="16">
-                    <Grid 
-                        HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <ToggleSwitch 
-                            x:Name="EnableParametersSwitch" 
-                            VerticalAlignment="Center"
-                            Margin="0,-6,-8,-6"
-                            MinWidth="0"
-                            Toggled="EnableParametersSwitch_Toggled">
-                            <ToggleSwitch.OnContent>
-                                <TextBlock 
-                                    Text="Enviar parámetros personalizados" 
-                                    Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                            </ToggleSwitch.OnContent>
-                            <ToggleSwitch.OffContent>
-                                <StackPanel Orientation="Horizontal" Spacing="8">
+    <toolkit:SwitchPresenter Value="{x:Bind _settings.IsAIAvailable, Mode=TwoWay}">
+        <toolkit:Case Value="{StaticResource TrueValue}">
+            <StackPanel 
+                Orientation="Vertical" 
+                Spacing="4"
+                Margin="0,0,0,-24">
+                <Grid
+                    x:Name="ParametersPanel"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    Padding="16"
+                    CornerRadius="10"
+                    Visibility="Collapsed" >
+                    <StackPanel VerticalAlignment="Stretch" Orientation="Vertical" Spacing="16">
+                        <Grid 
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ToggleSwitch 
+                                x:Name="EnableParametersSwitch" 
+                                VerticalAlignment="Center"
+                                Margin="0,-6,-8,-6"
+                                MinWidth="0"
+                                Toggled="EnableParametersSwitch_Toggled">
+                                <ToggleSwitch.OnContent>
                                     <TextBlock 
-                                        Text="No enviar parámetros personalizados" 
+                                        Text="Enviar parámetros personalizados" 
                                         Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                    <TextBlock 
-                                        Text="(Se envían parámetros predeterminados)" 
-                                        Visibility="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}"
-                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
-                                        VerticalAlignment="Center" />
-                                </StackPanel>
-                            </ToggleSwitch.OffContent>
-                        </ToggleSwitch>
-                        <!--IsOn="{x:Bind ViewModel.ParametersEnabled, Mode=TwoWay}" -->
-                        <Button 
-                            x:Name="CloseParametersButton"
-                            Grid.Column="2" HorizontalAlignment="Right"
-                            Background="Transparent"
-                            BorderBrush="Transparent" Width="30" Height="30" Padding="0"
-                            Click="CloseParametersButton_Click">
-                            <FontIcon FontSize="16" Glyph="&#xE8BB;" 
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        </Button>
-                    </Grid>
-                    <local:ChatControlParameters x:Name="ControlDefaultParamters" Parameters="{x:Bind _settings.Models.DefaultParameters}" Visibility="Visible" IsEnabled="False" />
-                    <local:ChatControlParameters x:Name="ControlCustomParamters" Parameters="{x:Bind _parameters}" Visibility="Collapsed" />
-                </StackPanel>
-            </Grid>
-            <Grid
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                Padding="16"
-                CornerRadius="10"
-                RowSpacing="8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <local:IntegratedTextBox
-                    x:Name="ChatInputBox"
-                    PlaceholderText="{x:Bind ChatPlaceHolder}"
-                    TextWrapping="Wrap" 
-                    MaxHeight="148"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Padding="0"
-                    FontSize="16"
-                    KeyDown="ChatInputBox_KeyDown"
-                    TextChanged="ChatInputBox_TextChanged"/>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <DropDownButton x:Name="ModelButton" Height="32" ToolTipService.ToolTip="Modelo">
-                            <DropDownButton.Flyout>
-                                <MenuFlyout x:Name="ModelFlyoutMenu" Placement="TopEdgeAlignedLeft">
-                                </MenuFlyout>
-                            </DropDownButton.Flyout>
-                            <DropDownButton.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <local:ButtonIcon x:Name="ModelIcon" />
-                                    <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
-                                </StackPanel>
-                            </DropDownButton.Content>
-                        </DropDownButton>
-                        <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Parámetros">
-                            <local:ButtonIcon Source="{ThemeResource SettingsSmallSvg}"/>
-                        </ToggleButton>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button x:Name="SendButton"
-                            Click="SendBtn_Click"
-                            Style="{StaticResource AccentButtonStyle}"
-                            Height="32"
-                            BorderThickness="0"
-                            IsEnabled="False">
-                            <StackPanel Orientation="Horizontal">
-                                <FontIcon FontSize="20" Glyph="&#xE725;" />
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="StopButton"
-                            Style="{ThemeResource AccentButtonStyle}"
-                            Visibility="Collapsed"
-                            Height="32"
-                            BorderThickness="0"
-                            Click="StopBtn_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon FontSize="20" Glyph="&#xE73B;" />
-                            </StackPanel>
-                        </Button>
+                                </ToggleSwitch.OnContent>
+                                <ToggleSwitch.OffContent>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock 
+                                            Text="No enviar parámetros personalizados" 
+                                            Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                        <TextBlock 
+                                            Text="(Se envían parámetros predeterminados)" 
+                                            Visibility="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}"
+                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
+                                            VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </ToggleSwitch.OffContent>
+                            </ToggleSwitch>
+                            <!--IsOn="{x:Bind ViewModel.ParametersEnabled, Mode=TwoWay}" -->
+                            <Button 
+                                x:Name="CloseParametersButton"
+                                Grid.Column="2" HorizontalAlignment="Right"
+                                Background="Transparent"
+                                BorderBrush="Transparent" Width="30" Height="30" Padding="0"
+                                Click="CloseParametersButton_Click">
+                                <FontIcon FontSize="16" Glyph="&#xE8BB;" 
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Button>
+                        </Grid>
+                        <local:ChatControlParameters x:Name="ControlDefaultParamters" Parameters="{x:Bind _settings.Models.DefaultParameters}" Visibility="Visible" IsEnabled="False" />
+                        <local:ChatControlParameters x:Name="ControlCustomParamters" Parameters="{x:Bind _parameters}" Visibility="Collapsed" />
                     </StackPanel>
                 </Grid>
-            </Grid>
-            <TextBlock 
-                Text="El contenido generado por inteligencia artificial puede contener errores." 
-                VerticalAlignment="Stretch"
-                TextAlignment="Center"
-                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                FontSize="12"
-                Height="18" />
-        </StackPanel>
-        <StackPanel
-                Visibility="{x:Bind _settings.IsAIAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                <Grid
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    Padding="16"
+                    CornerRadius="10"
+                    RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <local:IntegratedTextBox
+                        x:Name="ChatInputBox"
+                        PlaceholderText="{x:Bind ChatPlaceHolder}"
+                        TextWrapping="Wrap" 
+                        MaxHeight="148"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        Padding="0"
+                        FontSize="16"
+                        KeyDown="ChatInputBox_KeyDown"
+                        TextChanged="ChatInputBox_TextChanged"/>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <DropDownButton x:Name="ModelButton" Height="32" ToolTipService.ToolTip="Modelo">
+                                <DropDownButton.Flyout>
+                                    <MenuFlyout x:Name="ModelFlyoutMenu" Placement="TopEdgeAlignedLeft">
+                                    </MenuFlyout>
+                                </DropDownButton.Flyout>
+                                <DropDownButton.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <local:ButtonIcon x:Name="ModelIcon" />
+                                        <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
+                                    </StackPanel>
+                                </DropDownButton.Content>
+                            </DropDownButton>
+                            <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" ToolTipService.ToolTip="Parámetros">
+                                <local:ButtonIcon Source="{ThemeResource SettingsSmallSvg}"/>
+                            </ToggleButton>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="SendButton"
+                                Click="SendBtn_Click"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Height="32"
+                                BorderThickness="0"
+                                IsEnabled="False">
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon FontSize="20" Glyph="&#xE725;" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="StopButton"
+                                Style="{ThemeResource AccentButtonStyle}"
+                                Visibility="Collapsed"
+                                Height="32"
+                                BorderThickness="0"
+                                Click="StopBtn_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontSize="20" Glyph="&#xE73B;" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <TextBlock 
+                    Text="El contenido generado por inteligencia artificial puede contener errores." 
+                    VerticalAlignment="Stretch"
+                    TextAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    FontSize="12"
+                    Height="18" />
+            </StackPanel>
+        </toolkit:Case>
+        <toolkit:Case Value="{StaticResource FalseValue}">
             <muxc:InfoBar 
                 IsOpen="True"
                 Severity="Informational"
                 Content="No hay modelos disponibles, revise la configuración."
                 IsClosable="False" />
-        </StackPanel>
-    </Grid>
+        </toolkit:Case>
+        <toolkit:Case IsDefault="True">
+            <StackPanel
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                Padding="16"
+                CornerRadius="10">
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                    <muxc:ProgressRing Height="20" Width="20" />
+                    <TextBlock  VerticalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    FontSize="16"
+                    Text="Cargando modelos..." />
+                </StackPanel>
+            </StackPanel>
+        </toolkit:Case>
+    </toolkit:SwitchPresenter>
 </UserControl>

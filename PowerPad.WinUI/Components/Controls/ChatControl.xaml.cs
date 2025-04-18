@@ -17,6 +17,7 @@ using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
 using System.Diagnostics;
 using System.ComponentModel;
+using CommunityToolkit.WinUI.UI.Controls;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -83,16 +84,18 @@ namespace PowerPad.WinUI.Components.Controls
             };
             _loadingAnimationTimer.Tick += LoadingAnimationTimer_Tick;
 
-            _settings.Models.PropertyChanged += Models_PropertyChanged;
+            _settings.General.ProviderAvaibilityChanged += Models_PropertyChanged;
+            _settings.Models.ModelAvaibilityChanged += Models_PropertyChanged;
+            _settings.Models.DefaultModelChanged += Models_PropertyChanged;
         }
 
-        private void Models_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void Models_PropertyChanged(object? _, EventArgs __)
         {
             _debounceTimer.Stop();
             _debounceTimer.Start();
         }
 
-        private void DebounceTimer_Tick(object? sender, object e)
+        private void DebounceTimer_Tick(object? _, object __)
         {
             _debounceTimer.Stop();
             SetModelsMenu();
@@ -109,7 +112,12 @@ namespace PowerPad.WinUI.Components.Controls
 
             if (model is null)
             {
-                ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(100);
+                    //TODO: Check if it is working in default model changes
+                    if (ModelFlyoutMenu.Items.Any()) ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
+                });
             }
             else
             {
@@ -184,7 +192,7 @@ namespace PowerPad.WinUI.Components.Controls
                 ModelFlyoutMenu.Items.Add(firstItem);
                 ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
 
-                var availableProviders = _settings.General.AvailableProviders;
+                var availableProviders = _settings.General.AvailableProviders.OrderBy(p => p);
 
                 foreach (var provider in availableProviders)
                 {
@@ -217,7 +225,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
-        private void SetModelItem_Click(object sender, RoutedEventArgs _)
+        private void SetModelItem_Click(object sender, RoutedEventArgs __)
         {
             _selectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
 

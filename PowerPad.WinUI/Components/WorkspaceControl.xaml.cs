@@ -198,7 +198,7 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void OpenRecentlyFlyoutItem_Click(object sender, RoutedEventArgs _)
+        private void OpenRecentlyFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             _workspace.OpenWorkspaceCommand.Execute(((MenuFlyoutItem)sender).Tag);
             ItemInvoked?.Invoke(this, new(null));

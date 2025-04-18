@@ -58,8 +58,6 @@ namespace PowerPad.WinUI.ViewModels.Settings
             ServiceStatus = ServiceStatus.Updating;
             ErrorMessage = null;
 
-            StatusChanged?.Invoke(this, EventArgs.Empty);
-
             OnPropertyChanged(nameof(ServiceStatus));
             OnPropertyChanged(nameof(ErrorMessage));
 

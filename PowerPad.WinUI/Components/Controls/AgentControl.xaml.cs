@@ -49,28 +49,17 @@ namespace PowerPad.WinUI.Components.Controls
             }
 
             _agentsCollection.Agents.CollectionChanged += Agents_CollectionChanged;
-
-            _settings.Models.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(_settings.Models.DefaultModel)) UpdateVisibility();
-            };
         }
 
         private void UpdateVisibility()
         {
-            if (!_settings.IsAIAvailable)
-            {
-                AgentPanel.Visibility = Visibility.Collapsed;
-                InfoBar.IsOpen = true;
-                InfoBar.Content = "No hay modelos disponibles, revise la configuración.";
-            }
-            else if (_selectedAgent is null)
+            if (_selectedAgent is null)
             {
                 AgentPanel.Visibility = Visibility.Collapsed;
                 InfoBar.IsOpen = true;
                 InfoBar.Content = "No hay agentes disponibles, revise la configuración.";
             }
-            else if (_selectedAgent is not null && _settings.Models.DefaultModel is not null)
+            else if (_selectedAgent is not null)
             {
                 AgentPanel.Visibility = Visibility.Visible;
                 InfoBar.IsOpen = false;
@@ -98,7 +87,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
-        private void SetModelItem_Click(object sender, RoutedEventArgs _)
+        private void SetModelItem_Click(object sender, RoutedEventArgs __)
         {
             _selectedAgent = (AgentViewModel?)((RadioMenuFlyoutItem)sender).Tag;
 

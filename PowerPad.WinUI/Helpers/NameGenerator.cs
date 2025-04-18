@@ -23,7 +23,7 @@ namespace PowerPad.WinUI.Helpers
 
         public static async Task<string?> Generate(string fileContent, CancellationToken cancellationToken = default)
         {
-            if (App.Get<SettingsViewModel>().IsAIAvailable)
+            if (App.Get<SettingsViewModel>().IsAIAvailable == true)
             {
                 var chatService = App.Get<IChatService>();
                 var generateNameBuilder = new StringBuilder();

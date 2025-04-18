@@ -165,7 +165,11 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
         {
             if (!_disposed)
             {
-                if (disposing) _settings.Models.AvailableModels.CollectionChanged -= FilterModels;
+                if (disposing)
+                {
+                    _settings.General.ProviderAvaibilityChanged -= UpdateRepeaterState;
+                    _settings.Models.AvailableModels.CollectionChanged -= FilterModels;
+                }
 
                 _disposed = true;
             }
