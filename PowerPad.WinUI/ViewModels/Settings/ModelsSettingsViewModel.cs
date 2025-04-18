@@ -32,7 +32,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             init
             {
                 field = value;
-                field.CollectionChanged += AvailableCollectionChangedHandler;
+                foreach (var model in field) model.PropertyChanged += AvailableCollectionPropertyChangedHandler;
                 foreach (AIModelViewModel model in field) model.PropertyChanged += AvailableCollectionPropertyChangedHandler;
             }
         }
