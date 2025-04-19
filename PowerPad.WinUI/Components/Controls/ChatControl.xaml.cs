@@ -62,21 +62,12 @@ namespace PowerPad.WinUI.Components.Controls
             _settings = App.Get<SettingsViewModel>();
             _cts = new();
 
-            if (_settings.Models.DefaultModel is not null)
-            {
-                ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
-                ModelName.Text = _settings.Models.DefaultModel!.CardName;
-                SetModelsMenu();
-            }
-
-            _parameters = _settings.Models.DefaultParameters.Copy();
-            _parameters.PropertyChanged += Parameters_PropertyChanged;
-
             _debounceTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(DEBOURCE_INTERVAL)
             };
             _debounceTimer.Tick += DebounceTimer_Tick;
+            _debounceTimer.Stop();
 
             _loadingAnimationTimer = new DispatcherTimer
             {
@@ -84,9 +75,7 @@ namespace PowerPad.WinUI.Components.Controls
             };
             _loadingAnimationTimer.Tick += LoadingAnimationTimer_Tick;
 
-            _settings.General.ProviderAvaibilityChanged += Models_PropertyChanged;
-            _settings.Models.ModelAvaibilityChanged += Models_PropertyChanged;
-            _settings.Models.DefaultModelChanged += Models_PropertyChanged;
+            _parameters = _settings.Models.DefaultParameters.Copy();
         }
 
         private void Models_PropertyChanged(object? _, EventArgs __)
@@ -101,12 +90,33 @@ namespace PowerPad.WinUI.Components.Controls
             SetModelsMenu();
         }
 
+        public void InitializeParameters(AIModelViewModel? model, AIParametersViewModel? parameters)
+        {
+            _selectedModel = model;
+
+            SetModelsMenu();
+
+            if (parameters is not null)
+            {
+                _parameters.Set(parameters.GetRecord());
+
+                _sendParameters = true;
+                EnableParametersSwitch.IsOn = true;
+                ToggleParameterVisibility();
+            }
+
+            _parameters.PropertyChanged += Parameters_PropertyChanged;
+            _settings.General.ProviderAvaibilityChanged += Models_PropertyChanged;
+            _settings.Models.ModelAvaibilityChanged += Models_PropertyChanged;
+            _settings.Models.DefaultModelChanged += DefaultModel_Changed;
+        }
+
         public void SetFocus()
         {
             ChatInputBox.Focus(FocusState.Keyboard);
         }
 
-        public void SetModel(AIModelViewModel? model)
+        private void SetModel(AIModelViewModel? model)
         {
             _selectedModel = model;
 
@@ -115,7 +125,6 @@ namespace PowerPad.WinUI.Components.Controls
                 DispatcherQueue.TryEnqueue(async () =>
                 {
                     await Task.Delay(100);
-                    //TODO: Check if it is working in default model changes
                     if (ModelFlyoutMenu.Items.Any()) ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
                 });
             }
@@ -133,7 +142,6 @@ namespace PowerPad.WinUI.Components.Controls
                 }
                 else
                 {
-                    //Selected model is not available
                     _selectedModel = null;
 
                     menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault();
@@ -152,27 +160,6 @@ namespace PowerPad.WinUI.Components.Controls
             }
 
             UpdateModelButtonContent();
-        }
-
-        public void SetParameters(AIParametersViewModel? parameters)
-        {
-            if (parameters is not null)
-            {
-                _parameters.Set(parameters.GetRecord());
-
-                if (!_sendParameters)
-                {
-                    _sendParameters = true;
-                    EnableParametersSwitch.IsOn = true;
-                    ToggleParameterVisibility();
-                }
-            }
-            else if (_sendParameters)
-            {
-                _sendParameters = false;
-                EnableParametersSwitch.IsOn = false;
-                ToggleParameterVisibility();
-            }
         }
 
         private void SetModelsMenu()
@@ -239,18 +226,35 @@ namespace PowerPad.WinUI.Components.Controls
         {
             if (_selectedModel is not null)
             {
-                ModelIcon.Source = _selectedModel.ModelProvider.GetIcon();
                 ModelName.Text = _selectedModel.CardName;
+                ModelIcon.Source = _selectedModel.ModelProvider.GetIcon();
             }
             else if (_settings.Models.DefaultModel is not null)
             {
-                ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
                 ModelName.Text = _settings.Models.DefaultModel.CardName;
+                ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
             }
             else
             {
-                ModelIcon.Source = null;
                 ModelName.Text = "Unavailable";
+                ModelIcon.Source = null;
+            }
+        }
+
+        private void DefaultModel_Changed(object? _, EventArgs __)
+        {
+            if (_settings.Models.DefaultModel is not null && ModelFlyoutMenu.Items.Any())
+            {
+                var firstItem = (RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First();
+
+                firstItem.Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})";
+                firstItem.Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() };
+
+                if (_selectedModel is null)
+                {
+                    ModelName.Text = _settings.Models.DefaultModel.CardName;
+                    ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
+                }
             }
         }
 

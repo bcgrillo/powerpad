@@ -23,6 +23,7 @@ namespace PowerPad.Core.Services.AI
         private const string HF_OLLAMA_PREFIX = "hf.co/";
         private const string HF_OLLAMA_PREFIX_AUX = "huggingface.co/";
 
+        private const int TEST_CONNECTION_TIMEOUT = 5000;
         private const int DELAY_AFTER_START = 500;
         private const int DOWNLOAD_UPDATE_INTERVAL = 200;
 
@@ -59,7 +60,8 @@ namespace PowerPad.Core.Services.AI
 
             try
             {
-                connected = await GetClient().IsRunningAsync();
+                using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(TEST_CONNECTION_TIMEOUT));
+                connected = await GetClient().IsRunningAsync(cts.Token);
             }
             catch
             {

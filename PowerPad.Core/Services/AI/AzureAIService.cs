@@ -9,7 +9,8 @@ namespace PowerPad.Core.Services.AI
 {
     public class AzureAIService : IAIService
     {
-        private const string TEST_MODEL = "gpt-4o";
+        private const string TEST_MODEL = "gpt-4o-mini";
+        private const int TEST_CONNECTION_TIMEOUT = 2000;
 
         private ChatCompletionsClient? _azureAI;
         private AIServiceConfig? _config;
@@ -43,9 +44,14 @@ namespace PowerPad.Core.Services.AI
             try
             {
                 //TODO: Check a better way to do this
-                var result = await GetClient().AsChatClient(TEST_MODEL).GetResponseAsync("test");
+                using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(TEST_CONNECTION_TIMEOUT));
+                var result = await GetClient().AsChatClient(TEST_MODEL).GetResponseAsync("test", null, cts.Token);
 
                 return new(ServiceStatus.Online);
+            }
+            catch (OperationCanceledException)
+            {
+                return new(ServiceStatus.Error, "The operation timed out.");
             }
             catch (Exception ex)
             {

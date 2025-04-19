@@ -67,8 +67,8 @@ namespace PowerPad.WinUI.Components.Editors
 
             this.InitializeComponent();
 
-            ChatControl.SetModel(_chat!.Model);
-            ChatControl.SetParameters(_chat!.Parameters);
+            ChatControl.InitializeParameters(_chat!.Model, _chat!.Parameters);
+            
             if (_chat.Messages.Any()) HideLandingAndExpandChat();
 
             ChatControl.ChatOptionsChanged += ChatControl_ChatOptionsChanged;
