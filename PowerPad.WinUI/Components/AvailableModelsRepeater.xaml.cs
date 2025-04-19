@@ -44,7 +44,11 @@ namespace PowerPad.WinUI.Components
 
         private void OnSetDefaultClick(object? sender, RoutedEventArgs __)
         {
-            SetDefaultClick?.Invoke(sender, new((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
+            var model = (AIModelViewModel)((MenuFlyoutItem)sender!).Tag;
+            
+            if (!model.Enabled) model.Enabled = true;
+
+            SetDefaultClick?.Invoke(sender, new(model));
         }
 
         private void HyperlinkButton_Click(object sender, RoutedEventArgs __)

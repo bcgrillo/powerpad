@@ -2,7 +2,8 @@
 {
     public interface IEditorContract
     {
-        string GetContent();
+        string GetContent(bool plainText = false);
         void SetContent(string content);
+        int WordCount();
     }
 }

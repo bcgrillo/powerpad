@@ -18,7 +18,7 @@ using System.Threading;
 
 namespace PowerPad.WinUI.Components
 {
-    public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>
+    public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>, IRecipient<FolderEntryChanged>
     {
         private static WorkspaceControl? _registredInstance = null;
         private readonly Lock _registredInstenceLock = new();
@@ -37,12 +37,17 @@ namespace PowerPad.WinUI.Components
 
             UpdateWorkspacesMenu();
 
+            //TODO: Change for use dispose
             lock(_registredInstenceLock)
             {
                 if (_registredInstance is not null)
+                {
                     WeakReferenceMessenger.Default.Unregister<FolderEntryCreated>(_registredInstance);
+                    WeakReferenceMessenger.Default.Unregister<FolderEntryChanged>(_registredInstance);
+                }
 
-                WeakReferenceMessenger.Default.Register(this);
+                WeakReferenceMessenger.Default.Register<FolderEntryCreated>(this);
+                WeakReferenceMessenger.Default.Register<FolderEntryChanged>(this);
                 _registredInstance = this;
             }
         }
@@ -283,6 +288,16 @@ namespace PowerPad.WinUI.Components
             {
                 ItemInvoked?.Invoke(this, new(message.Value));
                 _workspace.CurrentDocumentPath = message.Value.ModelEntry.Path;
+            }
+        }
+
+        public void Receive(FolderEntryChanged message)
+        {
+            var selectedItem = TreeView.SelectedItem as FolderEntryViewModel;
+
+            if (message.NameChanged && selectedItem?.ModelEntry == message.Value)
+            {
+                _workspace.CurrentDocumentPath = message.Value.Path;
             }
         }
 

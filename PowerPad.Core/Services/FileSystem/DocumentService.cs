@@ -6,8 +6,8 @@ namespace PowerPad.Core.Services.FileSystem
     public interface IDocumentService
     {
         void LoadDocument(Document document, IEditorContract output);
-        void AutosaveDocument(Document document, IEditorContract control);
-        void SaveDocument(Document document, IEditorContract control);
+        Task AutosaveDocument(Document document, IEditorContract control);
+        Task SaveDocument(Document document, IEditorContract control);
     }
 
     public class DocumentService : IDocumentService
@@ -28,15 +28,15 @@ namespace PowerPad.Core.Services.FileSystem
             }
         }
 
-        public void AutosaveDocument(Document document, IEditorContract control)
+        public async Task AutosaveDocument(Document document, IEditorContract control)
         {
-            File.WriteAllText(document.AutosavePath, control.GetContent());
+            await File.WriteAllTextAsync(document.AutosavePath, control.GetContent());
             document.Status = DocumentStatus.AutoSaved;
         }
 
-        public void SaveDocument(Document document, IEditorContract control)
+        public async Task SaveDocument(Document document, IEditorContract control)
         {
-            File.WriteAllText(document.Path, control.GetContent());
+            await File.WriteAllTextAsync(document.Path, control.GetContent());
             document.Status = DocumentStatus.Saved;
 
             if (File.Exists(document.AutosavePath)) File.Delete(document.AutosavePath);

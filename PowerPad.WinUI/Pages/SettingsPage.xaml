@@ -81,7 +81,16 @@
                                         IsOpen="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}"
                                         IsClosable="False"
                                         Severity="Error"
-                                        Content="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay}" />
+                                        Message="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay}">
+                                        <muxc:InfoBar.ActionButton>
+                                            <Button x:Name="OllamaRetryButton" Click="RetryButton_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
+                                                    <TextBlock>Reintentar</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+                                        </muxc:InfoBar.ActionButton>
+                                    </muxc:InfoBar>
                                     <muxc:InfoBar 
                                         Style="{StaticResource InfoBarServiceStyle}"
                                         x:Name="OllamaInfoBar" />
@@ -170,7 +179,16 @@
                                     IsOpen="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}"
                                     IsClosable="False"
                                     Severity="Error"
-                                    Content="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}" />
+                                    Message="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}">
+                                    <muxc:InfoBar.ActionButton>
+                                        <Button x:Name="AzureAIRetryButton" Click="RetryButton_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
+                                                <TextBlock>Reintentar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </muxc:InfoBar.ActionButton>
+                                </muxc:InfoBar>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
@@ -232,7 +250,16 @@
                                     IsOpen="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}"
                                     IsClosable="False"
                                     Severity="Error"
-                                    Content="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}" />
+                                    Message="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}">
+                                    <muxc:InfoBar.ActionButton>
+                                        <Button x:Name="OpenAIRetryButton" Click="RetryButton_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
+                                                <TextBlock>Reintentar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </muxc:InfoBar.ActionButton>
+                                </muxc:InfoBar>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">

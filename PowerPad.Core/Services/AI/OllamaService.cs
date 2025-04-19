@@ -60,7 +60,7 @@ namespace PowerPad.Core.Services.AI
 
             try
             {
-                using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(TEST_CONNECTION_TIMEOUT));
+                using var cts = new CancellationTokenSource(TEST_CONNECTION_TIMEOUT);
                 connected = await GetClient().IsRunningAsync(cts.Token);
             }
             catch

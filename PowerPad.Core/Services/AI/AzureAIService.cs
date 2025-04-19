@@ -10,7 +10,7 @@ namespace PowerPad.Core.Services.AI
     public class AzureAIService : IAIService
     {
         private const string TEST_MODEL = "gpt-4o-mini";
-        private const int TEST_CONNECTION_TIMEOUT = 2000;
+        private const int TEST_CONNECTION_TIMEOUT = 5000;
 
         private ChatCompletionsClient? _azureAI;
         private AIServiceConfig? _config;
@@ -44,7 +44,7 @@ namespace PowerPad.Core.Services.AI
             try
             {
                 //TODO: Check a better way to do this
-                using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(TEST_CONNECTION_TIMEOUT));
+                using var cts = new CancellationTokenSource(TEST_CONNECTION_TIMEOUT);
                 var result = await GetClient().AsChatClient(TEST_MODEL).GetResponseAsync("test", null, cts.Token);
 
                 return new(ServiceStatus.Online);

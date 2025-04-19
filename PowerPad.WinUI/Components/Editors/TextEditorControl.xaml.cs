@@ -33,7 +33,7 @@ namespace PowerPad.WinUI.Components.Editors
             TextEditor.TextChanged += (s, e) => _document.Status = DocumentStatus.Dirty;
         }
 
-        public override string GetContent()
+        public override string GetContent(bool _ = false)
         {
             return TextEditor.Text;
         }
@@ -100,7 +100,28 @@ namespace PowerPad.WinUI.Components.Editors
 
             await AgentControl.StartAgentAction(TextEditor.Text, stringBuilder);
 
+            _document.PreviousContent = TextEditor.Text;
+
             TextEditor.Text = stringBuilder.ToString();
+        }
+
+        public override int WordCount()
+        {
+            return TextEditor.Text.Split(' ').Length;
+        }
+
+        private void UndoButton_Click(object _, RoutedEventArgs __)
+        {
+            _document.NextContent = TextEditor.Text;
+            TextEditor.Text = _document.PreviousContent;
+            _document.PreviousContent = null;
+        }
+
+        private void RedoButton_Click(Object _, RoutedEventArgs __)
+        {
+            _document.PreviousContent = TextEditor.Text;
+            TextEditor.Text = _document.NextContent;
+            _document.NextContent = null;
         }
     }
 

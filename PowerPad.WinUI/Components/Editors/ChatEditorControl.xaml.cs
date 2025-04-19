@@ -31,9 +31,11 @@ namespace PowerPad.WinUI.Components.Editors
             _document = new(document, this);
         }
 
-        public override string GetContent()
+        public override string GetContent(bool plainText = false)
         {
-            return JsonSerializer.Serialize(_chat, JSON_SERIALIZER_OPTIONS);
+            return plainText
+                ? string.Join('\n', _chat!.Messages.Select(m => $"{m.Role}: {m.Content}"))
+                : JsonSerializer.Serialize(_chat, JSON_SERIALIZER_OPTIONS);
         }
 
         public override void SetContent(string content)
@@ -221,6 +223,11 @@ namespace PowerPad.WinUI.Components.Editors
             {
                 LandingContent.Visibility = parametersPanelVisible ? Visibility.Collapsed : Visibility.Visible;
             }
+        }
+
+        public override int WordCount()
+        {
+            return _chat!.Messages.Sum(m => m.Content.Split(' ').Length);
         }
     }
 }

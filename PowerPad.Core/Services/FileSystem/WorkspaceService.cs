@@ -104,6 +104,7 @@ namespace PowerPad.Core.Services.FileSystem
             var sourceFolder = document.Parent!;
             var newPath = $"{targetFolder.Path}\\{document.Name}{document.Extension}";
 
+            //TODO: Check error if exists
             File.Move(document.Path, newPath);
 
             if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));

@@ -156,7 +156,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentType documentType, string? name = null)
         {
-            return new(name ?? NewEntryNameHelper.NewDocumentName(documentType))
+            return new(name ?? NameGeneratorHelper.NewDocumentName(documentType))
             {
                 Parent = parent,
                 Type = EntryType.Document,
@@ -166,7 +166,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public static NewEntryParameters NewFolder(FolderEntryViewModel? parent, string? name = null)
         {
-            return new(name ?? NewEntryNameHelper.NewFolderName())
+            return new(name ?? NameGeneratorHelper.NewFolderName())
             {
                 Parent = parent,
                 Type = EntryType.Folder,

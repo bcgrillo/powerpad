@@ -17,7 +17,7 @@
             <Setter Property="BorderBrush" Value="{ThemeResource AccentButtonBorderBrush}" />
             <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         </Style>
-        <converters:NullOrEmptyToCollapsedConverter x:Key="NullOrEmptyToCollapsedConverter"/>
+        <converters:BooleanToFontWeightConverter x:Key="BooleanToFontWeightConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -94,11 +94,21 @@
                             AllowDrop="{x:Bind IsFolder}"
                             IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
                             IsSelected="{x:Bind IsSelected, Mode=TwoWay}"
-                            GlyphOpacity="0">
-                            <StackPanel Orientation="Horizontal">
-                                <FontIcon Glyph="{x:Bind Glyph, Mode=OneWay}" FontSize="16" Margin="-22,2,10,0" Visibility="{x:Bind Glyph, Converter={StaticResource NullOrEmptyToCollapsedConverter}}"/>
-                                <TextBlock Margin="0,1,8,-1" Text="{x:Bind Name, Mode=OneWay}"/>
-                            </StackPanel>
+                            ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}"
+                            ExpandedGlyph="{x:Null}" CollapsedGlyph="{x:Null}">
+                            <Grid ColumnSpacing="10" Margin="-24,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="{x:Bind Glyph, Mode=OneWay}" FontSize="16" Margin="0,1,0,0" />
+                                <TextBlock 
+                                    Grid.Column="1" 
+                                    Margin="0,1,0,-1" 
+                                    Text="{x:Bind Name, Mode=OneWay}" 
+                                    FontWeight="{x:Bind IsFolder, Converter={StaticResource BooleanToFontWeightConverter}}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </Grid>
                             <TreeViewItem.ContextFlyout>
                                 <MenuFlyout Placement="Bottom">
                                     <MenuFlyoutItem Text="Renombrar" Click="RenameFlyoutItem_Click"/>

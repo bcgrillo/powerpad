@@ -13,10 +13,14 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public partial class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
+        private const int MIN_WORDS_GENERATE_NAME = 30;
+        private const int SAMPLE_LENGHT_GENERATE_NAME = 500;
+
         private readonly IDocumentService _documentService;
         private readonly Document _document;
         private readonly IEditorContract _editorControl;
         private DateTime _lastSaveTime;
+        private bool _untitled;
 
         public string Name { get => _document.Name; }
 
@@ -39,11 +43,17 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public DateTime LastSaveTime { get => _lastSaveTime; }
 
-        public IRelayCommand SaveCommand { get; }
+        public IAsyncRelayCommand SaveCommand { get; }
 
-        public IRelayCommand AutosaveCommand { get; }
+        public IAsyncRelayCommand AutosaveCommand { get; }
 
         public IRelayCommand RenameCommand { get; }
+
+        [ObservableProperty]
+        private string? _previousContent;
+
+        [ObservableProperty]
+        private string? _nextContent;
 
         public DocumentViewModel(Document document, IEditorContract editorControl)
         {
@@ -54,25 +64,31 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             _documentService.LoadDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
 
-            SaveCommand = new RelayCommand(Save);
-            AutosaveCommand = new RelayCommand(Autosave);
+            SaveCommand = new AsyncRelayCommand(Save);
+            AutosaveCommand = new AsyncRelayCommand(Autosave);
             RenameCommand = new RelayCommand<string>(Rename);
+
+            _untitled = NameGeneratorHelper.CheckNewNamePattern(document.Name);
 
             WeakReferenceMessenger.Default.Register(this);
         }
 
-        private void Save()
+        private async Task Save()
         {
-            _documentService.SaveDocument(_document, _editorControl);
+            if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
+
+            await _documentService.SaveDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
 
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(CanSave));
         }
 
-        private void Autosave()
+        private async Task Autosave()
         {
-            _documentService.AutosaveDocument(_document, _editorControl);
+            if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
+
+            await _documentService.AutosaveDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
 
             OnPropertyChanged(nameof(Status));
@@ -91,7 +107,10 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         private async Task GenerateName()
         {
-            var generatedName = await NameGeneratorAgent.Generate(_editorControl.GetContent());
+            var content = _editorControl.GetContent(plainText: true);
+            var sampleContent = content[..Math.Min(content.Length, SAMPLE_LENGHT_GENERATE_NAME)];
+
+            var generatedName = await NameGeneratorHelper.Generate(sampleContent);
 
             if (generatedName != null) Rename(generatedName);
         }
@@ -101,7 +120,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true});
 
             OnPropertyChanged(nameof(Name));
-            Untitled = false;
+            _untitled = false;
         }
 
         public void Receive(FolderEntryChanged message)
@@ -109,7 +128,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             if (message.Value == _document)
             {
                 if (message.NameChanged) OnPropertyChanged(nameof(Name));
-                Untitled = false;
+                _untitled = false;
             }
         }
     }

@@ -11,7 +11,7 @@ namespace PowerPad.Core.Services.AI
         private const string GPT_MODEL_PREFIX = "gpt";
         private const string OX_MODEL_PREFIX = "o";
         private const string OPENAI_MODELS_BASE_URL = "https://platform.openai.com/docs/models/";
-        private const int TEST_CONNECTION_TIMEOUT = 2000;
+        private const int TEST_CONNECTION_TIMEOUT = 5000;
 
         private OpenAIClient? _openAI;
         private AIServiceConfig? _config;
@@ -44,7 +44,7 @@ namespace PowerPad.Core.Services.AI
 
             try
             {
-                using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(TEST_CONNECTION_TIMEOUT));
+                using var cts = new CancellationTokenSource(TEST_CONNECTION_TIMEOUT);
                 _ = await GetClient().GetOpenAIModelClient().GetModelsAsync(cts.Token);
 
                 return new(ServiceStatus.Online);

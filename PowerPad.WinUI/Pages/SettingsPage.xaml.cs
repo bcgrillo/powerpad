@@ -73,7 +73,7 @@ namespace PowerPad.WinUI.Pages
             catch
             {
                 OllamaInfoBar.IsOpen = true;
-                OllamaInfoBar.Content = "No se ha podido iniciar Ollama.";
+                OllamaInfoBar.Message = "No se ha podido iniciar Ollama.";
                 OllamaInfoBar.Severity = InfoBarSeverity.Error;
             }
             finally
@@ -94,7 +94,7 @@ namespace PowerPad.WinUI.Pages
             catch
             {
                 OllamaInfoBar.IsOpen = true;
-                OllamaInfoBar.Content = "No se ha podido detener Ollama.";
+                OllamaInfoBar.Message = "No se ha podido detener Ollama.";
                 OllamaInfoBar.Severity = InfoBarSeverity.Error;
             }
             finally
@@ -245,7 +245,7 @@ namespace PowerPad.WinUI.Pages
                 _settings.General.AppTheme = newThemeChoice;
 
                 ThemeInfoBar.IsOpen = true;
-                ThemeInfoBar.Content = "Reinicia la aplicación para aplicar los cambios.";
+                ThemeInfoBar.Message = "Reinicia la aplicación para aplicar los cambios.";
                 ThemeInfoBar.Severity = InfoBarSeverity.Informational;
             }
         }
@@ -298,6 +298,15 @@ namespace PowerPad.WinUI.Pages
             if (config == _settings.General.OllamaConfig && _settings.General.OllamaEnabled) TestOllama(null, null);
             else if (config == _settings.General.AzureAIConfig && _settings.General.AzureAIEnabled) TestAzureAI(null, null);
             else if (config == _settings.General.OpenAIConfig && _settings.General.OpenAIEnabled) TestOpenAI(null, null);
+        }
+
+        private void RetryButton_Click(object sender, RoutedEventArgs __)
+        {
+            var config = (Button)sender!;
+
+            if (config == OllamaRetryButton) TestOllama(null, null);
+            else if (config == AzureAIRetryButton) TestAzureAI(null, null);
+            else if (config == OpenAIRetryButton) TestOpenAI(null, null);
         }
 
         ~SettingsPage()
