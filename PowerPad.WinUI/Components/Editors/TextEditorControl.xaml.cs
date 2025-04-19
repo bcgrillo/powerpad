@@ -89,6 +89,8 @@ namespace PowerPad.WinUI.Components.Editors
             _document = null!;
             TextEditor = null;
 
+            AgentControl.Dispose();
+
             GC.SuppressFinalize(this);
         }
 

@@ -84,7 +84,8 @@
                 DragItemsCompleted="TreeView_DragItemsCompleted"
                 Loaded="TreeView_Loaded"
                 KeyDown="TreeView_KeyDown"
-                PointerPressed="TreeView_PointerPressed">
+                PointerPressed="TreeView_PointerPressed"
+                SelectionChanged="TreeView_SelectionChanged">
                 <TreeView.ItemTemplate>
                     <DataTemplate x:DataType="fs:FolderEntryViewModel">
                         <TreeViewItem 
@@ -92,9 +93,10 @@
                             Padding="0,0,8,0"
                             AllowDrop="{x:Bind IsFolder}"
                             IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
-                            IsSelected="{x:Bind IsSelected, Mode=TwoWay}">
+                            IsSelected="{x:Bind IsSelected, Mode=TwoWay}"
+                            GlyphOpacity="0">
                             <StackPanel Orientation="Horizontal">
-                                <FontIcon Glyph="{x:Bind Glyph}" FontSize="16" Margin="-22,2,10,0" Visibility="{x:Bind Glyph, Converter={StaticResource NullOrEmptyToCollapsedConverter}}"/>
+                                <FontIcon Glyph="{x:Bind Glyph, Mode=OneWay}" FontSize="16" Margin="-22,2,10,0" Visibility="{x:Bind Glyph, Converter={StaticResource NullOrEmptyToCollapsedConverter}}"/>
                                 <TextBlock Margin="0,1,8,-1" Text="{x:Bind Name, Mode=OneWay}"/>
                             </StackPanel>
                             <TreeViewItem.ContextFlyout>

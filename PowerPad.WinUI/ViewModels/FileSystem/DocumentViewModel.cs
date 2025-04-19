@@ -45,10 +45,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public IRelayCommand RenameCommand { get; }
 
-        public IAsyncRelayCommand GenerateNameCommand { get; }
-
-        public bool Untitled;
-
         public DocumentViewModel(Document document, IEditorContract editorControl)
         {
             _document = document;
@@ -61,7 +57,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             SaveCommand = new RelayCommand(Save);
             AutosaveCommand = new RelayCommand(Autosave);
             RenameCommand = new RelayCommand<string>(Rename);
-            GenerateNameCommand = new AsyncRelayCommand(GenerateName);
 
             WeakReferenceMessenger.Default.Register(this);
         }
@@ -96,16 +91,9 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         private async Task GenerateName()
         {
-            var generatedName = await NameGenerator.Generate(_editorControl.GetContent());
+            var generatedName = await NameGeneratorAgent.Generate(_editorControl.GetContent());
 
-            if (generatedName != null)
-            {
-                var workspaceService = App.Get<IWorkspaceService>();
-
-                workspaceService.RenameDocument(_document, generatedName);
-
-                NameChanged();
-            }
+            if (generatedName != null) Rename(generatedName);
         }
 
         public void NameChanged()

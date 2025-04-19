@@ -77,6 +77,10 @@ namespace PowerPad.WinUI.Components
                 ItemInvoked?.Invoke(this, new(invokedEntry));
                 _workspace.CurrentDocumentPath = invokedEntry.ModelEntry.Path;
             }
+            else
+            {
+                invokedEntry.IsExpanded = !invokedEntry.IsExpanded;
+            }
         }
 
         private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs args)
@@ -291,6 +295,18 @@ namespace PowerPad.WinUI.Components
                 entry.IsSelected = false;
 
                 if (entry.IsFolder) ClearSelection(entry.Children);
+            }
+        }
+
+        private void TreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs args)
+        {
+            if (args.AddedItems.Count > 0 && args.AddedItems[0] is FolderEntryViewModel selectedEntry)
+            {
+                var container = (TreeViewItem)TreeView.ContainerFromItem(selectedEntry);
+                container?.StartBringIntoView(new BringIntoViewOptions
+                    {
+                        AnimationDesired = true
+                    });
             }
         }
     }

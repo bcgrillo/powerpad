@@ -30,12 +30,15 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
 
         protected async Task RefreshModels()
         {
-            await _settings.General.OllamaConfig.TestConnection(_aiService);
-
-            IEnumerable<AIModel> newAvailableModels;
+            if (_settings.General.OllamaConfig.ServiceStatus != ServiceStatus.Online)
+            {
+                await _settings.General.OllamaConfig.TestConnection(_aiService);
+            }
 
             if (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Online)
             {
+                IEnumerable<AIModel> newAvailableModels;
+
                 newAvailableModels = await _ollamaService.GetInstalledModels();
 
                 var currentAvailableModels = _settings.Models.AvailableModels;

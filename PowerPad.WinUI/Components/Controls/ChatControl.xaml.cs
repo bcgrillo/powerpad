@@ -21,7 +21,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public partial class ChatControl : UserControl
+    public partial class ChatControl : UserControl, IDisposable
     {
         private const double DEBOURCE_INTERVAL = 200;
         private const double LOADING_ANIMATION_INTERVAL = 200;
@@ -432,6 +432,16 @@ namespace PowerPad.WinUI.Components.Controls
                     _lastMessage.LoadingMessage = new string('.', _loadingStep);
                 });
             }
+        }
+
+        public void Dispose()
+        {
+            _parameters.PropertyChanged -= Parameters_PropertyChanged;
+            _settings.General.ProviderAvaibilityChanged -= Models_PropertyChanged;
+            _settings.Models.ModelAvaibilityChanged -= Models_PropertyChanged;
+            _settings.Models.DefaultModelChanged -= DefaultModel_Changed;
+            
+            GC.SuppressFinalize(this);
         }
     }
 

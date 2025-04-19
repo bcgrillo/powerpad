@@ -120,6 +120,7 @@ namespace PowerPad.WinUI.Components.Editors
             _chat!.Messages.Clear();
 
             ChatControl.ChatOptionsChanged -= ChatControl_ChatOptionsChanged;
+            ChatControl.Dispose();
 
             GC.SuppressFinalize(this);
         }

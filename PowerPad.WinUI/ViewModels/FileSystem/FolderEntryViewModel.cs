@@ -15,9 +15,11 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public partial class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
+        private const string CLOSED_FOLDER_GLYPH = "\uE8B7";
+        private const string OPEN_FOLDER_GLYPH = "\uE838";
+
         private readonly IFolderEntry _entry;
         private readonly DocumentType? _documentType;
-
         private readonly FolderEntryViewModel? _parent;
 
         public string Name { get => _entry.Name; }
@@ -54,6 +56,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             _parent = parent;
 
             Type = EntryType.Folder;
+
+            Glyph = CLOSED_FOLDER_GLYPH;
 
             var children = new List<FolderEntryViewModel>();
 
@@ -150,6 +154,11 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             {
                 if (message.NameChanged) OnPropertyChanged(nameof(Name));
             }
+        }
+
+        partial void OnIsExpandedChanged(bool value)
+        {
+            Glyph = value ? OPEN_FOLDER_GLYPH : CLOSED_FOLDER_GLYPH;
         }
     }
 }

@@ -16,7 +16,7 @@ using System.Collections.Specialized;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public partial class AgentControl : UserControl
+    public partial class AgentControl : UserControl, IDisposable
     {
         private readonly IChatService _chatService;
         private readonly AgentsCollectionViewModel _agentsCollection;
@@ -232,6 +232,13 @@ namespace PowerPad.WinUI.Components.Controls
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _agentsCollection.Agents.CollectionChanged -= Agents_CollectionChanged;
+
+            GC.SuppressFinalize(this);
         }
     }
 }
