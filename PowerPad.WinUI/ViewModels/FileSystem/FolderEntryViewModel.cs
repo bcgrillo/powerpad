@@ -158,7 +158,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         partial void OnIsExpandedChanged(bool value)
         {
-            Glyph = value ? OPEN_FOLDER_GLYPH : CLOSED_FOLDER_GLYPH;
+            if (IsFolder) Glyph = value ? OPEN_FOLDER_GLYPH : CLOSED_FOLDER_GLYPH;
         }
     }
 }
