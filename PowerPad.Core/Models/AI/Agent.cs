@@ -1,6 +1,8 @@
-﻿namespace PowerPad.Core.Models.AI
+﻿using PowerPad.Core.Contracts;
+
+namespace PowerPad.Core.Models.AI
 {
-    public record Agent()
+    public record Agent() : IChatOptions
     {
         public required string Name { get; set; }
 

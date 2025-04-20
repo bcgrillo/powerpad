@@ -25,6 +25,9 @@ namespace PowerPad.WinUI.Components.Controls
     {
         private const double DEBOURCE_INTERVAL = 200;
         private const double LOADING_ANIMATION_INTERVAL = 200;
+        private const string THINK_START_TAG = "<think>";
+        private const string THINK_END_TAG = "</think>";
+        private const string MARKDOWN_QUOTE = "> ";
 
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
@@ -280,7 +283,7 @@ namespace PowerPad.WinUI.Components.Controls
             _ = Task.Run(async () =>
             {
                 var history = messageList.Select(m => new ChatMessage(m.Role, m.Content)).ToList();
-                _lastMessage = new MessageViewModel(string.Empty, DateTime.Now, ChatRole.Assistant);
+                _lastMessage = new MessageViewModel(null, DateTime.Now, ChatRole.Assistant) { Loading = true };
 
                 DispatcherQueue.TryEnqueue(() =>
                 {
@@ -297,14 +300,45 @@ namespace PowerPad.WinUI.Components.Controls
                 var parameters = _sendParameters ? _parameters
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
 
+                string messageBuffer = string.Empty;
                 await foreach (var messagePart in _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
                 {
                     try
                     {
+                        messageBuffer += messagePart.Text;
+
+                        string? reasoning = null;
+                        string? content = null;
+                        bool loading = true;
+
+                        // Logic to parse and update reasoning and content from the message buffer
+                        if (messageBuffer.Contains(THINK_START_TAG))
+                        {
+                            var startIndex = messageBuffer.IndexOf(THINK_START_TAG) + THINK_START_TAG.Length;
+                            var endIndex = messageBuffer.IndexOf(THINK_END_TAG, startIndex);
+
+                            if (endIndex != -1)
+                            {
+                                reasoning = messageBuffer[startIndex..endIndex].Trim().Replace("\n\n", "\n");
+                                content = messageBuffer[(endIndex + THINK_END_TAG.Length)..].Trim();
+                                if (loading) loading = false;
+                            }
+                            else
+                            {
+                                reasoning = messageBuffer[startIndex..].Trim().Replace("\n\n", "\n");
+                            }
+                        }
+                        else
+                        {
+                            content = messageBuffer;
+                            if (loading) loading = false;
+                        }
+
                         DispatcherQueue.TryEnqueue(() =>
                         {
-                            _lastMessage.Content += messagePart.Text;
-                            if (_lastMessage.Loading) _lastMessage.Loading = false;
+                            _lastMessage.Reasoning = reasoning;
+                            _lastMessage.Content = content;
+                            _lastMessage.Loading = loading;
                         });
                     }
                     catch (Exception ex)
@@ -429,7 +463,8 @@ namespace PowerPad.WinUI.Components.Controls
                 DispatcherQueue.TryEnqueue(() =>
                 {
                     _loadingStep = (_loadingStep + 1) % 4;
-                    _lastMessage.LoadingMessage = new string('.', _loadingStep);
+                    _lastMessage.LoadingMessage = _lastMessage.Reasoning is not null && _lastMessage.Content is null ? "Pensando" : string.Empty;
+                    _lastMessage.LoadingMessage += new string('.', _loadingStep);
                 });
             }
         }

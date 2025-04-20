@@ -295,7 +295,7 @@ namespace PowerPad.WinUI.Components
         {
             var selectedItem = TreeView.SelectedItem as FolderEntryViewModel;
 
-            if (message.NameChanged && selectedItem?.ModelEntry == message.Value)
+            if (message.NameChanged && selectedItem?.ModelEntry == message.Value && selectedItem?.IsFolder == false)
             {
                 _workspace.CurrentDocumentPath = message.Value.Path;
             }

@@ -59,7 +59,11 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public IChatClient ChatClient(AIModel model) => GetClient().AsChatClient(model.Name);
+        public IChatClient ChatClient(AIModel model, out IEnumerable<string> notAllowedParameters)
+        {
+            notAllowedParameters = [];
+            return GetClient().AsChatClient(model.Name);
+        }
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {

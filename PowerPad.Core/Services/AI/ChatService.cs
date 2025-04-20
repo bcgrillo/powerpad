@@ -16,8 +16,12 @@ namespace PowerPad.Core.Services.AI
 
     public class ChatService(IReadOnlyDictionary<ModelProvider, IAIService> aiServices) : IChatService
     {
+        private const string THINK_START_TAG = "<think>";
+        private const string THINK_END_TAG = "</think>";
+
         private AIModel? _defaultModel;
         private AIParameters? _defaultParameters;
+        private IEnumerable<string>? _notAllowedParameters;
 
         private readonly IReadOnlyDictionary<ModelProvider, IAIService> _aiServices = aiServices;
 
@@ -35,7 +39,7 @@ namespace PowerPad.Core.Services.AI
         {
             if (_aiServices.TryGetValue(model.ModelProvider, out var aiService))
             {
-                return aiService.ChatClient(model);
+                return aiService.ChatClient(model, out _notAllowedParameters);
             }
             else
             {
@@ -46,7 +50,7 @@ namespace PowerPad.Core.Services.AI
         public IAsyncEnumerable<ChatResponseUpdate> GetChatResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? parameters = null, CancellationToken cancellationToken = default)
         {
             var (chatClient, chatOptions, chatMessages) = PrepareChatParameters(messages, model, parameters);
-
+            
             return chatClient.GetStreamingResponseAsync(chatMessages, chatOptions, cancellationToken);
         }
 
@@ -54,7 +58,18 @@ namespace PowerPad.Core.Services.AI
         {
             var (chatClient, chatOption, chatMessages) = PrepareAgentParameters(input, selectedAgent, promptParameterValue, agentPrompt);
 
-            output.Append(await chatClient.GetResponseAsync(chatMessages, chatOption, cancellationToken));
+            var response = (await chatClient.GetResponseAsync(chatMessages, chatOption, cancellationToken)).Text;
+
+            // Remove content between <think> and </think>, or clear the response if </think> is missing
+            var startIndex = response.IndexOf(THINK_START_TAG);
+            if (startIndex != -1)
+            {
+                var endIndex = response.IndexOf(THINK_END_TAG, startIndex);
+                if (endIndex != -1) response = response.Remove(startIndex, endIndex + THINK_END_TAG.Length - startIndex);
+                else response = string.Empty;
+            }
+
+            output.Append(response);
         }
 
         private (IChatClient chatClient, ChatOptions? chatOptions, IList<ChatMessage> chatMessages) PrepareChatParameters(IList<ChatMessage> messages, AIModel? model, AIParameters? parameters)
@@ -71,12 +86,7 @@ namespace PowerPad.Core.Services.AI
 
             if (parameters is not null)
             {
-                chatOption = new()
-                {
-                    Temperature = parameters.Temperature,
-                    TopP = parameters.TopP,
-                    MaxOutputTokens = parameters.MaxOutputTokens,
-                };
+                chatOption = PrepareChatOptions(parameters);
 
                 if (!string.IsNullOrEmpty(parameters.SystemPrompt))
                     chatMessages.Add(new(ChatRole.System, parameters.SystemPrompt));
@@ -111,14 +121,35 @@ namespace PowerPad.Core.Services.AI
                 new(ChatRole.User, input)
             };
 
-            var chatOption = new ChatOptions
-            {
-                Temperature = agent.Temperature,
-                TopP = agent.TopP,
-                MaxOutputTokens = agent.MaxOutputTokens,
-            };
+            var chatOption = PrepareChatOptions(agent);
 
             return (chatClient, chatOption, chatMessages);
+        }
+
+        private ChatOptions PrepareChatOptions(IChatOptions chatoptions)
+        {
+            ChatOptions chatOption;
+
+            if (_notAllowedParameters is not null)
+            {
+                chatOption = new()
+                {
+                    Temperature = _notAllowedParameters.Contains(nameof(IChatOptions.Temperature)) ? null : chatoptions.Temperature,
+                    TopP = _notAllowedParameters.Contains(nameof(IChatOptions.TopP)) ? null : chatoptions.TopP,
+                    MaxOutputTokens = _notAllowedParameters.Contains(nameof(IChatOptions.MaxOutputTokens)) ? null : chatoptions.MaxOutputTokens,
+                };
+            }
+            else
+            {
+                chatOption = new()
+                {
+                    Temperature = chatoptions.Temperature,
+                    TopP = chatoptions.TopP,
+                    MaxOutputTokens = chatoptions.MaxOutputTokens,
+                };
+            }
+
+            return chatOption;
         }
     }
 }

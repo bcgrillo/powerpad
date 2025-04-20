@@ -2,6 +2,7 @@
 using PowerPad.Core.Models.AI;
 using System;
 using System.Text.Json.Serialization;
+using System.Threading;
 
 namespace PowerPad.WinUI.ViewModels.AI
 {
@@ -40,6 +41,12 @@ namespace PowerPad.WinUI.ViewModels.AI
         [ObservableProperty]
         [property: JsonIgnore]
         private bool _downloadError;
+
+        [property: JsonIgnore]
+        public CancellationTokenSource? DownloadCancelationToken { get; set; }
+
+        [property: JsonIgnore]
+        public bool IsSizeTooLargeForExecution { get; set; }
 #pragma warning restore CS0657
 
         public long? Size => _aiModel.Size;
@@ -47,7 +54,7 @@ namespace PowerPad.WinUI.ViewModels.AI
         public string? DisplayName => _aiModel.DisplayName;
 
         [JsonIgnore]
-        public bool CanAdd => !Available && !Downloading;
+        public bool CanAdd => !Available && !Downloading && !IsSizeTooLargeForExecution;
 
         public AIModel GetRecord() => _aiModel;
 

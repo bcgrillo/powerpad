@@ -13,7 +13,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public partial class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
-        private const int MIN_WORDS_GENERATE_NAME = 30;
+        private const int MIN_WORDS_GENERATE_NAME = 50;
         private const int SAMPLE_LENGHT_GENERATE_NAME = 500;
 
         private readonly IDocumentService _documentService;
@@ -75,27 +75,29 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         private async Task Save()
         {
-            if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
-
             await _documentService.SaveDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
 
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(CanSave));
+
+            if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
         }
 
         private async Task Autosave()
         {
-            if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
-
             await _documentService.AutosaveDocument(_document, _editorControl);
             _lastSaveTime = DateTime.Now;
 
             OnPropertyChanged(nameof(Status));
+
+            if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
         }
 
         private void Rename(string? newName)
         {
+            _untitled = false;
+
             ArgumentException.ThrowIfNullOrWhiteSpace(newName, nameof(newName));
 
             var workspaceService = App.Get<IWorkspaceService>();
@@ -107,12 +109,21 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         private async Task GenerateName()
         {
+            _untitled = false;
+
             var content = _editorControl.GetContent(plainText: true);
             var sampleContent = content[..Math.Min(content.Length, SAMPLE_LENGHT_GENERATE_NAME)];
 
             var generatedName = await NameGeneratorHelper.Generate(sampleContent);
 
-            if (generatedName != null) Rename(generatedName);
+            if (generatedName != null)
+            {
+                var workspaceService = App.Get<IWorkspaceService>();
+
+                workspaceService.RenameDocument(_document, generatedName);
+
+                NameChanged();
+            }
         }
 
         public void NameChanged()
@@ -120,15 +131,17 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true});
 
             OnPropertyChanged(nameof(Name));
-            _untitled = false;
         }
 
         public void Receive(FolderEntryChanged message)
         {
             if (message.Value == _document)
             {
-                if (message.NameChanged) OnPropertyChanged(nameof(Name));
-                _untitled = false;
+                if (message.NameChanged)
+                {
+                    _untitled = false;
+                    OnPropertyChanged(nameof(Name));
+                }
             }
         }
     }

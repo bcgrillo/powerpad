@@ -1,6 +1,8 @@
-﻿namespace PowerPad.Core.Models.AI
+﻿using PowerPad.Core.Contracts;
+
+namespace PowerPad.Core.Models.AI
 {
-    public record AIParameters
+    public record AIParameters : IChatOptions
     {
         public string? SystemPrompt { get; set; } = null;
         public float? Temperature { get; set; } = null;

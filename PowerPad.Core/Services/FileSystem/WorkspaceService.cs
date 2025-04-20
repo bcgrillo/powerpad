@@ -1,5 +1,4 @@
 ﻿using PowerPad.Core.Models.FileSystem;
-using PowerPad.Core.Services.Config;
 using System.Collections.ObjectModel;
 using static PowerPad.Core.Services.Conventions;
 
@@ -35,26 +34,21 @@ namespace PowerPad.Core.Services.FileSystem
     public class WorkspaceService : IWorkspaceService
     {
         private Folder _root;
-        private string _configFolder;
         private string _trashFolder;
-        private readonly IConfigStoreService _configStoreService;
         private readonly IOrderService _orderService;
 
         public Folder Root => _root;
 
-        public WorkspaceService(string rootFolder, IConfigStoreService configStoreService, IOrderService orderService)
+        public WorkspaceService(string rootFolder, IOrderService orderService)
         {
-            _configStoreService = configStoreService;
             _orderService = orderService;
 
-            _configFolder = Path.Combine(rootFolder, CONFIG_FOLDER_NAME);
             _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
             _root = InitializeRootFolder(rootFolder);
         }
 
         private Root InitializeRootFolder(string rootFolder)
         {
-            if (!Directory.Exists(_configFolder)) Directory.CreateDirectory(_configFolder);
             if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
 
             var root = new Root(rootFolder);
@@ -70,8 +64,7 @@ namespace PowerPad.Core.Services.FileSystem
         {
             Collection<Folder> folders = [];
 
-            var directories = Directory.GetDirectories(path)
-                .Where(d => d != _configFolder && d != _trashFolder);
+            var directories = Directory.GetDirectories(path).Where(d => d != _trashFolder);
 
             foreach (var directory in directories)
             {
@@ -101,33 +94,39 @@ namespace PowerPad.Core.Services.FileSystem
 
         public void MoveDocument(Document document, Folder targetFolder, int targetPosition)
         {
+            var originalFullName = $"{document.Name}{document.Extension}";
+            var originalPath = document.Path;
+            var originalAutosavePath = document.AutosavePath;
             var sourceFolder = document.Parent!;
-            var newPath = $"{targetFolder.Path}\\{document.Name}{document.Extension}";
 
-            //TODO: Check error if exists
-            File.Move(document.Path, newPath);
+            var newPath = GetAvailableNewPath(targetFolder, document);
 
-            if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
+            File.Move(originalPath, newPath);
+
+            if (File.Exists(originalAutosavePath)) File.Move(originalAutosavePath, AutosavePath(newPath));
 
             document.Parent!.RemoveDocument(document);
 
             targetFolder.AddDocument(document);
 
-            _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, $"{document.Name}{document.Extension}", targetPosition);
+            _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, originalFullName, targetPosition);
         }
 
         public void MoveFolder(Folder folder, Folder targetFolder, int targetPosition)
         {
+            var originalName = folder.Name;
+            var originalPath = folder.Path;
             var sourceFolder = folder.Parent!;
-            var newPath = Path.Combine(targetFolder.Path, folder.Name);
 
-            Directory.Move(folder.Path, newPath);
+            var newPath = GetAvailableNewPath(targetFolder, folder);
+
+            Directory.Move(originalPath, newPath);
 
             folder.Parent!.RemoveFolder(folder);
 
             targetFolder.AddFolder(folder);
 
-            _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, folder.Name, targetPosition);
+            _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, originalName, targetPosition);
         }
 
         public void SetPosition(Document document, int targetPosition)
@@ -142,16 +141,7 @@ namespace PowerPad.Core.Services.FileSystem
 
         public void CreateDocument(Folder parent, Document newDocument)
         {
-            var newPath = $"{parent.Path}\\{newDocument.Name}{newDocument.Extension}";
-            var originalName = newDocument.Name;
-
-            int counter = 1;
-            while (File.Exists(newPath))
-            {
-                newDocument.Name = $"{originalName} ({counter})";
-                newPath = $"{parent.Path}\\{newDocument.Name}{newDocument.Extension}";
-                counter++;
-            }
+            string newPath = GetAvailableNewPath(parent, newDocument);
 
             File.WriteAllText(newPath, string.Empty);
 
@@ -159,19 +149,10 @@ namespace PowerPad.Core.Services.FileSystem
 
             _orderService.UpdateOrderAfterCreation(parent, $"{newDocument.Name}{newDocument.Extension}");
         }
-
+       
         public void CreateFolder(Folder parent, Folder newFolder)
         {
-            var newPath = Path.Combine(parent.Path, newFolder.Name);
-            var originalName = newFolder.Name;
-
-            int counter = 1;
-            while (Directory.Exists(newPath))
-            {
-                newFolder.Name = $"{originalName} ({counter})";
-                newPath = Path.Combine(parent.Path, newFolder.Name);
-                counter++;
-            }
+            string newPath = GetAvailableNewPath(parent, newFolder);
 
             Directory.CreateDirectory(newPath);
 
@@ -227,37 +208,69 @@ namespace PowerPad.Core.Services.FileSystem
 
         public void RenameDocument(Document document, string newName)
         {
-            var oldName = $"{document.Name}{document.Extension}";
-            var newPath = $"{document.Parent!.Path}\\{newName}{document.Extension}";
+            var oldFullName = $"{document.Name}{document.Extension}";
+            var oldPath = document.Path;
+            var oldAutosavePath = document.AutosavePath;
 
-            File.Move(document.Path, newPath);
+            var newPath = GetAvailableNewPath(document.Parent!, document, newName);
 
-            if (File.Exists(document.AutosavePath)) File.Move(document.AutosavePath, AutosavePath(newPath));
+            File.Move(oldPath, newPath);
 
-            document.Name = newName;
+            if (File.Exists(oldAutosavePath)) File.Move(oldAutosavePath, AutosavePath(newPath));
 
-            _orderService.UpdateOrderAfterRename(document.Parent, oldName, $"{document.Name}{document.Extension}");
+            _orderService.UpdateOrderAfterRename(document.Parent!, oldFullName, $"{document.Name}{document.Extension}");
         }
 
         public void RenameFolder(Folder folder, string newName)
         {
             var oldName = folder.Name;
-            var newPath = Path.Combine(folder.Parent!.Path, newName);
+            var oldPath = folder.Path;
 
-            Directory.Move(folder.Path, newPath);
+            var newPath = GetAvailableNewPath(folder.Parent!, folder, newName);
 
-            folder.Name = newName;
+            Directory.Move(oldPath, newPath);
 
-            _orderService.UpdateOrderAfterRename(folder.Parent, oldName, folder.Name);
+            _orderService.UpdateOrderAfterRename(folder.Parent!, oldName, folder.Name);
         }
 
         public void OpenWorkspace(string rootFolder)
         {
-            _configFolder = Path.Combine(rootFolder, CONFIG_FOLDER_NAME);
             _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
             _root = InitializeRootFolder(rootFolder);
         }
 
-        private IConfigStore GetConfigStore() => _configStoreService.GetConfigStore(_configFolder);
+        private static string GetAvailableNewPath(Folder parent, Document child, string? newName = null)
+        {
+            if (newName is not null) child.Name = newName;
+
+            var newPath = $"{parent.Path}\\{child.Name}{child.Extension}";
+            var originalName = child.Name;
+
+            int counter = 1;
+            while (File.Exists(newPath))
+            {
+                child.Name = $"{originalName} ({++counter})";
+                newPath = $"{parent.Path}\\{child.Name}{child.Extension}";
+            }
+
+            return newPath;
+        }
+
+        private static string GetAvailableNewPath(Folder parent, Folder child, string? newName = null)
+        {
+            if (newName is not null) child.Name = newName;
+
+            var newPath = Path.Combine(parent.Path, child.Name);
+            var originalName = child.Name;
+
+            int counter = 1;
+            while (Directory.Exists(newPath))
+            {
+                child.Name = $"{originalName} ({++counter})";
+                newPath = Path.Combine(parent.Path, child.Name);
+            }
+
+            return newPath;
+        }
     }
 }

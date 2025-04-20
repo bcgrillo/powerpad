@@ -72,6 +72,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             }
             else
             {
+                var originalName = parameters.Entry.Name;
+
                 if (parameters.Entry.Type == EntryType.Document)
                 {
                     var document = (Document)parameters.Entry.ModelEntry;
@@ -84,6 +86,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
                     var targetFolder = (Folder)newParent.ModelEntry;
                     _workspaceService.MoveFolder(folder, targetFolder, targetPosition);
                 }
+
+                if (originalName != parameters.Entry.Name) parameters.Entry.NameChanged();
             }
         }
 

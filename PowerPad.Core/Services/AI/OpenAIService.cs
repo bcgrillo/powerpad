@@ -12,6 +12,11 @@ namespace PowerPad.Core.Services.AI
         private const string OX_MODEL_PREFIX = "o";
         private const string OPENAI_MODELS_BASE_URL = "https://platform.openai.com/docs/models/";
         private const int TEST_CONNECTION_TIMEOUT = 5000;
+        private static readonly string[] REASONING_MODELS_NOT_ALLOWED_PARAMETERS =
+        [
+            nameof(IChatOptions.Temperature),
+            nameof(IChatOptions.TopP)
+        ];
 
         private OpenAIClient? _openAI;
         private AIServiceConfig? _config;
@@ -59,7 +64,14 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public IChatClient ChatClient(AIModel model) => GetClient().AsChatClient(model.Name);
+        public IChatClient ChatClient(AIModel model, out IEnumerable<string> notAllowedParameters)
+        {
+            var isReasoningModel = model.Name[0] == OX_MODEL_PREFIX[0] && char.IsDigit(model.Name[1]);
+
+            notAllowedParameters = isReasoningModel ? REASONING_MODELS_NOT_ALLOWED_PARAMETERS : [];
+
+            return GetClient().AsChatClient(model.Name);
+        }
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {

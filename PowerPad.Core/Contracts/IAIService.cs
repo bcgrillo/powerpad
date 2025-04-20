@@ -7,7 +7,7 @@ namespace PowerPad.Core.Contracts
     {
         void Initialize(AIServiceConfig? config);
         Task<TestConnectionResult> TestConection();
-        IChatClient ChatClient(AIModel model);
+        IChatClient ChatClient(AIModel model, out IEnumerable<string> notAllowedParamers);
         Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query);
     }
 

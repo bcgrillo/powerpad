@@ -49,12 +49,12 @@
 
                         <local:IntegratedTextBox
                             x:Name="PromptParameterInputBox"
-                                Grid.Column="1"
+                            Grid.Column="1"
                             TextWrapping="Wrap" 
                             MaxHeight="148"
                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                            Padding="4"
-                            FontSize="16"
+                            Padding="4,5,4,4"
+                            FontSize="15"
                             KeyDown="PromptParameterInputBox_KeyDown"
                             TextChanged="PromptParameterInputBox_TextChanged"/>
 

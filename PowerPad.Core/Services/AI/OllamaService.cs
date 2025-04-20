@@ -14,7 +14,7 @@ namespace PowerPad.Core.Services.AI
         Task<IEnumerable<AIModel>> GetInstalledModels();
         Task Start();
         Task Stop();
-        Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction);
+        Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction, CancellationToken cancellationToken);
         Task DeleteModel(AIModel model);
     }
 
@@ -135,11 +135,14 @@ namespace PowerPad.Core.Services.AI
             );
         }
 
-        public IChatClient ChatClient(AIModel model)
+        public IChatClient ChatClient(AIModel model, out IEnumerable<string> notAllowedParameters)
         {
-            GetClient().SelectedModel = model.Name;
+            var client = GetClient();
 
-            return GetClient();
+            client.SelectedModel = model.Name;
+            notAllowedParameters = [];
+
+            return client;
         }
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
@@ -175,7 +178,7 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public async Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction)
+        public async Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction, CancellationToken cancellationToken)
         {
             if (_config is null)
             {
@@ -185,13 +188,13 @@ namespace PowerPad.Core.Services.AI
             {
                 try
                 {
-                    await foreach (var status in GetClient()!.PullModelAsync(model.Name))
+                    await foreach (var status in GetClient()!.PullModelAsync(model.Name, cancellationToken))
                     {
                         var progress = Math.Clamp(status?.Percent ?? 0.0D, 0, 99.5);
                         
                         updateAction(progress);
 
-                        await Task.Delay(DOWNLOAD_UPDATE_INTERVAL);
+                        await Task.Delay(DOWNLOAD_UPDATE_INTERVAL, cancellationToken);
                     }
 
                     updateAction(100);
@@ -207,6 +210,7 @@ namespace PowerPad.Core.Services.AI
         {
             if (_config is null) return;
 
+            //TODO: Error si no se ha descargado aun
             await GetClient()!.DeleteModelAsync(model.Name);
         }
 

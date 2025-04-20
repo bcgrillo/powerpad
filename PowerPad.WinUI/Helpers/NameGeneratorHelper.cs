@@ -16,7 +16,7 @@ namespace PowerPad.WinUI.Helpers
     {
         private const string NEW_FOLDER_NAME = "Nueva carpeta";
         private const int GENERATE_NAME_TIMEOUT = 10000;
-        private const int MAX_NAME_LENGHT = 50;
+        private const int MAX_NAME_LENGHT = 100;
 
         private static readonly Dictionary<DocumentType, string> NEW_DOCUMENT_NAMES = new()
         {
@@ -25,11 +25,12 @@ namespace PowerPad.WinUI.Helpers
         };
 
         private static readonly Agent NAME_GENERATOR_AGENT = new()
-        { 
+        {
             Name = "NameGenerator",
             Prompt = "Your task is to generate a title for the given content. " +
                      "Please provide ONLY a short concise and relevant title " +
-                     "for a computer document without any explanations or greetings.",
+                     "for a computer document without any explanations or greetings. " +
+                     "Try to keep the title under 50 characters.",
             MaxOutputTokens = 100,
             Temperature = 0.1f,
             TopP = 1
@@ -43,17 +44,25 @@ namespace PowerPad.WinUI.Helpers
                 var generateNameBuilder = new StringBuilder();
 
                 using var cts = new CancellationTokenSource(GENERATE_NAME_TIMEOUT);
-                await chatService.GetAgentResponse(fileContent, generateNameBuilder, NAME_GENERATOR_AGENT, null, null, cts.Token);
 
-                var generatedName = generateNameBuilder.ToString().Trim();
+                try
+                {
+                    await chatService.GetAgentResponse(fileContent, generateNameBuilder, NAME_GENERATOR_AGENT, null, null, cts.Token);
 
-                // Clean the generated name to remove invalid characters and extensions  
-                var invalidChars = Path.GetInvalidFileNameChars();
-                var cleanedName = new string([.. generatedName.Where(c => !invalidChars.Contains(c))]);
-                cleanedName = Path.GetFileNameWithoutExtension(cleanedName).Replace('_', ' ');
-                cleanedName = cleanedName[..Math.Min(cleanedName.Length, MAX_NAME_LENGHT)];
+                    var generatedName = generateNameBuilder.ToString().Trim();
 
-                return cleanedName;
+                    // Clean the generated name to remove invalid characters and extensions  
+                    var invalidChars = Path.GetInvalidFileNameChars();
+                    var cleanedName = new string([.. generatedName.Where(c => !invalidChars.Contains(c))]);
+                    cleanedName = Path.GetFileNameWithoutExtension(cleanedName).Replace('_', ' ');
+                    cleanedName = cleanedName[..Math.Min(cleanedName.Length, MAX_NAME_LENGHT)];
+
+                    return cleanedName;
+                }
+                catch
+                {
+                    //TODO: Trace
+                }
             }
 
             return null;

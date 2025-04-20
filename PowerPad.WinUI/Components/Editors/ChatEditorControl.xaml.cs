@@ -96,8 +96,6 @@ namespace PowerPad.WinUI.Components.Editors
             }
             catch
             {
-                EditableTextBlock.Value = _document.Name;
-
                 DispatcherQueue.TryEnqueue(async () =>
                 {
                     await DialogHelper.Alert
@@ -227,7 +225,7 @@ namespace PowerPad.WinUI.Components.Editors
 
         public override int WordCount()
         {
-            return _chat!.Messages.Sum(m => m.Content.Split(' ').Length);
+            return _chat!.Messages.Sum(m => m.Content?.Split(' ')?.Length ?? 0);
         }
     }
 }

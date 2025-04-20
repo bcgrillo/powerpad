@@ -17,9 +17,10 @@
             AssistantTemplate="{StaticResource AssistantDataTemplate}"
             UserTemplate="{StaticResource UserDataTemplate}" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
         <DataTemplate x:Key="UserDataTemplate" x:DataType="chat:MessageViewModel">
             <StackPanel
-                MaxWidth="486"
+                MaxWidth="600"
                 Padding="12"
                 HorizontalAlignment="Right"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -42,7 +43,7 @@
         <DataTemplate x:Key="AssistantDataTemplate" x:DataType="chat:MessageViewModel">
             <Grid Margin="0,4" HorizontalAlignment="Left">
                 <StackPanel
-                    MaxWidth="486"
+                    MaxWidth="600"
                     Padding="12"
                     HorizontalAlignment="Left"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -56,6 +57,19 @@
                         Visibility="{x:Bind Loading, Mode=OneWay}"
                         Text="{x:Bind LoadingMessage, Mode=OneWay}"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <Expander
+                        Visibility="{x:Bind Reasoning, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"
+                        IsExpanded="False"
+                        ExpandDirection="Down"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Header="Mostrar pensamiento"
+                        HorizontalAlignment="Stretch"
+                        Background="Transparent">
+                        <TextBlock
+                            Text="{x:Bind Reasoning, Mode=OneWay}"
+                            FontStyle="Italic" IsTextSelectionEnabled="True"
+                            TextWrapping="Wrap" />
+                    </Expander>
                     <controls:MarkdownTextBlock
                         HorizontalAlignment="Left"
                         Background="Transparent"

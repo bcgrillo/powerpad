@@ -89,6 +89,11 @@
                                                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                         Visibility="{x:Bind Available, Mode=OneWay}"
                                                         Text="Modelo ya disponible" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                        Visibility="{x:Bind IsSizeTooLargeForExecution, Mode=OneWay}"
+                                                        Text="Modelo demasiado grande para el equipo" />
                                                 </StackPanel>
                                             </toolkit:SettingsCard.Description>
                                             <StackPanel Orientation="Horizontal" Spacing="4" Height="40">
@@ -107,6 +112,11 @@
                                                 <Button Width="35" Height="35" Padding="0"
                                                     Content="{ui:FontIcon Glyph=&#xE73E;,FontSize=14}"
                                                     Visibility="{x:Bind Available, Mode=OneWay}"
+                                                    IsEnabled="False"
+                                                    Style="{StaticResource AccentButtonStyle}"/>
+                                                <Button Width="35" Height="35" Padding="0"
+                                                    Content="{ui:FontIcon Glyph=&#xF140;,FontSize=14}"
+                                                    Visibility="{x:Bind IsSizeTooLargeForExecution, Mode=OneWay}"
                                                     IsEnabled="False"
                                                     Style="{StaticResource AccentButtonStyle}"/>
                                                 <muxc:ProgressRing Width="35" Height="35"

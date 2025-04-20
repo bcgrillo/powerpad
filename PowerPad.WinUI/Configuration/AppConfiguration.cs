@@ -17,19 +17,18 @@ namespace PowerPad.WinUI.Configuration
 {
     public static class AppConfiguration
     {
-        public static IServiceCollection ConfigureWorkspaceService(this IServiceCollection serviceColection, App app)
+        public static IServiceCollection ConfigureWorkspaceService(this IServiceCollection serviceColection)
         {
             return serviceColection.AddSingleton<IWorkspaceService, WorkspaceService>(sp =>
             {
-                var lastWorkspace = app.AppConfigStore.Get<string[]>(StoreKey.RecentlyWorkspaces).First();
-                var configStoreService = sp.GetRequiredService<IConfigStoreService>();
+                var lastWorkspace = sp.GetRequiredService<IConfigStore>().Get<string[]>(StoreKey.RecentlyWorkspaces).First();
                 var orderService = sp.GetRequiredService<IOrderService>();
 
-                return new(lastWorkspace, configStoreService, orderService);
+                return new(lastWorkspace, orderService);
             });
         }
 
-        public static IServiceCollection ConfigureOllamaService(this IServiceCollection serviceColection, App app)
+        public static IServiceCollection ConfigureOllamaService(this IServiceCollection serviceColection)
         {
             return serviceColection.AddSingleton<OllamaService>()
                 .AddSingleton<IOllamaService, OllamaService>(sp => sp.GetRequiredService<OllamaService>())
@@ -37,12 +36,12 @@ namespace PowerPad.WinUI.Configuration
                 .AddKeyedSingleton<IAIService, OllamaService>(ModelProvider.HuggingFace, (sp, _) => sp.GetRequiredService<OllamaService>());
         }
 
-        public static IServiceCollection ConfigureAzureAIService(this IServiceCollection serviceColection, App app)
+        public static IServiceCollection ConfigureAzureAIService(this IServiceCollection serviceColection)
         {
             return serviceColection.AddKeyedSingleton<IAIService, AzureAIService>(ModelProvider.GitHub);
         }
 
-        public static IServiceCollection ConfigureOpenAIService(this IServiceCollection serviceColection, App app)
+        public static IServiceCollection ConfigureOpenAIService(this IServiceCollection serviceColection)
         {
             return serviceColection.AddKeyedSingleton<IAIService, OpenAIService>(ModelProvider.OpenAI);
         }
@@ -65,10 +64,10 @@ namespace PowerPad.WinUI.Configuration
             });
         }
 
-        public static void InitializeAppConfigStore(this App app, out IConfigStore appConfigStore)
+        public static void InitializeAppConfigStore(out IConfigStore appConfigStore)
         {
             var appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $".{nameof(PowerPad).ToLower()}");
-            var configStoreService = app.ServiceProvider.GetRequiredService<IConfigStoreService>();
+            var configStoreService = App.Get<IConfigStoreService>();
 
             appConfigStore = configStoreService.GetConfigStore(appDataFolder);
 

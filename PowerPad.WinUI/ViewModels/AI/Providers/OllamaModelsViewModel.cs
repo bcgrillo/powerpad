@@ -4,6 +4,7 @@ using PowerPad.Core.Services.AI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.AI.Providers
@@ -81,7 +82,11 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
                 var existingModel = _settings.Models.AvailableModels
                     .FirstOrDefault(am => am.Name == m.Name && am.ModelProvider == m.ModelProvider);
 
-                return existingModel ?? new(m) { Available = false };
+                return existingModel ?? new(m)
+                {
+                    Available = false,
+                    IsSizeTooLargeForExecution = m.Size.HasValue && m.Size > GC.GetGCMemoryInfo().TotalAvailableMemoryBytes
+                };
             }));
 
             Searching = false;
@@ -94,6 +99,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             if (!_settings.Models.AvailableModels.Any(m => m == aiModel))
             {
                 aiModel.Downloading = true;
+                aiModel.DownloadCancelationToken = new CancellationTokenSource();
                 aiModel.Available = false;
 
                 _settings.Models.AvailableModels.Add(aiModel);
@@ -102,7 +108,8 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
                 (
                     aiModel.GetRecord(),
                     aiModel.UpdateDownloadProgess,
-                    aiModel.UpdateDownloadError
+                    aiModel.UpdateDownloadError,
+                    aiModel.DownloadCancelationToken.Token
                 );
             }
         }
@@ -111,7 +118,14 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
         {
             ArgumentNullException.ThrowIfNull(aiModel);
 
-            await _ollamaService.DeleteModel(aiModel.GetRecord());
+            if (aiModel.Downloading)
+            {
+                await aiModel.DownloadCancelationToken!.CancelAsync();
+            }
+            else
+            {
+                await _ollamaService.DeleteModel(aiModel.GetRecord());
+            }
 
             _settings.Models.AvailableModels.Remove(aiModel);
         }

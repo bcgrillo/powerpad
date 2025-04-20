@@ -21,9 +21,6 @@ namespace PowerPad.WinUI
         private static IServiceProvider _serviceProvider = null!;
         private readonly IConfigStore _appConfigStore;
 
-        public IServiceProvider ServiceProvider => _serviceProvider;
-        public IConfigStore AppConfigStore => _appConfigStore;
-
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -33,10 +30,10 @@ namespace PowerPad.WinUI
             this.InitializeComponent();
 
             _serviceProvider = new ServiceCollection()
-                .ConfigureWorkspaceService(this)
-                .ConfigureOllamaService(this)
-                .ConfigureAzureAIService(this)
-                .ConfigureOpenAIService(this)
+                .ConfigureWorkspaceService()
+                .ConfigureOllamaService()
+                .ConfigureAzureAIService()
+                .ConfigureOpenAIService()
                 .ConfigureAIService()
                 .AddSingleton<IConfigStoreService, ConfigStoreService>()
                 .AddSingleton<IDocumentService, DocumentService>()
@@ -44,13 +41,13 @@ namespace PowerPad.WinUI
                 .AddSingleton<SettingsViewModel>()
                 .AddSingleton<WorkspaceViewModel>()
                 .AddSingleton<AgentsCollectionViewModel>()
-                .AddSingleton(_ => AppConfigStore)
+                .AddSingleton(_ => _appConfigStore!)
                 .BuildServiceProvider();
 
             //Remove?
             //Ioc.Default.ConfigureServices(_serviceProvider);
 
-            this.InitializeAppConfigStore(out _appConfigStore);
+            AppConfiguration.InitializeAppConfigStore(out _appConfigStore);
 
             var appTheme = Get<SettingsViewModel>().General.AppTheme;
             if (appTheme is not null) Current.RequestedTheme = appTheme.Value;

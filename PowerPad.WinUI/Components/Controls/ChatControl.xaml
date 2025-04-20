@@ -88,7 +88,7 @@
                         MaxHeight="148"
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         Padding="0"
-                        FontSize="16"
+                        FontSize="15"
                         KeyDown="ChatInputBox_KeyDown"
                         TextChanged="ChatInputBox_TextChanged"/>
                     <Grid Grid.Row="1">
