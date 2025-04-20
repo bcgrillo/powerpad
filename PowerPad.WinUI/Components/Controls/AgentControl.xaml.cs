@@ -172,6 +172,7 @@ namespace PowerPad.WinUI.Components.Controls
             DispatcherQueue.TryEnqueue(() =>
             {
                 SendButton.Visibility = Visibility.Collapsed;
+                AgentProgress.Visibility = Visibility.Visible;
                 StopButton.Visibility = Visibility.Visible;
                 PromptParameterInputBox.IsReadOnly = true;
                 AgentButton.IsEnabled = false;
@@ -188,6 +189,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             DispatcherQueue.TryEnqueue(() =>
             {
+                AgentProgress.Visibility = Visibility.Collapsed;
                 StopButton.Visibility = Visibility.Collapsed;
                 SendButton.Visibility = Visibility.Visible;
                 PromptParameterInputBox.Text = string.Empty;

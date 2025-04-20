@@ -58,7 +58,11 @@
                             KeyDown="PromptParameterInputBox_KeyDown"
                             TextChanged="PromptParameterInputBox_TextChanged"/>
 
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                            <muxc:ProgressRing 
+                                x:Name="AgentProgress"
+                                Height="32" 
+                                Width="32" Visibility="Collapsed" />
                             <Button x:Name="SendButton"
                                 Click="SendBtn_Click"
                                 Style="{StaticResource AccentButtonStyle}"

@@ -8,6 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
-        <ImageIcon Height="18" Source="{x:Bind Source, Mode=OneWay}"/>
+        <ImageIcon Height="18" Source="{x:Bind Source, Mode=OneWay}" />
     </Grid>
 </UserControl>

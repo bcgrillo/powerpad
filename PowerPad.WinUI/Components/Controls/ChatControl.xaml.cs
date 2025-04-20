@@ -18,6 +18,8 @@ using PowerPad.WinUI.ViewModels.AI;
 using System.Diagnostics;
 using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -437,12 +439,14 @@ namespace PowerPad.WinUI.Components.Controls
                 _sendParameters = true;
                 ControlDefaultParamters.Visibility = Visibility.Collapsed;
                 ControlCustomParamters.Visibility = Visibility.Visible;
+                ((Border)ParametersButton.Content).BorderBrush = (Brush)Application.Current.Resources["AccentFillColorDefaultBrush"];
             }
             else
             {
                 _sendParameters = false;
                 ControlDefaultParamters.Visibility = Visibility.Visible;
                 ControlCustomParamters.Visibility = Visibility.Collapsed;
+                ((Border)ParametersButton.Content).BorderBrush = new SolidColorBrush(Colors.Transparent);
             }
         }
 

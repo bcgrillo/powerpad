@@ -47,19 +47,9 @@ namespace PowerPad.WinUI.Components.Editors
                 {
                     _chat = JsonSerializer.Deserialize<ChatViewModel>(content, JSON_SERIALIZER_OPTIONS);
                 }
-                catch
+                catch (JsonException)
                 {
-                    //TODO: Quitar esto
-                    try
-                    {
-                        var chatMessages = JsonSerializer.Deserialize<List<MessageViewModel>>(content, JSON_SERIALIZER_OPTIONS);
-
-                        _chat = new() { Messages = [.. chatMessages ?? []] };
-                    }
-                    catch(JsonException)
-                    {
-                        error = true;
-                    }
+                    error = true;
                 }
             }
 
@@ -81,9 +71,11 @@ namespace PowerPad.WinUI.Components.Editors
                 (
                     this.XamlRoot,
                     "Error",
-                    "No ha sido posible deserializar el contenido como JSON."
+                    "No ha sido posible deserializar el contenido del chat."
                 ).Wait();
             }
+
+            ItemsStackPanel_SizeChanged(null, null);
         }
 
         public override void SetFocus() => ChatControl.SetFocus();
@@ -167,23 +159,26 @@ namespace PowerPad.WinUI.Components.Editors
             ChatRowDefinition.Height = new(1, GridUnitType.Star);
         }
 
-        private void ItemsStackPanel_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void ItemsStackPanel_SizeChanged(object? _, SizeChangedEventArgs? __)
         {
-            var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
-
-            if (scrollViewer is not null)
+            DispatcherQueue.TryEnqueue(() =>
             {
-                bool isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+                var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
 
-                if (isScrollbarVisible)
+                if (scrollViewer is not null)
                 {
-                    InvertedListView.Padding = new(-12, 0, 12, 24);
+                    bool isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+
+                    if (isScrollbarVisible)
+                    {
+                        InvertedListView.Padding = InvertedListView.Padding with { Right = 12 };
+                    }
+                    else
+                    {
+                        InvertedListView.Padding = InvertedListView.Padding with { Right = -12 };
+                    }
                 }
-                else
-                {
-                    InvertedListView.Padding = new(-12, 0, -12, 24);
-                }
-            }
+            });
         }
 
         private async void ChatControl_SendButtonClicked(object _, RoutedEventArgs __)
