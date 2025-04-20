@@ -23,7 +23,7 @@
             Grid.RowSpan="2"
             Grid.Column="0"
             ItemInvoked="WorkspaceControl_ItemInvoked"
-            VisibilityChanged="WorkspaceControl_VisibilityChanged"/>
+            VisibilityChanged="WorkspaceControl_VisibilityChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         <Border
             Grid.Row="1"
             Grid.Column="1"

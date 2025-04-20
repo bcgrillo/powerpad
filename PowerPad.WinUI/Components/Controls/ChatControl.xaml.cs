@@ -40,7 +40,8 @@ namespace PowerPad.WinUI.Components.Controls
         private int _loadingStep = 0;
         private Action? _finalizeChatAction;
         private ICollection<MessageViewModel>? _messageList;
-        private MessageViewModel? _lastMessage;
+        private MessageViewModel? _lastUserMessage;
+        private MessageViewModel? _lastAssistantMessage;
 
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
         public event EventHandler<ChatOptionChangedEventArgs>? ChatOptionsChanged;
@@ -280,16 +281,17 @@ namespace PowerPad.WinUI.Components.Controls
             _finalizeChatAction = endAction;
             _loadingAnimationTimer.Start();
 
-            messageList.Add(new(ChatInputBox.Text.Trim().Replace("\r", "  \r"), DateTime.Now, ChatRole.User));
+            _lastUserMessage = new(ChatInputBox.Text.Trim().Replace("\r", "  \r"), DateTime.Now, ChatRole.User);
+            messageList.Add(_lastUserMessage);
 
             _ = Task.Run(async () =>
             {
                 var history = messageList.Select(m => new ChatMessage(m.Role, m.Content)).ToList();
-                _lastMessage = new MessageViewModel(null, DateTime.Now, ChatRole.Assistant) { Loading = true };
+                _lastAssistantMessage = new MessageViewModel(null, DateTime.Now, ChatRole.Assistant) { Loading = true };
 
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    messageList.Add(_lastMessage);
+                    messageList.Add(_lastAssistantMessage);
                     SendButton.Visibility = Visibility.Collapsed;
                     StopButton.Visibility = Visibility.Visible;
                     ChatInputBox.IsReadOnly = true;
@@ -338,9 +340,9 @@ namespace PowerPad.WinUI.Components.Controls
 
                         DispatcherQueue.TryEnqueue(() =>
                         {
-                            _lastMessage.Reasoning = reasoning;
-                            _lastMessage.Content = content;
-                            _lastMessage.Loading = loading;
+                            _lastAssistantMessage.Reasoning = reasoning;
+                            _lastAssistantMessage.Content = content;
+                            _lastAssistantMessage.Loading = loading;
                         });
                     }
                     catch (Exception ex)
@@ -358,12 +360,18 @@ namespace PowerPad.WinUI.Components.Controls
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (_lastMessage is not null && string.IsNullOrWhiteSpace(_lastMessage.Content))
-                    _messageList!.Remove(_lastMessage);
+                if (_lastAssistantMessage is not null && string.IsNullOrWhiteSpace(_lastAssistantMessage.Content))
+                {
+                    _messageList!.Remove(_lastAssistantMessage);
+                    _messageList!.Remove(_lastUserMessage!);
+                }
+                else
+                {
+                    ChatInputBox.Text = string.Empty;
+                }
 
                 StopButton.Visibility = Visibility.Collapsed;
                 SendButton.Visibility = Visibility.Visible;
-                ChatInputBox.Text = string.Empty;
                 ChatInputBox.IsReadOnly = false;
                 ModelButton.IsEnabled = true;
                 ParametersButton.IsEnabled = true;
@@ -372,7 +380,8 @@ namespace PowerPad.WinUI.Components.Controls
                 _finalizeChatAction?.Invoke();
                 _finalizeChatAction = null;
                 _messageList = null;
-                _lastMessage = null;
+                _lastUserMessage = null;
+                _lastAssistantMessage = null;
                 _loadingAnimationTimer.Stop();
             });
         }
@@ -462,13 +471,13 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void LoadingAnimationTimer_Tick(object? sender, object e)
         {
-            if (_lastMessage is not null)
+            if (_lastAssistantMessage is not null)
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
                     _loadingStep = (_loadingStep + 1) % 4;
-                    _lastMessage.LoadingMessage = _lastMessage.Reasoning is not null && _lastMessage.Content is null ? "Pensando" : string.Empty;
-                    _lastMessage.LoadingMessage += new string('.', _loadingStep);
+                    _lastAssistantMessage.LoadingMessage = _lastAssistantMessage.Reasoning is not null && _lastAssistantMessage.Content is null ? "Pensando" : string.Empty;
+                    _lastAssistantMessage.LoadingMessage += new string('.', _loadingStep);
                 });
             }
         }

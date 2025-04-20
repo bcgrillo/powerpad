@@ -23,7 +23,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="36,24,36,18">
+        <Grid Margin="36,24,36,12">
             <Grid ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -58,7 +58,8 @@
                     <Button
                         x:Name="CopyBtn"
                         ToolTipService.ToolTip="Copiar"
-                        Click="CopyBtn_Click">
+                        Click="CopyBtn_Click"
+                        IsEnabled="false">
                         <Button.Content>
                             <FontIcon FontSize="16" Glyph="&#xE8C8;" />
                         </Button.Content>
@@ -81,9 +82,13 @@
             Grid.Row="1"
             TextWrapping="Wrap" 
             AcceptsReturn="True"
-            Margin="10,0"
+            Margin="36,0"
+            Padding="0,0,0,0"
             FontFamily="Consolas"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+            SelectionHighlightColor="Gray"
+            SelectionHighlightColorWhenNotFocused="Gray"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SizeChanged="TextEditor_SizeChanged"/>
         
         <lcontrols:AgentControl
             x:Name="AgentControl"

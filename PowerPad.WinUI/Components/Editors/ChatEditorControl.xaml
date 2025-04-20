@@ -86,10 +86,18 @@
                         Visibility="{x:Bind Loading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
                         Text="{x:Bind Content, Mode=OneWay}"
                         TextWrapping="Wrap" />
-                    <TextBlock
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind DateTime}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind DateTime}" />
+                        <HyperlinkButton Tag="{x:Bind}" Click="CopyButton_Click" ToolTipService.ToolTip="Copiar contenido del mensaje" Padding="0">
+                            <FontIcon 
+                                Glyph="&#xE8C8;" 
+                                FontSize="{StaticResource CaptionTextBlockFontSize}" 
+                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                        </HyperlinkButton>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -105,9 +113,9 @@
             FontWeight="SemiBold"
             ForcedForeground="{ThemeResource TextFillColorPrimaryBrush}"
             Value="{x:Bind _document.Name, Mode=OneWay}"
-            Margin="36,24,36,18"
+            Margin="36,24,36,12"
             Edited="EditableTextBlock_Edited"/>
-        <Grid Grid.Row="1" x:Name="ChatGrid" MaxWidth="1200" VerticalAlignment="Center">
+        <Grid Grid.Row="1" x:Name="ChatGrid" MaxWidth="1200" VerticalAlignment="Center" SizeChanged="ItemsStackPanel_SizeChanged">
             <Grid.RowDefinitions>
                 <RowDefinition x:Name="ChatRowDefinition" Height="auto" />
                 <RowDefinition Height="auto" />

@@ -14,6 +14,8 @@ using Windows.System;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using PowerPad.WinUI.Components.Controls;
+using Windows.ApplicationModel.DataTransfer;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -221,6 +223,31 @@ namespace PowerPad.WinUI.Components.Editors
         public override int WordCount()
         {
             return _chat!.Messages.Sum(m => m.Content?.Split(' ')?.Length ?? 0);
+        }
+
+        private async void CopyButton_Click(object sender, RoutedEventArgs __)
+        {
+            var message = (MessageViewModel)((HyperlinkButton)sender).Tag;
+
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(message.Content);
+            Clipboard.SetContent(dataPackage);
+
+            var flyout = new Flyout
+            {
+                Content = new TextBlock
+                {
+                    Text = "¡Copiado!",
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(-6),
+                    TextAlignment = TextAlignment.Center
+                },
+                Placement = FlyoutPlacementMode.Top
+            };
+
+            flyout.ShowAt((HyperlinkButton)sender);
+            await Task.Delay(1000);
+            flyout.Hide();
         }
     }
 }

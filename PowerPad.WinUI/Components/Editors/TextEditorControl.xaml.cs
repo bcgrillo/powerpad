@@ -9,6 +9,9 @@ using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.Core.Services.AI;
 using System.Text;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Media;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -30,7 +33,12 @@ namespace PowerPad.WinUI.Components.Editors
 
             _document = new(document, this);
 
-            TextEditor.TextChanged += (s, e) => _document.Status = DocumentStatus.Dirty;
+            TextEditor.TextChanged += (s, e) =>
+            {
+                _document.Status = DocumentStatus.Dirty;
+                CopyBtn.IsEnabled = !string.IsNullOrEmpty(TextEditor.Text);
+                TextEditor_SizeChanged(null, null);
+            };
         }
 
         public override string GetContent(bool _ = false)
@@ -41,6 +49,8 @@ namespace PowerPad.WinUI.Components.Editors
         public override void SetContent(string content)
         {
             TextEditor.Text = content;
+            CopyBtn.IsEnabled = !string.IsNullOrEmpty(content);
+            TextEditor_SizeChanged(null, null);
         }
 
         public override void SetFocus()
@@ -68,13 +78,29 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        private void CopyBtn_Click(object _, RoutedEventArgs __)
+        private async void CopyBtn_Click(object sender, RoutedEventArgs __)
         {
             var textToCopy = TextEditor.Text;
 
             var dataPackage = new DataPackage();
             dataPackage.SetText(textToCopy);
             Clipboard.SetContent(dataPackage);
+
+            var flyout = new Flyout
+            {
+                Content = new TextBlock
+                {
+                    Text = "¡Copiado!",
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(-6),
+                    TextAlignment = TextAlignment.Center
+                },
+                Placement = FlyoutPlacementMode.Top
+            };
+
+            flyout.ShowAt((Button)sender);
+            await Task.Delay(1000);
+            flyout.Hide();
         }
 
         public override void AutoSave()
@@ -129,6 +155,49 @@ namespace PowerPad.WinUI.Components.Editors
             _document.PreviousContent = TextEditor.Text;
             TextEditor.Text = _document.NextContent;
             _document.NextContent = null;
+        }
+
+        private void TextEditor_SizeChanged(object? _, SizeChangedEventArgs? __)
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                var scrollViewer = FindElement<ScrollViewer>(TextEditor);
+
+                if (scrollViewer is not null)
+                {
+                    bool isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+
+                    if (isScrollbarVisible)
+                    {
+                        TextEditor.Padding = TextEditor.Padding with { Right = 16 };
+                    }
+                    else
+                    {
+                        TextEditor.Padding = TextEditor.Padding with { Right = 0 };
+                    }
+                }
+            });
+        }
+
+        private T? FindElement<T>(DependencyObject element)
+            where T : DependencyObject
+        {
+            if (element is T targetElement)
+            {
+                return targetElement;
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            {
+                var child = VisualTreeHelper.GetChild(element, i);
+                var result = FindElement<T>(child);
+                if (result is not null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 
