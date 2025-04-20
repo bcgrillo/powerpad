@@ -66,6 +66,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Header="Mostrar pensamiento"
                         HorizontalAlignment="Stretch"
+                        Padding="8,4,8,16"
                         Background="{ThemeResource SubtleFillColorSecondaryBrush}"
                         BorderBrush="{ThemeResource SubtleFillColorSecondaryBrush}" MinHeight="0">
                         <Expander.Resources>

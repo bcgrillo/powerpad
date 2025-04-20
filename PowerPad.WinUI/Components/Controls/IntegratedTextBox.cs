@@ -26,7 +26,10 @@ namespace PowerPad.WinUI.Components.Controls
             this.Resources["TextControlBackgroundPointerOver"] = new SolidColorBrush(Colors.Transparent);
             this.Resources["TextControlBackgroundFocused"] = new SolidColorBrush(Colors.Transparent);
             this.Resources["TextControlBackgroundDisabled"] = new SolidColorBrush(Colors.Transparent);
-            
+
+            this.SelectionHighlightColor = new SolidColorBrush(Colors.Gray);
+            this.SelectionHighlightColorWhenNotFocused = new SolidColorBrush(Colors.Gray);
+
             this.RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, UpdateForeground);
             this.RegisterPropertyChangedCallback(TextBox.IsEnabledProperty, UpdateForeground);
             this.RegisterPropertyChangedCallback(IntegratedTextBox.ForcedForegroundProperty, UpdateForeground);

@@ -94,13 +94,22 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void AgentControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
-            var stringBuilder = new StringBuilder();
+            var originalText = TextEditor.Text;
+            _document.PreviousContent = originalText;
 
-            await AgentControl.StartAgentAction(TextEditor.Text, stringBuilder);
+            var hasSelection = TextEditor.SelectionLength > 0;
+            var textToSend = hasSelection
+                ? TextEditor.SelectedText
+                : originalText;
 
-            _document.PreviousContent = TextEditor.Text;
+            var resultBuilder = new StringBuilder();
 
-            TextEditor.Text = stringBuilder.ToString();
+            await AgentControl.StartAgentAction(textToSend, resultBuilder);
+
+            var resultText = resultBuilder.ToString();
+
+            if (hasSelection) TextEditor.SelectedText = resultText;
+            else TextEditor.Text = resultText;
         }
 
         public override int WordCount()

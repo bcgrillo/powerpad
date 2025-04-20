@@ -74,6 +74,7 @@ namespace PowerPad.WinUI.Components.Controls
             args.Cancel = true;
             await Launcher.LaunchUriAsync(new Uri(args.Uri));
         }
+
         private void WebView_PermissionRequested(CoreWebView2 sender, CoreWebView2PermissionRequestedEventArgs args)
         {
             args.State = CoreWebView2PermissionState.Deny;
