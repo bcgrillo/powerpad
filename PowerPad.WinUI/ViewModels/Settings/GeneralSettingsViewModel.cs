@@ -22,6 +22,9 @@ namespace PowerPad.WinUI.ViewModels.Settings
         private bool _openAIEnabled;
 
         [ObservableProperty]
+        private bool _checkOllamaInstalled;
+
+        [ObservableProperty]
         private bool _ollamaAutostart;
 
         public required AIServiceConfigViewModel OllamaConfig
@@ -125,20 +128,29 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         partial void OnOllamaEnabledChanged(bool value)
         {
-            SetServiceConfig(value, OllamaConfig, ModelProvider.Ollama, false);
-            ServiceEnablementChanged?.Invoke(OllamaConfig, EventArgs.Empty);
+            if (OllamaConfig is not null) //Avoid running when GeneralSettingsViewModel is not fully initialized
+            {
+                SetServiceConfig(value, OllamaConfig, ModelProvider.Ollama, false);
+                ServiceEnablementChanged?.Invoke(OllamaConfig, EventArgs.Empty);
+            }
         }
 
         partial void OnAzureAIEnabledChanged(bool value)
         {
-            SetServiceConfig(value, AzureAIConfig, ModelProvider.GitHub, true);
-            ServiceEnablementChanged?.Invoke(AzureAIConfig, EventArgs.Empty);
+            if (AzureAIConfig is not null) //Avoid running when GeneralSettingsViewModel is not fully initialized
+            {
+                SetServiceConfig(value, AzureAIConfig, ModelProvider.GitHub, true);
+                ServiceEnablementChanged?.Invoke(AzureAIConfig, EventArgs.Empty);
+            }
         }
 
         partial void OnOpenAIEnabledChanged(bool value)
         {
-            SetServiceConfig(value, OpenAIConfig, ModelProvider.OpenAI, true);
-            ServiceEnablementChanged?.Invoke(OpenAIConfig, EventArgs.Empty);
+            if (OpenAIConfig is not null) //Avoid running when GeneralSettingsViewModel is not fully initialized
+            {
+                SetServiceConfig(value, OpenAIConfig, ModelProvider.OpenAI, true);
+                ServiceEnablementChanged?.Invoke(OpenAIConfig, EventArgs.Empty);
+            }
         }
 
         private static void SetServiceConfig(bool enabled, AIServiceConfigViewModel config, ModelProvider modelProvider, bool keyIsRequired)

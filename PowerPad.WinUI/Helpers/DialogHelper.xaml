@@ -8,10 +8,14 @@
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     Style="{ThemeResource DefaultContentDialogStyle}">
     <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <FontIcon x:Name="Icon" Visibility="Collapsed" FontSize="36" Margin="0,0,16,0"/>
-            <TextBlock x:Name="Message" Margin="0,16,0,16"/>
-        </StackPanel>
+        <Grid HorizontalAlignment="Stretch" ColumnSpacing="16" Margin="0,16,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <FontIcon x:Name="Icon" Visibility="Collapsed" VerticalAlignment="Top" FontSize="36" Margin="0,0,16,0"/>
+            <TextBlock x:Name="Message" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch">Parece que Ollama no está instalado en su equipo.<LineBreak/>¿Quiere descargarlo e instalarlo ahora?</TextBlock>
+        </Grid>
         <TextBox x:Name="TextBox" Text="" KeyDown="TextBox_KeyDown" Visibility="Collapsed" />
     </StackPanel>
 </ContentDialog>

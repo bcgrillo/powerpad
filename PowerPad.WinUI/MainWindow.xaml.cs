@@ -15,6 +15,7 @@ using PowerPad.WinUI.ViewModels.Settings;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.Dialogs;
 
 namespace PowerPad.WinUI
 {
@@ -43,23 +44,53 @@ namespace PowerPad.WinUI
             SetBackdrop(_settings.General.AcrylicBackground);
             SetTitleBar();
 
-            NavView.SelectedItem = NavView.MenuItems[0];
-
             Closed += (s, e) =>
             {
                 App.Get<IConfigStoreService>().StoreConfigs();
                 EditorManagerHelper.AutoSaveEditors();
+
+                _acrylicController?.Dispose();
             };
 
+            _settings.General.PropertyChanged += (s, e) => UpdateNavMenuItems();
+            _settings.Models.PropertyChanged += (s, e) => UpdateNavMenuItems();
+
+            NavView.SelectedItem = NavView.MenuItems[0];
+        }
+
+        private void MainPage_Loaded(object _, RoutedEventArgs __)
+        {
             DispatcherQueue.TryEnqueue(async () =>
             {
                 await _settings.TestConnections();
 
-                UpdateNavMenuItems();
-            });
+                bool goToSettings = false;
+                bool checkOllamaInstalled = _settings.General.CheckOllamaInstalled;
 
-            _settings.General.PropertyChanged += (s, e) => UpdateNavMenuItems();
-            _settings.Models.PropertyChanged += (s, e) => UpdateNavMenuItems();
+                while (checkOllamaInstalled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
+                {
+                    var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
+
+                    switch(ollamaInstallationDialog)
+                    {
+                        case ContentDialogResult.Primary:
+                            await _settings.TestConnections();
+                            break;
+                        case ContentDialogResult.Secondary:
+                            goToSettings = true;
+                            checkOllamaInstalled = false;
+                            break;
+                        default:
+                            _settings.General.CheckOllamaInstalled = false;
+                            checkOllamaInstalled = false;
+                            break;
+                    }
+                }
+
+                UpdateNavMenuItems();
+
+                if (goToSettings) NavView.SelectedItem = NavView.SettingsItem;
+            });
         }
 
         private void UpdateNavMenuItems()

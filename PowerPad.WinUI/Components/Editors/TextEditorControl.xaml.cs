@@ -19,16 +19,12 @@ namespace PowerPad.WinUI.Components.Editors
     {
         private DocumentViewModel _document;
 
-        private readonly IChatService _chatService;
-
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
         public TextEditorControl(Document document)
         {
-            _chatService = App.Get<IChatService>();
-
             this.InitializeComponent();
 
             _document = new(document, this);

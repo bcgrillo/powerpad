@@ -3,11 +3,18 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System.Threading.Tasks;
+using System.IO;
+using System.Net.Http;
+using System.Threading;
+using Microsoft.UI.Xaml.Media;
 
 namespace PowerPad.WinUI.Dialogs
 {
     public partial class DialogHelper : ContentDialog
     {
+        private const string OLLAMA_DOWNLOAD_URL = "https://ollama.com/download/OllamaSetup.exe";
+        private const int BUFFER_SIZE = 8192;
+
         private const string LABEL_OK = "Aceptar";
         private const string LABEL_CANCEL = "Cancelar";
         private const string LABEL_YES = "Sí";
@@ -78,14 +85,14 @@ namespace PowerPad.WinUI.Dialogs
             await inputDialog.ShowAsync();
         }
 
-        private void TextBox_KeyDown(object _, KeyRoutedEventArgs e)
+        private void TextBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (e.Key == Windows.System.VirtualKey.Enter) 
+            if (eventArgs.Key == Windows.System.VirtualKey.Enter) 
             {
                 Aceppted = true;
                 Hide();
             }
-            else if(e.Key == Windows.System.VirtualKey.Escape)
+            else if(eventArgs.Key == Windows.System.VirtualKey.Escape)
             {
                 Hide();
             }

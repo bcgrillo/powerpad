@@ -53,6 +53,7 @@ namespace PowerPad.WinUI.Configuration
                 OpenAIEnabled = false,
 
                 OllamaConfig = new(new() { BaseUrl = "http://localhost:11434" }),
+                CheckOllamaInstalled = true,
                 OllamaAutostart = true,
                 //TODO: Remove
                 AzureAIConfig = new(new() { BaseUrl = "https://models.inference.ai.azure.com", Key = "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" }),

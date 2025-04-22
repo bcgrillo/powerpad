@@ -8,5 +8,6 @@
         Available,
         Online,
         Error,
+        NotFound,
     }
 }

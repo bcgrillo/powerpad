@@ -13,7 +13,7 @@
     MinHeight="720"
     mc:Ignorable="d"
     Title="PowerPad">
-    <Page x:Name="MainPage">
+    <Page x:Name="MainPage" Loaded="MainPage_Loaded">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="48" />

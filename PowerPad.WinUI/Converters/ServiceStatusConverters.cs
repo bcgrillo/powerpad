@@ -43,6 +43,7 @@ namespace PowerPad.WinUI.Converters
                 ServiceStatus.Available => "Disponible",
                 ServiceStatus.Online => "Conectado",
                 ServiceStatus.Error => "Error",
+                ServiceStatus.NotFound => "No encontrado",
                 _ => string.Empty,
             };
 

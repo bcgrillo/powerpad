@@ -6,6 +6,7 @@ using Exception = System.Exception;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Helpers;
+using System.ComponentModel;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -95,12 +96,15 @@ namespace PowerPad.Core.Services.AI
                         await process.WaitForExitAsync();
 
                         if (process.ExitCode == 0) return new(ServiceStatus.Available);
-                        else return new(ServiceStatus.Error, "Ollama not found.");
+                        else return new(ServiceStatus.Error, $"Ollama error: {process.StandardError.ReadToEnd()}");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    return new(ServiceStatus.Error, ex.Message);
+                    if (ex is Win32Exception)
+                        return new(ServiceStatus.NotFound, "Ollama not found.");
+                    else
+                        return new(ServiceStatus.Error, $"Ollama error: {ex.Message}");
                 }
             }
         }
