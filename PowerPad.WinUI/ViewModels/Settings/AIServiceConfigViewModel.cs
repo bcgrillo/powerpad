@@ -55,7 +55,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         public async Task TestConnection(IAIService aiService)
         {
-            ServiceStatus = ServiceStatus.Updating;
+            if (ServiceStatus != ServiceStatus.NotFound) ServiceStatus = ServiceStatus.Updating;
             ErrorMessage = null;
 
             OnPropertyChanged(nameof(ServiceStatus));

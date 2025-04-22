@@ -18,18 +18,18 @@ namespace PowerPad.WinUI.Components.Controls
 
         public IntegratedTextBox()
         {
-            this.DefaultStyleKey = typeof(IntegratedTextBox);
+            DefaultStyleKey = typeof(IntegratedTextBox);
 
-            this.Resources["TextControlBorderThemeThickness"] = new Thickness(0);
-            this.Resources["TextControlBorderThemeThicknessFocused"] = new Thickness(0);
-            this.Resources["TextControlBackground"] = new SolidColorBrush(Colors.Transparent);
-            this.Resources["TextControlBackgroundPointerOver"] = new SolidColorBrush(Colors.Transparent);
-            this.Resources["TextControlBackgroundFocused"] = new SolidColorBrush(Colors.Transparent);
-            this.Resources["TextControlBackgroundDisabled"] = new SolidColorBrush(Colors.Transparent);
+            Resources["TextControlBorderThemeThickness"] = new Thickness(0);
+            Resources["TextControlBorderThemeThicknessFocused"] = new Thickness(0);
+            Resources["TextControlBackground"] = new SolidColorBrush(Colors.Transparent);
+            Resources["TextControlBackgroundPointerOver"] = new SolidColorBrush(Colors.Transparent);
+            Resources["TextControlBackgroundFocused"] = new SolidColorBrush(Colors.Transparent);
+            Resources["TextControlBackgroundDisabled"] = new SolidColorBrush(Colors.Transparent);
 
-            this.RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, UpdateForeground);
-            this.RegisterPropertyChangedCallback(TextBox.IsEnabledProperty, UpdateForeground);
-            this.RegisterPropertyChangedCallback(IntegratedTextBox.ForcedForegroundProperty, UpdateForeground);
+            RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, UpdateForeground);
+            RegisterPropertyChangedCallback(TextBox.IsEnabledProperty, UpdateForeground);
+            RegisterPropertyChangedCallback(IntegratedTextBox.ForcedForegroundProperty, UpdateForeground);
         }
 
         private void UpdateForeground(DependencyObject sender, DependencyProperty dp)
@@ -40,11 +40,11 @@ namespace PowerPad.WinUI.Components.Controls
                     : (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"])
                 : (Brush)Application.Current.Resources["TextFillColorDisabledBrush"];
 
-            this.Foreground = foregroundBrush;
-            this.Resources["TextControlForeground"] = foregroundBrush;
-            this.Resources["TextControlForegroundPointerOver"] = foregroundBrush;
-            this.Resources["TextControlForegroundFocused"] = foregroundBrush;
-            this.Resources["TextControlForegroundDisabled"] = foregroundBrush;
+            Foreground = foregroundBrush;
+            Resources["TextControlForeground"] = foregroundBrush;
+            Resources["TextControlForegroundPointerOver"] = foregroundBrush;
+            Resources["TextControlForegroundFocused"] = foregroundBrush;
+            Resources["TextControlForegroundDisabled"] = foregroundBrush;
         }
     }
 }

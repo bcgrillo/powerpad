@@ -100,7 +100,7 @@ namespace PowerPad.WinUI.Components
 
         private void HideMenuBtn_Click(object _, RoutedEventArgs __)
         {
-            this.Visibility = Visibility.Collapsed;
+            Visibility = Visibility.Collapsed;
 
             VisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -138,7 +138,7 @@ namespace PowerPad.WinUI.Components
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
 
-            var result = await DialogHelper.Imput(this.XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
+            var result = await DialogHelper.Imput(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
 
             if (result is not null)
             {
@@ -152,7 +152,7 @@ namespace PowerPad.WinUI.Components
                 {
                     await DialogHelper.Alert
                     (
-                        this.XamlRoot,
+                        XamlRoot,
                         "Error",
                         "No ha sido posible cambiar el nombre del documento."
                     );
@@ -164,7 +164,7 @@ namespace PowerPad.WinUI.Components
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
 
-            var result = await DialogHelper.Confirm(this.XamlRoot, "Eliminar", "¿Estás seguro?");
+            var result = await DialogHelper.Confirm(XamlRoot, "Eliminar", "¿Estás seguro?");
 
             if (result)
             {
@@ -176,7 +176,7 @@ namespace PowerPad.WinUI.Components
                 {
                     await DialogHelper.Alert
                     (
-                        this.XamlRoot,
+                        XamlRoot,
                         "Error",
                         "No ha sido posible eliminar el documento."
                     );

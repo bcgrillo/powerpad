@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Models.AI;
@@ -71,9 +72,11 @@ namespace PowerPad.WinUI.Converters
     {
         public object Convert(object value, Type targetType, object? parameter, string language)
         {
+            Enum.TryParse(typeof(ServiceStatus), parameter as string, out object? enumParam);
+
             if (value is ServiceStatus status)
             {
-                return status == (parameter as ServiceStatus? ?? ServiceStatus.Online);
+                return status == (enumParam as ServiceStatus? ?? ServiceStatus.Online);
             }
             return false;
         }
@@ -88,9 +91,53 @@ namespace PowerPad.WinUI.Converters
     {
         public object Convert(object value, Type targetType, object? parameter, string language)
         {
+            Enum.TryParse(typeof(ServiceStatus), parameter as string, out object? enumParam);
+
             if (value is ServiceStatus status)
             {
-                return status != (parameter as ServiceStatus? ?? ServiceStatus.Online);
+                return status != (enumParam as ServiceStatus? ?? ServiceStatus.Online);
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object? parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ServiceStatusToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object? parameter, string language)
+        {
+            Enum.TryParse(typeof(ServiceStatus), parameter as string, out object? enumParam);
+
+            if (value is ServiceStatus status)
+            {
+                return status == (enumParam as ServiceStatus? ?? ServiceStatus.Online)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object? parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ServiceStatusToVisibilityNegationConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object? parameter, string language)
+        {
+            Enum.TryParse(typeof(ServiceStatus), parameter as string, out object? enumParam);
+
+            if (value is ServiceStatus status)
+            {
+                return status != (enumParam as ServiceStatus? ?? ServiceStatus.Online)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
             return false;
         }

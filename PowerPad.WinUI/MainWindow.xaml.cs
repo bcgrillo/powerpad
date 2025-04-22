@@ -136,9 +136,9 @@ namespace PowerPad.WinUI
 
         private void SetTitleBar()
         {
-            this.ExtendsContentIntoTitleBar = true;
-            this.SetTitleBar(TitleBar);
-            this.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(TitleBar);
+            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         }
 
         private void NavView_SelectionChanged(object _, NavigationViewSelectionChangedEventArgs args)

@@ -1,3 +1,4 @@
+ï»¿<?xml version="1.0" encoding="utf-8"?>
 <ContentDialog
     x:Class="PowerPad.WinUI.Dialogs.OllamaDownloadHelper"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -18,11 +19,13 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <ImageIcon Height="36" VerticalAlignment="Center" Source="{ThemeResource OllamaSvg}"/>
-            <TextBlock x:Name="Message" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" 
-                Text="Parece que Ollama no está instalado en su equipo.&#10;Necesita Ollama para ejecutar modelos de inteligencia artificial localmente.&#10;¿Quiere descargarlo e instalarlo ahora?" />
+            <TextBlock x:Name="Message" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch"
+                Text="Parece que Ollama no estÃ¡ instalado en su equipo.&#10;Necesita Ollama para ejecutar modelos de inteligencia artificial localmente.&#10;Â¿Quiere descargarlo e instalarlo ahora?" />
         </Grid>
         <TextBlock x:Name="MessageAux" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-            Text="También puede utilizar PowerPad con inteligencia artificial en la nube con Azure AI y OpenAI, revise la configuración para obtener o establecer una clave de servicio gratuita o de pago por uso." />
+            Text="TambiÃ©n puede utilizar PowerPad con inteligencia artificial en la nube con Azure AI y OpenAI, revise la configuraciÃ³n para obtener o establecer una clave de servicio gratuita o de pago por uso." />
         <ProgressBar x:Name="ProgressBar" Margin="0,16,0,0" Visibility="Collapsed" />
+        <TextBlock x:Name="DownloadInfoText" Margin="0,8,0,0" Visibility="Collapsed" FontStyle="Italic" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
     </StackPanel>
 </ContentDialog>

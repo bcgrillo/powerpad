@@ -66,7 +66,7 @@ namespace PowerPad.WinUI.Components.Editors
                 {
                     await DialogHelper.Alert
                     (
-                        this.XamlRoot,
+                        XamlRoot,
                         "Error",
                         "No ha sido posible cambiar el nombre del documento."
                     );

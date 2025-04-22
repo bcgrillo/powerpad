@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
+using PowerPad.WinUI.Dialogs;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Settings;
@@ -43,7 +44,8 @@ namespace PowerPad.WinUI.Pages
             DarkThemeRadioButton.Checked += ThemeRadioButton_Checked;
             SystemThemeRadioButton.Checked += ThemeRadioButton_Checked;
 
-            OllamaModelsExpander.IsExpanded = _settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error;
+            OllamaModelsExpander.IsExpanded = _settings.General.OllamaEnabled 
+                && (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error || _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound);
             AzureAIModelsExpander.IsExpanded = _settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error;
             OpenAIModelsExpander.IsExpanded = _settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error;
 
@@ -79,6 +81,30 @@ namespace PowerPad.WinUI.Pages
             finally
             {
                 ProtectedCursor = _defaultCursor;
+            }
+        }
+
+        private async void InstallOllama_Click(object _, RoutedEventArgs __)
+        {
+            bool checkOllamaInstalled = true;
+
+            while (checkOllamaInstalled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
+            {
+                var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
+
+                switch (ollamaInstallationDialog)
+                {
+                    case ContentDialogResult.Primary:
+                        await _settings.TestConnections();
+                        break;
+                    case ContentDialogResult.Secondary:
+                        checkOllamaInstalled = false;
+                        break;
+                    default:
+                        _settings.General.CheckOllamaInstalled = false;
+                        checkOllamaInstalled = false;
+                        break;
+                }
             }
         }
 
