@@ -96,6 +96,10 @@ namespace PowerPad.Core.Services.AI
                 else
                     chatMessages.AddRange(messages);
             }
+            else
+            {
+                chatMessages.AddRange(messages);
+            }
 
             return (chatClient, chatOption, chatMessages);
         }
