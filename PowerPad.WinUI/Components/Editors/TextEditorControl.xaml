@@ -61,7 +61,7 @@
                         Click="CopyBtn_Click"
                         IsEnabled="false">
                         <Button.Content>
-                            <FontIcon FontSize="16" Glyph="&#xE8C8;" />
+                            <FontIcon FontSize="20" Glyph="&#xE8C8;" />
                         </Button.Content>
                     </Button>
                     <Button
@@ -70,7 +70,7 @@
                         IsEnabled="{x:Bind _document.CanSave, Mode=OneWay}"
                         Command="{x:Bind _document.SaveCommand}">
                         <Button.Content>
-                            <FontIcon FontSize="16" Glyph="&#xE74E;" />
+                            <FontIcon FontSize="20" Glyph="&#xE74E;" />
                         </Button.Content>
                     </Button>
                 </StackPanel>
@@ -94,6 +94,7 @@
             x:Name="AgentControl"
             Grid.Row="2"
             Margin="36,18,36,36"
+            MaxWidth="1128"
             SendButtonClicked="AgentControl_SendButtonClicked" />
 
     </Grid>

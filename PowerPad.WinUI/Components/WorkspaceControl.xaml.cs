@@ -324,6 +324,15 @@ namespace PowerPad.WinUI.Components
                     });
             }
         }
+
+        private void MoreButton_Click(object sender, RoutedEventArgs __)
+        {
+            var button = sender as Button;
+
+            var container = TreeView.ContainerFromItem(button?.DataContext) as TreeViewItem;
+
+            if (container?.ContextFlyout is MenuFlyout flyout) flyout.ShowAt(button);
+        }
     }
 
     public class WorkspaceControlItemInvokedEventArgs(FolderEntryViewModel? selectedFile) : EventArgs

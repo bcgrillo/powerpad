@@ -40,7 +40,7 @@ namespace PowerPad.WinUI.Dialogs
         {
             PrimaryButtonText = "Descargar Ollama";
             SecondaryButtonText = "Revisar configuración";
-            CloseButtonText = "No volver a comprobar";
+            CloseButtonText = "Deshabilitar Ollama";
             MessageAux.Visibility = Visibility.Visible;
             ProgressBar.Visibility = Visibility.Collapsed;
             ProgressBar.Value = 0;

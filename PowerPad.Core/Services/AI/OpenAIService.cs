@@ -60,7 +60,7 @@ namespace PowerPad.Core.Services.AI
             }
             catch (Exception ex)
             {
-                return new(ServiceStatus.Error, ex.Message);
+                return new(ServiceStatus.Error, ex.Message.Trim());
             }
         }
 

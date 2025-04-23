@@ -9,7 +9,7 @@
 
   <Identity
     Name="02cce767-962c-4f18-ad0e-a0d73e61bf0d"
-    Publisher="CN=bcgri"
+    Publisher="CN=Bruno Grillo"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="02cce767-962c-4f18-ad0e-a0d73e61bf0d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>

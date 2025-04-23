@@ -52,8 +52,10 @@ namespace PowerPad.WinUI
                 _acrylicController?.Dispose();
             };
 
-            _settings.General.PropertyChanged += (s, e) => UpdateNavMenuItems();
-            _settings.Models.PropertyChanged += (s, e) => UpdateNavMenuItems();
+            _settings.General.OllamaConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
+            _settings.General.AzureAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
+            _settings.General.OpenAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
+            _settings.Models.ModelAvaibilityChanged += (s, e) => UpdateNavMenuItems();
 
             NavView.SelectedItem = NavView.MenuItems[0];
         }
@@ -65,7 +67,7 @@ namespace PowerPad.WinUI
                 await _settings.TestConnections();
 
                 bool goToSettings = false;
-                bool checkOllamaInstalled = _settings.General.CheckOllamaInstalled;
+                bool checkOllamaInstalled = _settings.General.OllamaEnabled;
 
                 while (checkOllamaInstalled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
                 {
@@ -81,7 +83,7 @@ namespace PowerPad.WinUI
                             checkOllamaInstalled = false;
                             break;
                         default:
-                            _settings.General.CheckOllamaInstalled = false;
+                            _settings.General.OllamaEnabled = false;
                             checkOllamaInstalled = false;
                             break;
                     }
@@ -97,9 +99,10 @@ namespace PowerPad.WinUI
         {
             //TODO: Add a better way to handle this
             ModelsNavViewItem.IsEnabled = _settings.General.OllamaEnabled || _settings.General.AzureAIEnabled || _settings.General.OpenAIEnabled;
-            AgentesNavViewItem.IsEnabled = _settings.Models.DefaultModel is not null;
+            AgentesNavViewItem.IsEnabled = _settings.IsAIAvailable == true;
 
             ErrorBadge.Visibility = (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error)
+                || (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound) 
                 || (_settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error)
                 || (_settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error)
                 ? Visibility.Visible : Visibility.Collapsed;
@@ -179,12 +182,31 @@ namespace PowerPad.WinUI
 
         private void NavigationVisibilityChanged(object? _, EventArgs? __)
         {
-            var navWidth = _activeNavPage?.NavigationWidth ?? 0;
 
-            TitleBar.Margin = new(navWidth, 0, 0, 0);
+            if (_activeNavPage is null)
+            {
+                TitleBar.Margin = new(0);
+                Splitter.Visibility = Visibility.Collapsed;
+                ShowMenuBtn.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                var navWidth = _activeNavPage.NavigationWidth;
 
-            if (navWidth > 0) Splitter.Visibility = Visibility.Visible;
-            else Splitter.Visibility = Visibility.Collapsed;
+                TitleBar.Margin = TitleBar.Margin with { Left = navWidth > 0 ? navWidth : 28 };
+
+                if (navWidth > 0)
+                {
+                    Splitter.Visibility = Visibility.Visible;
+                    ShowMenuBtn.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Splitter.Visibility = Visibility.Collapsed;
+                    if (_activeNavPage is not null) ShowMenuBtn.Visibility = Visibility.Visible;
+                }
+            }
+            
         }
 
         private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs __)
@@ -193,5 +215,7 @@ namespace PowerPad.WinUI
 
             if (navigationViewItem.Tag.ToString() == _activePageName) (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
         }
+
+        private void ShowMenuBtn_Click(object _, RoutedEventArgs __) => (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
     }
 }

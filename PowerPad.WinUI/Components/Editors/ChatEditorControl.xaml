@@ -20,7 +20,7 @@
         <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
         <DataTemplate x:Key="UserDataTemplate" x:DataType="chat:MessageViewModel">
             <StackPanel
-                MaxWidth="600"
+                MaxWidth="700"
                 MinWidth="135"
                 Padding="12"
                 HorizontalAlignment="Right"
@@ -44,7 +44,7 @@
         <DataTemplate x:Key="AssistantDataTemplate" x:DataType="chat:MessageViewModel">
             <Grid Margin="0,4" HorizontalAlignment="Left">
                 <StackPanel
-                    MaxWidth="600"
+                    MaxWidth="700"
                     MinWidth="135"
                     Padding="12"
                     HorizontalAlignment="Left"
@@ -71,7 +71,7 @@
                         BorderBrush="{ThemeResource SubtleFillColorSecondaryBrush}" MinHeight="0">
                         <Expander.Resources>
                             <Thickness x:Key="ExpanderHeaderBorderThickness">0,0,0,0</Thickness>
-                            <Thickness x:Key="ExpanderChevronMargin">0,0,0,0</Thickness>
+                            <Thickness x:Key="ExpanderChevronMargin">16,0,0,0</Thickness>
                             <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{ThemeResource SubtleFillColorSecondary}" />
                         </Expander.Resources>
                         <TextBlock

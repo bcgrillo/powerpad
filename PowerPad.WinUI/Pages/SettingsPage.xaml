@@ -26,7 +26,7 @@
         <converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
         <converters:FloatToDoubleConverter x:Key="FloatToDoubleConverter"/>
         <toolkitconverters:StringFormatConverter x:Key="StringFormatConverter" />
-        <toolkitconverters:EmptyStringToObjectConverter x:Key="EmptyStringToObjectConverter" EmptyValue="False" NotEmptyValue="True"/>
+        <toolkitconverters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
         <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
             <Setter Property="Margin" Value="1,30,0,6" />
         </Style>
@@ -40,6 +40,13 @@
         <Style x:Key="InfoBarServiceStyle" TargetType="InfoBar">
             <Setter Property="CornerRadius" Value="0" />
             <Setter Property="Margin" Value="-1,1,-1,-1" />
+        </Style>
+        <Style x:Key="InfoBarSettingCard" TargetType="Border">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="58,10,44,10" />
+            <Setter Property="BorderThickness" Value="0,1,0,0" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="Background" Value="{ThemeResource InfoBarErrorSeverityBackgroundBrush}" />
         </Style>
     </local:DisposablePage.Resources>
     <Grid Margin="0,0,0,2">
@@ -77,30 +84,28 @@
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch 
                                     IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" 
-                                    Toggled="OllamaModelsExpander_Toggled"
-                                    IsEnabled="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToBoolNegationConverter}, ConverterParameter=NotFound}" />
+                                    Toggled="OllamaModelsExpander_Toggled" />
                             </StackPanel>
                             <toolkit:SettingsExpander.ItemsHeader>
-                                <StackPanel>
-                                    <muxc:InfoBar 
-                                        Style="{StaticResource InfoBarServiceStyle}"
-                                        IsOpen="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}"
-                                        IsClosable="False"
-                                        Severity="Error"
-                                        Message="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay}">
-                                        <muxc:InfoBar.ActionButton>
-                                            <Button x:Name="OllamaRetryButton" Click="RetryButton_Click">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
-                                                    <TextBlock>Reintentar</TextBlock>
-                                                </StackPanel>
-                                            </Button>
-                                        </muxc:InfoBar.ActionButton>
-                                    </muxc:InfoBar>
-                                    <muxc:InfoBar 
-                                        Style="{StaticResource InfoBarServiceStyle}"
-                                        x:Name="OllamaInfoBar" />
-                                </StackPanel>
+                                <Border 
+                                    Style="{StaticResource InfoBarSettingCard}"
+                                    Visibility="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
+                                    <Grid ColumnSpacing="16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
+                                        <TextBlock Grid.Column="1" Text="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay}" VerticalAlignment="Center" />
+                                        <Button Grid.Column="2" x:Name="OllamaRetryButton" Click="RetryButton_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
+                                                <TextBlock>Reintentar</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </Border>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <toolkit:SettingsCard>
@@ -110,7 +115,9 @@
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <localc:Label Text="Estado:" />
+                                            <localc:Label 
+                                                IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}"
+                                                Text="Estado:" />
                                             <TextBlock 
                                                 Grid.Column="1"
                                                 Foreground="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToColorBrushConverter}}"
@@ -153,9 +160,7 @@
                                         </toolkit:Case>
                                     </toolkit:SwitchPresenter>
                                 </toolkit:SettingsCard>
-                                <Border 
-                                    Visibility="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToVisibilityNegationConverter}, ConverterParameter=NotFound}"
-                                    Style="{StaticResource FullRowSettingCard}">
+                                <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
@@ -171,21 +176,11 @@
                                             IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}" />
                                     </Grid>
                                 </Border>
-                                <toolkit:SettingsCard 
-                                    Visibility="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToVisibilityNegationConverter}, ConverterParameter=NotFound}"
-                                    ContentAlignment="Left">
+                                <toolkit:SettingsCard  ContentAlignment="Left">
                                     <CheckBox 
                                         IsChecked="{x:Bind _settings.General.OllamaAutostart, Mode=TwoWay}"
                                         IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                                         <TextBlock Margin="8,2,0,0">Iniciar Ollama automáticamente al abrir</TextBlock>
-                                    </CheckBox>
-                                </toolkit:SettingsCard>
-                                <toolkit:SettingsCard 
-                                    Visibility="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToVisibilityConverter}, ConverterParameter=NotFound}"
-                                    ContentAlignment="Left">
-                                    <CheckBox 
-                                        IsChecked="{x:Bind _settings.General.CheckOllamaInstalled, Mode=TwoWay}">
-                                        <TextBlock Margin="8,2,0,0">Comprobar instalación de Ollama al iniciar</TextBlock>
                                     </CheckBox>
                                 </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>
@@ -208,21 +203,25 @@
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" Toggled="AzureAIModelsExpander_Toggled" />
                             </StackPanel>
                             <toolkit:SettingsExpander.ItemsHeader>
-                                <muxc:InfoBar 
-                                    Style="{StaticResource InfoBarServiceStyle}"
-                                    IsOpen="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}"
-                                    IsClosable="False"
-                                    Severity="Error"
-                                    Message="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}">
-                                    <muxc:InfoBar.ActionButton>
-                                        <Button x:Name="AzureAIRetryButton" Click="RetryButton_Click">
+                                <Border 
+                                    Style="{StaticResource InfoBarSettingCard}"
+                                    Visibility="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
+                                    <Grid ColumnSpacing="16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
+                                        <TextBlock Grid.Column="1" Text="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}" VerticalAlignment="Center" />
+                                        <Button Grid.Column="2" x:Name="AzureAIRetryButton" Click="RetryButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
                                                 <TextBlock>Reintentar</TextBlock>
                                             </StackPanel>
                                         </Button>
-                                    </muxc:InfoBar.ActionButton>
-                                </muxc:InfoBar>
+                                    </Grid>
+                                </Border>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
@@ -279,21 +278,25 @@
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" Toggled="OpenAIModelsExpander_Toggled" />
                             </StackPanel>
                             <toolkit:SettingsExpander.ItemsHeader>
-                                <muxc:InfoBar 
-                                    Style="{StaticResource InfoBarServiceStyle}"
-                                    IsOpen="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}"
-                                    IsClosable="False"
-                                    Severity="Error"
-                                    Message="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}">
-                                    <muxc:InfoBar.ActionButton>
-                                        <Button x:Name="OpenAIRetryButton" Click="RetryButton_Click">
+                                <Border 
+                                    Style="{StaticResource InfoBarSettingCard}"
+                                    Visibility="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
+                                    <Grid ColumnSpacing="16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
+                                        <TextBlock Grid.Column="1" Text="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}" VerticalAlignment="Center" />
+                                        <Button Grid.Column="2" x:Name="OpenAIRetryButton" Click="RetryButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
                                                 <TextBlock>Reintentar</TextBlock>
                                             </StackPanel>
                                         </Button>
-                                    </muxc:InfoBar.ActionButton>
-                                </muxc:InfoBar>
+                                    </Grid>
+                                </Border>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
@@ -504,23 +507,31 @@
                                            Header="Tema de la aplicación"
                                            HeaderIcon="{ui:FontIcon Glyph=&#xE790;}">
                             <toolkit:SettingsExpander.ItemsHeader>
-                                <muxc:InfoBar 
-                                    Style="{StaticResource InfoBarServiceStyle}"
-                                    x:Name="ThemeInfoBar">
-                                    <muxc:InfoBar.ActionButton>
-                                        <Button x:Name="ThemeInfoBarButton" Click="ThemeInfoBarButton_Click">
+                                <Border 
+                                    x:Name="ThemeInfoBar"
+                                    Style="{StaticResource InfoBarSettingCard}"
+                                    Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"
+                                    Visibility="Collapsed">
+                                    <Grid ColumnSpacing="16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xF167;" Foreground="{ThemeResource InfoBarInformationalSeverityIconBackground}" />
+                                        <TextBlock Grid.Column="1" Text="Es necesario reiniciar la aplicación para aplicar los cambios." VerticalAlignment="Center" />
+                                        <Button Grid.Column="2" x:Name="ThemeInfoBarButton" Click="ThemeInfoBarButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
                                                 <TextBlock>Reiniciar ahora</TextBlock>
                                             </StackPanel>
                                         </Button>
-                                    </muxc:InfoBar.ActionButton>
-                                </muxc:InfoBar>
+                                    </Grid>
+                                </Border>
                             </toolkit:SettingsExpander.ItemsHeader>
                             <toolkit:SettingsExpander.Items>
                                 <toolkit:SettingsCard ContentAlignment="Left">
-                                    <StackPanel Margin="-12,0,0,0"
-                                        Orientation="Vertical">
+                                    <StackPanel Orientation="Vertical">
                                         <RadioButton
                                             x:Name="LightThemeRadioButton"
                                             Content="Claro"
@@ -535,7 +546,7 @@
                                     </StackPanel>
                                 </toolkit:SettingsCard>
                                 <toolkit:SettingsCard ContentAlignment="Left">
-                                    <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
+                                    <StackPanel Orientation="Vertical">
                                         <CheckBox
                                             IsChecked="{x:Bind _settings.General.AcrylicBackground, Mode=TwoWay}">
                                             <TextBlock Margin="8,2,0,0">Fondo con efecto transparente</TextBlock>

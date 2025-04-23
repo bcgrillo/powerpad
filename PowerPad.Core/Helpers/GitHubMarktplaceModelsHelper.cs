@@ -34,7 +34,7 @@ namespace PowerPad.Core.Helpers
                 .Take(MAX_RESULTS))
             {
                 results.Add(new AIModel(
-                    model.Name,
+                    $"{model.Publisher}/{model.Name}",
                     ModelProvider.GitHub,
                     $"{GITHUB_BASE_URL}{model.Model_Url}"
                 ));
@@ -45,6 +45,6 @@ namespace PowerPad.Core.Helpers
 
         private record GitHubMarketplaceResponse(List<GitHubModel> Results);
 
-        private record GitHubModel(string Name, string Model_Url);
+        private record GitHubModel(string Name, string Model_Url, string Publisher);
     }
 }

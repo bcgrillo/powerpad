@@ -22,9 +22,6 @@ namespace PowerPad.WinUI.ViewModels.Settings
         private bool _openAIEnabled;
 
         [ObservableProperty]
-        private bool _checkOllamaInstalled;
-
-        [ObservableProperty]
         private bool _ollamaAutostart;
 
         public required AIServiceConfigViewModel OllamaConfig

@@ -81,6 +81,10 @@
                                             ToolTipService.ToolTip="Más opciones"
                                             Background="Transparent"
                                             BorderBrush="Transparent">
+                                            <Button.Resources>
+                                                <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent" />
+                                                <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="Transparent" />
+                                            </Button.Resources>
                                             <Button.Flyout>
                                                 <MenuFlyout Placement="BottomEdgeAlignedRight">
                                                    <MenuFlyoutItem

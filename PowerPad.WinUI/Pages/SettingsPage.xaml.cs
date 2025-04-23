@@ -20,6 +20,7 @@ namespace PowerPad.WinUI.Pages
     {
         private readonly SettingsViewModel _settings;
         private readonly InputCursor _defaultCursor;
+        private readonly ApplicationTheme? _originalTheme;
 
         public SettingsPage()
         {
@@ -27,6 +28,7 @@ namespace PowerPad.WinUI.Pages
 
             _settings = App.Get<SettingsViewModel>();
             _defaultCursor = ProtectedCursor;
+            _originalTheme = _settings.General.AppTheme;
 
             _settings.General.OllamaConfig.ConfigChanged += TestOllama;
             _settings.General.AzureAIConfig.ConfigChanged += TestAzureAI;
@@ -74,9 +76,7 @@ namespace PowerPad.WinUI.Pages
             }
             catch
             {
-                OllamaInfoBar.IsOpen = true;
-                OllamaInfoBar.Message = "No se ha podido iniciar Ollama.";
-                OllamaInfoBar.Severity = InfoBarSeverity.Error;
+                _settings.General.OllamaConfig.SetErrorStatus("No se ha podido iniciar Ollama.");
             }
             finally
             {
@@ -101,7 +101,7 @@ namespace PowerPad.WinUI.Pages
                         checkOllamaInstalled = false;
                         break;
                     default:
-                        _settings.General.CheckOllamaInstalled = false;
+                        _settings.General.OllamaEnabled = false;
                         checkOllamaInstalled = false;
                         break;
                 }
@@ -119,9 +119,7 @@ namespace PowerPad.WinUI.Pages
             }
             catch
             {
-                OllamaInfoBar.IsOpen = true;
-                OllamaInfoBar.Message = "No se ha podido detener Ollama.";
-                OllamaInfoBar.Severity = InfoBarSeverity.Error;
+                _settings.General.OllamaConfig.SetErrorStatus("No se ha podido detener Ollama.");
             }
             finally
             {
@@ -270,9 +268,7 @@ namespace PowerPad.WinUI.Pages
             {
                 _settings.General.AppTheme = newThemeChoice;
 
-                ThemeInfoBar.IsOpen = true;
-                ThemeInfoBar.Message = "Reinicia la aplicación para aplicar los cambios.";
-                ThemeInfoBar.Severity = InfoBarSeverity.Informational;
+                ThemeInfoBar.Visibility = _originalTheme != newThemeChoice ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
