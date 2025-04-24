@@ -12,6 +12,7 @@ namespace PowerPad.WinUI.Pages
     public partial class ModelsPage : DisposablePage, IToggleMenuPage
     {
         private IModelProviderPage? _currentPage;
+        private bool _runSearch;
 
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
 
@@ -105,6 +106,12 @@ namespace PowerPad.WinUI.Pages
                         _currentPage = (OpenAIAddModelPage)NavFrame.Content;
                         break;
                 }
+
+                if (_runSearch)
+                {
+                    ((AIAddModelPageBase)_currentPage!).Search();
+                    _runSearch = false;
+                }
             }
         }
 
@@ -143,6 +150,7 @@ namespace PowerPad.WinUI.Pages
 
                     if (menuItem is not null)
                     {
+                        _runSearch = true;
                         NavView.SelectedItem = menuItem;
                         break;
                     }
@@ -158,7 +166,7 @@ namespace PowerPad.WinUI.Pages
             GC.SuppressFinalize(this);
         }
 
-        private void NavView_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void NavView_PointerPressed(object _, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs __)
         {
             _currentPage?.CloseModelInfoViewer();
         }

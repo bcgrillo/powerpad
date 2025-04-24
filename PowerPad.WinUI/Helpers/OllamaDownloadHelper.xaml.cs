@@ -15,8 +15,7 @@ namespace PowerPad.WinUI.Dialogs
 {
     public partial class OllamaDownloadHelper : ContentDialog
     {
-        //https://ollama.com/download/OllamaSetup.exe
-        private const string OLLAMA_DOWNLOAD_URL = "https://github.com/ip7z/7zip/releases/download/24.09/7z2409-x64.exe";
+        private const string OLLAMA_DOWNLOAD_URL = "https://ollama.com/download/OllamaSetup.exe";
         private const int BUFFER_SIZE = 8192;
 
         private CancellationTokenSource? _cts;

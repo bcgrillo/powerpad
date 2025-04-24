@@ -21,7 +21,7 @@ namespace PowerPad.WinUI.Pages.Providers
             if (e.Key == Windows.System.VirtualKey.Enter) Search();
         }
 
-        protected virtual void Search() => _modelsViewModel.SearchModelCommand.Execute(GetSearchTextBox().Text);
+        public virtual void Search() => _modelsViewModel.SearchModelCommand.Execute(GetSearchTextBox().Text);
 
         protected void AddModel_Click(object _, AIModelClickEventArgs eventArgs)
         {

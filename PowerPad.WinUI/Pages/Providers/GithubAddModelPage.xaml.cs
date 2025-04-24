@@ -14,7 +14,7 @@ namespace PowerPad.WinUI.Pages.Providers
 
         protected override TextBox GetSearchTextBox() => SearchTextBox;
 
-        protected override void Search()
+        public override void Search()
         {
             RowHeader.Height = new(1, GridUnitType.Auto);
             base.Search();
