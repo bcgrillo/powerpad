@@ -38,7 +38,7 @@
                 </StackPanel>
             </toolkit:Case>
             <toolkit:Case Value="False">
-                <ScrollViewer x:Name="ModelsScrollViewer" VerticalAlignment="Center">
+                <ScrollView x:Name="ModelsScrollViewer" VerticalAlignment="Center">
                     <Grid Padding="36,0,36,36">
                         <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
                             <ItemsRepeater ItemsSource="{x:Bind Models, Mode=OneWay}">
@@ -131,7 +131,7 @@
                             </ItemsRepeater>
                         </StackPanel>
                     </Grid>
-                </ScrollViewer>
+                </ScrollView>
             </toolkit:Case>
         </toolkit:SwitchPresenter>
         <StackPanel 

@@ -13,6 +13,7 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.WinUI.ViewModels.Agents;
 using System.Text;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -21,7 +22,7 @@ namespace PowerPad.WinUI.Components.Controls
         private readonly IChatService _chatService;
         private readonly AgentsCollectionViewModel _agentsCollection;
         private readonly SettingsViewModel _settings;
-        private readonly CancellationTokenSource _cts;
+        private CancellationTokenSource _cts;
 
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
 
@@ -178,9 +179,17 @@ namespace PowerPad.WinUI.Components.Controls
                 AgentButton.IsEnabled = false;
             });
 
-            _cts.TryReset();
+            _cts = new();
 
-            await _chatService.GetAgentResponse(input, output, _selectedAgent!.GetRecord(), PromptParameterInputBox.Text, _settings.General.AgentPrompt, _cts.Token);
+            try
+            {
+                await _chatService.GetAgentResponse(input, output, _selectedAgent!.GetRecord(), PromptParameterInputBox.Text, _settings.General.AgentPrompt, _cts.Token);
+            }
+            catch (Exception ex)
+                        {
+                //TODO: Anythig
+                Debug.WriteLine(ex.ToString());
+            }
 
             if (!_cts.IsCancellationRequested) FinalizeAgentAction();
         }

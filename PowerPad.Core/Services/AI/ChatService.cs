@@ -50,7 +50,7 @@ namespace PowerPad.Core.Services.AI
         public IAsyncEnumerable<ChatResponseUpdate> GetChatResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? parameters = null, CancellationToken cancellationToken = default)
         {
             var (chatClient, chatOptions, chatMessages) = PrepareChatParameters(messages, model, parameters);
-            
+
             return chatClient.GetStreamingResponseAsync(chatMessages, chatOptions, cancellationToken);
         }
 

@@ -27,12 +27,12 @@ namespace PowerPad.WinUI.Configuration
         {
             private static readonly (string Name, string Url)[] _initialGitHubModels =
             [
-                ("OpenAI/gpt-4o", "https://github.com/marketplace/models/azure-openai/gpt-4o"),
-                ("OpenAI/gpt-4o-mini", "https://github.com/marketplace/models/azure-openai/gpt-4o-mini"),
-                ("DeepSeek/DeepSeek-R1", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-R1"),
-                ("DeepSeek/DeepSeek-V3", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-V3"),
-                ("Meta/Llama-3-3-70B-Instruct", "https://github.com/marketplace/models/azureml-meta/Llama-3-3-70B-Instruct"),
-                ("Microsoft/Phi-4", "https://github.com/marketplace/models/azureml/Phi-4")
+                ("openai/gpt-4o", "https://github.com/marketplace/models/azure-openai/gpt-4o"),
+                ("openai/gpt-4o-mini", "https://github.com/marketplace/models/azure-openai/gpt-4o-mini"),
+                ("deepseek/DeepSeek-R1", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-R1"),
+                ("deepseek/DeepSeek-V3", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-V3"),
+                ("meta/Llama-3-3-70B-Instruct", "https://github.com/marketplace/models/azureml-meta/Llama-3-3-70B-Instruct"),
+                ("microsoft/Phi-4", "https://github.com/marketplace/models/azureml/Phi-4")
             ];
 
             private static readonly (string Name, string Url)[] _initialOpenAIModels =

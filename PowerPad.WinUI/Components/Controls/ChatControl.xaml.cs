@@ -35,7 +35,7 @@ namespace PowerPad.WinUI.Components.Controls
         private readonly SettingsViewModel _settings;
         private readonly DispatcherTimer _debounceTimer;
         private readonly DispatcherTimer _loadingAnimationTimer;
-        private readonly CancellationTokenSource _cts;
+        private CancellationTokenSource _cts;
 
         private int _loadingStep = 0;
         private Action? _finalizeChatAction;
@@ -260,6 +260,12 @@ namespace PowerPad.WinUI.Components.Controls
                 {
                     ModelName.Text = _settings.Models.DefaultModel.CardName;
                     ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
+
+                    DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        await Task.Delay(100);
+                        firstItem.IsChecked = true;
+                    });
                 }
             }
         }
@@ -299,57 +305,65 @@ namespace PowerPad.WinUI.Components.Controls
                     ParametersButton.IsEnabled = false;
                 });
 
-                _cts.TryReset();
+                _cts = new();
 
                 var parameters = _sendParameters ? _parameters
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
 
                 string messageBuffer = string.Empty;
-                await foreach (var messagePart in _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
+                try
                 {
-                    try
+                    await foreach (var messagePart in _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
                     {
-                        messageBuffer += messagePart.Text;
-
-                        string? reasoning = null;
-                        string? content = null;
-                        bool loading = true;
-
-                        // Logic to parse and update reasoning and content from the message buffer
-                        if (messageBuffer.Contains(THINK_START_TAG))
+                        try
                         {
-                            var startIndex = messageBuffer.IndexOf(THINK_START_TAG) + THINK_START_TAG.Length;
-                            var endIndex = messageBuffer.IndexOf(THINK_END_TAG, startIndex);
+                            messageBuffer += messagePart.Text;
 
-                            if (endIndex != -1)
+                            string? reasoning = null;
+                            string? content = null;
+                            bool loading = true;
+
+                            // Logic to parse and update reasoning and content from the message buffer
+                            if (messageBuffer.Contains(THINK_START_TAG))
                             {
-                                reasoning = messageBuffer[startIndex..endIndex].Trim().Replace("\n\n", "\n");
-                                content = messageBuffer[(endIndex + THINK_END_TAG.Length)..].Trim();
-                                if (loading) loading = false;
+                                var startIndex = messageBuffer.IndexOf(THINK_START_TAG) + THINK_START_TAG.Length;
+                                var endIndex = messageBuffer.IndexOf(THINK_END_TAG, startIndex);
+
+                                if (endIndex != -1)
+                                {
+                                    reasoning = messageBuffer[startIndex..endIndex].Trim().Replace("\n\n", "\n");
+                                    content = messageBuffer[(endIndex + THINK_END_TAG.Length)..].Trim();
+                                    if (loading) loading = false;
+                                }
+                                else
+                                {
+                                    reasoning = messageBuffer[startIndex..].Trim().Replace("\n\n", "\n");
+                                }
                             }
                             else
                             {
-                                reasoning = messageBuffer[startIndex..].Trim().Replace("\n\n", "\n");
+                                content = messageBuffer;
+                                if (loading) loading = false;
                             }
-                        }
-                        else
-                        {
-                            content = messageBuffer;
-                            if (loading) loading = false;
-                        }
 
-                        DispatcherQueue.TryEnqueue(() =>
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                _lastAssistantMessage.Reasoning = reasoning;
+                                _lastAssistantMessage.Content = content;
+                                _lastAssistantMessage.Loading = loading;
+                            });
+                        }
+                        catch (Exception ex)
                         {
-                            _lastAssistantMessage.Reasoning = reasoning;
-                            _lastAssistantMessage.Content = content;
-                            _lastAssistantMessage.Loading = loading;
-                        });
+                            //TODO: Anythig
+                            Debug.WriteLine(ex.ToString());
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        //TODO: Anythig
-                        Debug.WriteLine(ex.ToString());
-                    }
+                }
+                catch (Exception ex)
+                {
+                    //TODO: Anythig
+                    Debug.WriteLine(ex.ToString());
                 }
 
                 if (!_cts.IsCancellationRequested) FinalizeChat();

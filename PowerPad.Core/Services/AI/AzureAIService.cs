@@ -45,7 +45,7 @@ namespace PowerPad.Core.Services.AI
             {
                 //TODO: Check a better way to do this
                 using var cts = new CancellationTokenSource(TEST_CONNECTION_TIMEOUT);
-                var result = await GetClient().AsChatClient(TEST_MODEL).GetResponseAsync("test", null, cts.Token);
+                var result = await GetClient().AsIChatClient(TEST_MODEL).GetResponseAsync("just put ok", null, cts.Token);
 
                 return new(ServiceStatus.Online);
             }
@@ -62,7 +62,7 @@ namespace PowerPad.Core.Services.AI
         public IChatClient ChatClient(AIModel model, out IEnumerable<string> notAllowedParameters)
         {
             notAllowedParameters = [];
-            return GetClient().AsChatClient(model.Name);
+            return GetClient().AsIChatClient(model.Name);
         }
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)

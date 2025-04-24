@@ -116,7 +116,7 @@
             HorizontalAlignment="Stretch" 
             VerticalAlignment="Center"
             Spacing="8">
-            <Image Margin="0,0,0,28" Source="{ThemeResource EmptyBoxSvg}" Height="120" Opacity="0.3"/>
+            <Image Margin="0,0,0,28" Source="{ThemeResource EmptyBoxSvg}" Height="120" Opacity="0.2"/>
             <localc:Label HorizontalAlignment="Center" FontWeight="SemiBold"
                 Text="Todavía no has añadido ningún modelo" />
             <Button 
