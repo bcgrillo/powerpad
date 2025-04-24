@@ -27,7 +27,7 @@ namespace PowerPad.WinUI.Components
         private readonly List<MenuFlyoutItem> _menuFlyoutItems;
 
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
-        public event EventHandler? VisibilityChanged;
+
         public WorkspaceControl()
         {
             this.InitializeComponent();
@@ -96,13 +96,6 @@ namespace PowerPad.WinUI.Components
 
                 _workspace.MoveEntryCommand.Execute(new MoveEntryParameters(entry, parentFolder));
             }
-        }
-
-        private void HideMenuBtn_Click(object _, RoutedEventArgs __)
-        {
-            Visibility = Visibility.Collapsed;
-
-            VisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void NewChatButton_Click(object _, RoutedEventArgs __)

@@ -12,7 +12,7 @@
     xmlns:m="using:PowerPad.Core.Models.AI"
     xmlns:vm="using:PowerPad.WinUI.ViewModels.AI"
     mc:Ignorable="d">
-    <Grid Margin="0,0,0,2">
+    <Grid>
         <NavigationView
             x:Name="NavView"
             CompactModeThresholdWidth="0"
@@ -34,36 +34,11 @@
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">10,0,0,0</CornerRadius>
             </NavigationView.Resources>
             <NavigationView.PaneHeader>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Border Margin="0,-4,0,0">
-                        <TextBlock
-                            Style="{StaticResource WSTitleStyle}"
-                            Text="Modelos"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap"/>
-                    </Border>
-                    <Button
-                        x:Name="HideMenuBtn"
-                        Grid.Column="1"
-                        Height="30"
-                        Width="30"
-                        ToolTipService.ToolTip="Ocultar menu"
-                        Margin="0,4,10,0"
-                        Padding="6,5,6,6"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Click="HideMenuBtn_Click"
-                        Canvas.ZIndex="1"
-                        IsHitTestVisible="True">
-                        <Button.Content>
-                            <controls:ButtonIcon Source="{ThemeResource HideMenuSvg}" />
-                        </Button.Content>
-                    </Button>
-                </Grid>
+                <Border Margin="0,-4,0,0">
+                    <TextBlock
+                        Style="{StaticResource WSTitleStyle}"
+                        Text="Modelos" />
+                </Border>
             </NavigationView.PaneHeader>
             <NavigationView.MenuItems>
                 <NavigationViewItem

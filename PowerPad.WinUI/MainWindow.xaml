@@ -66,22 +66,19 @@
                 <NavigationView.MenuItems>
                     <NavigationViewItem
                         Margin="0,44,0,0"
-                        Content="Workspace"
+                        Content="Workspace" ToolTipService.Placement="Right"
                         Icon="{ui:FontIcon Glyph=&#xE821;}"
-                        Tag="WorkspacePage"
-                        PointerPressed="NavigationViewItem_PointerPressed"/>
+                        Tag="WorkspacePage" />
                     <NavigationViewItem
                         x:Name="ModelsNavViewItem"
-                        Content="Modelos"
+                        Content="Modelos" ToolTipService.Placement="Right"
                         Icon="{ui:FontIcon Glyph=&#xF158;}"
-                        Tag="ModelsPage"
-                        PointerPressed="NavigationViewItem_PointerPressed"/>
+                        Tag="ModelsPage" />
                     <NavigationViewItem
                         x:Name="AgentesNavViewItem"
-                        Content="Agentes"
+                        Content="Agentes" ToolTipService.Placement="Right"
                         Icon="{ui:FontIcon Glyph=&#xE99A;}"
-                        Tag="AgentsPage"
-                        PointerPressed="NavigationViewItem_PointerPressed"/>
+                        Tag="AgentsPage" />
                 </NavigationView.MenuItems>
                 <Frame x:Name="NavFrame" />
             </NavigationView>
@@ -104,33 +101,38 @@
                 HorizontalAlignment="Left" 
                 Background="{StaticResource PowerPadStrokeColorDefault}" />
 
-            <Button
-                x:Name="ShowMenuBtn"
-                Grid.Column="2"
-                Height="30"
-                Width="30"
-                ToolTipService.ToolTip="Mostrar menu"
-                Margin="0,0,10,0"
-                Padding="6,5,6,6"
-                Background="Transparent"
-                BorderBrush="Transparent"
-                Click="ShowMenuBtn_Click"
-                Canvas.ZIndex="1"
-                IsHitTestVisible="True"
-                Visibility="Collapsed">
-                <Button.Content>
-                    <controls:ButtonIcon Source="{ThemeResource ShowMenuSvg}" />
-                </Button.Content>
-            </Button>
+            <Grid Grid.Column="2" x:Name="TitleContent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <winuiex:TitleBar
-                x:Name="TitleBar"
-                Title="PowerPad"
-                Subtitle=""
-                Grid.Column="2"
-                Height="48"
-                IsTabStop="False">
-            </winuiex:TitleBar>
+                <Button
+                    x:Name="ToggleMenuBtn"
+                    Height="30"
+                    Width="30"
+                    ToolTipService.ToolTip="Mostrar menu"
+                    Padding="6"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="ToggleMenuBtn_Click"
+                    Canvas.ZIndex="1"
+                    IsHitTestVisible="True"
+                    Visibility="Collapsed">
+                    <Button.Content>
+                        <controls:ButtonIcon x:Name="ToggleMenuIcon" />
+                    </Button.Content>
+                </Button>
+
+                <winuiex:TitleBar
+                    x:Name="TitleBar"
+                    Title="PowerPad"
+                    Subtitle=""
+                    Grid.Column="1"
+                    Height="48"
+                    FontSize="1.2em"
+                    IsTabStop="False" />
+            </Grid>
         </Grid>
     </Page>
 </winuiex:WindowEx>

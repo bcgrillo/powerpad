@@ -38,7 +38,7 @@
                 </StackPanel>
             </toolkit:Case>
             <toolkit:Case Value="False">
-                <ScrollViewer x:Name="ModelsScrollViewer">
+                <ScrollViewer x:Name="ModelsScrollViewer" VerticalAlignment="Center">
                     <Grid Padding="36,0,36,36">
                         <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
                             <ItemsRepeater ItemsSource="{x:Bind Models, Mode=OneWay}">
@@ -93,7 +93,7 @@
                                                         VerticalAlignment="Center"
                                                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                         Visibility="{x:Bind IsSizeTooLargeForExecution, Mode=OneWay}"
-                                                        Text="Modelo demasiado grande para el equipo" />
+                                                        Text="Demasiado grande para este equipo" />
                                                 </StackPanel>
                                             </toolkit:SettingsCard.Description>
                                             <StackPanel Orientation="Horizontal" Spacing="4" Height="40">

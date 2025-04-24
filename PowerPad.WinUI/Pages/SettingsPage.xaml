@@ -76,11 +76,17 @@
                         <!-- Ollama -->
                         <toolkit:SettingsExpander
                             x:Name="OllamaModelsExpander"
-                            Header="Ollama"
                             Description="IA generativa en tu equipo local o red privada con Ollama">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OllamaSvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
+                            <toolkit:SettingsExpander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="-38,0,0,0" Glyph="&#xF167;"
+                                        Visibility="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"/>
+                                    <TextBlock Text="Ollama" />
+                                </StackPanel>
+                            </toolkit:SettingsExpander.Header>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch 
                                     IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" 
@@ -90,15 +96,20 @@
                                 <Border 
                                     Style="{StaticResource InfoBarSettingCard}"
                                     Visibility="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
-                                    <Grid ColumnSpacing="16">
+                                    <Grid Margin="-58,0,0,0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="58" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="auto" />
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
-                                        <TextBlock Grid.Column="1" Text="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay}" VerticalAlignment="Center" />
-                                        <Button Grid.Column="2" x:Name="OllamaRetryButton" Click="RetryButton_Click">
+                                        <TextBlock 
+                                            Grid.Column="1" 
+                                            Text="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay}" 
+                                            VerticalAlignment="Center"
+                                            IsTextSelectionEnabled="True"
+                                            TextWrapping="Wrap" />
+                                        <Button Margin="16,0,0,0" Grid.Column="2" x:Name="OllamaRetryButton" Click="RetryButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
                                                 <TextBlock>Reintentar</TextBlock>
@@ -194,11 +205,17 @@
                         <!-- AzureAI -->
                         <toolkit:SettingsExpander
                             x:Name="AzureAIModelsExpander"
-                            Header="Azure AI"
                             Description="Utiliza los modelos de GitHub con el API de Azure AI">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource AzureAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
+                            <toolkit:SettingsExpander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="-38,0,0,0" Glyph="&#xF167;"
+                                        Visibility="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"/>
+                                    <TextBlock Text="Azure AI" />
+                                </StackPanel>
+                            </toolkit:SettingsExpander.Header>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" Toggled="AzureAIModelsExpander_Toggled" />
                             </StackPanel>
@@ -206,15 +223,20 @@
                                 <Border 
                                     Style="{StaticResource InfoBarSettingCard}"
                                     Visibility="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
-                                    <Grid ColumnSpacing="16">
+                                    <Grid Margin="-58,0,0,0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="58" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="auto" />
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
-                                        <TextBlock Grid.Column="1" Text="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}" VerticalAlignment="Center" />
-                                        <Button Grid.Column="2" x:Name="AzureAIRetryButton" Click="RetryButton_Click">
+                                        <TextBlock 
+                                            Grid.Column="1" 
+                                            Text="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}" 
+                                            VerticalAlignment="Center"
+                                            IsTextSelectionEnabled="True"
+                                            TextWrapping="Wrap" />
+                                        <Button Margin="16,0,0,0" Grid.Column="2" x:Name="AzureAIRetryButton" Click="RetryButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
                                                 <TextBlock>Reintentar</TextBlock>
@@ -269,11 +291,17 @@
                         <!-- OpenAI -->
                         <toolkit:SettingsExpander
                             x:Name="OpenAIModelsExpander"
-                            Header="OpenAI"
                             Description="Utiliza modelos de ChatGPT a través de su API">
                             <toolkit:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
                             </toolkit:SettingsExpander.HeaderIcon>
+                            <toolkit:SettingsExpander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon x:Name="ErrorBadge" FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="-38,0,0,0" Glyph="&#xF167;"
+                                        Visibility="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"/>
+                                    <TextBlock Text="OpenAI" />
+                                </StackPanel>
+                            </toolkit:SettingsExpander.Header>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" Toggled="OpenAIModelsExpander_Toggled" />
                             </StackPanel>
@@ -281,15 +309,20 @@
                                 <Border 
                                     Style="{StaticResource InfoBarSettingCard}"
                                     Visibility="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
-                                    <Grid ColumnSpacing="16">
+                                    <Grid Margin="-58,0,0,0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="58" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="auto" />
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
-                                        <TextBlock Grid.Column="1" Text="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}" VerticalAlignment="Center" />
-                                        <Button Grid.Column="2" x:Name="OpenAIRetryButton" Click="RetryButton_Click">
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Text="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}"
+                                            VerticalAlignment="Center"
+                                            IsTextSelectionEnabled="True"
+                                            TextWrapping="Wrap" />
+                                        <Button Margin="16,0,0,0" Grid.Column="2" x:Name="OpenAIRetryButton" Click="RetryButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
                                                 <TextBlock>Reintentar</TextBlock>
@@ -353,7 +386,7 @@
                             HeaderIcon="{ui:FontIcon Glyph=&#xF158;}">
                             <StackPanel>
                                 <Button x:Name="FakeButton" Visibility="Collapsed">Unavailable</Button>
-                                <DropDownButton x:Name="DefaultModelButton" Click="DefaultModelButton_Click">
+                                <DropDownButton x:Name="DefaultModelButton" Click="DefaultModelButton_Click" Height="32">
                                     <DropDownButton.Flyout>
                                         <MenuFlyout
                                             x:Name="DefaultModelFlyoutMenu" 
@@ -512,15 +545,15 @@
                                     Style="{StaticResource InfoBarSettingCard}"
                                     Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"
                                     Visibility="Collapsed">
-                                    <Grid ColumnSpacing="16">
+                                    <Grid Margin="-58,0,0,0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="58" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="auto" />
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="&#xF167;" Foreground="{ThemeResource InfoBarInformationalSeverityIconBackground}" />
                                         <TextBlock Grid.Column="1" Text="Es necesario reiniciar la aplicación para aplicar los cambios." VerticalAlignment="Center" />
-                                        <Button Grid.Column="2" x:Name="ThemeInfoBarButton" Click="ThemeInfoBarButton_Click">
+                                        <Button Margin="16,0,0,0" Grid.Column="2" x:Name="ThemeInfoBarButton" Click="ThemeInfoBarButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
                                                 <TextBlock>Reiniciar ahora</TextBlock>

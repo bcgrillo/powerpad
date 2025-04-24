@@ -75,6 +75,7 @@
             DeleteClick="Delete_Click"
             SetDefaultClick="SetDefault_Click"
             ModelInfoViewerVisibilityChanged="AIModelsRepeater_ModelInfoViewerVisibilityChanged"
+            AddButtonClick="AvailableModelsRepeater_AddButtonClick"
             ModelsEmpty="{x:Bind _modelsViewModel.FilteredModelsEmpty, Mode=OneWay}"
             IsEnabled="{x:Bind _modelsViewModel.RepeaterEnabled, Mode=OneWay}" />
     </Grid>

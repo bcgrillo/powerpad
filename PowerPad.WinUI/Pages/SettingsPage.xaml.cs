@@ -86,25 +86,18 @@ namespace PowerPad.WinUI.Pages
 
         private async void InstallOllama_Click(object _, RoutedEventArgs __)
         {
-            bool checkOllamaInstalled = true;
+            var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
 
-            while (checkOllamaInstalled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
+            switch (ollamaInstallationDialog)
             {
-                var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
-
-                switch (ollamaInstallationDialog)
-                {
-                    case ContentDialogResult.Primary:
-                        await _settings.TestConnections();
-                        break;
-                    case ContentDialogResult.Secondary:
-                        checkOllamaInstalled = false;
-                        break;
-                    default:
-                        _settings.General.OllamaEnabled = false;
-                        checkOllamaInstalled = false;
-                        break;
-                }
+                case ContentDialogResult.Primary:
+                    await _settings.TestConnections();
+                    break;
+                case ContentDialogResult.Secondary:
+                    break;
+                default:
+                    _settings.General.OllamaEnabled = false;
+                    break;
             }
         }
 

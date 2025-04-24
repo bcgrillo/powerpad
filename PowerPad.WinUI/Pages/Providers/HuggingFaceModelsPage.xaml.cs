@@ -4,7 +4,7 @@ using PowerPad.WinUI.ViewModels.AI.Providers;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public partial class HuggingFaceModelsPage : AIModelsPageBase, IModelProviderPage
+    public partial class HuggingFaceModelsPage : AIModelsPageBase
     {
         private HuggingFaceModelsViewModel _huggingFaceModelsViewModel => (HuggingFaceModelsViewModel)_modelsViewModel;
 
@@ -21,6 +21,6 @@ namespace PowerPad.WinUI.Pages.Providers
                 : new(1, GridUnitType.Auto);
         }
 
-        public void CloseModelInfoViewer() => AvailableModelsRepeater.CloseModelInfoViewer();
+        public override void CloseModelInfoViewer() => AvailableModelsRepeater.CloseModelInfoViewer();
     }
 }

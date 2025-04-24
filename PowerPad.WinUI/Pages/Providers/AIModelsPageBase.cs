@@ -5,10 +5,12 @@ using System;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public abstract class AIModelsPageBase(AIModelsViewModelBase aiModelsViewModel) : DisposablePage
+    public abstract class AIModelsPageBase(AIModelsViewModelBase aiModelsViewModel) : DisposablePage, IModelProviderPage
     {
         protected SettingsViewModel _settings = App.Get<SettingsViewModel>();
         protected AIModelsViewModelBase _modelsViewModel = aiModelsViewModel;
+
+        public event EventHandler? AddButtonClick;
 
         protected void SetDefault_Click(object _, AIModelClickEventArgs eventArgs)
         {
@@ -19,6 +21,8 @@ namespace PowerPad.WinUI.Pages.Providers
         {
             _modelsViewModel.RemoveModelCommand.Execute(eventArgs.Model);
         }
+
+        protected void AvailableModelsRepeater_AddButtonClick(object sender, System.EventArgs e) => AddButtonClick?.Invoke(sender, e);
 
         ~AIModelsPageBase()
         {
@@ -40,5 +44,7 @@ namespace PowerPad.WinUI.Pages.Providers
                 _disposed = true;
             }
         }
+
+        public abstract void CloseModelInfoViewer();
     }
 }

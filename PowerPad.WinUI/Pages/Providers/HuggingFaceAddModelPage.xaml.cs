@@ -5,7 +5,7 @@ using PowerPad.WinUI.ViewModels.AI.Providers;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public partial class HuggingFaceAddModelPage : AIAddModelPageBase, IModelProviderPage
+    public partial class HuggingFaceAddModelPage : AIAddModelPageBase
     {
         public HuggingFaceAddModelPage()
             : base(new HuggingFaceModelsViewModel())
@@ -28,6 +28,6 @@ namespace PowerPad.WinUI.Pages.Providers
                 : new(1, GridUnitType.Auto);
         }
 
-        public void CloseModelInfoViewer() => SearchModelsResultRepeater.CloseModelInfoViewer();
+        public override void CloseModelInfoViewer() => SearchModelsResultRepeater.CloseModelInfoViewer();
     }
 }

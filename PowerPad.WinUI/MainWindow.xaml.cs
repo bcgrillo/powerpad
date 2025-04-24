@@ -26,7 +26,7 @@ namespace PowerPad.WinUI
         private readonly SettingsViewModel _settings;
 
         private string? _activePageName;
-        private INavigationPage? _activeNavPage;
+        private IToggleMenuPage? _activeToggleMenuPage;
 
         private readonly Dictionary<string, Type> _navigation = new()
         {
@@ -66,32 +66,25 @@ namespace PowerPad.WinUI
             {
                 await _settings.TestConnections();
 
-                bool goToSettings = false;
-                bool checkOllamaInstalled = _settings.General.OllamaEnabled;
-
-                while (checkOllamaInstalled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
+                if(_settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
                 {
                     var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
 
-                    switch(ollamaInstallationDialog)
+                    switch (ollamaInstallationDialog)
                     {
                         case ContentDialogResult.Primary:
-                            await _settings.TestConnections();
+                            NavView.SelectedItem = NavView.MenuItems[1]; //Go to models
                             break;
                         case ContentDialogResult.Secondary:
-                            goToSettings = true;
-                            checkOllamaInstalled = false;
+                            NavView.SelectedItem = NavView.SettingsItem;
                             break;
                         default:
                             _settings.General.OllamaEnabled = false;
-                            checkOllamaInstalled = false;
                             break;
                     }
                 }
 
                 UpdateNavMenuItems();
-
-                if (goToSettings) NavView.SelectedItem = NavView.SettingsItem;
             });
         }
 
@@ -168,54 +161,47 @@ namespace PowerPad.WinUI
 
                 NavFrame.Navigate(_navigation[page]);
 
-                _activeNavPage = NavFrame.Content as INavigationPage;
+                _activeToggleMenuPage = NavFrame.Content as IToggleMenuPage;
 
-                if (_activeNavPage is not null)
-                {
-                    _activeNavPage.NavigationVisibilityChanged += NavigationVisibilityChanged;
-                    (NavFrame.Content as Page)!.Loaded += (s, e) => NavigationVisibilityChanged(null, null);
-                }
-
-                NavigationVisibilityChanged(null, null);
+                (NavFrame.Content as Page)!.Loaded += (s, e) => SetToggleVisualElements();
             }
         }
 
-        private void NavigationVisibilityChanged(object? _, EventArgs? __)
+        private void SetToggleVisualElements()
         {
-
-            if (_activeNavPage is null)
+            if (_activeToggleMenuPage is null)
             {
-                TitleBar.Margin = new(0);
+                TitleContent.Margin = new(0);
                 Splitter.Visibility = Visibility.Collapsed;
-                ShowMenuBtn.Visibility = Visibility.Collapsed;
+                ToggleMenuBtn.Visibility = Visibility.Collapsed;
             }
             else
             {
-                var navWidth = _activeNavPage.NavigationWidth;
+                var navWidth = _activeToggleMenuPage.NavigationWidth;
 
-                TitleBar.Margin = TitleBar.Margin with { Left = navWidth > 0 ? navWidth : 28 };
+                TitleContent.Margin = TitleContent.Margin with { Left = navWidth };
 
                 if (navWidth > 0)
                 {
                     Splitter.Visibility = Visibility.Visible;
-                    ShowMenuBtn.Visibility = Visibility.Collapsed;
+                    ToggleMenuIcon.Source = (ImageSource)Application.Current.Resources["HideMenuSvg"];
                 }
                 else
                 {
                     Splitter.Visibility = Visibility.Collapsed;
-                    if (_activeNavPage is not null) ShowMenuBtn.Visibility = Visibility.Visible;
+                    ToggleMenuIcon.Source = (ImageSource)Application.Current.Resources["ShowMenuSvg"];
                 }
+
+                ToggleMenuBtn.Visibility = Visibility.Visible;
             }
-            
+
         }
 
-        private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs __)
+        private void ToggleMenuBtn_Click(object _, RoutedEventArgs __)
         {
-            var navigationViewItem = (NavigationViewItem)sender;
+            (NavFrame.Content as IToggleMenuPage)?.ToggleNavigationVisibility();
 
-            if (navigationViewItem.Tag.ToString() == _activePageName) (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
+            SetToggleVisualElements();
         }
-
-        private void ShowMenuBtn_Click(object _, RoutedEventArgs __) => (NavFrame.Content as INavigationPage)?.ToggleNavigationVisibility();
     }
 }

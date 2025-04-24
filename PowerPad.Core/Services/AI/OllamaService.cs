@@ -104,7 +104,7 @@ namespace PowerPad.Core.Services.AI
                     if (ex is Win32Exception)
                         return new(ServiceStatus.NotFound, "Ollama not found.");
                     else
-                        return new(ServiceStatus.Error, $"Ollama error: {ex.Message.Trim()}");
+                        return new(ServiceStatus.Error, $"Ollama error: {ex.Message.Trim().ReplaceLineEndings(" ")}");
                 }
             }
         }

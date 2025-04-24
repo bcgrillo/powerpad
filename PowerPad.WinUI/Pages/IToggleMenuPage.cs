@@ -2,11 +2,9 @@
 
 namespace PowerPad.WinUI.Pages
 {
-    public interface INavigationPage
+    public interface IToggleMenuPage
     {
         double NavigationWidth { get; }
-
-        public event EventHandler NavigationVisibilityChanged;
 
         void ToggleNavigationVisibility();
     }

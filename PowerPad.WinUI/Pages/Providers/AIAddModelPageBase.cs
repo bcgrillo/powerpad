@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public abstract class AIAddModelPageBase(AIModelsViewModelBase aiModelsViewModel) : DisposablePage
+    public abstract class AIAddModelPageBase(AIModelsViewModelBase aiModelsViewModel) : DisposablePage, IModelProviderPage
     {
         protected SettingsViewModel _settings = App.Get<SettingsViewModel>();
         protected AIModelsViewModelBase _modelsViewModel = aiModelsViewModel;
@@ -57,5 +57,7 @@ namespace PowerPad.WinUI.Pages.Providers
                 _disposed = true;
             }
         }
+
+        public abstract void CloseModelInfoViewer();
     }
 }

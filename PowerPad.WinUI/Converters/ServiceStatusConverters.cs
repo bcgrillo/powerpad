@@ -20,7 +20,8 @@ namespace PowerPad.WinUI.Converters
                 ServiceStatus.Available => new SolidColorBrush(Colors.Orange),
                 ServiceStatus.Online => new SolidColorBrush(Colors.Green),
                 ServiceStatus.Error => new SolidColorBrush(Colors.Red),
-                _ => new SolidColorBrush(Colors.Gray),
+                ServiceStatus.NotFound => new SolidColorBrush(Colors.Red),
+                _ => (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"],
             };
         }
 

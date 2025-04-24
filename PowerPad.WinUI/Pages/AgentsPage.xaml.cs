@@ -6,7 +6,7 @@ using PowerPad.WinUI.ViewModels.Agents;
 
 namespace PowerPad.WinUI.Pages
 {
-    public partial class AgentsPage : DisposablePage, INavigationPage
+    public partial class AgentsPage : DisposablePage, IToggleMenuPage
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
 
@@ -39,8 +39,6 @@ namespace PowerPad.WinUI.Pages
         private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
         }
-
-        private void HideMenuBtn_Click(object _, RoutedEventArgs __) => ToggleNavigationVisibility();
 
         public override void Dispose()
         {

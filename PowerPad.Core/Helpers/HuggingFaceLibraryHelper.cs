@@ -7,7 +7,7 @@ namespace PowerPad.Core.Helpers
     {
         private const string HF_OLLAMA_PREFIX = "hf.co";
         private const string HUGGINGFACE_BASE_URL = "https://huggingface.co/";
-        private const string HUGGINGFACE_SEARCH_URL = "https://huggingface.co/api/models?filter=gguf,chat&search=";
+        private const string HUGGINGFACE_SEARCH_URL = "https://huggingface.co/api/models?filter=gguf,conversational&search=";
         private const string HUGGINGFACE_MODEL_URL = "https://huggingface.co/api/models/";
         private const int MAX_RESULTS = 20;
 

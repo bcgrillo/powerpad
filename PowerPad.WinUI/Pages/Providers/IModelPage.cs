@@ -1,6 +1,8 @@
-﻿namespace PowerPad.WinUI.Pages.Providers
+﻿using System;
+
+namespace PowerPad.WinUI.Pages.Providers
 {
-    public interface IModelProviderPage
+    public interface IModelProviderPage : IDisposable
     {
         void CloseModelInfoViewer();
     }

@@ -27,33 +27,9 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    Style="{StaticResource WSTitleStyle}"
-                    Text="Agentes"/>
-                <Button
-                    x:Name="HideMenuBtn"
-                    Grid.Column="2"
-                    Height="30"
-                    Width="30"
-                    ToolTipService.ToolTip="Ocultar menu"
-                    Margin="0,0,10,0"
-                    Padding="6,5,6,6"
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    Click="HideMenuBtn_Click"
-                    Canvas.ZIndex="1"
-                    IsHitTestVisible="True">
-                    <Button.Content>
-                        <controls:ButtonIcon Source="{ThemeResource HideMenuSvg}" />
-                    </Button.Content>
-                </Button>
-            </Grid>
+            <TextBlock
+                Style="{StaticResource WSTitleStyle}"
+                Text="Agentes"/>
             <ScrollViewer Width="260" Grid.Row="1" VerticalScrollMode="Auto" HorizontalScrollMode="Auto">
                 <TreeView 
                     Name="TreeView" 

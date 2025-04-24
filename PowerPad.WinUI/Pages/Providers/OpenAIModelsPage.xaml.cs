@@ -4,7 +4,7 @@ using PowerPad.WinUI.ViewModels.AI.Providers;
 
 namespace PowerPad.WinUI.Pages.Providers
 {
-    public partial class OpenAIModelsPage : AIModelsPageBase, IModelProviderPage
+    public partial class OpenAIModelsPage : AIModelsPageBase
     {
         public OpenAIModelsPage()
             : base(new OpenAIModelsViewModel())
@@ -19,6 +19,6 @@ namespace PowerPad.WinUI.Pages.Providers
                 : new(1, GridUnitType.Auto);
         }
 
-        public void CloseModelInfoViewer() => AvailableModelsRepeater.CloseModelInfoViewer();
+        public override void CloseModelInfoViewer() => AvailableModelsRepeater.CloseModelInfoViewer();
     }
 }

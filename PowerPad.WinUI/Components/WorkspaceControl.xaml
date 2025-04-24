@@ -30,19 +30,16 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
                 Style="{StaticResource WSTitleStyle}"
-                Text="Workspace"
-                TextTrimming="CharacterEllipsis"
-                TextWrapping="NoWrap"/>
+                Text="Workspace"/>
             <DropDownButton
                 x:Name="OpenWorkspaceBtn"
                 Grid.Column="1"
                 Height="30"
                 ToolTipService.ToolTip="Cambiar Workspace"
-                Margin="10,0,0,0"
+                Margin="10,0,6,0"
                 Background="Transparent"
                 BorderBrush="Transparent"
                 Canvas.ZIndex="1"
@@ -57,23 +54,6 @@
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
-            <Button
-                x:Name="HideMenuBtn"
-                Grid.Column="2"
-                Height="30"
-                Width="30"
-                ToolTipService.ToolTip="Ocultar menu"
-                Margin="0,0,10,0"
-                Padding="6,5,6,6"
-                Background="Transparent"
-                BorderBrush="Transparent"
-                Click="HideMenuBtn_Click"
-                Canvas.ZIndex="1"
-                IsHitTestVisible="True">
-                <Button.Content>
-                    <controls:ButtonIcon Source="{ThemeResource HideMenuSvg}" />
-                </Button.Content>
-            </Button>
         </Grid>
         <ScrollViewer Width="260" Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Auto" HorizontalScrollMode="Auto">
             <TreeView 

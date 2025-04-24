@@ -23,7 +23,7 @@
             x:Name="Border"
             CornerRadius="5"
             BorderThickness="1"
-            Margin="-6,0,0,0"
+            Margin="-8,0,0,0"
             BorderBrush="{x:Bind _state.BorderBrush, Mode=OneWay}">
             <local:IntegratedTextBox 
                 x:Name="IntegratedTextBox"

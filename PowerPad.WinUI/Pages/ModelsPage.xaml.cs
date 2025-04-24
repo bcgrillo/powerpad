@@ -9,9 +9,9 @@ using PowerPad.WinUI.ViewModels.AI;
 
 namespace PowerPad.WinUI.Pages
 {
-    public partial class ModelsPage : DisposablePage, INavigationPage
+    public partial class ModelsPage : DisposablePage, IToggleMenuPage
     {
-        private IDisposable? _currentPage;
+        private IModelProviderPage? _currentPage;
 
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
 
@@ -23,8 +23,6 @@ namespace PowerPad.WinUI.Pages
 
             _settings = App.Get<SettingsViewModel>();
         }
-
-        public event EventHandler? NavigationVisibilityChanged;
 
         private void NavView_SelectionChanged(NavigationView __, NavigationViewSelectionChangedEventArgs args)
         {
@@ -60,6 +58,7 @@ namespace PowerPad.WinUI.Pages
         private void NavigateToPage(ModelsMenuOption menuOption)
         {
             _currentPage?.Dispose();
+            if (_currentPage is AIModelsPageBase currentAIModelsPage) currentAIModelsPage.AddButtonClick -= AddButtonClick;
 
             if (menuOption.Option == MenuOption.AvailableModels)
             { 
@@ -82,8 +81,10 @@ namespace PowerPad.WinUI.Pages
                         _currentPage = (AIModelsPageBase)NavFrame.Content;
                         break;
                 }
+
+                ((AIModelsPageBase)_currentPage!).AddButtonClick += AddButtonClick;
             }
-            else
+            else //MenuOption.AddModels
             {
                 switch (menuOption.ModelProvider)
                 {
@@ -110,8 +111,6 @@ namespace PowerPad.WinUI.Pages
         public void ToggleNavigationVisibility()
         {
             NavView.IsPaneVisible = !NavView.IsPaneVisible;
-
-            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void NavView_Loaded(object _, RoutedEventArgs __)
@@ -125,15 +124,43 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        private void HideMenuBtn_Click(object _, RoutedEventArgs __) => ToggleNavigationVisibility();
+        private void AddButtonClick(object? _, EventArgs __)
+        {
+            ModelsMenuOption? modelsMenuOption = null;
+
+            if (_currentPage is OllamaModelsPage) modelsMenuOption = new(ModelProvider.Ollama, MenuOption.AddModels);
+            else if (_currentPage is HuggingFaceModelsPage) modelsMenuOption = new(ModelProvider.HuggingFace, MenuOption.AddModels);
+            else if (_currentPage is GitHubModelsPage) modelsMenuOption = new(ModelProvider.GitHub, MenuOption.AddModels);
+            else if (_currentPage is OpenAIModelsPage) modelsMenuOption = new(ModelProvider.OpenAI, MenuOption.AddModels);
+
+            if (modelsMenuOption.HasValue)
+            {
+                NavigationViewItem? menuItem;
+
+                foreach(var providerItem in NavView.MenuItems.Cast<NavigationViewItem>())
+                {
+                    menuItem = providerItem.MenuItems.FirstOrDefault(mi => ((NavigationViewItem)mi).Tag as ModelsMenuOption? == modelsMenuOption) as NavigationViewItem;
+
+                    if (menuItem is not null)
+                    {
+                        NavView.SelectedItem = menuItem;
+                        break;
+                    }
+                }
+            }
+        }
 
         public override void Dispose()
         {
+            _currentPage?.Dispose();
+            if (_currentPage is AIModelsPageBase currentAIModelsPage) currentAIModelsPage.AddButtonClick -= AddButtonClick;
+
+            GC.SuppressFinalize(this);
         }
 
         private void NavView_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (NavFrame.Content is IModelProviderPage modelsPage) modelsPage.CloseModelInfoViewer();
+            _currentPage?.CloseModelInfoViewer();
         }
     }
 }

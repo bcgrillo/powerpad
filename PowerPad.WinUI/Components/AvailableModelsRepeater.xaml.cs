@@ -29,6 +29,7 @@ namespace PowerPad.WinUI.Components
 
         public event EventHandler<AIModelClickEventArgs>? DeleteClick;
         public event EventHandler<AIModelClickEventArgs>? SetDefaultClick;
+        public event EventHandler? AddButtonClick;
 
         public event EventHandler<ModelInfoViewerVisibilityEventArgs>? ModelInfoViewerVisibilityChanged;
 
@@ -65,6 +66,11 @@ namespace PowerPad.WinUI.Components
         }
 
         public void CloseModelInfoViewer() => ModelInfoViewer.Hide();
+
+        private void AddModelsButton_Click(object _, RoutedEventArgs __)
+        {
+            AddButtonClick?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public class AIModelClickEventArgs(AIModelViewModel model) : RoutedEventArgs
