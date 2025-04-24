@@ -70,7 +70,7 @@ namespace PowerPad.Core.Services.AI
 
             notAllowedParameters = isReasoningModel ? REASONING_MODELS_NOT_ALLOWED_PARAMETERS : [];
 
-            return GetClient().AsChatClient(model.Name);
+            return GetClient().GetChatClient(model.Name).AsIChatClient();
         }
 
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)

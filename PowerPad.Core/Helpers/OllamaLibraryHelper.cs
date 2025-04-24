@@ -20,7 +20,7 @@ namespace PowerPad.Core.Helpers
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(response);
 
-            var modelNodes = htmlDoc.DocumentNode.SelectNodes("//li[@x-test-model]").Take(MAX_RESULS);
+            var modelNodes = htmlDoc.DocumentNode?.SelectNodes("//li[@x-test-model]")?.Take(MAX_RESULS);
 
             var results = new List<AIModel>();
 

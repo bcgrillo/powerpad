@@ -379,7 +379,7 @@
                         <!-- Default Config -->
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                             Text="Configuración por defecto" />
-                        <toolkit:SettingsCard 
+                        <toolkit:SettingsCard
                             x:Name="DefaultModelCard"
                             Description="Modelo predeterminado nuevos chats y agentes"
                             Header="Modelo"
@@ -412,10 +412,11 @@
                         <toolkit:SettingsExpander
                             x:Name="DefaultParameterCard"
                             Header="Parámetros"
-                            Description="Enviar parámetros adicionales de forma predeterminada">
-                            <toolkit:SettingsExpander.HeaderIcon>
-                                <ImageIcon Source="{ThemeResource SettingsSvg}"/>
-                            </toolkit:SettingsExpander.HeaderIcon>
+                            Description="Enviar parámetros adicionales de forma predeterminada"
+                            HeaderIcon="{ui:FontIcon FontFamily='Segoe MDL2 Assets', Glyph=&#xE9E9;}">
+                            <toolkit:SettingsExpander.Resources>
+                                <SolidColorBrush x:Key="SettingsCardBorderBrushDisabled" Color="Transparent" />
+                            </toolkit:SettingsExpander.Resources>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.Models.SendDefaultParameters, Mode=TwoWay}" />
                             </StackPanel>
@@ -516,6 +517,9 @@
                             Header="Agentes"
                             Description="Configuración específica para los agentes"
                             HeaderIcon="{ui:FontIcon Glyph=&#xE99A;}">
+                            <toolkit:SettingsExpander.Resources>
+                                <SolidColorBrush x:Key="SettingsCardBorderBrushDisabled" Color="Transparent" />
+                            </toolkit:SettingsExpander.Resources>
                             <toolkit:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
