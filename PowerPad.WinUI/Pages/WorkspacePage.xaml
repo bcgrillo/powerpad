@@ -27,7 +27,7 @@
         <Border
             Grid.Row="1"
             Grid.Column="1"
-            Background="{ThemeResource PowerPadEditorColor}"
+            Background="{ThemeResource PowerPadEditorBrush}"
             CornerRadius="10,0,0,0">
             <components:EditorManager 
                 x:Name="EditorManager" />

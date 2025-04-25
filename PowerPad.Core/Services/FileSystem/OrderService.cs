@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using static PowerPad.Core.Services.Conventions;
-using static PowerPad.Core.Constants;
 using PowerPad.Core.Models.FileSystem;
+using System.Text.Json.Serialization;
 
 namespace PowerPad.Core.Services.FileSystem
 {
@@ -14,8 +14,10 @@ namespace PowerPad.Core.Services.FileSystem
         void UpdateOrderAfterMove(Folder sourceFolder, Folder? targetFolder, string movedEntryName, int newPosition);
     }
 
-    public class OrderService : IOrderService
+    public class OrderService(JsonSerializerContext context) : IOrderService
     {
+        private readonly JsonSerializerContext _context = context;
+
         public void LoadOrderRecursive(Folder folder)
         {
             LoadOrder(folder);
@@ -91,7 +93,7 @@ namespace PowerPad.Core.Services.FileSystem
             SaveOrder(sourceFolder, sourceOrderedEntries);
         }
 
-        private static IList<string> LoadOrder(Folder parentFolder)
+        private List<string> LoadOrder(Folder parentFolder)
         {
             var order = parentFolder.Order;
 
@@ -108,7 +110,7 @@ namespace PowerPad.Core.Services.FileSystem
 
                 if (File.Exists(orderFilePath))
                 {
-                    order = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(orderFilePath)) ?? orderAux;
+                    order = (List<string>?)JsonSerializer.Deserialize(File.ReadAllText(orderFilePath), typeof(List<string>), _context) ?? orderAux;
 
                     var elementsToRemove = order.Except(orderAux);
                     if (elementsToRemove.Any())
@@ -129,11 +131,11 @@ namespace PowerPad.Core.Services.FileSystem
             return order;
         }
 
-        private static void SaveOrder(Folder parentFolder, IList<string> order)
+        private void SaveOrder(Folder parentFolder, List<string> order)
         {
             var orderFilePath = Path.Combine(parentFolder.Path, ORDER_FILE_NAME);
 
-            File.WriteAllText(orderFilePath, JsonSerializer.Serialize(order, JSON_SERIALIZER_OPTIONS));
+            File.WriteAllText(orderFilePath, JsonSerializer.Serialize(order, typeof(List<string>), _context));
 
             parentFolder.Order = order;
         }

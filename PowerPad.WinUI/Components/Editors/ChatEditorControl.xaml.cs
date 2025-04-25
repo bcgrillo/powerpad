@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System.Text.Json;
 using PowerPad.WinUI.Dialogs;
-using static PowerPad.Core.Constants;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.Core.Models.FileSystem;
@@ -16,6 +14,7 @@ using System.Threading.Tasks;
 using PowerPad.WinUI.Components.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using PowerPad.WinUI.Configuration;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -37,7 +36,7 @@ namespace PowerPad.WinUI.Components.Editors
         {
             return plainText
                 ? string.Join('\n', _chat!.Messages.Select(m => $"{m.Role}: {m.Content}"))
-                : JsonSerializer.Serialize(_chat, JSON_SERIALIZER_OPTIONS);
+                : JsonSerializer.Serialize(_chat, typeof(ChatViewModel), AppJsonContext.Custom);
         }
 
         public override void SetContent(string content)
@@ -47,7 +46,7 @@ namespace PowerPad.WinUI.Components.Editors
             if (!string.IsNullOrEmpty(content)) {
                 try
                 {
-                    _chat = JsonSerializer.Deserialize<ChatViewModel>(content, JSON_SERIALIZER_OPTIONS);
+                    _chat = (ChatViewModel?)JsonSerializer.Deserialize(content, typeof(ChatViewModel), AppJsonContext.Custom);
                 }
                 catch (JsonException)
                 {

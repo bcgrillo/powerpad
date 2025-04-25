@@ -1,4 +1,5 @@
-﻿using Timer = System.Timers.Timer;
+﻿using System.Text.Json.Serialization;
+using Timer = System.Timers.Timer;
 
 namespace PowerPad.Core.Services.Config
 {
@@ -12,17 +13,22 @@ namespace PowerPad.Core.Services.Config
     {
         private const double STORE_INTERVAL = 2000;
 
+        private readonly JsonSerializerContext _context;
+
         private readonly Timer _timer;
 
-        private readonly Dictionary<string, ConfigStore> _configStores = [];
+        private readonly Dictionary<string, ConfigStore> _configStores;
 
-        public ConfigStoreService()
+        public ConfigStoreService(JsonSerializerContext context)
         {
-            AppDomain.CurrentDomain.ProcessExit += async (s, e) => await StoreConfigs();
+            _context = context;
+            _configStores = [];
 
             _timer = new(STORE_INTERVAL);
             _timer.Elapsed += async (s, e) => await StoreConfigs();
             _timer.Start();
+
+            AppDomain.CurrentDomain.ProcessExit += async (s, e) => await StoreConfigs();
         }
 
         public IConfigStore GetConfigStore(string configFolder)
@@ -33,7 +39,7 @@ namespace PowerPad.Core.Services.Config
             }
             else
             {
-                var newConfigStore = new ConfigStore(configFolder);
+                var newConfigStore = new ConfigStore(configFolder, _context);
                 _configStores[configFolder] = newConfigStore;
                 return newConfigStore;
             }

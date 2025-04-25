@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace PowerPad.WinUI.Configuration
 {
@@ -174,5 +176,12 @@ namespace PowerPad.WinUI.Configuration
                 DefaultAgent4
             ];
         }
+
+        public static readonly JsonSerializerOptions JSON_SERIALIZER_OPTIONS = new()
+        {
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter() },
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
     }
 }

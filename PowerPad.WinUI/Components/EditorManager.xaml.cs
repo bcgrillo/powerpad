@@ -14,7 +14,7 @@ namespace PowerPad.WinUI.Components
     public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     {
         private static EditorManager? _registredInstance = null;
-        private readonly Lock _registredInstenceLock = new();
+        private readonly object _lock = new();
 
         private readonly WorkspaceViewModel _workspace;
         private const long AUTO_SAVE_INTERVAL = 3000;
@@ -35,7 +35,7 @@ namespace PowerPad.WinUI.Components
             _timer.Tick += (o, e) => EditorManagerHelper.AutoSaveEditors();
             _timer.Start();
 
-            lock (_registredInstenceLock)
+            lock (_lock)
             {
                 if (_registredInstance is not null)
                     WeakReferenceMessenger.Default.Unregister<FolderEntryDeleted>(_registredInstance);

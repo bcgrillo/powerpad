@@ -116,7 +116,7 @@ namespace PowerPad.WinUI
                 _acrylicController ??= new()
                 {
                     Kind = DesktopAcrylicKind.Thin,
-                    TintColor = (Color)Application.Current.Resources["PowerPadBackgroundColor"],
+                    TintColor = ((SolidColorBrush)Application.Current.Resources["PowerPadBackgroundBrush"]).Color,
                     TintOpacity = 0.8F
                 };
 
@@ -126,7 +126,7 @@ namespace PowerPad.WinUI
             }
             else
             {
-                MainPage.Background = new SolidColorBrush((Color)Application.Current.Resources["PowerPadBackgroundColor"]);
+                MainPage.Background = (Brush)Application.Current.Resources["PowerPadBackgroundBrush"];
             }
         }
 

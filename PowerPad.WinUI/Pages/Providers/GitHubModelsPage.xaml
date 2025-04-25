@@ -13,7 +13,7 @@
     xmlns:converters="using:PowerPad.WinUI.Converters"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource PowerPadEditorColor}">
+    Background="{ThemeResource PowerPadEditorBrush}">
     <local:AIModelsPageBase.Resources>
         <converters:ServiceStatusToBoolNegationConverter x:Key="ServiceStatusToBoolNegationConverter"/>
     </local:AIModelsPageBase.Resources>

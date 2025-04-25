@@ -27,7 +27,7 @@ namespace PowerPad.Core.Models.FileSystem
             get => Parent?.PositionOf(Name);
         }
 
-        public IList<string>? Order;
+        public List<string>? Order;
 
         internal void AddFolder(Folder folder)
         {

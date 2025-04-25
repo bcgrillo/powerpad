@@ -21,7 +21,7 @@ namespace PowerPad.WinUI.Components
     public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>, IRecipient<FolderEntryChanged>
     {
         private static WorkspaceControl? _registredInstance = null;
-        private readonly Lock _registredInstenceLock = new();
+        private readonly object _lock = new();
 
         private readonly WorkspaceViewModel _workspace;
         private readonly List<MenuFlyoutItem> _menuFlyoutItems;
@@ -38,7 +38,7 @@ namespace PowerPad.WinUI.Components
             UpdateWorkspacesMenu();
 
             //TODO: Change for use dispose
-            lock(_registredInstenceLock)
+            lock(_lock)
             {
                 if (_registredInstance is not null)
                 {

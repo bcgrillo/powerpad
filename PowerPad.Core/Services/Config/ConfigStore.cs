@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using static PowerPad.Core.Constants;
+using System.Text.Json.Serialization;
 
 namespace PowerPad.Core.Services.Config
 {
@@ -33,12 +33,12 @@ namespace PowerPad.Core.Services.Config
             Value = value;
         }
 
-        public T? GetValue<T>()
+        public T? GetValue<T>(JsonSerializerContext context)
         {
             if (Value is null)
             {
                 Value = _serializedValue != null
-                ? JsonSerializer.Deserialize<T>(_serializedValue, JSON_SERIALIZER_OPTIONS)
+                ? (T?)JsonSerializer.Deserialize(_serializedValue, typeof(T), context)
                 : null;
 
                 _serializedValue = null;
@@ -53,12 +53,14 @@ namespace PowerPad.Core.Services.Config
         private readonly string _configFolder;
         private readonly Dictionary<string, ConfigEntry> _store;
         private readonly SemaphoreSlim _semaphore = new(1, 1);
+        private readonly JsonSerializerContext _context;
 
-        public ConfigStore(string configFolder)
+        public ConfigStore(string configFolder, JsonSerializerContext context)
         {
             if (!Directory.Exists(configFolder)) Directory.CreateDirectory(configFolder);
 
             _configFolder = configFolder;
+            _context = context;
             _store = [];
 
             Load();
@@ -75,7 +77,7 @@ namespace PowerPad.Core.Services.Config
             {
                 if (_store.TryGetValue(key.ToString(), out var config))
                 {
-                    return _store[key.ToString()].GetValue<T>();
+                    return _store[key.ToString()].GetValue<T>(_context);
                 }
             }
             catch { } //It's ok
@@ -85,7 +87,7 @@ namespace PowerPad.Core.Services.Config
 
         public T Get<T>(Enum key)
         {
-            return _store[key.ToString()].GetValue<T>()
+            return _store[key.ToString()].GetValue<T>(_context)
                 ?? throw new NullReferenceException($"Config value for key '{key}' is not found.");
         }
 
@@ -112,7 +114,11 @@ namespace PowerPad.Core.Services.Config
                     if (value.Dirty)
                     {
                         var path = Path.Combine(_configFolder, $"{key}.json");
-                        await File.WriteAllTextAsync(path, JsonSerializer.Serialize(value.Value, JSON_SERIALIZER_OPTIONS));
+                        await File.WriteAllTextAsync
+                        (
+                            path, 
+                            JsonSerializer.Serialize(value.Value, value.Value?.GetType() ?? typeof(object), _context)
+                        );
                         value.Dirty = false;
                     }
                 }

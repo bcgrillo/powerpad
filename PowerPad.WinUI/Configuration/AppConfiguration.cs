@@ -21,7 +21,7 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IWorkspaceService, WorkspaceService>(sp =>
             {
-                var lastWorkspace = sp.GetRequiredService<IConfigStore>().Get<string[]>(StoreKey.RecentlyWorkspaces).First();
+                var lastWorkspace = sp.GetRequiredService<IConfigStore>().Get<List<string>>(StoreKey.RecentlyWorkspaces).First();
                 var orderService = sp.GetRequiredService<IOrderService>();
 
                 return new(lastWorkspace, orderService);
@@ -50,7 +50,7 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IChatService, ChatService>(sp =>
             {
-                var aiServices = new Dictionary<ModelProvider, IAIService>()
+                var aiServices = new Dictionary<ModelProvider, IAIService>
                 {
                     { ModelProvider.Ollama, sp.GetRequiredKeyedService<IAIService>(ModelProvider.Ollama) },
                     { ModelProvider.HuggingFace, sp.GetRequiredKeyedService<IAIService>(ModelProvider.HuggingFace) },
@@ -64,6 +64,16 @@ namespace PowerPad.WinUI.Configuration
             });
         }
 
+        public static IServiceCollection ConfigureConfigStoreService(this IServiceCollection serviceColection)
+        {
+            return serviceColection.AddSingleton<IConfigStoreService, ConfigStoreService>(sp => new(AppJsonContext.Custom));
+        }
+
+        public static IServiceCollection ConfigureOrderService(this IServiceCollection serviceColection)
+        {
+            return serviceColection.AddSingleton<IOrderService, OrderService>(sp => new(AppJsonContext.Custom));
+        }
+
         public static void InitializeAppConfigStore(out IConfigStore appConfigStore)
         {
             var appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $".{nameof(PowerPad).ToLower()}");
@@ -72,7 +82,7 @@ namespace PowerPad.WinUI.Configuration
             appConfigStore = configStoreService.GetConfigStore(appDataFolder);
 
             //Initialize recently workspaces if necessary
-            var recentlyWorkspaces = appConfigStore.TryGet<string[]>(StoreKey.RecentlyWorkspaces);
+            var recentlyWorkspaces = appConfigStore.TryGet<List<string>>(StoreKey.RecentlyWorkspaces);
 
             if (recentlyWorkspaces is null)
             {
