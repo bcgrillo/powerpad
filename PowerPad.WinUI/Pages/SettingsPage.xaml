@@ -598,7 +598,7 @@
                            Text="Acerca de PowerPad" />
                         <toolkit:SettingsCard Description="2025 · Trabajo Fin de Grado · Ingenieria de Software · ETSISI UPM"
                             Header="PowerPad"
-                            HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/StoreLogo.scale-200.png}">
+                            HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/Square44x44Logo.altform-unplated_targetsize-32.png}">
                             <TextBlock
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Text="Versión 1.0.0" />

@@ -37,7 +37,7 @@
                     Width="22"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
-                    Source="ms-appx:///Assets/StoreLogo.scale-200.png"
+                    Source="ms-appx:///Assets/Square44x44Logo.altform-unplated_targetsize-32.png"
                     Margin="0,0,0,0"/>
             </Border>
 
