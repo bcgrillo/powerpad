@@ -31,7 +31,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
         public ObservableCollection<AIModelViewModel> SearchResultModels { get; }
 
         [ObservableProperty]
-        protected bool _searching;
+        public partial bool Searching { get; set; }
 
         public bool FilteredModelsEmpty => !FilteredModels.Any();
 

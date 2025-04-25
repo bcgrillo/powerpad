@@ -25,16 +25,16 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         public string Name { get => _entry.Name; }
 
         [ObservableProperty]
-        private string? _glyph;
+        public partial string? Glyph { get; set; }
 
         [ObservableProperty]
-        private EntryType _type;
+        public partial EntryType Type { get; set; }
 
         [ObservableProperty]
-        private bool _isExpanded;
+        public partial bool IsExpanded { get; set; }
 
         [ObservableProperty]
-        private bool _isSelected;
+        public partial bool IsSelected { get; set; }
 
         public ObservableCollection<FolderEntryViewModel> Children { get; }
 

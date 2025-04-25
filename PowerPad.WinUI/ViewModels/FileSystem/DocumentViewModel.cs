@@ -50,10 +50,10 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         public IRelayCommand RenameCommand { get; }
 
         [ObservableProperty]
-        private string? _previousContent;
+        public partial string? PreviousContent { get; set; }
 
         [ObservableProperty]
-        private string? _nextContent;
+        public partial string? NextContent { get; set; }
 
         public DocumentViewModel(Document document, IEditorContract editorControl)
         {

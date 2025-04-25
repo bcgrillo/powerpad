@@ -34,7 +34,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
                 MaxOutputTokens = maxOutputTokens
             })
         {
-            _agentIcon = agentIcon;
+            AgentIcon = agentIcon;
         }
 
         public string Name
@@ -90,10 +90,10 @@ namespace PowerPad.WinUI.ViewModels.Agents
         }
 
         [ObservableProperty]
-        private AgentIcon? _agentIcon;
+        public partial AgentIcon? AgentIcon { get; set; }
 
         [ObservableProperty]
-        private bool _enabled;
+        public partial bool Enabled { get; set; }
 
         [JsonIgnore]
         public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant

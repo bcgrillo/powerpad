@@ -11,10 +11,10 @@ namespace PowerPad.WinUI.ViewModels.Settings
     public partial class ModelsSettingsViewModel : ObservableObject
     {
         [ObservableProperty]
-        private AIModelViewModel? _defaultModel;
+        public partial AIModelViewModel? DefaultModel { get; set; }
 
         [ObservableProperty]
-        private bool _sendDefaultParameters;
+        public partial bool SendDefaultParameters { get; set; }
 
         public required AIParametersViewModel DefaultParameters
         { 

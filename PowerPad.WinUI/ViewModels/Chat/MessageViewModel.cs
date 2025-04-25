@@ -8,24 +8,22 @@ namespace PowerPad.WinUI.ViewModels.Chat
     public partial class MessageViewModel(string? content, DateTime dateTime, ChatRole role, string? reasoning = null) : ObservableObject
     {
         [ObservableProperty]
-        private string? _content = content;
+        public partial string? Content { get; set; } = content;
 
         public DateTime DateTime { get; private init; } = dateTime;
 
         public ChatRole Role { get; set; } = role;
 
         [ObservableProperty]
-        private string? _reasoning = reasoning;
-
-#pragma warning disable CS0657
-        [ObservableProperty]
-        [property: JsonIgnore]
-        private bool _loading;
+        public partial string? Reasoning { get; set; } = reasoning;
 
         [ObservableProperty]
         [property: JsonIgnore]
-        private string _loadingMessage = string.Empty;
-#pragma warning restore CS0657
+        public partial bool Loading { get; set; }
+
+        [ObservableProperty]
+        [property: JsonIgnore]
+        public partial string LoadingMessage { get; set; } = string.Empty;
 
         public override string ToString()
         {

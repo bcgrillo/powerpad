@@ -20,7 +20,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         private readonly IConfigStore _appConfigStore;
 
         [ObservableProperty]
-        private FolderEntryViewModel _root;
+        public partial FolderEntryViewModel Root { get; set; }
 
         public ObservableCollection<string> RecentlyWorkspaces { get; }
 
@@ -31,7 +31,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         public IRelayCommand NewEntryCommand { get; }
 
         [ObservableProperty]
-        private string? _currentDocumentPath;
+        public partial string? CurrentDocumentPath { get; set; }
 
         public WorkspaceViewModel()
         {

@@ -13,16 +13,16 @@ namespace PowerPad.WinUI.ViewModels.Settings
     public partial class GeneralSettingsViewModel : ObservableObject
     {
         [ObservableProperty]
-        private bool _ollamaEnabled;
+        public partial bool OllamaEnabled { get; set; }
 
         [ObservableProperty]
-        private bool _azureAIEnabled;
+        public partial bool AzureAIEnabled { get; set; }
 
         [ObservableProperty]
-        private bool _openAIEnabled;
+        public partial bool OpenAIEnabled { get; set; }
 
         [ObservableProperty]
-        private bool _ollamaAutostart;
+        public partial bool OllamaAutostart { get; set; }
 
         public required AIServiceConfigViewModel OllamaConfig
         { 
@@ -68,13 +68,13 @@ namespace PowerPad.WinUI.ViewModels.Settings
         }
 
         [ObservableProperty]
-        private ApplicationTheme? _appTheme;
+        public partial ApplicationTheme? AppTheme { get; set; }
 
         [ObservableProperty]
-        private bool _acrylicBackground;
+        public partial bool AcrylicBackground { get; set; }
 
         [ObservableProperty]
-        private string? _agentPrompt;
+        public partial string? AgentPrompt { get; set; }
 
         public event EventHandler? ProviderAvaibilityChanged;
         public event EventHandler? ServiceEnablementChanged;

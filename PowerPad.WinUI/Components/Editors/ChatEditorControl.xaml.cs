@@ -48,7 +48,7 @@ namespace PowerPad.WinUI.Components.Editors
                 {
                     _chat = (ChatViewModel?)JsonSerializer.Deserialize(content, typeof(ChatViewModel), AppJsonContext.Custom);
                 }
-                catch (JsonException)
+                catch (Exception)
                 {
                     error = true;
                 }
@@ -68,12 +68,16 @@ namespace PowerPad.WinUI.Components.Editors
 
             if (error)
             {
-                DialogHelper.Alert
-                (
-                    XamlRoot,
-                    "Error",
-                    "No ha sido posible deserializar el contenido del chat."
-                ).Wait();
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(500);
+                    await DialogHelper.Alert
+                    (
+                        XamlRoot,
+                        "Error",
+                        "No ha sido posible deserializar el contenido del chat."
+                    );
+                });
             }
 
             ItemsStackPanel_SizeChanged(null, null);

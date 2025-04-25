@@ -155,10 +155,10 @@ namespace PowerPad.WinUI.Components.Controls
         private static readonly Brush TRANSPARENT = new SolidColorBrush(Colors.Transparent);
 
         [ObservableProperty]
-        private bool _isEditing;
+        public partial bool IsEditing { get; set; }
 
         [ObservableProperty]
-        private Brush _borderBrush = TRANSPARENT;
+        public partial Brush BorderBrush { get; set; } = TRANSPARENT;
 
         public void EnterEditMode()
         {

@@ -23,31 +23,29 @@ namespace PowerPad.WinUI.ViewModels.AI
         public string? InfoUrl => _aiModel.InfoUrl;
 
         [ObservableProperty]
-        private bool _enabled = enabled;
-
-#pragma warning disable CS0657
-        [ObservableProperty]
-        [property: JsonIgnore]
-        private bool _available = available;
+        public partial bool Enabled { get; set; } = enabled;
 
         [ObservableProperty]
-        [property: JsonIgnore]
-        private bool _downloading = downloading;
+        [JsonIgnore]
+        public partial bool Available { get; set; }= available;
 
         [ObservableProperty]
-        [property: JsonIgnore]
-        private double _progress;
+        [JsonIgnore]
+        public partial bool Downloading { get; set; } = downloading;
 
         [ObservableProperty]
-        [property: JsonIgnore]
-        private bool _downloadError;
+        [JsonIgnore]
+        public partial double Progress { get; set; }
 
-        [property: JsonIgnore]
+        [ObservableProperty]
+        [JsonIgnore]
+        public partial bool DownloadError { get; set; }
+
+        [JsonIgnore]
         public CancellationTokenSource? DownloadCancelationToken { get; set; }
 
-        [property: JsonIgnore]
+        [JsonIgnore]
         public bool IsSizeTooLargeForExecution { get; set; }
-#pragma warning restore CS0657
 
         public long? Size => _aiModel.Size;
 

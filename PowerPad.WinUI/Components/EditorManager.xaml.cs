@@ -7,7 +7,6 @@ using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
 using PowerPad.WinUI.Helpers;
-using System.Threading;
 
 namespace PowerPad.WinUI.Components
 {

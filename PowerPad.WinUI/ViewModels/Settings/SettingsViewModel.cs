@@ -20,7 +20,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public ModelsSettingsViewModel Models { get; private init; }
 
         [ObservableProperty]
-        private bool? _isAIAvailable;
+        public partial bool? IsAIAvailable { get; set; }
 
         public SettingsViewModel()
         {
