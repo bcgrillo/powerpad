@@ -178,17 +178,36 @@ namespace PowerPad.WinUI.Components
 
         private async void OpenFolderFlyoutItem_Click(object _, RoutedEventArgs __)
         {
-            var openPicker = new FolderPicker();
+            FolderPicker openPicker = new FolderPicker();
 
-            var window = WindowHelper.GetWindowForElement(this);
+            // See the sample code below for how to make the window accessible from the App class.
+            var window = App.MainWindow;
+
+            // Retrieve the window handle (HWND) of the current WinUI 3 window.
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
 
+            // Initialize the folder picker with the window handle (HWND).
             WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
 
-            openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            // Set options for your folder picker
+            openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
             openPicker.FileTypeFilter.Add("*");
 
+            // Open the picker for the user to pick a folder
             StorageFolder folder = await openPicker.PickSingleFolderAsync();
+
+
+            //var openPicker = new FolderPicker();
+
+            //var window = WindowHelper.GetWindowForElement(this);
+            //var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+
+            //WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
+
+            //openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            //openPicker.FileTypeFilter.Add("*");
+
+            //StorageFolder folder = await openPicker.PickSingleFolderAsync();
 
             if (folder is not null)
             {

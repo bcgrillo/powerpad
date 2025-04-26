@@ -59,11 +59,12 @@ namespace PowerPad.WinUI
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs _)
         {
-            m_window = WindowHelper.CreateWindow<MainWindow>();
+            m_window = new();
             m_window.Activate();
         }
 
-        private Window? m_window;
+        private static MainWindow? m_window;
+        public static MainWindow? MainWindow => m_window;
 
         public static T Get<T>(object? key = null) where T : notnull
         {

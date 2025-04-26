@@ -79,6 +79,13 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public event EventHandler? ProviderAvaibilityChanged;
         public event EventHandler? ServiceEnablementChanged;
 
+        public void InitializeAIServices()
+        {
+            SetServiceConfig(OllamaEnabled, OllamaConfig, ModelProvider.Ollama, false);
+            SetServiceConfig(AzureAIEnabled, AzureAIConfig, ModelProvider.GitHub, false);
+            SetServiceConfig(OpenAIEnabled, OpenAIConfig, ModelProvider.OpenAI, false);
+        }
+
         private void ServiceStatusChanged(object? sender, EventArgs __)
         {
             var config = (AIServiceConfigViewModel)sender!;
@@ -173,7 +180,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         partial void OnAcrylicBackgroundChanging(bool value)
         {
-            WindowHelper.MainWindow?.SetBackdrop(value);
+            App.MainWindow?.SetBackdrop(value);
         }
     };
 }

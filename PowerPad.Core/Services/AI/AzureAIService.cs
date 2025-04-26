@@ -9,7 +9,7 @@ namespace PowerPad.Core.Services.AI
 {
     public class AzureAIService : IAIService
     {
-        private const string TEST_MODEL = "openai/gpt-4o-mini";
+        private const string TEST_MODEL = "openai/gpt-4.1-nano";
         private const int TEST_CONNECTION_TIMEOUT = 5000;
 
         private ChatCompletionsClient? _azureAI;

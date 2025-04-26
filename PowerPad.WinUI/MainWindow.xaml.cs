@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.Dialogs;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI
 {
@@ -38,9 +39,10 @@ namespace PowerPad.WinUI
 
         public MainWindow()
         {
+            this.InitializeComponent();
+
             _settings = App.Get<SettingsViewModel>();
 
-            this.InitializeComponent();
             SetBackdrop(_settings.General.AcrylicBackground);
             SetTitleBar();
 
@@ -51,19 +53,21 @@ namespace PowerPad.WinUI
 
                 _acrylicController?.Dispose();
             };
-
-            _settings.General.OllamaConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
-            _settings.General.AzureAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
-            _settings.General.OpenAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
-            _settings.Models.ModelAvaibilityChanged += (s, e) => UpdateNavMenuItems();
-
-            NavView.SelectedItem = NavView.MenuItems[0];
         }
 
-        private void MainPage_Loaded(object _, RoutedEventArgs __)
+        private void NavView_Loaded(object _, RoutedEventArgs __)
         {
             DispatcherQueue.TryEnqueue(async () =>
             {
+                await Task.Delay(100);
+
+                NavView.SelectedItem = NavView.MenuItems[0];
+
+                _settings.General.OllamaConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
+                _settings.General.AzureAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
+                _settings.General.OpenAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
+                _settings.Models.ModelAvaibilityChanged += (s, e) => UpdateNavMenuItems();
+
                 await _settings.TestConnections();
 
                 if(_settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)

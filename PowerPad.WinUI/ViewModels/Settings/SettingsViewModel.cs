@@ -34,6 +34,8 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
             General.ProviderAvaibilityChanged += UpdateAIAvaibility;
             Models.ModelAvaibilityChanged += UpdateAIAvaibility;
+
+            General.InitializeAIServices();
         }
 
         public async Task TestConnections()

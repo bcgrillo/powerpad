@@ -14,7 +14,7 @@
     MinHeight="720"
     mc:Ignorable="d"
     Title="PowerPad">
-    <Page x:Name="MainPage" Loaded="MainPage_Loaded">
+    <Page x:Name="MainPage">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="48" />
@@ -28,16 +28,16 @@
 
             <Border
                 x:Name="AppIcon"
-                Height="38"
+                Height="24"
                 Width="48"
                 Margin="0,0,0,0"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
                 <Image
-                    Width="22"
+                    Width="28"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
-                    Source="ms-appx:///Assets/Square44x44Logo.altform-unplated_targetsize-32.png"
+                    Source="ms-appx:///Assets/Square44x44Logo.targetsize-24_altform-unplated.png"
                     Margin="0,0,0,0"/>
             </Border>
 
@@ -53,6 +53,7 @@
                 IsSettingsVisible="True"
                 PaneDisplayMode="LeftCompact"
                 SelectionChanged="NavView_SelectionChanged"
+                Loaded="NavView_Loaded"
                 Margin="0,0,0,-2">
                 
                 <NavigationView.Resources>

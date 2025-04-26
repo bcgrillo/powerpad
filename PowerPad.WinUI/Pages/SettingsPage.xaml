@@ -597,8 +597,10 @@
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                            Text="Acerca de PowerPad" />
                         <toolkit:SettingsCard Description="2025 · Trabajo Fin de Grado · Ingenieria de Software · ETSISI UPM"
-                            Header="PowerPad"
-                            HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/Square44x44Logo.altform-unplated_targetsize-32.png}">
+                            Header="PowerPad">
+                            <toolkit:SettingsCard.HeaderIcon>
+                                <ImageIcon Margin="-4" Source="ms-appx:///Assets/Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+                            </toolkit:SettingsCard.HeaderIcon>
                             <TextBlock
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Text="Versión 1.0.0" />

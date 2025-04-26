@@ -29,12 +29,12 @@ namespace PowerPad.WinUI.Configuration
         {
             private static readonly (string Name, string Url)[] _initialGitHubModels =
             [
-                ("openai/gpt-4o", "https://github.com/marketplace/models/azure-openai/gpt-4o"),
-                ("openai/gpt-4o-mini", "https://github.com/marketplace/models/azure-openai/gpt-4o-mini"),
-                ("deepseek/DeepSeek-R1", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-R1"),
-                ("deepseek/DeepSeek-V3", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-V3"),
-                ("meta/Llama-3-3-70B-Instruct", "https://github.com/marketplace/models/azureml-meta/Llama-3-3-70B-Instruct"),
-                ("microsoft/Phi-4", "https://github.com/marketplace/models/azureml/Phi-4")
+                ("OpenAI/gpt-4o", "https://github.com/marketplace/models/azure-openai/gpt-4o"),
+                ("OpenAI/gpt-4o-mini", "https://github.com/marketplace/models/azure-openai/gpt-4o-mini"),
+                ("DeepSeek/DeepSeek-R1", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-R1"),
+                ("DeepSeek/DeepSeek-V3", "https://github.com/marketplace/models/azureml-deepseek/DeepSeek-V3"),
+                ("Meta/Llama-3-3-70B-Instruct", "https://github.com/marketplace/models/azureml-meta/Llama-3-3-70B-Instruct"),
+                ("Microsoft/Phi-4", "https://github.com/marketplace/models/azureml/Phi-4")
             ];
 
             private static readonly (string Name, string Url)[] _initialOpenAIModels =
@@ -57,8 +57,8 @@ namespace PowerPad.WinUI.Configuration
                 OllamaConfig = new(new() { BaseUrl = "http://localhost:11434" }),
                 OllamaAutostart = true,
                 //TODO: Remove
-                AzureAIConfig = new(new() { BaseUrl = "https://models.inference.ai.azure.com", Key = "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" }),
-                OpenAIConfig = new(new() { BaseUrl = "https://api.openai.com/v1", Key = "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" }),
+                AzureAIConfig = new(new() { BaseUrl = "https://models.github.ai/inference" }), //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
+                OpenAIConfig = new(new() { BaseUrl = "https://api.openai.com/v1" }), //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
 
                 AvailableProviders = [],
 
