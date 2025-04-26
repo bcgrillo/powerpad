@@ -47,8 +47,9 @@ namespace PowerPad.WinUI.ViewModels.Agents
                 {
                     model.PropertyChanged -= CollectionPropertyChangedHandler;
                 }
-            }
-            else if (eventArgs.Action != NotifyCollectionChangedAction.Move)
+                    break;
+                default:
+                    if (eventArgs.Action != NotifyCollectionChangedAction.Move)
                 throw new NotImplementedException("Only Add and Remove actions are supported.");
 
             SaveAgents();
