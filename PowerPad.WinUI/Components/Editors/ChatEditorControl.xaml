@@ -127,7 +127,11 @@
                     VerticalAlignment="Center"
                     Orientation="Vertical"
                     Spacing="8">
-                    <TextBlock Text="✨" FontSize="42" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <Image Margin="0,0,0,16" HorizontalAlignment="Center" Height="150">
+                        <Image.Source>
+                            <BitmapImage DecodePixelHeight="150" UriSource="ms-appx:///Assets/Background/LandingChat.png" />
+                        </Image.Source>
+                    </Image>
                     <TextBlock
                         Style="{StaticResource TitleTextBlockStyle}"
                         Text="¡Hola! ¿En qué puedo ayudarte?"

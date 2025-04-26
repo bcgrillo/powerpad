@@ -2,10 +2,8 @@
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.WinUI.ViewModels.Settings;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.Configuration

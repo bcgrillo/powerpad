@@ -37,7 +37,7 @@ namespace PowerPad.Core.Services.Config
         {
             if (Value is null)
             {
-                Value = _serializedValue != null
+                Value = _serializedValue is not null
                 ? (T?)JsonSerializer.Deserialize(_serializedValue, typeof(T), context)
                 : null;
 

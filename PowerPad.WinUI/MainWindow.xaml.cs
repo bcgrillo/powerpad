@@ -59,8 +59,6 @@ namespace PowerPad.WinUI
         {
             DispatcherQueue.TryEnqueue(async () =>
             {
-                await Task.Delay(100);
-
                 NavView.SelectedItem = NavView.MenuItems[0];
 
                 _settings.General.OllamaConfig.StatusChanged += (s, e) => UpdateNavMenuItems();

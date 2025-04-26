@@ -21,7 +21,7 @@ namespace PowerPad.WinUI.Configuration
         {
             return serviceColection.AddSingleton<IWorkspaceService, WorkspaceService>(sp =>
             {
-                var lastWorkspace = sp.GetRequiredService<IConfigStore>().Get<List<string>>(StoreKey.RecentlyWorkspaces).First();
+                var lastWorkspace = sp.GetRequiredService<IConfigStore>().Get<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces).First();
                 var orderService = sp.GetRequiredService<IOrderService>();
 
                 return new(lastWorkspace, orderService);
@@ -82,7 +82,7 @@ namespace PowerPad.WinUI.Configuration
             appConfigStore = configStoreService.GetConfigStore(appDataFolder);
 
             //Initialize recently workspaces if necessary
-            var recentlyWorkspaces = appConfigStore.TryGet<List<string>>(StoreKey.RecentlyWorkspaces);
+            var recentlyWorkspaces = appConfigStore.TryGet<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces);
 
             if (recentlyWorkspaces is null)
             {

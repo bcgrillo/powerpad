@@ -83,7 +83,14 @@ namespace PowerPad.WinUI.Components.Editors
             ItemsStackPanel_SizeChanged(null, null);
         }
 
-        public override void SetFocus() => ChatControl.SetFocus();
+        public override void SetFocus()
+        {
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(100);
+                ChatControl.SetFocus();
+            });
+        }
 
         private void EditableTextBlock_Edited(object _, EventArgs __)
         {

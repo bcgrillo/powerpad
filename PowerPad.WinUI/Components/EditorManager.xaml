@@ -12,7 +12,11 @@
                 VerticalAlignment="Center"
                 Orientation="Vertical"
                 Spacing="8">
-                <TextBlock Text="✨" FontSize="42" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                <Image Margin="0,0,0,16" HorizontalAlignment="Center" Height="200">
+                    <Image.Source>
+                        <BitmapImage DecodePixelHeight="200" UriSource="ms-appx:///Assets/Background/Landing.png" />
+                    </Image.Source>
+                </Image>
                 <TextBlock
                     Style="{StaticResource TitleTextBlockStyle}"
                     Text="Es hora de empezar..."
