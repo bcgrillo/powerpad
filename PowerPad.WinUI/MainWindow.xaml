@@ -68,7 +68,7 @@
                     <NavigationViewItem
                         Margin="0,44,0,0"
                         Content="Workspace" ToolTipService.Placement="Right"
-                        Icon="{ui:FontIcon Glyph=&#xE821;}"
+                        Icon="{ui:FontIcon Glyph=&#xED43;}"
                         Tag="WorkspacePage" />
                     <NavigationViewItem
                         x:Name="ModelsNavViewItem"
@@ -121,6 +121,7 @@
                     IsHitTestVisible="True"
                     Visibility="Collapsed">
                     <Button.Content>
+                        <!--<FontIcon Glyph="&#xEA49;" />-->
                         <controls:ButtonIcon x:Name="ToggleMenuIcon" />
                     </Button.Content>
                 </Button>

@@ -102,7 +102,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
         public IconElement? IconElement => AgentIcon?.IconType switch
         {
             AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Value.IconSource), HorizontalAlignment = HorizontalAlignment.Center },
-            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center, FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
+            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center, Margin = new(-4, -2, 0, 0), IsTextScaleFactorEnabled = true, FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
             AgentIconType.FontIconGlyph => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center },
             _ => null,
         };

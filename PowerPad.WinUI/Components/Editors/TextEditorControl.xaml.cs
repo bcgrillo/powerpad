@@ -126,12 +126,26 @@ namespace PowerPad.WinUI.Components.Editors
 
             var resultBuilder = new StringBuilder();
 
-            await AgentControl.StartAgentAction(textToSend, resultBuilder);
+            await AgentControl.StartAgentAction(textToSend, resultBuilder, (ex) =>
+            {
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await DialogHelper.Alert
+                    (
+                        XamlRoot,
+                        "Error",
+                        ex.Message.Trim().ReplaceLineEndings(" ")
+                    );
+                });
+            });
 
             var resultText = resultBuilder.ToString();
 
-            if (hasSelection) TextEditor.SelectedText = resultText;
-            else TextEditor.Text = resultText;
+            if (!string.IsNullOrEmpty(resultText))
+            {
+                if (hasSelection) TextEditor.SelectedText = resultText;
+                else TextEditor.Text = resultText;
+            }
         }
 
         public override int WordCount()

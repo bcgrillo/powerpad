@@ -40,7 +40,7 @@
                                 </DropDownButton.Flyout>
                                 <DropDownButton.Content>
                                     <StackPanel Orientation="Horizontal">
-                                        <ContentControl x:Name="ModelIcon" />
+                                        <ContentControl x:Name="ModelIcon" Height="20" Width="20" HorizontalAlignment="Center" />
                                         <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
                                     </StackPanel>
                                 </DropDownButton.Content>

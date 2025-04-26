@@ -168,7 +168,7 @@ namespace PowerPad.WinUI.Components.Controls
             SendButtonClicked?.Invoke(this, e);
         }
 
-        public async Task StartAgentAction(string input, StringBuilder output)
+        public async Task StartAgentAction(string input, StringBuilder output, Action<Exception> exceptionAction)
         {
             DispatcherQueue.TryEnqueue(() =>
             {
@@ -186,9 +186,8 @@ namespace PowerPad.WinUI.Components.Controls
                 await _chatService.GetAgentResponse(input, output, _selectedAgent!.GetRecord(), PromptParameterInputBox.Text, _settings.General.AgentPrompt, _cts.Token);
             }
             catch (Exception ex)
-                        {
-                //TODO: Anythig
-                Debug.WriteLine(ex.ToString());
+            {
+                exceptionAction(ex);
             }
 
             if (!_cts.IsCancellationRequested) FinalizeAgentAction();
