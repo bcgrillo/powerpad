@@ -15,9 +15,7 @@ using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
-using System.Diagnostics;
 using System.ComponentModel;
-using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 
@@ -82,6 +80,14 @@ namespace PowerPad.WinUI.Components.Controls
             _loadingAnimationTimer.Tick += LoadingAnimationTimer_Tick;
 
             _parameters = _settings.Models.DefaultParameters.Copy();
+
+            IsEnabledChanged += OnEnabledChanged;
+        }
+
+        private void OnEnabledChanged(object? _, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            ModelIcon.UpdateEnabledLayout((bool)eventArgs.NewValue);
+            ParametersIcon.UpdateEnabledLayout((bool)eventArgs.NewValue);
         }
 
         private void Models_PropertyChanged(object? _, EventArgs __)
@@ -358,6 +364,7 @@ namespace PowerPad.WinUI.Components.Controls
                         });
                     }
                 }
+                catch (TaskCanceledException) { }
                 catch (Exception ex)
                 {
                     DispatcherQueue.TryEnqueue(() =>

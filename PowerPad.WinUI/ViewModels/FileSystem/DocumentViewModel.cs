@@ -116,7 +116,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
             var generatedName = await NameGeneratorHelper.Generate(sampleContent);
 
-            if (generatedName != null)
+            if (!string.IsNullOrEmpty(generatedName))
             {
                 var workspaceService = App.Get<IWorkspaceService>();
 

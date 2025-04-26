@@ -30,6 +30,8 @@ namespace PowerPad.WinUI.Components.Controls
             RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, UpdateForeground);
             RegisterPropertyChangedCallback(TextBox.IsEnabledProperty, UpdateForeground);
             RegisterPropertyChangedCallback(IntegratedTextBox.ForcedForegroundProperty, UpdateForeground);
+
+            IsSpellCheckEnabled = false;
         }
 
         private void UpdateForeground(DependencyObject sender, DependencyProperty dp)

@@ -283,8 +283,13 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void UndoButton_Click(object _, RoutedEventArgs __)
         {
-            var result = await DialogHelper.Confirm(XamlRoot, "Eliminar el último mensaje", "¿Está seguro?");
-
+            var result = await DialogHelper.Confirm
+            (
+                XamlRoot, 
+                "Eliminar último mensaje", 
+                "Esta acción eliminará su último mensaje y la última respuesta del asistente.\n¿Está seguro?"
+            );
+            
             if (result)
             {
                 _chat!.RemoveLastMessageCommand.Execute(null);
@@ -296,7 +301,12 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void CleanButton_Click(object _, RoutedEventArgs __)
         {
-            var result = await DialogHelper.Confirm(XamlRoot, "Eliminar la conversación", "¿Está seguro?");
+            var result = await DialogHelper.Confirm
+            (
+                XamlRoot, 
+                "Eliminar la conversación", 
+                "Esta acción eliminará toda la conversación. ¿Está seguro?"
+            );
 
             if (result)
             {

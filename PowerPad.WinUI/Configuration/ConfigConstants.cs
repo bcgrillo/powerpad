@@ -82,7 +82,7 @@ namespace PowerPad.WinUI.Configuration
                         SystemPrompt = "Eres PowerPad, un asistente de inteligencia artificial amable y resolutivo.",
                         Temperature = 0.7f,
                         TopP = 1,
-                        MaxOutputTokens = 1000,
+                        MaxOutputTokens = 10000,
                         MaxConversationLength = 50
                     }),
                     SendDefaultParameters = true,

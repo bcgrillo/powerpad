@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using System;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -22,7 +23,9 @@ namespace PowerPad.WinUI.Components.Controls
         {
             this.InitializeComponent();
 
-            IsEnabledChanged += (s, e) => Opacity = IsEnabled ? ENABLED_OPACITY : DISABLED_OPACITY;
+            IsEnabledChanged += (s, e) => UpdateEnabledLayout((bool)e.NewValue);
         }
+
+        public void UpdateEnabledLayout(bool newValue) => Opacity = newValue ? ENABLED_OPACITY : DISABLED_OPACITY;
     }
 }

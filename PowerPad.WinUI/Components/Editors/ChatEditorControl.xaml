@@ -137,7 +137,7 @@
                     ToolTipService.ToolTip="Eliminar último mensaje"
                     Click="UndoButton_Click">
                     <Button.Content>
-                        <FontIcon FontSize="20" Glyph="&#xE8E6;" />
+                        <FontIcon FontSize="20" Glyph="&#xE7A7;" />
                     </Button.Content>
                 </Button>
                 <Button
@@ -203,7 +203,7 @@
                 ChatPlaceHolder="Escribe lo que quieras..."
                 SendButtonClicked="ChatControl_SendButtonClicked"
                 ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged"
-                IsEnabled="{x:Bind _chat.ChatError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
+                IsEnabled="{x:Bind _chat.ChatError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}" />
         </Grid>
     </Grid>
 </local:EditorControl>
