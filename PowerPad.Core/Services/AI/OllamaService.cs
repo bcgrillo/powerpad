@@ -139,12 +139,12 @@ namespace PowerPad.Core.Services.AI
             );
         }
 
-        public IChatClient ChatClient(AIModel model, out IEnumerable<string> notAllowedParameters)
+        public IChatClient ChatClient(AIModel model, out IEnumerable<string>? notAllowedParameters)
         {
             var client = GetClient();
 
             client.SelectedModel = model.Name;
-            notAllowedParameters = [];
+            notAllowedParameters = null;
 
             return client;
         }

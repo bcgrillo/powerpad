@@ -56,13 +56,11 @@ namespace PowerPad.WinUI.Components.Editors
 
             _chat ??= new() { Messages = [] };
 
-            _chat.Messages.CollectionChanged += Messages_CollectionChanged;
-
             this.InitializeComponent();
 
             ChatControl.InitializeParameters(_chat!.Model, _chat!.Parameters);
             
-            if (_chat.Messages.Any()) HideLandingAndExpandChat();
+            if (_chat.Messages.Any()) UpdateLandingVisibility(showLanding: false);
 
             ChatControl.ChatOptionsChanged += ChatControl_ChatOptionsChanged;
 
@@ -159,16 +157,24 @@ namespace PowerPad.WinUI.Components.Editors
             return null;
         }
 
-        private void Messages_CollectionChanged(object? _, NotifyCollectionChangedEventArgs __)
+        private void UpdateLandingVisibility(bool showLanding)
         {
-            if (Landing.Visibility == Visibility.Visible && _chat!.Messages.Any()) HideLandingAndExpandChat();
-        }
-
-        private void HideLandingAndExpandChat()
-        {
-            Landing.Visibility = Visibility.Collapsed;
-            ChatGrid.VerticalAlignment = VerticalAlignment.Stretch;
-            ChatRowDefinition.Height = new(1, GridUnitType.Star);
+            if (showLanding)
+            {
+                Landing.Visibility = Visibility.Visible;
+                ChatGrid.VerticalAlignment = VerticalAlignment.Center;
+                ChatRowDefinition.Height = new(0, GridUnitType.Auto);
+                UndoButton.Visibility = Visibility.Collapsed;
+                CleanButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Landing.Visibility = Visibility.Collapsed;
+                ChatGrid.VerticalAlignment = VerticalAlignment.Stretch;
+                ChatRowDefinition.Height = new(1, GridUnitType.Star);
+                UndoButton.Visibility = Visibility.Visible;
+                CleanButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void ItemsStackPanel_SizeChanged(object? _, SizeChangedEventArgs? __)
@@ -195,20 +201,35 @@ namespace PowerPad.WinUI.Components.Editors
 
         private async void ChatControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
-            var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
-
-            if (scrollViewer is not null)
+            if (Landing.Visibility == Visibility.Visible) UpdateLandingVisibility(showLanding: false);
+            else
             {
-                while (Math.Ceiling(scrollViewer.VerticalOffset) < scrollViewer.ScrollableHeight)
-                {
-                    scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight + 100, null);
-                    InvertedListView.UpdateLayout();
+                var scrollViewer = FindElement<ScrollViewer>(InvertedListView);
 
-                    await Task.Delay(100);
+                if (scrollViewer is not null)
+                {
+                    while (Math.Ceiling(scrollViewer.VerticalOffset) < scrollViewer.ScrollableHeight)
+                    {
+                        scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight + 100, null);
+                        InvertedListView.UpdateLayout();
+
+                        await Task.Delay(100);
+                    }
                 }
             }
 
-            ChatControl.StartStreamingChat(_chat!.Messages, () => _document.Status = DocumentStatus.Dirty);
+            UndoButton.IsEnabled = false;
+            CleanButton.IsEnabled = false;
+            ChatControl.StartStreamingChat
+            (
+                _chat!.Messages,
+                () =>
+                {
+                    _document.Status = DocumentStatus.Dirty;
+                    UndoButton.IsEnabled = _chat.Messages.Any();
+                    CleanButton.IsEnabled = _chat.Messages.Any();
+                }
+            );
         }
 
         private void ChatControl_ChatOptionsChanged(object? _, ChatOptionChangedEventArgs eventArgs)
@@ -258,6 +279,32 @@ namespace PowerPad.WinUI.Components.Editors
             flyout.ShowAt((HyperlinkButton)sender);
             await Task.Delay(1000);
             flyout.Hide();
+        }
+
+        private async void UndoButton_Click(object _, RoutedEventArgs __)
+        {
+            var result = await DialogHelper.Confirm(XamlRoot, "Eliminar el último mensaje", "¿Está seguro?");
+
+            if (result)
+            {
+                _chat!.RemoveLastMessageCommand.Execute(null);
+                _document.Status = DocumentStatus.Dirty;
+
+                UpdateLandingVisibility(showLanding: !_chat.Messages.Any());
+            }
+        }
+
+        private async void CleanButton_Click(object _, RoutedEventArgs __)
+        {
+            var result = await DialogHelper.Confirm(XamlRoot, "Eliminar la conversación", "¿Está seguro?");
+
+            if (result)
+            {
+                _chat!.ClearMessagesCommand.Execute(null);
+                _document.Status = DocumentStatus.Dirty;
+
+                UpdateLandingVisibility(showLanding: true);
+            }
         }
     }
 }

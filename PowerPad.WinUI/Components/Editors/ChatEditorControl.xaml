@@ -18,6 +18,8 @@
             UserTemplate="{StaticResource UserDataTemplate}" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+        <converters:BoolNegationConverter x:Key="BoolNegationConverter" />
+        <converters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
         <DataTemplate x:Key="UserDataTemplate" x:DataType="chat:MessageViewModel">
             <StackPanel
                 MaxWidth="700"
@@ -28,7 +30,8 @@
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="1"
                 CornerRadius="{StaticResource OverlayCornerRadius}"
-                Spacing="8">
+                Spacing="8"
+                Margin="0,8,0,0">
                 <controls:MarkdownTextBlock
                     IsTextSelectionEnabled="True"
                     Text="{x:Bind Content, Mode=OneWay}"
@@ -42,7 +45,7 @@
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="AssistantDataTemplate" x:DataType="chat:MessageViewModel">
-            <Grid Margin="0,4" HorizontalAlignment="Left">
+            <Grid Margin="0,8,0,0">
                 <StackPanel
                     MaxWidth="700"
                     MinWidth="135"
@@ -53,7 +56,8 @@
                     BorderThickness="1"
                     CornerRadius="{StaticResource OverlayCornerRadius}"
                     Spacing="8"
-                    MinHeight="70">
+                    MinHeight="70"
+                    Visibility="{x:Bind ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}, ConverterParameter=True}">
                     <TextBlock
                         x:Name="LoadingText"
                         Visibility="{x:Bind Loading, Mode=OneWay}"
@@ -61,7 +65,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     <Expander
                         Visibility="{x:Bind Reasoning, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"
-                        IsExpanded="False"
+                        IsExpanded="{x:Bind Loading, Mode=OneWay}"
                         ExpandDirection="Down"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Header="Mostrar pensamiento"
@@ -99,6 +103,13 @@
                         </HyperlinkButton>
                     </StackPanel>
                 </StackPanel>
+                <InfoBar
+                    IsOpen="True"
+                    Visibility="{x:Bind ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"
+                    IsClosable="False"
+                    Severity="Error"
+                    HorizontalAlignment="Stretch"
+                    Message="{x:Bind ErrorMessage, Mode=OneWay}" />
             </Grid>
         </DataTemplate>
     </local:EditorControl.Resources>
@@ -107,14 +118,39 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <lcontrols:EditableTextBlock
-            x:Name="EditableTextBlock"
-            FontSize="27.5"
-            FontWeight="SemiBold"
-            ForcedForeground="{ThemeResource TextFillColorPrimaryBrush}"
-            Value="{x:Bind _document.Name, Mode=OneWay}"
-            Margin="36,24,36,12"
-            Edited="EditableTextBlock_Edited"/>
+
+        <Grid Margin="36,24,36,12" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <lcontrols:EditableTextBlock
+                x:Name="EditableTextBlock"
+                FontSize="27.5"
+                FontWeight="SemiBold"
+                ForcedForeground="{ThemeResource TextFillColorPrimaryBrush}"
+                Value="{x:Bind _document.Name, Mode=OneWay}"
+                Edited="EditableTextBlock_Edited"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="UndoButton"
+                    ToolTipService.ToolTip="Eliminar último mensaje"
+                    Click="UndoButton_Click">
+                    <Button.Content>
+                        <FontIcon FontSize="20" Glyph="&#xE8E6;" />
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="CleanButton"
+                    ToolTipService.ToolTip="Eliminar toda la conversación"
+                    Click="CleanButton_Click">
+                    <Button.Content>
+                        <FontIcon FontSize="20" Glyph="&#xEA99;" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+
         <Grid Grid.Row="1" x:Name="ChatGrid" MaxWidth="1200" VerticalAlignment="Center" SizeChanged="ItemsStackPanel_SizeChanged">
             <Grid.RowDefinitions>
                 <RowDefinition x:Name="ChatRowDefinition" Height="auto" />
@@ -166,7 +202,8 @@
                 Margin="36,18,36,36"
                 ChatPlaceHolder="Escribe lo que quieras..."
                 SendButtonClicked="ChatControl_SendButtonClicked"
-                ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged" />
+                ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged"
+                IsEnabled="{x:Bind _chat.ChatError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
         </Grid>
     </Grid>
 </local:EditorControl>

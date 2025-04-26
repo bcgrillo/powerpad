@@ -16,12 +16,11 @@ namespace PowerPad.Core.Services.AI
 
     public class ChatService(IReadOnlyDictionary<ModelProvider, IAIService> aiServices) : IChatService
     {
-        private const string THINK_START_TAG = "<think>";
-        private const string THINK_END_TAG = "</think>";
+        private static readonly string[] THINK_START_TAG = ["<think>", "<thought>"];
+        private static readonly string[] THINK_END_TAG = ["</think>", "</thought>"];
 
         private AIModel? _defaultModel;
         private AIParameters? _defaultParameters;
-        private IEnumerable<string>? _notAllowedParameters;
 
         private readonly IReadOnlyDictionary<ModelProvider, IAIService> _aiServices = aiServices;
 
@@ -35,11 +34,11 @@ namespace PowerPad.Core.Services.AI
             _defaultParameters = defaultParameters;
         }
 
-        private IChatClient ChatClient(AIModel model)
+        private IChatClient ChatClient(AIModel model, out IEnumerable<string>? notAllowedParameters)
         {
             if (_aiServices.TryGetValue(model.ModelProvider, out var aiService))
             {
-                return aiService.ChatClient(model, out _notAllowedParameters);
+                return aiService.ChatClient(model, out notAllowedParameters);
             }
             else
             {
@@ -60,12 +59,21 @@ namespace PowerPad.Core.Services.AI
 
             var response = (await chatClient.GetResponseAsync(chatMessages, chatOption, cancellationToken)).Text;
 
-            // Remove content between <think> and </think>, or clear the response if </think> is missing
-            var startIndex = response.IndexOf(THINK_START_TAG);
-            if (startIndex != -1)
+            // Remove content between think tags, or clear the response if close think tag is missing
+            var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => response.Contains(tag));
+
+            if (thinkStartTag is not null)
             {
-                var endIndex = response.IndexOf(THINK_END_TAG, startIndex);
-                if (endIndex != -1) response = response.Remove(startIndex, endIndex + THINK_END_TAG.Length - startIndex);
+                var startIndex = response.IndexOf(thinkStartTag);
+
+                var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => response.Contains(tag));
+
+                if (thinkEndTag is not null)
+                {
+                    var endIndex = response.IndexOf(thinkEndTag, startIndex);
+
+                    response = response.Remove(startIndex, endIndex + thinkEndTag.Length - startIndex);
+                }
                 else response = string.Empty;
             }
 
@@ -79,14 +87,14 @@ namespace PowerPad.Core.Services.AI
 
             if (model is null) throw new InvalidOperationException("The model is missing and there is no default model set.");
 
-            var chatClient = ChatClient(model);
+            var chatClient = ChatClient(model, out var notAllowedParameters);
 
             ChatOptions? chatOption = null;
             List<ChatMessage> chatMessages = [];
 
             if (parameters is not null)
             {
-                chatOption = PrepareChatOptions(parameters);
+                chatOption = PrepareChatOptions(parameters, notAllowedParameters);
 
                 if (!string.IsNullOrEmpty(parameters.SystemPrompt))
                     chatMessages.Add(new(ChatRole.System, parameters.SystemPrompt));
@@ -111,7 +119,7 @@ namespace PowerPad.Core.Services.AI
 
             if (model is null) throw new InvalidOperationException("The model is missing and there is no default model set.");
 
-            var chatClient = ChatClient(model);
+            var chatClient = ChatClient(model, out var notAllowedParameters);
 
             var chatMessages = new List<ChatMessage>
             {
@@ -125,22 +133,22 @@ namespace PowerPad.Core.Services.AI
                 new(ChatRole.User, input)
             };
 
-            var chatOption = PrepareChatOptions(agent);
+            var chatOption = PrepareChatOptions(agent, notAllowedParameters);
 
             return (chatClient, chatOption, chatMessages);
         }
 
-        private ChatOptions PrepareChatOptions(IChatOptions chatoptions)
+        private static ChatOptions PrepareChatOptions(IChatOptions chatoptions, IEnumerable<string>? notAllowedParameters)
         {
             ChatOptions chatOption;
 
-            if (_notAllowedParameters is not null)
+            if (notAllowedParameters is not null)
             {
                 chatOption = new()
                 {
-                    Temperature = _notAllowedParameters.Contains(nameof(IChatOptions.Temperature)) ? null : chatoptions.Temperature,
-                    TopP = _notAllowedParameters.Contains(nameof(IChatOptions.TopP)) ? null : chatoptions.TopP,
-                    MaxOutputTokens = _notAllowedParameters.Contains(nameof(IChatOptions.MaxOutputTokens)) ? null : chatoptions.MaxOutputTokens,
+                    Temperature = notAllowedParameters.Contains(nameof(IChatOptions.Temperature)) ? null : chatoptions.Temperature,
+                    TopP = notAllowedParameters.Contains(nameof(IChatOptions.TopP)) ? null : chatoptions.TopP,
+                    MaxOutputTokens = notAllowedParameters.Contains(nameof(IChatOptions.MaxOutputTokens)) ? null : chatoptions.MaxOutputTokens,
                 };
             }
             else

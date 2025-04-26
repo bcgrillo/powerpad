@@ -57,10 +57,12 @@ namespace PowerPad.WinUI.Pages
                 if (_settings.General.OllamaEnabled && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
                     _settings.General.OllamaEnabled = false;
 
-                if (_settings.General.AzureAIEnabled && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl))
+                if (_settings.General.AzureAIEnabled && 
+                    (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key)))
                     _settings.General.AzureAIEnabled = false;
 
-                if (_settings.General.OpenAIEnabled && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl))
+                if (_settings.General.OpenAIEnabled && 
+                    (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key)))
                     _settings.General.OpenAIEnabled = false;
             };
         }
@@ -282,7 +284,7 @@ namespace PowerPad.WinUI.Pages
         {
             if (!_settings.General.AzureAIEnabled)
             {
-                if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl))
+                if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key))
                 {
                     AzureAIModelsExpander.IsExpanded = true;
                     AzureAIUrlTextBox.Focus(FocusState.Keyboard);
@@ -296,7 +298,7 @@ namespace PowerPad.WinUI.Pages
         {
             if (!_settings.General.OpenAIEnabled)
             {
-                if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl))
+                if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key))
                 {
                     OpenAIModelsExpander.IsExpanded = true;
                     OpenAIUrlTextBox.Focus(FocusState.Keyboard);

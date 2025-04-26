@@ -43,21 +43,23 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         private void AvailableModelsCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
-            if (eventArgs.Action == NotifyCollectionChangedAction.Add)
+            switch (eventArgs.Action)
             {
-                foreach (AIModelViewModel model in eventArgs.NewItems!)
-                {
-                    model.PropertyChanged += AvailableModelsCollectionPropertyChangedHandler;
-                }
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AIModelViewModel model in eventArgs.NewItems!)
+                    {
+                        model.PropertyChanged += AvailableModelsCollectionPropertyChangedHandler;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AIModelViewModel model in eventArgs.OldItems!)
+                    {
+                        model.PropertyChanged -= AvailableModelsCollectionPropertyChangedHandler;
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException("Only Add and Remove actions are supported.");
             }
-            else if (eventArgs.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (AIModelViewModel model in eventArgs.OldItems!)
-                {
-                    model.PropertyChanged -= AvailableModelsCollectionPropertyChangedHandler;
-                }
-            }
-            else throw new NotImplementedException("Only Add and Remove actions are supported.");
 
             ModelAvaibilityChanged?.Invoke(this, EventArgs.Empty);
             OnPropertyChanged(nameof(AvailableModels));

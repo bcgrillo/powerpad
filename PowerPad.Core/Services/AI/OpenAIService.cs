@@ -10,6 +10,7 @@ namespace PowerPad.Core.Services.AI
     {
         private const string GPT_MODEL_PREFIX = "gpt";
         private const string OX_MODEL_PREFIX = "o";
+        private static readonly string[] EXCLUDED_WORDS = ["realtime", "image", "audio", "search", "transcribe"];
         private const string OPENAI_MODELS_BASE_URL = "https://platform.openai.com/docs/models/";
         private const int TEST_CONNECTION_TIMEOUT = 5000;
         private static readonly string[] REASONING_MODELS_NOT_ALLOWED_PARAMETERS =
@@ -64,11 +65,11 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
-        public IChatClient ChatClient(AIModel model, out IEnumerable<string> notAllowedParameters)
+        public IChatClient ChatClient(AIModel model, out IEnumerable<string>? notAllowedParameters)
         {
             var isReasoningModel = model.Name[0] == OX_MODEL_PREFIX[0] && char.IsDigit(model.Name[1]);
 
-            notAllowedParameters = isReasoningModel ? REASONING_MODELS_NOT_ALLOWED_PARAMETERS : [];
+            notAllowedParameters = isReasoningModel ? REASONING_MODELS_NOT_ALLOWED_PARAMETERS : null;
 
             return GetClient().GetChatClient(model.Name).AsIChatClient();
         }
@@ -79,9 +80,11 @@ namespace PowerPad.Core.Services.AI
 
             // Compatible models are those that start with "gpt" or "oX" where X is a digit
             // By now this is the only way to filter models compatible with chat completions
+            // Exclude models with "realtime" or "image" in their name (e.g. "gpt-4o-realtime" or "gpt-image-1")
             var compatibleModels = models.Value.Where(m =>
-                m.Id.StartsWith(GPT_MODEL_PREFIX, StringComparison.InvariantCultureIgnoreCase) ||
-                (m.Id.Length > 1 && m.Id[0] == OX_MODEL_PREFIX[0] && char.IsDigit(m.Id[1]))
+                !EXCLUDED_WORDS.Any(excludedWord => m.Id.Contains(excludedWord, StringComparison.InvariantCultureIgnoreCase)) &&
+                (m.Id.StartsWith(GPT_MODEL_PREFIX, StringComparison.InvariantCultureIgnoreCase) ||
+                (m.Id.Length > 1 && m.Id[0] == OX_MODEL_PREFIX[0] && char.IsDigit(m.Id[1])))
             ).OrderByDescending(m => m.CreatedAt);
 
             return string.IsNullOrEmpty(query)

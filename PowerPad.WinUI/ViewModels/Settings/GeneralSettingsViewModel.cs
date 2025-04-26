@@ -62,7 +62,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             get;
             init
             {
-                field = value;
+                field = value ?? [];
                 field.CollectionChanged += AvailableProvidersCollectionChangedHandler;
             }
         }

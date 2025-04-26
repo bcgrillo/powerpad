@@ -27,8 +27,8 @@ namespace PowerPad.WinUI.Components.Controls
     {
         private const double DEBOURCE_INTERVAL = 200;
         private const double LOADING_ANIMATION_INTERVAL = 200;
-        private const string THINK_START_TAG = "<think>";
-        private const string THINK_END_TAG = "</think>";
+        private static readonly string[] THINK_START_TAG = ["<think>", "<thought>"];
+        private static readonly string[] THINK_END_TAG = ["</think>", "</thought>"];
         private const string MARKDOWN_QUOTE = "> ";
 
         private readonly IChatService _chatService;
@@ -315,55 +315,61 @@ namespace PowerPad.WinUI.Components.Controls
                 {
                     await foreach (var messagePart in _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
                     {
-                        try
+                        messageBuffer += messagePart.Text;
+
+                        string? reasoning = null;
+                        string? content = null;
+                        bool loading = true;
+
+                        var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => messageBuffer.Contains(tag));
+
+                        // Logic to parse and update reasoning and content from the message buffer
+                        if (thinkStartTag is not null)
                         {
-                            messageBuffer += messagePart.Text;
+                            var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => messageBuffer.Contains(tag));
 
-                            string? reasoning = null;
-                            string? content = null;
-                            bool loading = true;
+                            var startIndex = messageBuffer.IndexOf(thinkStartTag) + thinkStartTag.Length;
 
-                            // Logic to parse and update reasoning and content from the message buffer
-                            if (messageBuffer.Contains(THINK_START_TAG))
+                            if (thinkEndTag is not null)
                             {
-                                var startIndex = messageBuffer.IndexOf(THINK_START_TAG) + THINK_START_TAG.Length;
-                                var endIndex = messageBuffer.IndexOf(THINK_END_TAG, startIndex);
+                                var endIndex = messageBuffer.IndexOf(thinkEndTag, startIndex);
 
-                                if (endIndex != -1)
-                                {
-                                    reasoning = messageBuffer[startIndex..endIndex].Trim().Replace("\n\n", "\n");
-                                    content = messageBuffer[(endIndex + THINK_END_TAG.Length)..].Trim();
-                                    if (loading) loading = false;
-                                }
-                                else
-                                {
-                                    reasoning = messageBuffer[startIndex..].Trim().Replace("\n\n", "\n");
-                                }
+                                reasoning = messageBuffer[startIndex..endIndex].Trim().Replace("\n\n", "\n");
+                                content = messageBuffer[(endIndex + thinkEndTag.Length)..].Trim();
+
+                                if (loading) loading = false;
                             }
                             else
                             {
-                                content = messageBuffer;
-                                if (loading) loading = false;
+                                reasoning = messageBuffer[startIndex..].Trim().Replace("\n\n", "\n");
                             }
-
-                            DispatcherQueue.TryEnqueue(() =>
-                            {
-                                _lastAssistantMessage.Reasoning = reasoning;
-                                _lastAssistantMessage.Content = content;
-                                _lastAssistantMessage.Loading = loading;
-                            });
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            //TODO: Anythig
-                            Debug.WriteLine(ex.ToString());
+                            content = messageBuffer;
+                            if (loading) loading = false;
                         }
+
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            _lastAssistantMessage.Reasoning = reasoning;
+                            _lastAssistantMessage.Content = content;
+                            _lastAssistantMessage.Loading = loading;
+                        });
                     }
                 }
                 catch (Exception ex)
                 {
-                    //TODO: Anythig
-                    Debug.WriteLine(ex.ToString());
+                    DispatcherQueue.TryEnqueue(() =>
+                    {
+                        messageList.Remove(_lastAssistantMessage);
+
+                        _lastAssistantMessage.Reasoning = null;
+                        _lastAssistantMessage.Content = null;
+                        _lastAssistantMessage.Loading = false;
+                        _lastAssistantMessage.ErrorMessage = $"Error: {ex.Message.Trim().ReplaceLineEndings(" ")}";
+                        messageList.Add(_lastAssistantMessage);
+                    });
                 }
 
                 if (!_cts.IsCancellationRequested) FinalizeChat();
@@ -374,7 +380,9 @@ namespace PowerPad.WinUI.Components.Controls
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (_lastAssistantMessage is not null && string.IsNullOrWhiteSpace(_lastAssistantMessage.Content))
+                if (_lastAssistantMessage is not null
+                    && string.IsNullOrWhiteSpace(_lastAssistantMessage.Content)
+                    && string.IsNullOrWhiteSpace(_lastAssistantMessage.ErrorMessage))
                 {
                     _messageList!.Remove(_lastAssistantMessage);
                     _messageList!.Remove(_lastUserMessage!);

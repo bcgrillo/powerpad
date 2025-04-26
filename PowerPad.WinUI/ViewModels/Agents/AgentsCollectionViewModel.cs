@@ -34,23 +34,26 @@ namespace PowerPad.WinUI.ViewModels.Agents
         {
             OnPropertyChanged($"{nameof(Agents)}");
 
-            if (eventArgs.Action == NotifyCollectionChangedAction.Add)
+            switch (eventArgs.Action)
             {
-                foreach (AgentViewModel model in eventArgs.NewItems!)
-                {
-                    model.PropertyChanged += CollectionPropertyChangedHandler;
-                }
-            }
-            else if (eventArgs.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (AgentViewModel model in eventArgs.OldItems!)
-                {
-                    model.PropertyChanged -= CollectionPropertyChangedHandler;
-                }
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AgentViewModel model in eventArgs.NewItems!)
+                    {
+                        model.PropertyChanged += CollectionPropertyChangedHandler;
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AgentViewModel model in eventArgs.OldItems!)
+                    {
+                        model.PropertyChanged -= CollectionPropertyChangedHandler;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
                     break;
                 default:
-                    if (eventArgs.Action != NotifyCollectionChangedAction.Move)
-                throw new NotImplementedException("Only Add and Remove actions are supported.");
+                    throw new NotImplementedException("Only Add and Remove actions are supported.");
+            }
 
             SaveAgents();
         }

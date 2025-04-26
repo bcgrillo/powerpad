@@ -81,6 +81,7 @@ namespace PowerPad.WinUI.Dialogs
 
                 d.Icon.Visibility = Visibility.Visible;
                 d.Icon.Glyph = "\uE783";
+                d.Icon.Foreground = (Brush)Application.Current.Resources["InfoBarErrorSeverityIconBackground"];
             });
             await inputDialog.ShowAsync();
         }
