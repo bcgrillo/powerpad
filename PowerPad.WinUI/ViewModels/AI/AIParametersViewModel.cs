@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.ViewModels.Agents;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
@@ -53,7 +54,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         public AIParameters GetRecord() => _aiParameters;
 
-        public void Set(AIParameters parameters)
+        public void SetRecord(AIParameters parameters)
         {
             SystemPrompt = parameters.SystemPrompt;
             Temperature = parameters.Temperature;
@@ -62,16 +63,14 @@ namespace PowerPad.WinUI.ViewModels.AI
             MaxConversationLength = parameters.MaxConversationLength;
         }
 
-        public override bool Equals(object? other)
+        public override bool Equals(object? obj)
         {
-            if (other is null) return false;
+            if (obj is not AIParametersViewModel other)
+                return false;
 
-            if (other is AIParametersViewModel otherAIViewModel)
-            {
-                if (ReferenceEquals(this, other)) return true;
-                return GetRecord() == otherAIViewModel.GetRecord();
-            }
-            else return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return GetRecord() == other.GetRecord();
         }
 
         public override int GetHashCode()

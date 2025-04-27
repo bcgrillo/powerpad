@@ -110,7 +110,7 @@ namespace PowerPad.WinUI.Components.Controls
 
             if (parameters is not null)
             {
-                _parameters.Set(parameters.GetRecord());
+                _parameters.SetRecord(parameters.GetRecord());
 
                 _sendParameters = true;
                 EnableParametersSwitch.IsOn = true;

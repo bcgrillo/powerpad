@@ -139,15 +139,15 @@ namespace PowerPad.WinUI
             AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         }
 
-        private void NavView_SelectionChanged(object _, NavigationViewSelectionChangedEventArgs args)
+        private void NavView_SelectionChanged(object _, NavigationViewSelectionChangedEventArgs eventArgs)
         {
-            if (args.IsSettingsSelected)
+            if (eventArgs.IsSettingsSelected)
             {
                 NavigateToPage(nameof(SettingsPage));
             }
             else
             {
-                var selectedItem = (NavigationViewItem)args.SelectedItem;
+                var selectedItem = (NavigationViewItem)eventArgs.SelectedItem;
 
                 NavigateToPage(selectedItem.Tag?.ToString());
             }

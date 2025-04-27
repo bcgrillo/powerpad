@@ -7,7 +7,7 @@ using System;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public sealed partial class AgentIconControl : UserControl
+    public partial class AgentIconControl : UserControl
     {
         private static readonly AgentIcon DEFAULT_AGENT_ICON = new("\uE99A", AgentIconType.FontIconGlyph);
 

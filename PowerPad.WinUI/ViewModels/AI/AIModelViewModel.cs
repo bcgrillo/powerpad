@@ -59,16 +59,14 @@ namespace PowerPad.WinUI.ViewModels.AI
         [JsonIgnore]
         public string CardName => DisplayName ?? Name;
 
-        public override bool Equals(object? other)
+        public override bool Equals(object? obj)
         {
-            if (other is null) return false;
+            if (obj is not AIModelViewModel other)
+                return false;
 
-            if (other is AIModelViewModel otherAIViewModel)
-            {
-                if (ReferenceEquals(this, other)) return true;
-                return GetRecord() == otherAIViewModel.GetRecord();
-            }
-            else return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return GetRecord() == other.GetRecord();
         }
 
         public override int GetHashCode()

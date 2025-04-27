@@ -25,11 +25,11 @@ namespace PowerPad.WinUI.Pages
             _settings = App.Get<SettingsViewModel>();
         }
 
-        private void NavView_SelectionChanged(NavigationView __, NavigationViewSelectionChangedEventArgs args)
+        private void NavView_SelectionChanged(NavigationView __, NavigationViewSelectionChangedEventArgs eventArgs)
         {
-            if (args.SelectedItem is null) return;
+            if (eventArgs.SelectedItem is null) return;
 
-            var selectedItem = (NavigationViewItem)args.SelectedItem;
+            var selectedItem = (NavigationViewItem)eventArgs.SelectedItem;
 
             var modelTag = selectedItem.Tag as ModelProvider?;
             var optionTag = selectedItem.Tag as ModelsMenuOption?;

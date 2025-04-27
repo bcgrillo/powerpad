@@ -290,7 +290,7 @@ namespace PowerPad.WinUI.Components.Editors
                 "Esta acción eliminará su último mensaje y la última respuesta del asistente.\n¿Está seguro?"
             );
             
-            if (result)
+            if (result == ContentDialogResult.Primary)
             {
                 _chat!.RemoveLastMessageCommand.Execute(null);
                 _document.Status = DocumentStatus.Dirty;
@@ -308,7 +308,7 @@ namespace PowerPad.WinUI.Components.Editors
                 "Esta acción eliminará toda la conversación. ¿Está seguro?"
             );
 
-            if (result)
+            if (result == ContentDialogResult.Primary)
             {
                 _chat!.ClearMessagesCommand.Execute(null);
                 _document.Status = DocumentStatus.Dirty;

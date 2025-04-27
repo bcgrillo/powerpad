@@ -6,55 +6,55 @@
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     Unloaded="UserControl_Unloaded">
     <Grid>
-        <Grid x:Name="Landing" Visibility="Visible">
-            <StackPanel
+        <StackPanel
+            x:Name="Landing"
+            Visibility="Visible"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Vertical"
+            Spacing="8">
+            <Image Margin="0,0,0,16" HorizontalAlignment="Center" Height="200">
+                <Image.Source>
+                    <BitmapImage DecodePixelHeight="200" UriSource="ms-appx:///Assets/Background/Landing.png" />
+                </Image.Source>
+            </Image>
+            <TextBlock
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="Es hora de empezar..."
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="NoWrap"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Orientation="Vertical"
-                Spacing="8">
-                <Image Margin="0,0,0,16" HorizontalAlignment="Center" Height="200">
-                    <Image.Source>
-                        <BitmapImage DecodePixelHeight="200" UriSource="ms-appx:///Assets/Background/Landing.png" />
-                    </Image.Source>
-                </Image>
-                <TextBlock
-                    Style="{StaticResource TitleTextBlockStyle}"
-                    Text="Es hora de empezar..."
-                    TextTrimming="CharacterEllipsis"
-                    TextWrapping="NoWrap"
-                    HorizontalAlignment="Center"
-                    Margin="0,0,0,16"/>
-                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                    <Button 
-                        x:Name="NewChatButton"
-                        Height="36"
-                        Width="120"
-                        BorderThickness="0"
-                        Click="NewChatButton_Click"
-                        ToolTipService.ToolTip="Nuevo chat"
-                        Style="{StaticResource AccentButtonStyle}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <FontIcon FontSize="16" Glyph="&#xE710;" />
-                            <TextBlock Text="Nuevo chat" />
-                        </StackPanel>
-                    </Button>
-                    <Button 
-                        x:Name="NewNoteButton"
-                        Grid.Column="1"
-                        Height="36"
-                        Width="120"
-                        BorderThickness="0"
-                        Click="NewNoteButton_Click"
-                        ToolTipService.ToolTip="Nueva nota"
-                        Style="{StaticResource AccentButtonStyle}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <FontIcon FontSize="16" Glyph="&#xE710;" />
-                            <TextBlock Text="Nueva nota" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+                Margin="0,0,0,16"/>
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                <Button 
+                    x:Name="NewChatButton"
+                    Height="36"
+                    Width="120"
+                    BorderThickness="0"
+                    Click="NewChatButton_Click"
+                    ToolTipService.ToolTip="Nuevo chat"
+                    Style="{StaticResource AccentButtonStyle}">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <FontIcon FontSize="16" Glyph="&#xE710;" />
+                        <TextBlock Text="Nuevo chat" />
+                    </StackPanel>
+                </Button>
+                <Button 
+                    x:Name="NewNoteButton"
+                    Grid.Column="1"
+                    Height="36"
+                    Width="120"
+                    BorderThickness="0"
+                    Click="NewNoteButton_Click"
+                    ToolTipService.ToolTip="Nueva nota"
+                    Style="{StaticResource AccentButtonStyle}">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <FontIcon FontSize="16" Glyph="&#xE710;" />
+                        <TextBlock Text="Nueva nota" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
-        </Grid>
+        </StackPanel>
         <Grid x:Name="EditorGrid" Visibility="Collapsed">
         </Grid>
     </Grid>

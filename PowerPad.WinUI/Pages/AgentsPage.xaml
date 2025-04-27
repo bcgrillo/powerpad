@@ -37,15 +37,18 @@
                     ItemInvoked="TreeView_ItemInvoked"
                     CanDrag="False"
                     CanReorderItems="True">
-                    <!--DragItemsCompleted="TreeView_DragItemsCompleted">-->
                     <TreeView.ItemTemplate>
                         <DataTemplate x:DataType="vm:AgentViewModel">
                             <TreeViewItem 
                                 Padding="0,0,8,0"
                                 AllowDrop="{x:Bind AllowDropFalse}">
                                 <StackPanel Padding="3" Orientation="Horizontal">
-                                    <controls:AgentIconControl Margin="-30,2,10,0" Size="16" AgentIcon="{x:Bind Icon, Mode=OneWay}" />
-                                    <TextBlock Margin="0,2,8,-2" Text="{x:Bind Name, Mode=OneWay}"/>
+                                    <controls:AgentIconControl
+                                        IsEnabled="{x:Bind Enabled, Mode=OneWay}"
+                                        Margin="-30,2,10,0" Size="16" AgentIcon="{x:Bind Icon, Mode=OneWay}" />
+                                    <controls:Label
+                                        IsEnabled="{x:Bind Enabled, Mode=OneWay}"
+                                        Margin="0,2,8,-2" Text="{x:Bind Name, Mode=OneWay}"/>
                                 </StackPanel>
                             </TreeViewItem>
                         </DataTemplate>
@@ -68,12 +71,44 @@
             </Grid>
         </Grid>
 
-        <Border
+        <Grid
             Grid.Row="1"
             Grid.Column="1"
             Background="{ThemeResource PowerPadEditorBrush}"
             CornerRadius="10,0,0,0">
-            <Frame x:Name="AgentsFrame" />
-        </Border>
+            <StackPanel 
+                x:Name="AgentLanding" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Spacing="8">
+                <Image Margin="0,0,0,16" HorizontalAlignment="Center" Height="200">
+                    <Image.Source>
+                        <BitmapImage DecodePixelHeight="200" UriSource="ms-appx:///Assets/Background/LandingAgents.png" />
+                    </Image.Source>
+                </Image>
+                <TextBlock
+                    Style="{StaticResource SubtitleTextBlockStyle}"
+                    Text="Seleccione un agente para modificarlo o cree uno nuevo."
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,16"/>
+                <Button 
+                    Height="36"
+                    BorderThickness="0"
+                    Click="NewAgentButton_Click"
+                    HorizontalAlignment="Center"
+                    ToolTipService.ToolTip="Nuevo agente"
+                    Style="{StaticResource AccentButtonStyle}">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <FontIcon FontSize="16" Glyph="&#xE710;" />
+                        <TextBlock Text="Crear un nuevo agente" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <ContentControl 
+                Visibility="Collapsed"
+                x:Name="AgentEditorContent" />
+        </Grid>
     </Grid>
 </local:DisposablePage>

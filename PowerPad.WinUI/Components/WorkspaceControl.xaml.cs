@@ -72,9 +72,9 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs args)
+        private void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs eventArgs)
         {
-            var invokedEntry = (FolderEntryViewModel)args.InvokedItem;
+            var invokedEntry = (FolderEntryViewModel)eventArgs.InvokedItem;
 
             if (invokedEntry.Type == EntryType.Document)
             {
@@ -87,11 +87,11 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs args)
+        private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs eventArgs)
         {
-            if (args.DropResult == DataPackageOperation.Move && args.Items.Count == 1 && args.Items[0] is FolderEntryViewModel entry)
+            if (eventArgs.DropResult == DataPackageOperation.Move && eventArgs.Items.Count == 1 && eventArgs.Items[0] is FolderEntryViewModel entry)
             {
-                var parentFolder = args.NewParentItem as FolderEntryViewModel;
+                var parentFolder = eventArgs.NewParentItem as FolderEntryViewModel;
 
                 _workspace.MoveEntryCommand.Execute(new MoveEntryParameters(entry, parentFolder));
             }
@@ -158,7 +158,7 @@ namespace PowerPad.WinUI.Components
 
             var result = await DialogHelper.Confirm(XamlRoot, "Eliminar", "¿Está seguro?");
 
-            if (result)
+            if (result == ContentDialogResult.Primary)
             {
                 try
                 {
@@ -305,9 +305,9 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void TreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs args)
+        private void TreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs eventArgs)
         {
-            if (args.AddedItems.Count > 0 && args.AddedItems[0] is FolderEntryViewModel selectedEntry)
+            if (eventArgs.AddedItems.Count > 0 && eventArgs.AddedItems[0] is FolderEntryViewModel selectedEntry)
             {
                 var container = (TreeViewItem)TreeView.ContainerFromItem(selectedEntry);
                 container?.StartBringIntoView(new BringIntoViewOptions

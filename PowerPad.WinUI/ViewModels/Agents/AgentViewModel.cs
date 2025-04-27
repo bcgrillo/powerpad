@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 using PowerPad.WinUI.Helpers;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml;
+using PowerPad.WinUI.ViewModels.AI;
+using System;
+using OllamaSharp.Models;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {
@@ -14,18 +17,19 @@ namespace PowerPad.WinUI.ViewModels.Agents
 
         [JsonConstructor]
         public AgentViewModel(string name,
-                              string description,
-                              string? promptParameterName = null,
-                              string? promptParameterDescription = null,
-                              AIModel? aiModel = null,
-                              float? temperature = null,
-                              float? topP = null,
-                              int? maxOutputTokens = null,
-                              AgentIcon? agentIcon = null)
+                              string prompt,
+                              string? promptParameterName,
+                              string? promptParameterDescription,
+                              AIModel? aiModel,
+                              float? temperature,
+                              float? topP,
+                              int? maxOutputTokens,
+                              AgentIcon? agentIcon,
+                              bool enabled)
             : this(new()
             {
                 Name = name,
-                Prompt = description,
+                Prompt = prompt,
                 PromptParameterName = promptParameterName,
                 PromptParameterDescription = promptParameterDescription,
                 AIModel = aiModel,
@@ -35,6 +39,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
             })
         {
             Icon = agentIcon;
+            Enabled = enabled;
         }
 
         public string Name
@@ -43,7 +48,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
             set => SetProperty(_agent.Name, value, _agent, (x, y) => x.Name = y);
         }
 
-        public string Description
+        public string Prompt
         {
             get => _agent.Prompt;
             set => SetProperty(_agent.Prompt, value, _agent, (x, y) => x.Prompt = y);
@@ -112,6 +117,56 @@ namespace PowerPad.WinUI.ViewModels.Agents
 
         public Agent GetRecord() => _agent;
 
+        public void SetRecord(Agent agent)
+        {
+            Name = agent.Name;
+            Prompt = agent.Prompt;
+            PromptParameterName = agent.PromptParameterName;
+            PromptParameterDescription = agent.PromptParameterDescription;
+            AIModel = agent.AIModel;
+            Temperature = agent.Temperature;
+            TopP = agent.TopP;
+            MaxOutputTokens = agent.MaxOutputTokens;
+        }
+
         partial void OnIconChanged(AgentIcon? oldValue, AgentIcon? newValue) => OnPropertyChanged(nameof(IconElement));
+
+        public AgentViewModel Copy()
+        {
+            var copy = new AgentViewModel(GetRecord() with { }); //Shallow copy
+
+            copy.Icon = Icon;
+            copy.Enabled = Enabled;
+
+            return copy;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not AgentViewModel other)
+                return false;
+
+            if (ReferenceEquals(this, other)) return true;
+
+            return GetRecord() == other.GetRecord() &&
+                   Icon == other.Icon &&
+                   Enabled == other.Enabled;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(GetRecord(), Icon, Enabled);
+        }
+
+        public static bool operator ==(AgentViewModel? left, AgentViewModel? right)
+        {
+            if (left is null) return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(AgentViewModel? left, AgentViewModel? right)
+        {
+            return !(left == right);
+        }
     }
 }

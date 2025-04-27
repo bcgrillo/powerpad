@@ -7,7 +7,7 @@ using Windows.System;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public sealed partial class ModelInfoViewer : UserControl
+    public partial class ModelInfoViewer : UserControl
     {
         public event EventHandler<ModelInfoViewerVisibilityEventArgs>? VisibilityChanged;
 
@@ -20,7 +20,7 @@ namespace PowerPad.WinUI.Components.Controls
             WebView.CoreWebView2Initialized += WebView_CoreWebView2Initialized;
         }
 
-        private void WebView_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs args)
+        private void WebView_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs eventArgs)
         {
             WebView.CoreWebView2.PermissionRequested += WebView_PermissionRequested;
         }
@@ -69,17 +69,17 @@ namespace PowerPad.WinUI.Components.Controls
             Hide();
         }
 
-        private async void WebView_NavigationStarting(CoreWebView2 _, CoreWebView2NavigationStartingEventArgs args)
+        private async void WebView_NavigationStarting(CoreWebView2 _, CoreWebView2NavigationStartingEventArgs eventArgs)
         {
-            args.Cancel = true;
-            await Launcher.LaunchUriAsync(new Uri(args.Uri));
+            eventArgs.Cancel = true;
+            await Launcher.LaunchUriAsync(new Uri(eventArgs.Uri));
         }
 
-        private void WebView_PermissionRequested(CoreWebView2 sender, CoreWebView2PermissionRequestedEventArgs args)
+        private void WebView_PermissionRequested(CoreWebView2 sender, CoreWebView2PermissionRequestedEventArgs eventArgs)
         {
-            args.State = CoreWebView2PermissionState.Deny;
-            args.SavesInProfile = true;
-            args.Handled = true;
+            eventArgs.State = CoreWebView2PermissionState.Deny;
+            eventArgs.SavesInProfile = true;
+            eventArgs.Handled = true;
         }
     }
 

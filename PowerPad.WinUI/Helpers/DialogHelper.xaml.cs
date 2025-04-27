@@ -25,7 +25,6 @@ namespace PowerPad.WinUI.Dialogs
         private DialogHelper(Action<DialogHelper> formatter)
         {
             InitializeComponent();
-
             formatter(this);
         }
 
@@ -51,7 +50,7 @@ namespace PowerPad.WinUI.Dialogs
             return inputDialog.Aceppted ? inputDialog.TextBox.Text : null;
         }
 
-        public static async Task<bool> Confirm(XamlRoot xamlRoot, string title, string message, string primaryButtonText = LABEL_YES, string secondaryButtonText = LABEL_NO)
+        public static async Task<ContentDialogResult> Confirm(XamlRoot xamlRoot, string title, string message, string primaryButtonText = LABEL_YES, string secondaryButtonText = LABEL_NO, bool showCancel = false)
         {
             var inputDialog = new DialogHelper(d =>
             {
@@ -64,9 +63,9 @@ namespace PowerPad.WinUI.Dialogs
                 d.Message.Text = message;
             });
 
-            await inputDialog.ShowAsync();
+            if (showCancel) inputDialog.CloseButtonText = "Cancelar";
 
-            return inputDialog.Aceppted;
+            return await inputDialog.ShowAsync();
         }
 
         public static async Task Alert(XamlRoot xamlRoot, string title, string message, string primaryButtonText = LABEL_OK)
