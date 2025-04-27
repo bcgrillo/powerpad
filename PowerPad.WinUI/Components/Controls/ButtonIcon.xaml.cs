@@ -24,6 +24,9 @@ namespace PowerPad.WinUI.Components.Controls
             this.InitializeComponent();
 
             IsEnabledChanged += (s, e) => UpdateEnabledLayout((bool)e.NewValue);
+
+            //TODO: Check if is possible registes a new callback to IsEnabledProperty, isEnebledChanged is not fired
+            //when the change of IsEnabled come from the parent control "IsEnabled" change
         }
 
         public void UpdateEnabledLayout(bool newValue) => Opacity = newValue ? ENABLED_OPACITY : DISABLED_OPACITY;

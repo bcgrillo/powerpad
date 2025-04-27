@@ -117,13 +117,13 @@ namespace PowerPad.WinUI.Components.Controls
         {
             if (_selectedAgent is not null)
             {
-                ModelIcon.Content = _selectedAgent.AgentIcon;
-                ModelName.Text = _selectedAgent.Name;
+                AgentIconControl.AgentIcon = _selectedAgent.Icon;
+                AgentName.Text = _selectedAgent.Name;
             }
             else
             {
-                ModelIcon.Content = null;
-                ModelName.Text = "Unavailable";
+                AgentIconControl.AgentIcon = null;
+                AgentName.Text = "Unavailable";
             }
         }
 

@@ -34,7 +34,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
                 MaxOutputTokens = maxOutputTokens
             })
         {
-            AgentIcon = agentIcon;
+            Icon = agentIcon;
         }
 
         public string Name
@@ -90,7 +90,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
         }
 
         [ObservableProperty]
-        public partial AgentIcon? AgentIcon { get; set; }
+        public partial AgentIcon? Icon { get; set; }
 
         [ObservableProperty]
         public partial bool Enabled { get; set; }
@@ -99,11 +99,11 @@ namespace PowerPad.WinUI.ViewModels.Agents
         public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant
 
         [JsonIgnore]
-        public IconElement? IconElement => AgentIcon?.IconType switch
+        public IconElement? IconElement => Icon?.Type switch
         {
-            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Value.IconSource), HorizontalAlignment = HorizontalAlignment.Center },
-            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center, Margin = new(-4, -2, 0, 0), IsTextScaleFactorEnabled = true, FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
-            AgentIconType.FontIconGlyph => new FontIcon { Glyph = AgentIcon.Value.IconSource, HorizontalAlignment = HorizontalAlignment.Center },
+            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(Icon.Value.Source) },
+            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = Icon.Value.Source, Margin = new (-3,-4,-1,-2), FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
+            AgentIconType.FontIconGlyph => new FontIcon { Glyph = Icon.Value.Source },
             _ => null,
         };
 
@@ -112,6 +112,6 @@ namespace PowerPad.WinUI.ViewModels.Agents
 
         public Agent GetRecord() => _agent;
 
-        partial void OnAgentIconChanged(AgentIcon? oldValue, AgentIcon? newValue) => OnPropertyChanged(nameof(IconElement));
+        partial void OnIconChanged(AgentIcon? oldValue, AgentIcon? newValue) => OnPropertyChanged(nameof(IconElement));
     }
 }

@@ -68,7 +68,7 @@
                     <NavigationViewItem
                         Margin="0,44,0,0"
                         Content="Workspace" ToolTipService.Placement="Right"
-                        Icon="{ui:FontIcon Glyph=&#xED43;}"
+                        Icon="{ui:FontIcon Glyph=&#xE80F;}"
                         Tag="WorkspacePage" />
                     <NavigationViewItem
                         x:Name="ModelsNavViewItem"

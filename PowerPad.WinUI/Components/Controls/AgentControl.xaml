@@ -33,15 +33,15 @@
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <DropDownButton x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Modelo">
+                            <DropDownButton x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Agente">
                                 <DropDownButton.Flyout>
                                     <MenuFlyout x:Name="AgentFlyoutMenu" Placement="TopEdgeAlignedLeft">
                                     </MenuFlyout>
                                 </DropDownButton.Flyout>
                                 <DropDownButton.Content>
                                     <StackPanel Orientation="Horizontal">
-                                        <ContentControl x:Name="ModelIcon" Height="20" Width="20" HorizontalAlignment="Center" />
-                                        <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
+                                        <local:AgentIconControl x:Name="AgentIconControl" Size="16" />
+                                        <TextBlock x:Name="AgentName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
                                     </StackPanel>
                                 </DropDownButton.Content>
                             </DropDownButton>

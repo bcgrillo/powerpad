@@ -44,7 +44,7 @@
                                 Padding="0,0,8,0"
                                 AllowDrop="{x:Bind AllowDropFalse}">
                                 <StackPanel Padding="3" Orientation="Horizontal">
-                                    <ContentControl Margin="-30,2,10,0" Height="20" Width="20" HorizontalAlignment="Center" Content="{x:Bind IconElement, Mode=OneWay}" />
+                                    <controls:AgentIconControl Margin="-30,2,10,0" Size="16" AgentIcon="{x:Bind Icon, Mode=OneWay}" />
                                     <TextBlock Margin="0,2,8,-2" Text="{x:Bind Name, Mode=OneWay}"/>
                                 </StackPanel>
                             </TreeViewItem>

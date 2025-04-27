@@ -7,5 +7,5 @@
         FontIconGlyph
     }
 
-    public readonly record struct AgentIcon(string IconSource, AgentIconType IconType);
+    public readonly record struct AgentIcon(string Source, AgentIconType Type);
 }
