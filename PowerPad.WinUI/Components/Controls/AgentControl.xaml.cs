@@ -117,7 +117,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             if (_selectedAgent is not null)
             {
-                ModelIcon.Content = _selectedAgent.IconElement;
+                ModelIcon.Content = _selectedAgent.AgentIcon;
                 ModelName.Text = _selectedAgent.Name;
             }
             else
