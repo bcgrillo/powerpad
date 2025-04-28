@@ -106,7 +106,7 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
-            <ContentControl 
+            <Grid 
                 Visibility="Collapsed"
                 x:Name="AgentEditorContent" />
         </Grid>

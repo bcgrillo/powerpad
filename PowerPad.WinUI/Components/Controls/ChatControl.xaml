@@ -57,7 +57,6 @@
                                     </StackPanel>
                                 </ToggleSwitch.OffContent>
                             </ToggleSwitch>
-                            <!--IsOn="{x:Bind ViewModel.ParametersEnabled, Mode=TwoWay}" -->
                             <Button 
                                 x:Name="CloseParametersButton"
                                 Grid.Column="2" HorizontalAlignment="Right"

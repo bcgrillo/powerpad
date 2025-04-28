@@ -36,7 +36,7 @@ namespace PowerPad.WinUI.Pages
 
                 if (result)
                 {
-                    AgentEditorContent.Content = null;
+                    AgentEditorContent.Children.Clear();
                     _editorControl.Dispose();
                     _editorControl = null;
                     _selectedAgent = null;
@@ -53,7 +53,7 @@ namespace PowerPad.WinUI.Pages
             {
                 _selectedAgent = invokedEntry;
                 _editorControl = new AgentEditorControl(invokedEntry);
-                AgentEditorContent.Content = _editorControl;
+                AgentEditorContent.Children.Add(_editorControl);
             }
         }
 
