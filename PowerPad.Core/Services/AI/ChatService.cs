@@ -3,6 +3,8 @@ using PowerPad.Core.Models.AI;
 using System.Text;
 using ChatRole = Microsoft.Extensions.AI.ChatRole;
 using PowerPad.Core.Contracts;
+using OllamaSharp.Models.Chat;
+using OllamaSharp.Models;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -11,7 +13,8 @@ namespace PowerPad.Core.Services.AI
         void SetDefaultModel(AIModel? defaultModel);
         void SetDefaultParameters(AIParameters? defaultConfig);
         IAsyncEnumerable<ChatResponseUpdate> GetChatResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? config = null, CancellationToken cancellationToken = default);
-        Task GetAgentResponse(string input, StringBuilder output, Agent selectedAgent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default);
+        IAsyncEnumerable<ChatResponseUpdate> GetAgentResponse(IList<ChatMessage> messages, Agent agent, CancellationToken cancellationToken = default);
+        Task GetAgentSingleResponse(string input, StringBuilder output, Agent selectedAgent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default);
     }
 
     public class ChatService(IReadOnlyDictionary<ModelProvider, IAIService> aiServices) : IChatService
@@ -53,9 +56,16 @@ namespace PowerPad.Core.Services.AI
             return chatClient.GetStreamingResponseAsync(chatMessages, chatOptions, cancellationToken);
         }
 
-        public async Task GetAgentResponse(string input, StringBuilder output, Agent selectedAgent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default)
+        public IAsyncEnumerable<ChatResponseUpdate> GetAgentResponse(IList<ChatMessage> messages, Agent agent, CancellationToken cancellationToken = default)
         {
-            var (chatClient, chatOption, chatMessages) = PrepareAgentParameters(input, selectedAgent, promptParameterValue, agentPrompt);
+            var (chatClient, chatOptions, chatMessages) = PrepareAgentParameters(messages, agent);
+
+            return chatClient.GetStreamingResponseAsync(chatMessages, chatOptions, cancellationToken);
+        }
+
+        public async Task GetAgentSingleResponse(string input, StringBuilder output, Agent agent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default)
+        {
+            var (chatClient, chatOption, chatMessages) = PrepareAgentParameters(input, agent, promptParameterValue, agentPrompt);
 
             var response = (await chatClient.GetResponseAsync(chatMessages, chatOption, cancellationToken)).Text;
 
@@ -89,12 +99,12 @@ namespace PowerPad.Core.Services.AI
 
             var chatClient = ChatClient(model, out var notAllowedParameters);
 
-            ChatOptions? chatOption = null;
+            ChatOptions? chatOptions = null;
             List<ChatMessage> chatMessages = [];
 
             if (parameters is not null)
             {
-                chatOption = PrepareChatOptions(parameters, notAllowedParameters);
+                chatOptions = PrepareChatOptions(parameters, notAllowedParameters);
 
                 if (!string.IsNullOrEmpty(parameters.SystemPrompt))
                     chatMessages.Add(new(ChatRole.System, parameters.SystemPrompt));
@@ -109,16 +119,35 @@ namespace PowerPad.Core.Services.AI
                 chatMessages.AddRange(messages);
             }
 
-            return (chatClient, chatOption, chatMessages);
+            return (chatClient, chatOptions, chatMessages);
+        }
+
+        private (IChatClient chatClient, ChatOptions? chatOptions, IList<ChatMessage> chatMessages) PrepareAgentParameters(IList<ChatMessage> messages, Agent agent)
+        {
+            var model = (agent.AIModel ?? _defaultModel)
+                ?? throw new InvalidOperationException("The model is missing and there is no default model set.");
+
+            var chatClient = ChatClient(model, out var notAllowedParameters);
+
+            List<ChatMessage> chatMessages = [];
+
+            var chatOptions = PrepareChatOptions(agent.GetParameters(_defaultParameters), notAllowedParameters);
+
+            chatMessages.Add(new(ChatRole.System, agent.Prompt));
+
+            if (_defaultParameters?.MaxConversationLength.HasValue == true)
+                chatMessages.AddRange(messages.TakeLast(_defaultParameters.MaxConversationLength.Value));
+            else
+                chatMessages.AddRange(messages);
+
+            return (chatClient, chatOptions, chatMessages);
         }
 
         private (IChatClient chatClient, ChatOptions? chatOptions, IList<ChatMessage> chatMessages) PrepareAgentParameters(string input, Agent agent, string? promptParameterValue, string? agentPrompt)
         {
-            var model = agent.AIModel;
-            model ??= _defaultModel;
-
-            if (model is null) throw new InvalidOperationException("The model is missing and there is no default model set.");
-
+            var model = (agent.AIModel ?? _defaultModel)
+                ?? throw new InvalidOperationException("The model is missing and there is no default model set.");
+            
             var chatClient = ChatClient(model, out var notAllowedParameters);
 
             var chatMessages = new List<ChatMessage>
@@ -133,9 +162,9 @@ namespace PowerPad.Core.Services.AI
                 new(ChatRole.User, input)
             };
 
-            var chatOption = PrepareChatOptions(agent, notAllowedParameters);
+            var chatOptions = PrepareChatOptions(agent.GetParameters(_defaultParameters), notAllowedParameters);
 
-            return (chatClient, chatOption, chatMessages);
+            return (chatClient, chatOptions, chatMessages);
         }
 
         private static ChatOptions PrepareChatOptions(IChatOptions chatoptions, IEnumerable<string>? notAllowedParameters)

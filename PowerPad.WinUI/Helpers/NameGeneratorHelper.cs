@@ -20,7 +20,7 @@ namespace PowerPad.WinUI.Helpers
 
         private static readonly Dictionary<DocumentType, string> NEW_DOCUMENT_NAMES = new()
         {
-            { DocumentType.Text, "Nueva nota" },
+            { DocumentType.Note, "Nueva nota" },
             { DocumentType.Chat, "Nuevo chat" }
         };
 
@@ -47,7 +47,7 @@ namespace PowerPad.WinUI.Helpers
 
                 try
                 {
-                    await chatService.GetAgentResponse(fileContent, generateNameBuilder, NAME_GENERATOR_AGENT, null, null, cts.Token);
+                    await chatService.GetAgentSingleResponse(fileContent, generateNameBuilder, NAME_GENERATOR_AGENT, null, null, cts.Token);
 
                     var generatedName = generateNameBuilder.ToString().Trim();
 

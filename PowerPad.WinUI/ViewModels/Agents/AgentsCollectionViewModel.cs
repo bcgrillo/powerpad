@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels.Agents
@@ -29,6 +30,8 @@ namespace PowerPad.WinUI.ViewModels.Agents
 
             Agents = _configStore.Get<ObservableCollection<AgentViewModel>>(StoreKey.Agents);
         }
+
+        public AgentViewModel? GetAgent(Guid id) => Agents.FirstOrDefault(x => x.Id == id);
 
         private void CollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {

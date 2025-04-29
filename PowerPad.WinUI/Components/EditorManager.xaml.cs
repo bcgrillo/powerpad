@@ -136,7 +136,7 @@ namespace PowerPad.WinUI.Components
 
         private void NewNoteButton_Click(object _, RoutedEventArgs __)
         {
-            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Text));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Note));
         }
 
         private void UserControl_Unloaded(object _, RoutedEventArgs __)

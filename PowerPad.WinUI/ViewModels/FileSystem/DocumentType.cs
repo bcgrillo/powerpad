@@ -4,11 +4,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public enum DocumentType
     {
-        Text,
+        Note,
         Chat,
-        /*Markdown,
-        ToDo,
-        Search*/
     }
 
     public static class DocumentTypesExtensions
@@ -17,11 +14,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         {
             return type switch
             {
-                DocumentType.Text => ".txt",
+                DocumentType.Note => ".txt",
                 DocumentType.Chat => ".chat",
-                /*DocumentType.Markdown => ".md",
-                DocumentType.ToDo => ".todo",
-                DocumentType.Search => ".search",*/
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -30,11 +24,8 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         {
             return type switch
             {
-                DocumentType.Text => "\uE70B",
+                DocumentType.Note => "\uE70B",
                 DocumentType.Chat => "\uE15F",
-                /*DocumentType.Markdown => "\uE8A5",
-                DocumentType.ToDo => "\uF0E3",
-                DocumentType.Search => "\uF6FA",*/
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }

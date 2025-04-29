@@ -11,12 +11,13 @@ using OllamaSharp.Models;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {
-    public partial class AgentViewModel(Agent agent) : ObservableObject
+    public partial class AgentViewModel(Agent agent, AgentIcon icon) : ObservableObject
     {
         private readonly Agent _agent = agent;
 
         [JsonConstructor]
-        public AgentViewModel(string name,
+        public AgentViewModel(Guid id,
+                              string name,
                               string prompt,
                               string? promptParameterName,
                               string? promptParameterDescription,
@@ -24,8 +25,9 @@ namespace PowerPad.WinUI.ViewModels.Agents
                               float? temperature,
                               float? topP,
                               int? maxOutputTokens,
-                              AgentIcon? agentIcon,
-                              bool enabled)
+                              AgentIcon icon,
+                              bool showInNotes,
+                              bool showInChats)
             : this(new()
             {
                 Name = name,
@@ -36,11 +38,14 @@ namespace PowerPad.WinUI.ViewModels.Agents
                 Temperature = temperature,
                 TopP = topP,
                 MaxOutputTokens = maxOutputTokens
-            })
+            }, icon)
         {
-            Icon = agentIcon;
-            Enabled = enabled;
+            Id = id;
+            ShowInNotes = showInNotes;
+            ShowInChats = showInChats;
         }
+
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Name
         {
@@ -57,11 +62,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
         public string? PromptParameterName
         {
             get => _agent.PromptParameterName;
-            set
-            {
-                SetProperty(_agent.PromptParameterName, value, _agent, (x, y) => x.PromptParameterName = y);
-                OnPropertyChanged(nameof(HasPromptParameter));
-            }
+            set => SetProperty(_agent.PromptParameterName, value, _agent, (x, y) => x.PromptParameterName = y);
         }
 
         public string? PromptParameterDescription
@@ -95,25 +96,33 @@ namespace PowerPad.WinUI.ViewModels.Agents
         }
 
         [ObservableProperty]
-        public partial AgentIcon? Icon { get; set; }
+        public partial AgentIcon Icon { get; set; } = icon;
 
         [ObservableProperty]
-        public partial bool Enabled { get; set; }
+        public partial bool ShowInNotes { get; set; } = true;
+
+        [ObservableProperty]
+        public partial bool ShowInChats { get; set; } = true;
 
         [JsonIgnore]
         public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant
 
         [JsonIgnore]
-        public IconElement? IconElement => Icon?.Type switch
+        public IconElement IconElement => Icon.Type switch
         {
-            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(Icon.Value.Source) },
-            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = Icon.Value.Source, Margin = new (-3,-4,-1,-2), FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
-            AgentIconType.FontIconGlyph => new FontIcon { Glyph = Icon.Value.Source },
-            _ => null,
+            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(Icon.Source) },
+            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = Icon.Source, Margin = new (-3,-4,-1,-2), FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
+            AgentIconType.FontIconGlyph => Icon.Color.HasValue
+                ? new FontIcon { Glyph = Icon.Source, Foreground = new SolidColorBrush(Icon.Color.Value) }
+                : new FontIcon { Glyph = Icon.Source },
+            _ => throw new NotImplementedException()
         };
 
         [JsonIgnore]
         public bool HasPromptParameter => !string.IsNullOrEmpty(PromptParameterName);
+
+        [JsonIgnore]
+        public bool HasAIParameters => Temperature.HasValue;
 
         public Agent GetRecord() => _agent;
 
@@ -129,14 +138,15 @@ namespace PowerPad.WinUI.ViewModels.Agents
             MaxOutputTokens = agent.MaxOutputTokens;
         }
 
-        partial void OnIconChanged(AgentIcon? oldValue, AgentIcon? newValue) => OnPropertyChanged(nameof(IconElement));
+        partial void OnIconChanged(AgentIcon oldValue, AgentIcon newValue) => OnPropertyChanged(nameof(IconElement));
 
         public AgentViewModel Copy()
         {
-            var copy = new AgentViewModel(GetRecord() with { }); //Shallow copy
-
-            copy.Icon = Icon;
-            copy.Enabled = Enabled;
+            var copy = new AgentViewModel(GetRecord() with { }, Icon) //Shallow copy
+            {
+                ShowInNotes = ShowInNotes,
+                ShowInChats = ShowInChats
+            };
 
             return copy;
         }
@@ -150,12 +160,13 @@ namespace PowerPad.WinUI.ViewModels.Agents
 
             return GetRecord() == other.GetRecord() &&
                    Icon == other.Icon &&
-                   Enabled == other.Enabled;
+                   ShowInNotes == other.ShowInNotes &&
+                   ShowInChats == other.ShowInChats;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(GetRecord(), Icon, Enabled);
+            return HashCode.Combine(GetRecord(), Icon, ShowInNotes, ShowInChats);
         }
 
         public static bool operator ==(AgentViewModel? left, AgentViewModel? right)

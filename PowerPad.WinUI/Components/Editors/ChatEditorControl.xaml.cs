@@ -58,7 +58,7 @@ namespace PowerPad.WinUI.Components.Editors
 
             this.InitializeComponent();
 
-            ChatControl.InitializeParameters(_chat!.Model, _chat!.Parameters);
+            ChatControl.InitializeParameters(_chat.Model, _chat.Parameters, _chat.AgentId);
             
             if (_chat.Messages.Any()) UpdateLandingVisibility(showLanding: false);
 
@@ -234,10 +234,13 @@ namespace PowerPad.WinUI.Components.Editors
 
         private void ChatControl_ChatOptionsChanged(object? _, ChatOptionChangedEventArgs eventArgs)
         {
-            if (_chat!.Model != eventArgs.SelectedModel || _chat!.Parameters != eventArgs.Parameters)
+            if (_chat!.Model != eventArgs.SelectedModel
+                || _chat.Parameters != eventArgs.Parameters
+                || _chat.AgentId != eventArgs.AgentId)
             {
-                _chat!.Model = eventArgs.SelectedModel;
-                _chat!.Parameters = eventArgs.Parameters?.Copy();
+                _chat.Model = eventArgs.SelectedModel;
+                _chat.Parameters = eventArgs.Parameters?.Copy();
+                _chat.AgentId = eventArgs.AgentId;
                 _document.Status = DocumentStatus.Dirty;
             }
         }

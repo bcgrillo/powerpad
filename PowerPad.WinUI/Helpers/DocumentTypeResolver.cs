@@ -11,12 +11,12 @@ namespace PowerPad.WinUI.Helpers
 
             return extension switch
             {
-                "txt" => DocumentType.Text,
+                "txt" => DocumentType.Note,
                 "chat" => DocumentType.Chat,
                 /*"md" => DocumentType.Markdown,
                 "todo" => DocumentType.ToDo,
                 "search" => DocumentType.Search,*/
-                _ => DocumentType.Text
+                _ => DocumentType.Note
             };
         }
     }

@@ -108,7 +108,7 @@ namespace PowerPad.WinUI.Components
         {
             var parent = GetParentForNewElement();
 
-            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Text));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Note));
         }
 
         private void NewFolderButton_Click(object _, RoutedEventArgs __)

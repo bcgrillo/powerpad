@@ -1,4 +1,6 @@
-﻿namespace PowerPad.WinUI.ViewModels.Agents
+﻿using Windows.UI;
+
+namespace PowerPad.WinUI.ViewModels.Agents
 {
     public enum AgentIconType
     {
@@ -7,5 +9,5 @@
         FontIconGlyph
     }
 
-    public readonly record struct AgentIcon(string Source, AgentIconType Type);
+    public readonly record struct AgentIcon(string Source, AgentIconType Type, Color? Color = null);
 }

@@ -18,6 +18,9 @@ using PowerPad.WinUI.ViewModels.AI;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
+using PowerPad.WinUI.ViewModels.Agents;
+using System.Collections.Specialized;
+using PowerPad.Core.Models.AI;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -31,6 +34,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
+        private readonly AgentsCollectionViewModel _agentsCollection;
         private readonly DispatcherTimer _debounceTimer;
         private readonly DispatcherTimer _loadingAnimationTimer;
         private CancellationTokenSource _cts;
@@ -57,6 +61,8 @@ namespace PowerPad.WinUI.Components.Controls
         private AIModelViewModel? _selectedModel;
         private readonly AIParametersViewModel _parameters;
         private bool _sendParameters;
+        private AgentViewModel? _selectedAgent;
+        private bool _useAgents;
 
         public ChatControl()
         {
@@ -64,6 +70,7 @@ namespace PowerPad.WinUI.Components.Controls
 
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
+            _agentsCollection = App.Get<AgentsCollectionViewModel>();
             _cts = new();
 
             _debounceTimer = new DispatcherTimer
@@ -99,14 +106,14 @@ namespace PowerPad.WinUI.Components.Controls
         private void DebounceTimer_Tick(object? _, object __)
         {
             _debounceTimer.Stop();
-            SetModelsMenu();
+            UpdateModelsMenu();
         }
 
-        public void InitializeParameters(AIModelViewModel? model, AIParametersViewModel? parameters)
+        public void InitializeParameters(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId)
         {
             _selectedModel = model;
 
-            SetModelsMenu();
+            UpdateModelsMenu();
 
             if (parameters is not null)
             {
@@ -117,10 +124,18 @@ namespace PowerPad.WinUI.Components.Controls
                 ToggleParameterVisibility();
             }
 
+            if (agentId.HasValue)
+            {
+                _selectedAgent = _agentsCollection.GetAgent(agentId.Value);
+            }
+
+            UpdateAgentsMenu();
+
             _parameters.PropertyChanged += Parameters_PropertyChanged;
             _settings.General.ProviderAvaibilityChanged += Models_PropertyChanged;
             _settings.Models.ModelAvaibilityChanged += Models_PropertyChanged;
             _settings.Models.DefaultModelChanged += DefaultModel_Changed;
+            _agentsCollection.Agents.CollectionChanged += Agents_CollectionChanged;
         }
 
         public void SetFocus()
@@ -174,7 +189,7 @@ namespace PowerPad.WinUI.Components.Controls
             UpdateModelButtonContent();
         }
 
-        private void SetModelsMenu()
+        private void UpdateModelsMenu()
         {
             ModelFlyoutMenu.Items.Clear();
 
@@ -276,6 +291,122 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        private void UpdateAgentsMenu()
+        {
+            AgentFlyoutMenu.Items.Clear();
+
+            var enabledAgents = _agentsCollection.Agents.Where(a => a.ShowInChats);
+
+            if (enabledAgents.Any())
+            {
+                foreach (var agent in enabledAgents)
+                {
+                    var menuItem = new RadioMenuFlyoutItem
+                    {
+                        Text = agent.Name,
+                        Tag = agent,
+                        Icon = agent.IconElement
+                    };
+
+                    AgentFlyoutMenu.Items.Add(menuItem);
+
+                    menuItem.Click += SetAgentItem_Click;
+                }
+
+                if (_selectedAgent is not null)
+                {
+                    var selectedAgentMenuItem = (RadioMenuFlyoutItem?)AgentFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AgentViewModel == _selectedAgent);
+
+                    if (selectedAgentMenuItem is null)
+                    {
+                        _selectedAgent = null;
+                        OnChatOptionChanged();
+                    }
+                    else
+                    {
+                        DispatcherQueue.TryEnqueue(async () =>
+                        {
+                            await Task.Delay(100);
+                            selectedAgentMenuItem.IsChecked = true;
+                        });
+                    }
+                }
+
+                _useAgents = _selectedAgent is not null;
+                UpdateAgentButtonContent();
+            }
+            else
+            {
+                if (_selectedAgent is not null)
+                {
+                    _selectedAgent = null;
+                    OnChatOptionChanged();
+                }
+
+                _useAgents = false;
+                UpdateAgentButtonContent();
+
+                AgentToggleButton.IsEnabled = false;
+            }
+        }
+
+        private void SetAgentItem_Click(object sender, RoutedEventArgs __)
+        {
+            _selectedAgent = (AgentViewModel?)((RadioMenuFlyoutItem)sender).Tag;
+
+            ((RadioMenuFlyoutItem)sender).IsChecked = true;
+
+            UpdateAgentButtonContent();
+
+            OnChatOptionChanged();
+        }
+
+        private void AgentToggleButton_Click(object sender, RoutedEventArgs __)
+        {
+            _useAgents = !_useAgents;
+
+            if (_useAgents && _selectedAgent is null)
+            {
+                _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.ShowInChats);
+                OnChatOptionChanged();
+            }
+
+            UpdateAgentButtonContent();
+        }
+
+        private void UpdateAgentButtonContent()
+        {
+            if (_useAgents)
+            {
+                AgentButton.Visibility = Visibility.Visible;
+                ModelButton.Visibility = Visibility.Collapsed;
+                ParametersButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                AgentButton.Visibility = Visibility.Collapsed;
+                ModelButton.Visibility = Visibility.Visible;
+                ParametersButton.Visibility = Visibility.Visible;
+            }
+
+            if (_selectedAgent is not null)
+            {
+                AgentIconControl.AgentIcon = _selectedAgent.Icon;
+                AgentName.Visibility = Visibility.Visible;
+                AgentName.Text = _selectedAgent.Name;
+                ((Border)AgentToggleButton.Content).BorderBrush = (Brush)Application.Current.Resources["AccentFillColorDefaultBrush"];
+            }
+            else
+            {
+                AgentIconControl.AgentIcon = new("\uE99A", AgentIconType.FontIconGlyph);
+                AgentName.Visibility = Visibility.Collapsed;
+                AgentName.Text = null;
+                ((Border)AgentToggleButton.Content).BorderBrush = new SolidColorBrush(Colors.Transparent);
+            }
+        }
+
+        private void Agents_CollectionChanged(object? _, NotifyCollectionChangedEventArgs __) => UpdateAgentsMenu();
+
         private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
         {
             SendButton.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
@@ -319,9 +450,13 @@ namespace PowerPad.WinUI.Components.Controls
                 string messageBuffer = string.Empty;
                 try
                 {
-                    await foreach (var messagePart in _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
+                    var responseUpdates = _selectedAgent is null
+                        ? _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token)
+                        : _chatService.GetAgentResponse(history, _selectedAgent.GetRecord(), _cts.Token);
+
+                    await foreach (var update in responseUpdates)
                     {
-                        messageBuffer += messagePart.Text;
+                        messageBuffer += update.Text;
 
                         string? reasoning = null;
                         string? content = null;
@@ -496,7 +631,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __) => OnChatOptionChanged();
 
-        private void OnChatOptionChanged() => ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
+        private void OnChatOptionChanged() => ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null, _selectedAgent?.Id));
 
         private void LoadingAnimationTimer_Tick(object? sender, object e)
         {
@@ -517,14 +652,16 @@ namespace PowerPad.WinUI.Components.Controls
             _settings.General.ProviderAvaibilityChanged -= Models_PropertyChanged;
             _settings.Models.ModelAvaibilityChanged -= Models_PropertyChanged;
             _settings.Models.DefaultModelChanged -= DefaultModel_Changed;
-            
+            _agentsCollection.Agents.CollectionChanged -= Agents_CollectionChanged;
+
             GC.SuppressFinalize(this);
         }
     }
 
-    public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters) : EventArgs
+    public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId) : EventArgs
     {
         public AIModelViewModel? SelectedModel { get; set; } = model;
         public AIParametersViewModel? Parameters { get; set; } = parameters;
+        public Guid? AgentId { get; set; } = agentId;
     }
 }

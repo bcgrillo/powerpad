@@ -41,11 +41,11 @@
                         BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}">
                         <ContentControl
                             Content="{x:Bind _agent.IconElement}"
-                            HorizontalAlignment="Left"/>
+                            HorizontalAlignment="Left" />
                     </Border>
                     <Button
                         Content="Seleccionar"
-                        Click="SaveButton_Click"/>
+                        Click="SaveButton_Click" />
                 </StackPanel>
 
                 <StackPanel Spacing="16" Grid.Column="1">
@@ -57,11 +57,9 @@
                         Text="{x:Bind _agent.Prompt, Mode=TwoWay}"
                         AcceptsReturn="True"
                         Height="150"
-                        TextWrapping="Wrap"/>
+                        TextWrapping="Wrap" />
                 </StackPanel>
             </Grid>
-
-
 
             <ToggleSwitch
                 Margin="0,0,0,-16"
@@ -102,7 +100,6 @@
                 <ComboBox
                     Grid.Column="1"
                     SelectedItem="{x:Bind _agent.AIModel, Mode=TwoWay}">
-                    Ollama 3.23
                 </ComboBox>
              </Grid>
 
@@ -202,19 +199,30 @@
                     IsEnabled="{x:Bind IsEnabled}"/>
             </Grid>
 
-            <ToggleSwitch
-                OnContent="Agente activado"
-                OffContent="Agente desactivado"
-                IsOn="{x:Bind _agent.Enabled, Mode=TwoWay}"/>
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <ToggleSwitch
+                    OnContent="Mostrar agente en notas"
+                    OffContent="No mostrar agente en notas"
+                    IsOn="{x:Bind _agent.ShowInNotes, Mode=TwoWay}"/>
+                <ToggleSwitch
+                    OnContent="Mostrar agente en chats"
+                    OffContent="No mostrar agente en chats"
+                    IsOn="{x:Bind _agent.ShowInChats, Mode=TwoWay}"/>
+            </StackPanel>
+            
 
             <StackPanel 
                 Grid.Row="10" Grid.ColumnSpan="6" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                 <Button
+                    x:Name="SaveButton"
+                    IsEnabled="False"
                     Content="Guardar"
                     Click="SaveButton_Click"
                     HorizontalAlignment="Right"/>
 
                 <Button
+                    x:Name="CancelButton"
+                    IsEnabled="False"
                     Content="Cancelar"
                     Click="CancelButton_Click"
                     HorizontalAlignment="Right"/>

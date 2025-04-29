@@ -2,7 +2,7 @@
 
 namespace PowerPad.Core.Models.AI
 {
-    public record Agent() : IChatOptions
+    public record Agent() : AgentParameters
     {
         public required string Name { get; set; }
 
@@ -14,29 +14,23 @@ namespace PowerPad.Core.Models.AI
 
         public AIModel? AIModel { get; set; }
 
+        internal IChatOptions GetParameters(AIParameters? defaultParameters)
+        {
+            return new AgentParameters
+            {
+                Temperature = Temperature ?? defaultParameters?.Temperature,
+                TopP = TopP ?? defaultParameters?.TopP,
+                MaxOutputTokens = MaxOutputTokens ?? defaultParameters?.MaxOutputTokens
+            };
+        }
+    }
+
+    public record AgentParameters : IChatOptions
+    {
         public float? Temperature { get; set; } = null;
 
         public float? TopP { get; set; } = null;
 
         public int? MaxOutputTokens { get; set; } = null;
-
-        public AIParameters GetAgentParameters(string? parameterValue, string? aditionalPrompt)
-        {
-            var systemPrompt = Prompt;
-
-            if (PromptParameterName is not null)
-                systemPrompt += $"\n{PromptParameterName}: {parameterValue}";
-
-            if (aditionalPrompt is not null)
-                systemPrompt += $"\n{aditionalPrompt}";
-
-            return new AIParameters
-            {
-                SystemPrompt = systemPrompt,
-                Temperature = Temperature,
-                TopP = TopP,
-                MaxOutputTokens = MaxOutputTokens
-            };
-        }
     }
 }

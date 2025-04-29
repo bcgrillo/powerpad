@@ -13,11 +13,10 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.WinUI.ViewModels.Agents;
 using System.Text;
 using System.Collections.Specialized;
-using System.Diagnostics;
 
 namespace PowerPad.WinUI.Components.Controls
 {
-    public partial class AgentControl : UserControl, IDisposable
+    public partial class NoteAgentControl : UserControl, IDisposable
     {
         private readonly IChatService _chatService;
         private readonly AgentsCollectionViewModel _agentsCollection;
@@ -28,7 +27,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private AgentViewModel? _selectedAgent;
 
-        public AgentControl()
+        public NoteAgentControl()
         {
             this.InitializeComponent();
 
@@ -37,7 +36,7 @@ namespace PowerPad.WinUI.Components.Controls
             _settings = App.Get<SettingsViewModel>();
             _cts = new();
 
-            _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.Enabled);
+            _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.ShowInNotes);
             UpdateVisibility();
 
             if(AgentPanel.Visibility == Visibility.Visible)
@@ -71,7 +70,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             AgentFlyoutMenu.Items.Clear();
 
-            var enabledAgents = _agentsCollection.Agents.Where(a => a.Enabled);
+            var enabledAgents = _agentsCollection.Agents.Where(a => a.ShowInNotes);
 
             foreach (var agent in enabledAgents)
             {
@@ -84,11 +83,11 @@ namespace PowerPad.WinUI.Components.Controls
 
                 AgentFlyoutMenu.Items.Add(menuItem);
 
-                menuItem.Click += SetModelItem_Click;
+                menuItem.Click += SetAgentItem_Click;
             }
         }
 
-        private void SetModelItem_Click(object sender, RoutedEventArgs __)
+        private void SetAgentItem_Click(object sender, RoutedEventArgs __)
         {
             _selectedAgent = (AgentViewModel?)((RadioMenuFlyoutItem)sender).Tag;
 
@@ -122,7 +121,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
             else
             {
-                AgentIconControl.AgentIcon = null;
+                AgentIconControl.AgentIcon = default;
                 AgentName.Text = "Unavailable";
             }
         }
@@ -130,9 +129,9 @@ namespace PowerPad.WinUI.Components.Controls
         private void Agents_CollectionChanged(object? _, NotifyCollectionChangedEventArgs __)
         {
             if (_selectedAgent is null)
-                _selectedAgent ??= _agentsCollection.Agents.FirstOrDefault(a => a.Enabled);
+                _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.ShowInNotes);
             else
-                _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.Enabled && a.Name == _selectedAgent.Name);
+                _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.ShowInNotes && a.Id == _selectedAgent.Id);
 
             UpdateVisibility();
 
@@ -183,7 +182,7 @@ namespace PowerPad.WinUI.Components.Controls
 
             try
             {
-                await _chatService.GetAgentResponse(input, output, _selectedAgent!.GetRecord(), PromptParameterInputBox.Text, _settings.General.AgentPrompt, _cts.Token);
+                await _chatService.GetAgentSingleResponse(input, output, _selectedAgent!.GetRecord(), PromptParameterInputBox.Text, _settings.General.AgentPrompt, _cts.Token);
             }
             catch (Exception ex)
             {

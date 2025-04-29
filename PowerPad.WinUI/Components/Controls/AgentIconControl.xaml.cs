@@ -9,16 +9,14 @@ namespace PowerPad.WinUI.Components.Controls
 {
     public partial class AgentIconControl : UserControl
     {
-        private static readonly AgentIcon DEFAULT_AGENT_ICON = new("\uE99A", AgentIconType.FontIconGlyph);
-
-        public AgentIcon? AgentIcon
+        public AgentIcon AgentIcon
         {
             get => (AgentIcon)GetValue(AgentIconProperty);
-            set => SetValue(AgentIconProperty, value ?? DEFAULT_AGENT_ICON);
+            set => SetValue(AgentIconProperty, value);
         }
 
         public static readonly DependencyProperty AgentIconProperty =
-            DependencyProperty.Register(nameof(AgentIconProperty), typeof(AgentIcon), typeof(AgentIconControl), new(DEFAULT_AGENT_ICON));
+            DependencyProperty.Register(nameof(AgentIconProperty), typeof(AgentIcon), typeof(AgentIconControl), new(default));
 
         public double Size
         {
@@ -44,18 +42,18 @@ namespace PowerPad.WinUI.Components.Controls
             TextBlock.Visibility = Visibility.Collapsed;
             FontIcon.Visibility = Visibility.Collapsed;
 
-            switch (AgentIcon!.Value.Type)
+            switch (AgentIcon.Type)
             {
                 case AgentIconType.Base64Image:
-                    ImageIcon.Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Value.Source);
+                    ImageIcon.Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Source);
                     ImageIcon.Visibility = Visibility.Visible;
                     break;
                 case AgentIconType.CharacterOrEmoji:
-                    TextBlock.Text = AgentIcon.Value.Source;
+                    TextBlock.Text = AgentIcon.Source;
                     TextBlock.Visibility = Visibility.Visible;
                     break;
                 case AgentIconType.FontIconGlyph:
-                    FontIcon.Glyph = AgentIcon.Value.Source;
+                    FontIcon.Glyph = AgentIcon.Source;
                     FontIcon.Visibility = Visibility.Visible;
                     break;
             }

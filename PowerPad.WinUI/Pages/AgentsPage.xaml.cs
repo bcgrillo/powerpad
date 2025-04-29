@@ -1,16 +1,21 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.Components.Editors;
 using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.FileSystem;
+using PowerPad.WinUI.ViewModels.Settings;
+using Windows.UI;
 
 namespace PowerPad.WinUI.Pages
 {
     public partial class AgentsPage : DisposablePage, IToggleMenuPage
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
+        private readonly SettingsViewModel _settings; 
+        
         private AgentViewModel? _selectedAgent;
         private AgentEditorControl? _editorControl;
 
@@ -21,6 +26,7 @@ namespace PowerPad.WinUI.Pages
             this.InitializeComponent();
 
             _agentsCollection = App.Get<AgentsCollectionViewModel>();
+            _settings = App.Get<SettingsViewModel>();
         }
 
         public event EventHandler? NavigationVisibilityChanged;
@@ -32,7 +38,7 @@ namespace PowerPad.WinUI.Pages
 
             if (_editorControl is not null)
             {
-                var result = await _editorControl.ConfirmClose(XamlRoot);
+                var result = await _editorControl.ConfirmClose();
 
                 if (result)
                 {
@@ -52,7 +58,7 @@ namespace PowerPad.WinUI.Pages
             else
             {
                 _selectedAgent = invokedEntry;
-                _editorControl = new AgentEditorControl(invokedEntry);
+                _editorControl = new AgentEditorControl(invokedEntry, XamlRoot);
                 AgentEditorContent.Children.Add(_editorControl);
             }
         }
@@ -71,10 +77,6 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        private void NavigateToPage(ModelProvider _)
-        {
-        }
-
         public void ToggleNavigationVisibility()
         {
             AgentsMenu.Visibility = AgentsMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
@@ -84,23 +86,44 @@ namespace PowerPad.WinUI.Pages
 
         private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
-            var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente que..."});
+            var newIcon = GenerateNewIcon();
+            var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente que..."}, newIcon);
 
             _agentsCollection.Agents.Add(newAgent);
 
-            TreeView.SelectedItem = newAgent;
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                TreeView.SelectedItem = newAgent;
+            });
+        }
+
+        private AgentIcon GenerateNewIcon()
+        {
+            var mode = _settings.General.AppTheme ?? Application.Current.RequestedTheme;
+            var random = new Random();
+            Color color;
+
+            if (mode == ApplicationTheme.Dark)
+            {
+                color = Color.FromArgb(255,
+                    (byte)random.Next(200, 256),
+                    (byte)random.Next(200, 256),
+                    (byte)random.Next(200, 256));
+            }
+            else
+            {
+                color = Color.FromArgb(255,
+                    (byte)random.Next(0, 56),
+                    (byte)random.Next(0, 56),
+                    (byte)random.Next(0, 56));
+            }
+            
+            return new ("\uE99A", AgentIconType.FontIconGlyph, color);
         }
 
         public override void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
-
-        //private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs eventArgs)
-        //{
-        //    if (args.DropResult == DataPackageOperation.Move && eventArgs.Items.Count == 1 && eventArgs.Items[0] is AgentViewModel agent)
-        //    {
-        //        _agentsCollection.Agents.Move(_agentsCollection.Agents.IndexOf(agent), TreeView.);
-        //    }
-        //}
     }
 }

@@ -18,6 +18,9 @@ namespace PowerPad.WinUI.ViewModels.Chat
         public partial AIParametersViewModel? Parameters { get; set; }
 
         [ObservableProperty]
+        public partial Guid? AgentId { get; set; }
+
+        [ObservableProperty]
         public partial bool ChatError { get; set; }
 
         public required ObservableCollection<MessageViewModel> Messages
