@@ -200,7 +200,6 @@
                 x:Name="ChatControl"
                 Grid.Row="1"
                 Margin="36,18,36,36"
-                ChatPlaceHolder="Escribe lo que quieras..."
                 SendButtonClicked="ChatControl_SendButtonClicked"
                 ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged"
                 IsEnabled="{x:Bind _chat.ChatError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}" />

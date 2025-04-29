@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Services.Config;
+using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -23,6 +24,8 @@ namespace PowerPad.WinUI.ViewModels.Agents
                 foreach (AgentViewModel model in field) model.PropertyChanged += CollectionPropertyChangedHandler;
             }
         }
+
+        public event EventHandler? AgentsAvaibilityChanged;
 
         public AgentsCollectionViewModel()
         {
@@ -58,10 +61,15 @@ namespace PowerPad.WinUI.ViewModels.Agents
                     throw new NotImplementedException("Only Add and Remove actions are supported.");
             }
 
+            AgentsAvaibilityChanged?.Invoke(null, EventArgs.Empty);
             SaveAgents();
         }
 
-        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs __) => SaveAgents();
+        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
+        {
+            AgentsAvaibilityChanged?.Invoke(null, EventArgs.Empty);
+            SaveAgents();
+        }
 
         private void SaveAgents() => _configStore.Set(StoreKey.Agents, Agents);
     }

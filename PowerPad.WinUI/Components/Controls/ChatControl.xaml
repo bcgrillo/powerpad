@@ -82,7 +82,7 @@
                     </Grid.RowDefinitions>
                     <local:IntegratedTextBox
                         x:Name="ChatInputBox"
-                        PlaceholderText="{x:Bind ChatPlaceHolder}"
+                        PlaceholderText="Escribe lo que quieras..."
                         TextWrapping="Wrap" 
                         MaxHeight="148"
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -96,35 +96,13 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ToggleButton x:Name="AgentToggleButton" Click="AgentToggleButton_Click" Height="32" Padding="0" ToolTipService.ToolTip="Parámetros">
+                            <Button x:Name="AgentToggleButton" Click="AgentToggleButton_Click" Height="32" Padding="0" ToolTipService.ToolTip="User agentes">
                                 <Border VerticalAlignment="Stretch" Height="28" Margin="1" Padding="6,4" BorderBrush="Transparent" BorderThickness="1" CornerRadius="5">
-                                    <FontIcon Glyph="&#xE99A;" />
+                                    <FontIcon Glyph="&#xE99A;" FontSize="16" />
                                 </Border>
-                            </ToggleButton>
-                            <Button x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Agente" Padding="0">
-                                <Button.Flyout>
-                                    <MenuFlyout x:Name="AgentFlyoutMenu" Placement="TopEdgeAlignedLeft">
-                                    </MenuFlyout>
-                                </Button.Flyout>
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <local:AgentIconControl x:Name="AgentIconControl" Size="16" />
-                                        <TextBlock x:Name="AgentName" Margin="8,0,0,0" Visibility="Collapsed" Text="Seleccione" />
-                                    </StackPanel>
-                                </Button.Content>
                             </Button>
-                            <DropDownButton x:Name="ModelButton" Height="32" ToolTipService.ToolTip="Modelo">
-                                <DropDownButton.Flyout>
-                                    <MenuFlyout x:Name="ModelFlyoutMenu" Placement="TopEdgeAlignedLeft">
-                                    </MenuFlyout>
-                                </DropDownButton.Flyout>
-                                <DropDownButton.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <local:ButtonIcon x:Name="ModelIcon"/>
-                                        <TextBlock x:Name="ModelName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
-                                    </StackPanel>
-                                </DropDownButton.Content>
-                            </DropDownButton>
+                            <local:AgentSelector x:Name="AgentSelector" DocumentType="Chat" Visibility="Collapsed" />
+                            <local:ModelSelector x:Name="ModelSelector" />
                             <ToggleButton x:Name="ParametersButton" Click="ParametersButton_Click" Height="32" Padding="0" ToolTipService.ToolTip="Parámetros">
                                 <Border VerticalAlignment="Stretch" Height="28" Margin="1" Padding="6,4" BorderBrush="Transparent" BorderThickness="1" CornerRadius="5">
                                     <local:ButtonIcon x:Name="ParametersIcon" Source="{ThemeResource SettingsSmallSvg}" HorizontalAlignment="Stretch" />

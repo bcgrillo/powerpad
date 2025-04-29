@@ -144,7 +144,7 @@ namespace PowerPad.WinUI.Pages
             {
                 NavigationViewItem? menuItem;
 
-                foreach(var providerItem in NavView.MenuItems.Cast<NavigationViewItem>())
+                foreach (var providerItem in NavView.MenuItems.Cast<NavigationViewItem>())
                 {
                     menuItem = providerItem.MenuItems.FirstOrDefault(mi => ((NavigationViewItem)mi).Tag as ModelsMenuOption? == modelsMenuOption) as NavigationViewItem;
 

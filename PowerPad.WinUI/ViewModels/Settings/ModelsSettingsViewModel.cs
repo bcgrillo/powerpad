@@ -65,7 +65,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             OnPropertyChanged(nameof(AvailableModels));
         }
 
-        private void AvailableModelsCollectionPropertyChangedHandler(object? sender , PropertyChangedEventArgs eventArgs)
+        private void AvailableModelsCollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
         {
             if (eventArgs.PropertyName == nameof(AIModelViewModel.Enabled))
                 ModelAvaibilityChanged?.Invoke(this, EventArgs.Empty);

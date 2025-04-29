@@ -106,16 +106,16 @@ namespace PowerPad.WinUI.Pages
             if (mode == ApplicationTheme.Dark)
             {
                 color = Color.FromArgb(255,
-                    (byte)random.Next(200, 256),
-                    (byte)random.Next(200, 256),
-                    (byte)random.Next(200, 256));
+                    (byte)random.Next(150, 200),
+                    (byte)random.Next(150, 200),
+                    (byte)random.Next(150, 200));
             }
             else
             {
                 color = Color.FromArgb(255,
-                    (byte)random.Next(0, 56),
-                    (byte)random.Next(0, 56),
-                    (byte)random.Next(0, 56));
+                    (byte)random.Next(50, 100),
+                    (byte)random.Next(50, 100),
+                    (byte)random.Next(50, 100));
             }
             
             return new ("\uE99A", AgentIconType.FontIconGlyph, color);

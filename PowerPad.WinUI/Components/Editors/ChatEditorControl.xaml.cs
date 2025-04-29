@@ -35,7 +35,7 @@ namespace PowerPad.WinUI.Components.Editors
         public override string GetContent(bool plainText = false)
         {
             return plainText
-                ? string.Join('\n', _chat!.Messages.Select(m => $"{m.Role}: {m.Content}"))
+                ? string.Join('\n', _chat!.Messages.Select((Func<MessageViewModel, string>)(m => $"{m.Role}: {m.Content}")))
                 : JsonSerializer.Serialize(_chat, typeof(ChatViewModel), AppJsonContext.Custom);
         }
 
@@ -232,7 +232,7 @@ namespace PowerPad.WinUI.Components.Editors
             );
         }
 
-        private void ChatControl_ChatOptionsChanged(object? _, ChatOptionChangedEventArgs eventArgs)
+        private void ChatControl_ChatOptionsChanged(object? _, ChatOptionsChangedEventArgs eventArgs)
         {
             if (_chat!.Model != eventArgs.SelectedModel
                 || _chat.Parameters != eventArgs.Parameters

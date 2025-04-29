@@ -55,6 +55,7 @@ namespace PowerPad.WinUI.Components.Controls
                 case AgentIconType.FontIconGlyph:
                     FontIcon.Glyph = AgentIcon.Source;
                     FontIcon.Visibility = Visibility.Visible;
+                    if (AgentIcon.Color.HasValue) FontIcon.Foreground = new SolidColorBrush(AgentIcon.Color.Value);
                     break;
             }
         }
