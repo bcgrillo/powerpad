@@ -5,7 +5,6 @@ namespace PowerPad.WinUI.ViewModels.Agents
     public enum AgentIconType
     {
         Base64Image,
-        CharacterOrEmoji,
         FontIconGlyph
     }
 

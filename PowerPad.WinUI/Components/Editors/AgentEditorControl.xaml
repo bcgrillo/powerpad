@@ -41,16 +41,28 @@
                 <StackPanel Spacing="8">
                     <TextBlock Text="Icono" />
                     <Border 
-                        Height="100"
-                        Width="100"
-                        CornerRadius="50" 
+                        Height="70"
+                        HorizontalAlignment="Stretch"
+                        CornerRadius="10"
                         Background="{ThemeResource ExpanderContentBackground}">
                         <lcontrols:AgentIconControl Size="50" AgentIcon="{x:Bind _agent.Icon, Mode=OneWay}" />
                     </Border>
-                    <Button
-                        Content="Seleccionar"
-                        Width="100"
-                        Click="SaveButton_Click" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button
+                            x:Name="SelectImageButton"
+                            Padding="4"
+                            ToolTipService.ToolTip="Seleccionar imagen..."
+                            Click="SelectImageButton_Click">
+                            <FontIcon Glyph="&#xE8B9;" />
+                        </Button>
+                        <Button
+                            x:Name="RandonIconButton"
+                            Padding="4"
+                            ToolTipService.ToolTip="Generar"
+                            Click="RandonIconButton_Click">
+                            <FontIcon Glyph="&#xF4A5;" />
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel Spacing="16" Grid.Column="1">
@@ -88,7 +100,8 @@
                 Padding="0">
                 <Expander.Resources>
                     <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
-                    <Thickness x:Key="ExpanderChevronMargin">16,0,0,0</Thickness>
+                    <Thickness x:Key="ExpanderChevronMargin">0</Thickness>
+                    <x:Double x:Key="ExpanderChevronButtonSize">0</x:Double>
                     <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{ThemeResource ControlFillColorTransparent}" />
                 </Expander.Resources>
                 <Expander.Header>
@@ -144,7 +157,8 @@
                 Padding="0">
                 <Expander.Resources>
                     <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
-                    <Thickness x:Key="ExpanderChevronMargin">16,0,0,0</Thickness>
+                    <Thickness x:Key="ExpanderChevronMargin">0</Thickness>
+                    <x:Double x:Key="ExpanderChevronButtonSize">0</x:Double>
                     <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{ThemeResource ControlFillColorTransparent}" />
                 </Expander.Resources>
                 <Expander.Header>

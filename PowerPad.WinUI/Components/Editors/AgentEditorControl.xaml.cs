@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.Dialogs;
+using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
@@ -14,6 +15,7 @@ namespace PowerPad.WinUI.Components.Editors
     public partial class AgentEditorControl : UserControl, IDisposable
     {
         private readonly SettingsViewModel _settings;
+        private readonly AgentsCollectionViewModel _agentsCollection;
         private readonly AgentViewModel _agent;
         private readonly AgentViewModel _originalAgent;
         private readonly XamlRoot _xamlRoot;
@@ -23,7 +25,7 @@ namespace PowerPad.WinUI.Components.Editors
             this.InitializeComponent();
 
             _settings = App.Get<SettingsViewModel>();
-
+            _agentsCollection = App.Get<AgentsCollectionViewModel>();
             _agent = agent.Copy();
             _originalAgent = agent;
             _xamlRoot = xamlRoot;
@@ -56,6 +58,21 @@ namespace PowerPad.WinUI.Components.Editors
             }
 
             return true;
+        }
+
+        private async void SelectImageButton_Click(object? _, RoutedEventArgs? __)
+        {
+            var base64Image = await Base64ImageHelper.PickImageToBase64(_xamlRoot);
+
+            if (!string.IsNullOrEmpty(base64Image))
+            {
+                _agent.Icon = new AgentIcon(base64Image, AgentIconType.Base64Image);
+            }
+        }
+
+        private void RandonIconButton_Click(object? _, RoutedEventArgs? __)
+        {
+            _agent.Icon = _agentsCollection.GenerateIcon();
         }
 
         private void Agent_PropertyChanged(object? _, PropertyChangedEventArgs __)
@@ -119,6 +136,7 @@ namespace PowerPad.WinUI.Components.Editors
                 _agent.PromptParameterName = null;
                 _agent.PromptParameterDescription = null;
 
+                PromptParameterExpander.IsExpanded = false;
                 PromptParameterControls.IsEnabled = false;
             }
         }
@@ -142,6 +160,7 @@ namespace PowerPad.WinUI.Components.Editors
                 _agent.TopP = null;
                 _agent.MaxOutputTokens = null;
 
+                AIParametersExpander.IsExpanded = false;
                 AIParametersControls.IsEnabled = false;
             }
         }

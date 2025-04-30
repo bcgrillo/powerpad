@@ -39,7 +39,6 @@ namespace PowerPad.WinUI.Components.Controls
         private void AgentIconChanged(DependencyObject _, DependencyProperty __)
         {
             ImageIcon.Visibility = Visibility.Collapsed;
-            TextBlock.Visibility = Visibility.Collapsed;
             FontIcon.Visibility = Visibility.Collapsed;
 
             switch (AgentIcon.Type)
@@ -47,10 +46,6 @@ namespace PowerPad.WinUI.Components.Controls
                 case AgentIconType.Base64Image:
                     ImageIcon.Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Source);
                     ImageIcon.Visibility = Visibility.Visible;
-                    break;
-                case AgentIconType.CharacterOrEmoji:
-                    TextBlock.Text = AgentIcon.Source;
-                    TextBlock.Visibility = Visibility.Visible;
                     break;
                 case AgentIconType.FontIconGlyph:
                     FontIcon.Glyph = AgentIcon.Source;
@@ -67,7 +62,6 @@ namespace PowerPad.WinUI.Components.Controls
 
             ImageIcon.Height = Size;
             ImageIcon.Width = Size;
-            TextBlock.FontSize = Size;
             FontIcon.FontSize = Size;
         }
     }

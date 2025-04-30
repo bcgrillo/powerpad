@@ -12,15 +12,12 @@ namespace PowerPad.WinUI.Dialogs
 {
     public partial class DialogHelper : ContentDialog
     {
-        private const string OLLAMA_DOWNLOAD_URL = "https://ollama.com/download/OllamaSetup.exe";
-        private const int BUFFER_SIZE = 8192;
-
         private const string LABEL_OK = "Aceptar";
         private const string LABEL_CANCEL = "Cancelar";
         private const string LABEL_YES = "Sí";
         private const string LABEL_NO = "No";
 
-        public bool Aceppted { get; private set; }
+        private bool _accepted;
 
         private DialogHelper(Action<DialogHelper> formatter)
         {
@@ -47,7 +44,7 @@ namespace PowerPad.WinUI.Dialogs
 
             await inputDialog.ShowAsync();
 
-            return inputDialog.Aceppted ? inputDialog.TextBox.Text : null;
+            return inputDialog._accepted ? inputDialog.TextBox.Text : null;
         }
 
         public static async Task<ContentDialogResult> Confirm(XamlRoot xamlRoot, string title, string message, string primaryButtonText = LABEL_YES, string secondaryButtonText = LABEL_NO, bool showCancel = false)
@@ -89,7 +86,7 @@ namespace PowerPad.WinUI.Dialogs
         {
             if (eventArgs.Key == Windows.System.VirtualKey.Enter) 
             {
-                Aceppted = true;
+                _accepted = true;
                 Hide();
             }
             else if(eventArgs.Key == Windows.System.VirtualKey.Escape)
@@ -100,7 +97,7 @@ namespace PowerPad.WinUI.Dialogs
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog _, ContentDialogButtonClickEventArgs __)
         {
-            Aceppted = true;
+            _accepted = true;
         }
     }
 }

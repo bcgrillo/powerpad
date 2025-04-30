@@ -8,11 +8,14 @@ using Microsoft.UI.Xaml;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 using OllamaSharp.Models;
+using Windows.UI;
+using PowerPad.WinUI.ViewModels.Settings;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {
     public partial class AgentViewModel(Agent agent, AgentIcon icon) : ObservableObject
     {
+        private readonly SettingsViewModel _settings = App.Get<SettingsViewModel>();
         private readonly Agent _agent = agent;
 
         [JsonConstructor]
@@ -115,7 +118,6 @@ namespace PowerPad.WinUI.ViewModels.Agents
         public IconElement IconElement => Icon.Type switch
         {
             AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(Icon.Source) },
-            AgentIconType.CharacterOrEmoji => new FontIcon { Glyph = Icon.Source, Margin = new (-3,-4,-1,-2), FontFamily = (FontFamily)Application.Current.Resources["ContentControlThemeFontFamily"] },
             AgentIconType.FontIconGlyph => Icon.Color.HasValue
                 ? new FontIcon { Glyph = Icon.Source, Foreground = new SolidColorBrush(Icon.Color.Value) }
                 : new FontIcon { Glyph = Icon.Source },

@@ -98,7 +98,7 @@ namespace PowerPad.WinUI.Pages
 
         private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
-            var newIcon = GenerateNewIcon();
+            var newIcon = _agentsCollection.GenerateIcon();
             var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente que..."}, newIcon);
 
             _agentsCollection.Agents.Add(newAgent);
@@ -113,47 +113,6 @@ namespace PowerPad.WinUI.Pages
                     AnimationDesired = true
                 });
             });
-        }
-
-        private AgentIcon GenerateNewIcon()
-        {
-            var mode = _settings.General.AppTheme ?? Application.Current.RequestedTheme;
-            var random = new Random();
-            Color color;
-
-            if (mode == ApplicationTheme.Dark)
-            {
-                color = Color.FromArgb(255,
-                    (byte)random.Next(50, 250),
-                    (byte)random.Next(50, 250),
-                    (byte)random.Next(50, 250));
-            }
-            else
-            {
-                color = Color.FromArgb(255,
-                    (byte)random.Next(0, 200),
-                    (byte)random.Next(0, 200),
-                    (byte)random.Next(0, 200));
-            }
-
-            int brightness = color.R + color.G + color.B;
-
-            if (mode == ApplicationTheme.Dark && brightness < 400)
-            {
-                color = Color.FromArgb(255,
-                    (byte)Math.Min(color.R + 50, 255),
-                    (byte)Math.Min(color.G + 50, 255),
-                    (byte)Math.Min(color.B + 50, 255));
-            }
-            else if (mode == ApplicationTheme.Light && brightness > 200)
-            {
-                color = Color.FromArgb(255,
-                    (byte)Math.Max(color.R - 50, 0),
-                    (byte)Math.Max(color.G - 50, 0),
-                    (byte)Math.Max(color.B - 50, 0));
-            }
-
-            return new ("\uE99A", AgentIconType.FontIconGlyph, color);
         }
 
         private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs __)
