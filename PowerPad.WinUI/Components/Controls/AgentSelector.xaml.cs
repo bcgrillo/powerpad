@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.Agents;
+using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
 using System.Collections;
@@ -49,14 +50,18 @@ namespace PowerPad.WinUI.Components.Controls
             this.InitializeComponent();
 
             _agentsCollection = App.Get<AgentsCollectionViewModel>();
+        }
+
+        public void Initialize(AgentViewModel? agent)
+        {
+            SelectedAgent = agent ?? GetEnabledAgents().FirstOrDefault();
+            RegenerateFlyoutMenu();
 
             _agentsCollection.AgentsAvaibilityChanged += Agents_AgentsAvaibilityChanged;
         }
 
         public void Select(AgentViewModel? agent)
         {
-            agent ??= GetEnabledAgents().FirstOrDefault();
-
             if (agent is null)
             {
                 SelectedAgent = null;
@@ -80,8 +85,10 @@ namespace PowerPad.WinUI.Components.Controls
             UpdateButtonContent();
         }
 
-        private void UpdateChekedItemMenu()
+        private async void UpdateChekedItemMenu()
         {
+            await Task.Delay(100);
+
             foreach (RadioMenuFlyoutItem item in AgentFlyoutMenu.Items.OfType<RadioMenuFlyoutItem>())
                 item.IsChecked = false;
 

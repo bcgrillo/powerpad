@@ -45,7 +45,11 @@ namespace PowerPad.WinUI.Components.Controls
             _debounceTimer.Stop();
 
             IsEnabledChanged += OnEnabledChanged;
+        }
 
+        public void Initialize(AIModelViewModel? model)
+        {
+            SelectedModel = model;
             RegenerateFlyoutMenu();
 
             _settings.General.ProviderAvaibilityChanged += Models_PropertyChanged;
@@ -77,8 +81,10 @@ namespace PowerPad.WinUI.Components.Controls
             UpdateButtonContent();
         }
 
-        private void UpdateChekedItemMenu()
+        private async void UpdateChekedItemMenu()
         {
+            await Task.Delay(100);
+
             foreach (RadioMenuFlyoutItem item in ModelFlyoutMenu.Items.OfType<RadioMenuFlyoutItem>())
                 item.IsChecked = false;
 

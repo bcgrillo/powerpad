@@ -81,7 +81,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             _selectedModel = model;
             ModelSelector.SelectedModelChanged += SelectedModel_Changed;
-            ModelSelector.Select(model);
+            ModelSelector.Initialize(model);
 
             if (parameters is not null)
             {
@@ -97,9 +97,9 @@ namespace PowerPad.WinUI.Components.Controls
                 ? App.Get<AgentsCollectionViewModel>().GetAgent(agentId.Value)
                 : null;
             AgentSelector.SelectedAgentChanged += SelectedAgent_Changed;
-            AgentSelector.Select(_selectedAgent);
+            AgentSelector.Initialize(_selectedAgent);
 
-            if (_selectedAgent is not null)
+            if (agentId.HasValue)
             {
                 _useAgents = true;
                 UpdateChatButtonsLayout();
