@@ -57,7 +57,7 @@ namespace PowerPad.WinUI.Components.Controls
             _settings.Models.DefaultModelChanged += DefaultModel_Changed;
         }
 
-        public void Select(AIModelViewModel? model)
+        private void Select(AIModelViewModel? model)
         {
             if (model is null)
             {

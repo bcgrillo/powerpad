@@ -117,7 +117,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void SelectedAgent_Changed(object? _, EventArgs __)
         {
-            if (_selectedAgent != AgentSelector.SelectedAgent)
+            if (_useAgents && _selectedAgent != AgentSelector.SelectedAgent)
             {
                 _selectedAgent = AgentSelector.SelectedAgent;
 
@@ -137,9 +137,13 @@ namespace PowerPad.WinUI.Components.Controls
         {
             _useAgents = !_useAgents;
 
+            var noAgentSelected = _selectedAgent is null;
+
             OnChatOptionsChanged();
 
             UpdateChatButtonsLayout();
+
+            if (noAgentSelected) AgentSelector.ShowMenu();
         }
 
         private void UpdateChatButtonsLayout()

@@ -91,9 +91,16 @@ namespace PowerPad.WinUI.Pages
 
             _agentsCollection.Agents.Add(newAgent);
 
-            DispatcherQueue.TryEnqueue(() =>
+            DispatcherQueue.TryEnqueue(async () =>
             {
+                await Task.Delay(100);
                 TreeView.SelectedItem = newAgent;
+
+                var container = (TreeViewItem)TreeView.ContainerFromItem(newAgent);
+                container?.StartBringIntoView(new BringIntoViewOptions
+                {
+                    AnimationDesired = true
+                });
             });
         }
 
@@ -106,18 +113,36 @@ namespace PowerPad.WinUI.Pages
             if (mode == ApplicationTheme.Dark)
             {
                 color = Color.FromArgb(255,
-                    (byte)random.Next(150, 200),
-                    (byte)random.Next(150, 200),
-                    (byte)random.Next(150, 200));
+                    (byte)random.Next(50, 250),
+                    (byte)random.Next(50, 250),
+                    (byte)random.Next(50, 250));
             }
             else
             {
                 color = Color.FromArgb(255,
-                    (byte)random.Next(50, 100),
-                    (byte)random.Next(50, 100),
-                    (byte)random.Next(50, 100));
+                    (byte)random.Next(0, 200),
+                    (byte)random.Next(0, 200),
+                    (byte)random.Next(0, 200));
             }
-            
+
+            // Ajustar brillo total
+            int brightness = color.R + color.G + color.B;
+
+            if (mode == ApplicationTheme.Dark && brightness < 400)
+            {
+                color = Color.FromArgb(255,
+                    (byte)Math.Min(color.R + 50, 255),
+                    (byte)Math.Min(color.G + 50, 255),
+                    (byte)Math.Min(color.B + 50, 255));
+            }
+            else if (mode == ApplicationTheme.Light && brightness > 200)
+            {
+                color = Color.FromArgb(255,
+                    (byte)Math.Max(color.R - 50, 0),
+                    (byte)Math.Max(color.G - 50, 0),
+                    (byte)Math.Max(color.B - 50, 0));
+            }
+
             return new ("\uE99A", AgentIconType.FontIconGlyph, color);
         }
 

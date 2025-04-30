@@ -60,7 +60,9 @@ namespace PowerPad.WinUI.Components.Controls
             _agentsCollection.AgentsAvaibilityChanged += Agents_AgentsAvaibilityChanged;
         }
 
-        public void Select(AgentViewModel? agent)
+        public void ShowMenu() => AgentButton.Flyout?.ShowAt(AgentButton);
+
+        private void Select(AgentViewModel? agent)
         {
             if (agent is null)
             {
