@@ -30,7 +30,7 @@
                 x:Name="AppIcon"
                 Height="24"
                 Width="48"
-                Margin="0,0,0,0"
+                Margin="0"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
                 <Image
@@ -38,7 +38,7 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     Source="ms-appx:///Assets/Square44x44Logo.targetsize-24_altform-unplated.png"
-                    Margin="0,0,0,0"/>
+                    Margin="0"/>
             </Border>
 
             <NavigationView
@@ -57,11 +57,11 @@
                 Margin="0,0,0,-2">
                 
                 <NavigationView.Resources>
-                    <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
-                    <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
-                    <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
+                    <Thickness x:Key="NavigationViewContentMargin">0</Thickness>
+                    <Thickness x:Key="NavigationViewMinimalContentMargin">0</Thickness>
+                    <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
                     <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                    <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0,0,0,0</CornerRadius>
+                    <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0</CornerRadius>
                 </NavigationView.Resources>
                 
                 <NavigationView.MenuItems>

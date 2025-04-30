@@ -524,11 +524,11 @@
                                 <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150" />
+                                            <ColumnDefinition Width="200" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <localc:Label
-                                            Text="Prompt adicional:" />
+                                            Text="Prompt adicional para notas:" />
                                         <localc:EditableTextBlock
                                             Grid.Column="1"
                                             Value="{x:Bind _settings.General.AgentPrompt, Mode=TwoWay}" />

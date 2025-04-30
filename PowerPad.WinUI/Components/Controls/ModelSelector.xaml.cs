@@ -43,8 +43,6 @@ namespace PowerPad.WinUI.Components.Controls
             };
             _debounceTimer.Tick += DebounceTimer_Tick;
             _debounceTimer.Stop();
-
-            IsEnabledChanged += OnEnabledChanged;
         }
 
         public void Initialize(AIModelViewModel? model)
@@ -56,6 +54,8 @@ namespace PowerPad.WinUI.Components.Controls
             _settings.Models.ModelAvaibilityChanged += Models_PropertyChanged;
             _settings.Models.DefaultModelChanged += DefaultModel_Changed;
         }
+
+        public void UpdateEnabledLayout(bool newValue) => ModelIcon.UpdateEnabledLayout(newValue);
 
         private void Select(AIModelViewModel? model)
         {
@@ -99,11 +99,6 @@ namespace PowerPad.WinUI.Components.Controls
         {
             _debounceTimer.Stop();
             RegenerateFlyoutMenu();
-        }
-
-        private void OnEnabledChanged(object? _, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            ModelIcon.UpdateEnabledLayout((bool)eventArgs.NewValue);
         }
 
         private void Models_PropertyChanged(object? _, EventArgs __)

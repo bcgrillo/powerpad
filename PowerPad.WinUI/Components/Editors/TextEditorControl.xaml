@@ -81,7 +81,7 @@
             TextWrapping="Wrap" 
             AcceptsReturn="True"
             Margin="36,0"
-            Padding="0,0,0,0"
+            Padding="0"
             FontFamily="Consolas"
             SelectionHighlightColor="Gray"
             SelectionHighlightColorWhenNotFocused="Gray"

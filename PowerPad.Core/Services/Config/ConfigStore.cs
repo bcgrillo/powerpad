@@ -12,7 +12,7 @@ namespace PowerPad.Core.Services.Config
         T? TryGet<T>(Enum key);
     }
 
-    internal record struct ConfigEntry
+    internal record ConfigEntry
     {
         private string? _serializedValue;
 

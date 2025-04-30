@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.Components.Editors;
+using PowerPad.WinUI.Dialogs;
 using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Settings;
@@ -27,29 +29,24 @@ namespace PowerPad.WinUI.Pages
 
             _agentsCollection = App.Get<AgentsCollectionViewModel>();
             _settings = App.Get<SettingsViewModel>();
+
+            foreach (var agent in _agentsCollection.Agents) agent.IsSelected = false;
         }
 
         public event EventHandler? NavigationVisibilityChanged;
 
-        private async void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs eventArgs)
+        private async void TreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs eventArgs)
         {
-            var invokedEntry = (AgentViewModel)eventArgs.InvokedItem;
+            var invokedEntry = (AgentViewModel?)eventArgs.AddedItems.FirstOrDefault();
+
             bool cancel = false;
 
             if (_editorControl is not null)
             {
                 var result = await _editorControl.ConfirmClose();
 
-                if (result)
-                {
-                    AgentEditorContent.Children.Clear();
-                    _editorControl.Dispose();
-                    _editorControl = null;
-                    _selectedAgent = null;
-                }
-                else cancel = true;
+                if (!result) cancel = true;
             }
-            else UpdateLandingVisibility(showLanding: false);
 
             if (cancel)
             {
@@ -57,10 +54,25 @@ namespace PowerPad.WinUI.Pages
             }
             else
             {
+                if (_selectedAgent is not null) _selectedAgent.IsSelected = false;
+                if (invokedEntry is not null) invokedEntry.IsSelected = true;
                 _selectedAgent = invokedEntry;
-                _editorControl = new AgentEditorControl(invokedEntry, XamlRoot);
-                AgentEditorContent.Children.Add(_editorControl);
+
+                if (_editorControl is not null)
+                {
+                    AgentEditorContent.Children.Clear();
+                    _editorControl.Dispose();
+                    _editorControl = null;
+                }
+
+                if (invokedEntry is not null)
+                {
+                    _editorControl = new AgentEditorControl(invokedEntry, XamlRoot);
+                    AgentEditorContent.Children.Add(_editorControl);
+                }
             }
+
+            UpdateLandingVisibility(showLanding: invokedEntry is null);
         }
 
         private void UpdateLandingVisibility(bool showLanding)
@@ -91,9 +103,8 @@ namespace PowerPad.WinUI.Pages
 
             _agentsCollection.Agents.Add(newAgent);
 
-            DispatcherQueue.TryEnqueue(async () =>
+            DispatcherQueue.TryEnqueue(() =>
             {
-                await Task.Delay(100);
                 TreeView.SelectedItem = newAgent;
 
                 var container = (TreeViewItem)TreeView.ContainerFromItem(newAgent);
@@ -125,7 +136,6 @@ namespace PowerPad.WinUI.Pages
                     (byte)random.Next(0, 200));
             }
 
-            // Ajustar brillo total
             int brightness = color.R + color.G + color.B;
 
             if (mode == ApplicationTheme.Dark && brightness < 400)
@@ -144,6 +154,51 @@ namespace PowerPad.WinUI.Pages
             }
 
             return new ("\uE99A", AgentIconType.FontIconGlyph, color);
+        }
+
+        private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs __)
+        {
+            var entry = (AgentViewModel)((MenuFlyoutItem)sender).DataContext;
+
+            var result = await DialogHelper.Imput(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
+
+            if (result is not null) entry.Name = result;
+        }
+
+        private async void DeleteFlyoutItem_Click(object sender, RoutedEventArgs __)
+        {
+            var entry = (AgentViewModel)((MenuFlyoutItem)sender).DataContext;
+
+            var result = await DialogHelper.Confirm(XamlRoot, "Eliminar", "¿Está seguro?");
+
+            if (result == ContentDialogResult.Primary)
+            {
+                if (entry.IsSelected == true)
+                {
+                    TreeView.SelectedItem = null;
+
+                    if (_editorControl is not null)
+                    {
+                        AgentEditorContent.Children.Clear();
+                        _editorControl.Dispose();
+                        _editorControl = null;
+                        _selectedAgent = null;
+                    }
+
+                    UpdateLandingVisibility(showLanding: true);
+                }
+                
+                _agentsCollection.Agents.Remove(entry);
+            }
+        }
+
+        private void MoreButton_Click(object sender, RoutedEventArgs __)
+        {
+            var button = sender as Button;
+
+            var container = TreeView.ContainerFromItem(button?.DataContext) as TreeViewItem;
+
+            if (container?.ContextFlyout is MenuFlyout flyout) flyout.ShowAt(button);
         }
 
         public override void Dispose()

@@ -74,6 +74,7 @@ namespace PowerPad.WinUI.Components.Controls
 
         private void OnEnabledChanged(object? _, DependencyPropertyChangedEventArgs eventArgs)
         {
+            ModelSelector.UpdateEnabledLayout((bool)eventArgs.NewValue);
             ParametersIcon.UpdateEnabledLayout((bool)eventArgs.NewValue);
         }
 
@@ -137,13 +138,11 @@ namespace PowerPad.WinUI.Components.Controls
         {
             _useAgents = !_useAgents;
 
-            var noAgentSelected = _selectedAgent is null;
-
             OnChatOptionsChanged();
 
             UpdateChatButtonsLayout();
 
-            if (noAgentSelected) AgentSelector.ShowMenu();
+            if (_useAgents && _selectedAgent is null) AgentSelector.ShowMenu();
         }
 
         private void UpdateChatButtonsLayout()
@@ -413,6 +412,9 @@ namespace PowerPad.WinUI.Components.Controls
         public void Dispose()
         {
             _parameters.PropertyChanged -= Parameters_PropertyChanged;
+
+            ModelSelector.Dispose();
+            AgentSelector.Dispose();
 
             GC.SuppressFinalize(this);
         }

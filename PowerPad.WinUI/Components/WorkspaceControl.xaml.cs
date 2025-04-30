@@ -130,12 +130,10 @@ namespace PowerPad.WinUI.Components
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
 
-            var result = await DialogHelper.Imput(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
+            var newName = await DialogHelper.Imput(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
 
-            if (result is not null)
+            if (newName is not null)
             {
-                var newName = result;
-
                 try
                 {
                     entry.RenameCommand.Execute(newName);

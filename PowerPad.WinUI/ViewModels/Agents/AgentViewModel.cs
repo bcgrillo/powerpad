@@ -107,6 +107,10 @@ namespace PowerPad.WinUI.ViewModels.Agents
         [JsonIgnore]
         public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant
 
+        [ObservableProperty]
+        [JsonIgnore]
+        public partial bool IsSelected { get; set; }
+
         [JsonIgnore]
         public IconElement IconElement => Icon.Type switch
         {

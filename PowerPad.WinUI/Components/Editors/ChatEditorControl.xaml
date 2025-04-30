@@ -74,7 +74,7 @@
                         Background="{ThemeResource SubtleFillColorSecondaryBrush}"
                         BorderBrush="{ThemeResource SubtleFillColorSecondaryBrush}" MinHeight="0">
                         <Expander.Resources>
-                            <Thickness x:Key="ExpanderHeaderBorderThickness">0,0,0,0</Thickness>
+                            <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
                             <Thickness x:Key="ExpanderChevronMargin">16,0,0,0</Thickness>
                             <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{ThemeResource SubtleFillColorSecondary}" />
                         </Expander.Resources>

@@ -54,13 +54,16 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void Initialize(AgentViewModel? agent)
         {
-            SelectedAgent = agent ?? GetEnabledAgents().FirstOrDefault();
+            SelectedAgent = agent;
             RegenerateFlyoutMenu();
 
             _agentsCollection.AgentsAvaibilityChanged += Agents_AgentsAvaibilityChanged;
         }
 
-        public void ShowMenu() => AgentButton.Flyout?.ShowAt(AgentButton);
+        public void ShowMenu()
+        {
+            AgentButton.Flyout?.ShowAt(AgentButton);
+        }
 
         private void Select(AgentViewModel? agent)
         {
