@@ -41,7 +41,7 @@
                 ToolTipService.ToolTip="Cambiar Workspace"
                 Margin="10,0,6,0"
                 Background="Transparent"
-                BorderBrush="Transparent"
+                BorderThickness="0"
                 Canvas.ZIndex="1"
                 IsHitTestVisible="True">
                 <DropDownButton.Content>
@@ -96,7 +96,7 @@
                                     Height="18"
                                     Visibility="{x:Bind IsSelected, Mode=OneWay}"
                                     Background="Transparent"
-                                    BorderBrush="Transparent"
+                                    BorderThickness="0"
                                     Margin="0,1,0,0"
                                     ToolTipService.ToolTip="Más opciones"
                                     Click="MoreButton_Click">

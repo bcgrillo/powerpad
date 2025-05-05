@@ -10,13 +10,29 @@ using System;
 using OllamaSharp.Models;
 using Windows.UI;
 using PowerPad.WinUI.ViewModels.Settings;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {
-    public partial class AgentViewModel(Agent agent, AgentIcon icon) : ObservableObject
+    public partial class AgentViewModel : ObservableObject
     {
-        private readonly SettingsViewModel _settings = App.Get<SettingsViewModel>();
-        private readonly Agent _agent = agent;
+        private readonly Agent _agent;
+        private ImageSource? _iconElementSource;
+
+        public AgentViewModel(Agent agent, AgentIcon icon)
+        {
+            _agent = agent;
+            Icon = icon;
+
+            Id = Guid.NewGuid();
+            ShowInNotes = true;
+            ShowInChats = true;
+
+            if (icon.Type == AgentIconType.Base64Image)
+                _iconElementSource = Base64ImageHelper.LoadImageFromBase64(Icon.Source, 16);
+            else
+                _iconElementSource = null;
+        }
 
         [JsonConstructor]
         public AgentViewModel(Guid id,
@@ -48,7 +64,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
             ShowInChats = showInChats;
         }
 
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
         public string Name
         {
@@ -99,13 +115,13 @@ namespace PowerPad.WinUI.ViewModels.Agents
         }
 
         [ObservableProperty]
-        public partial AgentIcon Icon { get; set; } = icon;
+        public partial AgentIcon Icon { get; set; }
 
         [ObservableProperty]
-        public partial bool ShowInNotes { get; set; } = true;
+        public partial bool ShowInNotes { get; set; }
 
         [ObservableProperty]
-        public partial bool ShowInChats { get; set; } = true;
+        public partial bool ShowInChats { get; set; }
 
         [JsonIgnore]
         public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant
@@ -117,7 +133,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
         [JsonIgnore]
         public IconElement IconElement => Icon.Type switch
         {
-            AgentIconType.Base64Image => new ImageIcon { Source = Base64ImageHelper.LoadImageFromBase64(Icon.Source) },
+            AgentIconType.Base64Image => new ImageIcon { Source = _iconElementSource },
             AgentIconType.FontIconGlyph => Icon.Color.HasValue
                 ? new FontIcon { Glyph = Icon.Source, Foreground = new SolidColorBrush(Icon.Color.Value) }
                 : new FontIcon { Glyph = Icon.Source },
@@ -144,14 +160,22 @@ namespace PowerPad.WinUI.ViewModels.Agents
             MaxOutputTokens = agent.MaxOutputTokens;
         }
 
-        partial void OnIconChanged(AgentIcon oldValue, AgentIcon newValue) => OnPropertyChanged(nameof(IconElement));
+        partial void OnIconChanged(AgentIcon oldValue, AgentIcon newValue)
+        {
+            if (Icon.Type == AgentIconType.Base64Image)
+                _iconElementSource = Base64ImageHelper.LoadImageFromBase64(Icon.Source, 16);
+            else
+                _iconElementSource = null;
+
+            OnPropertyChanged(nameof(IconElement));
+        }
 
         public AgentViewModel Copy()
         {
             var copy = new AgentViewModel(GetRecord() with { }, Icon) //Shallow copy
             {
-                ShowInNotes = ShowInNotes,
-                ShowInChats = ShowInChats
+                ShowInNotes = this.ShowInNotes,
+                ShowInChats = this.ShowInChats
             };
 
             return copy;

@@ -135,17 +135,21 @@
                 <Button
                     x:Name="UndoButton"
                     ToolTipService.ToolTip="Eliminar último mensaje"
-                    Click="UndoButton_Click">
+                    Click="UndoButton_Click"
+                    Visibility="Collapsed"
+                    Padding="8" BorderThickness="0">
                     <Button.Content>
-                        <FontIcon FontSize="20" Glyph="&#xE7A7;" />
+                        <FontIcon FontSize="18" Glyph="&#xE845;" />
                     </Button.Content>
                 </Button>
                 <Button
                     x:Name="CleanButton"
                     ToolTipService.ToolTip="Eliminar toda la conversación"
-                    Click="CleanButton_Click">
+                    Click="CleanButton_Click"
+                    Visibility="Collapsed"
+                    Padding="8" BorderThickness="0">
                     <Button.Content>
-                        <FontIcon FontSize="20" Glyph="&#xEA99;" />
+                        <FontIcon FontSize="18" Glyph="&#xEA99;" />
                     </Button.Content>
                 </Button>
             </StackPanel>

@@ -16,6 +16,7 @@ namespace PowerPad.WinUI.Components.Controls
     public sealed partial class AgentSelector : UserControl, IDisposable
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
+        private bool _selectFirstAgent;
 
         public DocumentType DocumentType
         {
@@ -52,9 +53,12 @@ namespace PowerPad.WinUI.Components.Controls
             _agentsCollection = App.Get<AgentsCollectionViewModel>();
         }
 
-        public void Initialize(AgentViewModel? agent)
+        public void Initialize(AgentViewModel? agent, bool selectFirstAgent = false)
         {
-            SelectedAgent = agent;
+            _selectFirstAgent = selectFirstAgent;
+
+            SelectedAgent = agent ?? (_selectFirstAgent ? _agentsCollection.Agents.FirstOrDefault() : null);
+
             RegenerateFlyoutMenu();
 
             _agentsCollection.AgentsAvaibilityChanged += Agents_AgentsAvaibilityChanged;
@@ -104,7 +108,12 @@ namespace PowerPad.WinUI.Components.Controls
             if (menuItem is not null) menuItem.IsChecked = true;
         }
 
-        private void Agents_AgentsAvaibilityChanged(object? _, EventArgs __) => RegenerateFlyoutMenu();
+        private void Agents_AgentsAvaibilityChanged(object? _, EventArgs __)
+        {
+            SelectedAgent ??= (_selectFirstAgent ? _agentsCollection.Agents.FirstOrDefault() : null);
+
+            RegenerateFlyoutMenu();
+        }
 
         private void RegenerateFlyoutMenu()
         {

@@ -160,7 +160,7 @@ namespace PowerPad.WinUI.Components.Editors
             _document.PreviousContent = null;
         }
 
-        private void RedoButton_Click(Object _, RoutedEventArgs __)
+        private void RedoButton_Click(object _, RoutedEventArgs __)
         {
             _document.PreviousContent = TextEditor.Text;
             TextEditor.Text = _document.NextContent;
@@ -175,7 +175,7 @@ namespace PowerPad.WinUI.Components.Editors
 
                 if (scrollViewer is not null)
                 {
-                    bool isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+                    var isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
 
                     if (isScrollbarVisible)
                     {

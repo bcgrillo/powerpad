@@ -33,12 +33,15 @@ namespace PowerPad.WinUI.Components.Editors
             _agent.PropertyChanged += Agent_PropertyChanged;
 
             ModelSelector.Initialize(_agent.AIModel is not null ? new(_agent.AIModel) : null);
+
+            AgentNameTextBox.TextChanging += AgentNameTextBox_TextChanging;
+            AgentPromptTextBox.TextChanging += AgentPromptTextBox_TextChanging;
         }
 
         public async Task<bool> ConfirmClose()
         {
-            if (_agent != _originalAgent)
-            { 
+            if (SaveButton.IsEnabled)
+            {
                 var result = await DialogHelper.Confirm
                 (
                     _xamlRoot,
@@ -139,6 +142,12 @@ namespace PowerPad.WinUI.Components.Editors
                 PromptParameterExpander.IsExpanded = false;
                 PromptParameterControls.IsEnabled = false;
             }
+
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(PromptParameterSwitch.IsOn ? 100 : 200);
+                UpdateScrollViewerMargin();
+            });
         }
 
         private void AIParametersSwitch_Toggled(object _, RoutedEventArgs __)
@@ -152,7 +161,7 @@ namespace PowerPad.WinUI.Components.Editors
                 if (_agent.Temperature == _settings.Models.DefaultParameters.Temperature)
                     AIParametersExpander.IsExpanded = true;
 
-                AIParametersControls.IsEnabled = true; 
+                AIParametersControls.IsEnabled = true;
             }
             else
             {
@@ -163,11 +172,45 @@ namespace PowerPad.WinUI.Components.Editors
                 AIParametersExpander.IsExpanded = false;
                 AIParametersControls.IsEnabled = false;
             }
+
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(AIParametersSwitch.IsOn ? 100 : 200);
+                UpdateScrollViewerMargin();
+            });
         }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
+        }
+
+        private void AgentNameTextBox_TextChanging(TextBox _, TextBoxTextChangingEventArgs __)
+        {
+            if (AgentNameTextBox.Text != _originalAgent.Name)
+            {
+                SaveButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
+            }
+        }
+
+        private void AgentPromptTextBox_TextChanging(TextBox _, TextBoxTextChangingEventArgs __)
+        {
+            if (AgentPromptTextBox.Text != _originalAgent.Prompt)
+            {
+                SaveButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
+            }
+        }
+
+        private void ScrollViewer_SizeChanged(object _, SizeChangedEventArgs __) => UpdateScrollViewerMargin();
+
+        private void UpdateScrollViewerMargin()
+        {
+            var changeMargin = ScrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible
+                && ScrollViewer.ActualWidth < 1024;
+
+            AgentForm.Margin = AgentForm.Margin with { Left = 0, Right = changeMargin ? 24 : 0 };
         }
     }
 }

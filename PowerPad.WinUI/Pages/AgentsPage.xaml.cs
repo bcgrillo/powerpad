@@ -16,8 +16,9 @@ namespace PowerPad.WinUI.Pages
     public partial class AgentsPage : DisposablePage, IToggleMenuPage
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
-        private readonly SettingsViewModel _settings; 
-        
+        private readonly SettingsViewModel _settings;
+        private bool _undoSelectionChange = false;
+
         private AgentViewModel? _selectedAgent;
         private AgentEditorControl? _editorControl;
 
@@ -39,40 +40,45 @@ namespace PowerPad.WinUI.Pages
         {
             var invokedEntry = (AgentViewModel?)eventArgs.AddedItems.FirstOrDefault();
 
-            bool cancel = false;
-
-            if (_editorControl is not null)
+            if (!_undoSelectionChange)
             {
-                var result = await _editorControl.ConfirmClose();
-
-                if (!result) cancel = true;
-            }
-
-            if (cancel)
-            {
-                TreeView.SelectedItem = _selectedAgent;
-            }
-            else
-            {
-                if (_selectedAgent is not null) _selectedAgent.IsSelected = false;
-                if (invokedEntry is not null) invokedEntry.IsSelected = true;
-                _selectedAgent = invokedEntry;
+                bool cancel = false;
 
                 if (_editorControl is not null)
                 {
-                    AgentEditorContent.Children.Clear();
-                    _editorControl.Dispose();
-                    _editorControl = null;
+                    var result = await _editorControl.ConfirmClose();
+
+                    if (!result) cancel = true;
                 }
 
-                if (invokedEntry is not null)
+                if (cancel)
                 {
-                    _editorControl = new AgentEditorControl(invokedEntry, XamlRoot);
-                    AgentEditorContent.Children.Add(_editorControl);
+                    _undoSelectionChange = true;
+                    TreeView.SelectedItem = _selectedAgent;
+                    _undoSelectionChange = false;
                 }
-            }
+                else
+                {
+                    if (_selectedAgent is not null) _selectedAgent.IsSelected = false;
+                    if (invokedEntry is not null) invokedEntry.IsSelected = true;
+                    _selectedAgent = invokedEntry;
 
-            UpdateLandingVisibility(showLanding: invokedEntry is null);
+                    if (_editorControl is not null)
+                    {
+                        AgentEditorContent.Children.Clear();
+                        _editorControl.Dispose();
+                        _editorControl = null;
+                    }
+
+                    if (invokedEntry is not null)
+                    {
+                        _editorControl = new AgentEditorControl(invokedEntry, XamlRoot);
+                        AgentEditorContent.Children.Add(_editorControl);
+                    }
+                }
+
+                UpdateLandingVisibility(showLanding: invokedEntry is null);
+            }
         }
 
         private void UpdateLandingVisibility(bool showLanding)

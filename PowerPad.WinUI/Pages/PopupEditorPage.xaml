@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<local:EditorControl
-    x:Class="PowerPad.WinUI.Components.Editors.TextEditorControl"
+<Page
+    x:Class="PowerPad.WinUI.Pages.PopupEditorPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Components.Editors"
@@ -8,14 +8,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:CommunityToolkit.WinUI.Converters"
-    mc:Ignorable="d">
-    <local:EditorControl.Resources>
-        <Style TargetType="TextBox" x:Key="TransparentTextBoxStyle" BasedOn="{StaticResource DefaultTextBoxStyle}">
-            <Setter Property="FontSize" Value="27.5" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
         <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
-    </local:EditorControl.Resources>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -28,13 +25,6 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <lcontrols:EditableTextBlock
-                    x:Name="EditableTextBlock"
-                    FontSize="27.5"
-                    FontWeight="SemiBold"
-                    ForcedForeground="{ThemeResource TextFillColorPrimaryBrush}"
-                    Value="{x:Bind _document.Name, Mode=OneWay}"
-                    Edited="EditableTextBlock_Edited"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
                 <Button
                     x:Name="UndoButton"
@@ -90,8 +80,9 @@
             SelectionHighlightColor="Gray"
             SelectionHighlightColorWhenNotFocused="Gray"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
-            SizeChanged="TextEditor_SizeChanged"/>
-        
+            SizeChanged="TextEditor_SizeChanged"
+            Text="{x:Bind _document.Content, Mode=TwoWay}"/>
+
         <lcontrols:NoteAgentControl
             x:Name="AgentControl"
             Grid.Row="2"
@@ -100,4 +91,4 @@
             SendButtonClicked="AgentControl_SendButtonClicked" />
 
     </Grid>
-</local:EditorControl>
+</Page>

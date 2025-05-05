@@ -185,16 +185,9 @@ namespace PowerPad.WinUI.Components.Editors
 
                 if (scrollViewer is not null)
                 {
-                    bool isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+                    var isScrollbarVisible = scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible;
 
-                    if (isScrollbarVisible)
-                    {
-                        InvertedListView.Padding = InvertedListView.Padding with { Right = 12 };
-                    }
-                    else
-                    {
-                        InvertedListView.Padding = InvertedListView.Padding with { Right = -12 };
-                    }
+                    InvertedListView.Padding = InvertedListView.Padding with { Right = isScrollbarVisible ? 12 : -12 };
                 }
             });
         }

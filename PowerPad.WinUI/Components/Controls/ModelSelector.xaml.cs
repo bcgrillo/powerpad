@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
+using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Linq;
@@ -15,7 +16,20 @@ namespace PowerPad.WinUI.Components.Controls
 
         private readonly SettingsViewModel _settings;
         private readonly DispatcherTimer _debounceTimer;
-        
+
+        public bool ShowDefaultOnButtonContent
+        {
+            get => (bool)GetValue(ShowDefaultOnButtonContentProperty);
+            set
+            {
+                SetValue(ShowDefaultOnButtonContentProperty, value);
+                RegenerateFlyoutMenu();
+            }
+        }
+
+        public static readonly DependencyProperty ShowDefaultOnButtonContentProperty =
+            DependencyProperty.Register(nameof(ShowDefaultOnButtonContent), typeof(bool), typeof(AgentSelector), new(false));
+
         public AIModelViewModel? SelectedModel
         {
             get;
@@ -55,7 +69,11 @@ namespace PowerPad.WinUI.Components.Controls
             _settings.Models.DefaultModelChanged += DefaultModel_Changed;
         }
 
-        public void UpdateEnabledLayout(bool newValue) => ModelIcon.UpdateEnabledLayout(newValue);
+        public void UpdateEnabledLayout(bool newValue)
+        {
+            ModelIcon.UpdateEnabledLayout(newValue);
+            UpdateChekedItemMenu();
+        }
 
         private void Select(AIModelViewModel? model)
         {
@@ -175,7 +193,9 @@ namespace PowerPad.WinUI.Components.Controls
             }
             else if (_settings.Models.DefaultModel is not null)
             {
-                ModelName.Text = _settings.Models.DefaultModel.CardName;
+                ModelName.Text = ShowDefaultOnButtonContent
+                    ? $"Por defecto ({_settings.Models.DefaultModel!.CardName})"
+                    : _settings.Models.DefaultModel.CardName;
                 ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
             }
             else

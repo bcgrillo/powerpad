@@ -43,12 +43,13 @@
             Click="Button_Click" 
             ToolTipService.ToolTip="Editar"
             Background="Transparent"
-            BorderBrush="Transparent"
+            BorderThickness="0"
+            Padding="8"
             Opacity="0"
             Visibility="{x:Bind _state.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
             GotFocus="EditButton_GotFocus"
             LostFocus="EditButton_LostFocus">
-            <FontIcon Glyph="&#xE70F;" />
+            <FontIcon Glyph="&#xE70F;" FontSize="18" />
         </Button>
         <StackPanel
             Grid.Column="1" 
@@ -60,18 +61,18 @@
                 Click="Button_Click"
                 ToolTipService.ToolTip="Confirmar"
                 Background="Transparent"
-                BorderBrush="Transparent"
+                BorderThickness="0" Padding="8" 
                 Visibility="{x:Bind _state.IsEditing, Mode=OneWay}">
-                <FontIcon Glyph="&#xE8FB;" />
+                <FontIcon Glyph="&#xE8FB;" FontSize="18" />
             </Button>
             <Button 
                 x:Name="CancelButton"
                 Click="Button_Click"
                 ToolTipService.ToolTip="Cancelar"
                 Background="Transparent"
-                BorderBrush="Transparent"
+                BorderThickness="0" Padding="9,9,7,7" 
                 Visibility="{x:Bind _state.IsEditing, Mode=OneWay}">
-                <FontIcon Glyph="&#xE711;" />
+                <FontIcon Glyph="&#xE711;" FontSize="18" />
             </Button>
         </StackPanel>
     </Grid>

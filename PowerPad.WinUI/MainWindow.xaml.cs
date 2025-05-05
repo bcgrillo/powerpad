@@ -2,28 +2,24 @@ using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using WinUIEx;
 using Microsoft.UI.Composition.SystemBackdrops;
 using WinRT;
 using Microsoft.UI.Composition;
 using PowerPad.WinUI.Pages;
 using Microsoft.UI.Windowing;
-using Windows.UI;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.Settings;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.Dialogs;
-using System.Threading.Tasks;
+using H.NotifyIcon;
 
 namespace PowerPad.WinUI
 {
     public partial class MainWindow : WindowEx
     {
-        private DesktopAcrylicController? _acrylicController;
-        private SystemBackdropConfiguration? _configurationSource;
         private readonly SettingsViewModel _settings;
 
         private string? _activePageName;
@@ -51,8 +47,11 @@ namespace PowerPad.WinUI
                 App.Get<IConfigStoreService>().StoreConfigs();
                 EditorManagerHelper.AutoSaveEditors();
 
-                _acrylicController?.Dispose();
+                BackdropHelper.DisposeController();
             };
+
+            // Registrar HotKey
+            HotKeyHelper.Register(this);
         }
 
         private void NavView_Loaded(object _, RoutedEventArgs __)
@@ -103,35 +102,6 @@ namespace PowerPad.WinUI
                 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public void SetBackdrop(bool setAcrylicBackDrop)
-        {
-            if (setAcrylicBackDrop && DesktopAcrylicController.IsSupported())
-            {
-                _configurationSource ??= new()
-                {
-                    IsInputActive = true,
-                    Theme = _settings.General.AppTheme is null
-                        ? (SystemBackdropTheme)((FrameworkElement)Content).ActualTheme
-                        : (_settings.General.AppTheme == ApplicationTheme.Light ? SystemBackdropTheme.Light : SystemBackdropTheme.Dark)
-                };
-
-                _acrylicController ??= new()
-                {
-                    Kind = DesktopAcrylicKind.Thin,
-                    TintColor = ((SolidColorBrush)Application.Current.Resources["PowerPadBackgroundBrush"]).Color,
-                    TintOpacity = 0.8F
-                };
-
-                MainPage.Background = null;
-                _acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
-                _acrylicController.SetSystemBackdropConfiguration(_configurationSource);
-            }
-            else
-            {
-                MainPage.Background = (Brush)Application.Current.Resources["PowerPadBackgroundBrush"];
-            }
-        }
-
         private void SetTitleBar()
         {
             ExtendsContentIntoTitleBar = true;
@@ -173,7 +143,8 @@ namespace PowerPad.WinUI
         {
             if (_activeToggleMenuPage is null)
             {
-                TitleContent.Margin = new(0);
+                TitleContent.Margin = TitleContent.Margin with { Left = 0 };
+                TitleBar.Margin = new(0);
                 Splitter.Visibility = Visibility.Collapsed;
                 ToggleMenuBtn.Visibility = Visibility.Collapsed;
             }
@@ -182,6 +153,7 @@ namespace PowerPad.WinUI
                 var navWidth = _activeToggleMenuPage.NavigationWidth;
 
                 TitleContent.Margin = TitleContent.Margin with { Left = navWidth };
+                TitleBar.Margin = new(8, 0, 0, 0);
 
                 if (navWidth > 0)
                 {
@@ -204,6 +176,28 @@ namespace PowerPad.WinUI
             (NavFrame.Content as IToggleMenuPage)?.ToggleNavigationVisibility();
 
             SetToggleVisualElements();
+        }
+
+        private void MinimizeToTray_Click(object _, RoutedEventArgs __)
+        {
+            TaskbarIcon.Visibility = Visibility.Visible;
+            this.Hide(enableEfficiencyMode: false);
+        }
+
+        private void Show_Click(object _, RoutedEventArgs __)
+        {
+            TaskbarIcon.Visibility = Visibility.Collapsed;
+            this.Show();
+        }
+
+        private void Exit_Click(object _, RoutedEventArgs __)
+        {
+            Application.Current.Exit();
+        }
+
+        public void SetBackdrop(bool value)
+        {
+            BackdropHelper.SetBackdrop(value, _settings.General.AppTheme, this, MainPage);
         }
     }
 }

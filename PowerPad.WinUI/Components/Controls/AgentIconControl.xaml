@@ -10,7 +10,7 @@
     xmlns:vm="using:PowerPad.WinUI.ViewModels.Agents"
     mc:Ignorable="d">
     <Grid>
-        <ImageIcon x:Name="ImageIcon" />
+        <Image x:Name="ImageIcon" />
         <FontIcon x:Name="FontIcon" />
     </Grid>
 </UserControl>

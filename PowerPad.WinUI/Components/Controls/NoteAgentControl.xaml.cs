@@ -13,13 +13,13 @@ using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.WinUI.ViewModels.Agents;
 using System.Text;
 using System.Collections.Specialized;
+using OllamaSharp.Models;
 
 namespace PowerPad.WinUI.Components.Controls
 {
     public partial class NoteAgentControl : UserControl, IDisposable
     {
         private readonly IChatService _chatService;
-        private readonly AgentsCollectionViewModel _agentsCollection;
         private readonly SettingsViewModel _settings;
         private CancellationTokenSource _cts;
 
@@ -32,23 +32,11 @@ namespace PowerPad.WinUI.Components.Controls
             this.InitializeComponent();
 
             _chatService = App.Get<IChatService>();
-            _agentsCollection = App.Get<AgentsCollectionViewModel>();
             _settings = App.Get<SettingsViewModel>();
             _cts = new();
 
-            _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.ShowInNotes);
-            UpdateVisibility();
-
-            if(AgentPanel.Visibility == Visibility.Visible)
-            {
-                UpdateAgentsMenu();
-                UpdateAgentButtonContent();
-                UpdateParameterInputBox();
-
-                ((RadioMenuFlyoutItem)AgentFlyoutMenu.Items.First()).IsChecked = true;
-            }
-
-            _agentsCollection.Agents.CollectionChanged += Agents_CollectionChanged;
+            AgentSelector.SelectedAgentChanged += SelectedAgent_Changed;
+            AgentSelector.Initialize(null, selectFirstAgent: true);
         }
 
         private void UpdateVisibility()
@@ -66,35 +54,16 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
-        private void UpdateAgentsMenu()
+        private void SelectedAgent_Changed(object? _, EventArgs __)
         {
-            AgentFlyoutMenu.Items.Clear();
-
-            var enabledAgents = _agentsCollection.Agents.Where(a => a.ShowInNotes);
-
-            foreach (var agent in enabledAgents)
+            if (_selectedAgent != AgentSelector.SelectedAgent)
             {
-                var menuItem = new RadioMenuFlyoutItem
-                {
-                    Text = agent.Name,
-                    Tag = agent,
-                    Icon = agent.IconElement
-                };
+                _selectedAgent = AgentSelector.SelectedAgent;
 
-                AgentFlyoutMenu.Items.Add(menuItem);
-
-                menuItem.Click += SetAgentItem_Click;
+                UpdateVisibility();
+                UpdateParameterInputBox();
+                UpdateParameterInputBox();
             }
-        }
-
-        private void SetAgentItem_Click(object sender, RoutedEventArgs __)
-        {
-            _selectedAgent = (AgentViewModel?)((RadioMenuFlyoutItem)sender).Tag;
-
-            ((RadioMenuFlyoutItem)sender).IsChecked = true;
-
-            UpdateAgentButtonContent();
-            UpdateParameterInputBox();
         }
 
         private void UpdateParameterInputBox()
@@ -109,45 +78,6 @@ namespace PowerPad.WinUI.Components.Controls
             {
                 PromptParameterInputBox.Visibility = Visibility.Collapsed;
                 SendButton.IsEnabled = true;
-            }
-        }
-
-        private void UpdateAgentButtonContent()
-        {
-            if (_selectedAgent is not null)
-            {
-                AgentIconControl.AgentIcon = _selectedAgent.Icon;
-                AgentName.Text = _selectedAgent.Name;
-            }
-            else
-            {
-                AgentIconControl.AgentIcon = default;
-                AgentName.Text = "Unavailable";
-            }
-        }
-
-        private void Agents_CollectionChanged(object? _, NotifyCollectionChangedEventArgs __)
-        {
-            if (_selectedAgent is null)
-                _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.ShowInNotes);
-            else
-                _selectedAgent = _agentsCollection.Agents.FirstOrDefault(a => a.ShowInNotes && a.Id == _selectedAgent.Id);
-
-            UpdateVisibility();
-
-            if (AgentPanel.Visibility == Visibility.Visible)
-            {
-                UpdateAgentsMenu();
-                UpdateAgentButtonContent();
-                UpdateParameterInputBox();
-
-                var menuItem = (RadioMenuFlyoutItem)AgentFlyoutMenu.Items.First(i => i.Tag as AgentViewModel == _selectedAgent);
-
-                DispatcherQueue.TryEnqueue(async () =>
-                {
-                    await Task.Delay(100);
-                    menuItem.IsChecked = true;
-                });
             }
         }
 
@@ -175,7 +105,7 @@ namespace PowerPad.WinUI.Components.Controls
                 AgentProgress.Visibility = Visibility.Visible;
                 StopButton.Visibility = Visibility.Visible;
                 PromptParameterInputBox.IsReadOnly = true;
-                AgentButton.IsEnabled = false;
+                AgentSelector.IsEnabled = false;
             });
 
             _cts = new();
@@ -201,7 +131,7 @@ namespace PowerPad.WinUI.Components.Controls
                 SendButton.Visibility = Visibility.Visible;
                 PromptParameterInputBox.Text = string.Empty;
                 PromptParameterInputBox.IsReadOnly = false;
-                AgentButton.IsEnabled = true;
+                AgentSelector.IsEnabled = true;
 
                 if (_selectedAgent!.HasPromptParameter == true)
                 {
@@ -245,8 +175,6 @@ namespace PowerPad.WinUI.Components.Controls
 
         public void Dispose()
         {
-            _agentsCollection.Agents.CollectionChanged -= Agents_CollectionChanged;
-
             GC.SuppressFinalize(this);
         }
     }

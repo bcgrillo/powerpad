@@ -57,7 +57,7 @@
                                         Height="18"
                                         Visibility="{x:Bind IsSelected, Mode=OneWay}"
                                         Background="Transparent"
-                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
                                         Margin="0,1,0,0"
                                         ToolTipService.ToolTip="Más opciones"
                                         Click="MoreButton_Click">

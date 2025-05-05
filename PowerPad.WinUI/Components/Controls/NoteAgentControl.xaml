@@ -33,18 +33,7 @@
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <DropDownButton x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Agente">
-                                <DropDownButton.Flyout>
-                                    <MenuFlyout x:Name="AgentFlyoutMenu" Placement="TopEdgeAlignedLeft">
-                                    </MenuFlyout>
-                                </DropDownButton.Flyout>
-                                <DropDownButton.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <local:AgentIconControl x:Name="AgentIconControl" Size="16" />
-                                        <TextBlock x:Name="AgentName" MaxWidth="150" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
-                                    </StackPanel>
-                                </DropDownButton.Content>
-                            </DropDownButton>
+                            <local:AgentSelector x:Name="AgentSelector" DocumentType="Note" />
                         </StackPanel>
 
                         <local:IntegratedTextBox
@@ -67,20 +56,20 @@
                                 Click="SendBtn_Click"
                                 Style="{StaticResource AccentButtonStyle}"
                                 Height="32"
-                                BorderThickness="0"
+                                BorderThickness="0" Padding="8"
                                 IsEnabled="False">
                                 <StackPanel Orientation="Horizontal">
-                                    <FontIcon Margin="0,1,-1,0" FontSize="19" Glyph="&#xE725;" />
+                                    <FontIcon Margin="0,1,-1,0" FontSize="16" Glyph="&#xE725;" />
                                 </StackPanel>
                             </Button>
                             <Button x:Name="StopButton"
                                 Style="{ThemeResource AccentButtonStyle}"
                                 Visibility="Collapsed"
                                 Height="32"
-                                BorderThickness="0"
+                                BorderThickness="0" Padding="8"
                                 Click="StopBtn_Click">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <FontIcon Margin="0,0,-1,1" FontSize="19" Glyph="&#xF140;" />
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon Margin="0,0,-1,1" FontSize="16" Glyph="&#xF140;" />
                                 </StackPanel>
                             </Button>
                         </StackPanel>

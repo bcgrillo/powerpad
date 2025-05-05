@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:winuiex="using:WinUIEx"
+    xmlns:tb="using:H.NotifyIcon"
     Width="1280"
     MinWidth="960"
     MinHeight="720"
@@ -102,10 +103,11 @@
                 HorizontalAlignment="Left" 
                 Background="{StaticResource PowerPadStrokeColorDefault}" />
 
-            <Grid Grid.Column="2" x:Name="TitleContent">
+            <Grid Grid.Column="2" x:Name="TitleContent" Margin="0,0,144,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
 
                 <Button
@@ -113,9 +115,9 @@
                     Height="30"
                     Width="30"
                     ToolTipService.ToolTip="Mostrar menu"
-                    Padding="6"
+                    Padding="7"
                     Background="Transparent"
-                    BorderBrush="Transparent"
+                    BorderThickness="0"
                     Click="ToggleMenuBtn_Click"
                     Canvas.ZIndex="1"
                     IsHitTestVisible="True"
@@ -126,14 +128,48 @@
                     </Button.Content>
                 </Button>
 
-                <winuiex:TitleBar
+                <Border
                     x:Name="TitleBar"
-                    Title="PowerPad"
-                    Subtitle=""
                     Grid.Column="1"
                     Height="48"
-                    FontSize="1.2em"
-                    IsTabStop="False" />
+                    IsTabStop="False">
+                    <TextBlock Text="PowerPad" VerticalAlignment="Center" Padding="0,0,0,1" />
+                </Border>
+
+                <Button
+                    x:Name="MinimizeToTray"
+                    Grid.Column="2"
+                    Click="MinimizeToTray_Click"
+                    Height="48"
+                    Width="48"
+                    HorizontalAlignment="Right"
+                    CornerRadius="0"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    HorizontalContentAlignment="Center"
+                    ToolTipService.ToolTip="Minimizar en bandeja de sistema">
+                    <FontIcon Glyph="&#xEE47;" FontSize="16" FlowDirection="RightToLeft" MirroredWhenRightToLeft="True" />
+                </Button>
+
+                <tb:TaskbarIcon
+                    x:Name="TaskbarIcon"
+                    IconSource="/Assets/AppIcon.ico"
+                    MenuActivation="LeftOrRightClick"
+                    PopupActivation="DoubleClick"
+                    ToolTipText="Hola"
+                    Visibility="Collapsed" ContextMenuMode="SecondWindow">
+                    <tb:TaskbarIcon.ContextFlyout>
+                        <MenuFlyout AreOpenCloseAnimationsEnabled="False">
+                            <MenuFlyoutItem
+                                Click="Show_Click"
+                                Text="Abrir" />
+                            <MenuFlyoutSeparator />
+                            <MenuFlyoutItem
+                                Click="Exit_Click"
+                                Text="Salir" />
+                        </MenuFlyout>
+                    </tb:TaskbarIcon.ContextFlyout>
+                </tb:TaskbarIcon>
             </Grid>
         </Grid>
     </Page>

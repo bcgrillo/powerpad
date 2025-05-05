@@ -78,10 +78,11 @@
                                             Value="{x:Bind Progress, Mode=OneWay}"
                                             IsIndeterminate="False" />
                                         <Button
-                                            Content="{ui:FontIcon Glyph=&#xE712;,FontSize=14}"
+                                            Content="{ui:FontIcon Glyph=&#xE712;,FontSize=22}"
+                                            Padding="6,0"
                                             ToolTipService.ToolTip="Más opciones"
                                             Background="Transparent"
-                                            BorderBrush="Transparent">
+                                            BorderThickness="0">
                                             <Button.Resources>
                                                 <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent" />
                                                 <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="Transparent" />

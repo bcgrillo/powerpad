@@ -134,7 +134,7 @@ namespace PowerPad.WinUI.Components.Controls
             ChatInputBox.Focus(FocusState.Keyboard);
         }
 
-        private void AgentToggleButton_Click(object sender, RoutedEventArgs __)
+        private void AgentToggleButton_Click(object _, RoutedEventArgs __)
         {
             _useAgents = !_useAgents;
 
@@ -158,6 +158,7 @@ namespace PowerPad.WinUI.Components.Controls
             {
                 AgentSelector.Visibility = Visibility.Collapsed;
                 ModelSelector.Visibility = Visibility.Visible;
+                ModelSelector.UpdateEnabledLayout(true);
                 ParametersButton.Visibility = Visibility.Visible;
                 ((Border)AgentToggleButton.Content).BorderBrush = new SolidColorBrush(Colors.Transparent);
             }

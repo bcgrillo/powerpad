@@ -44,7 +44,7 @@ namespace PowerPad.WinUI.Components.Controls
             switch (AgentIcon.Type)
             {
                 case AgentIconType.Base64Image:
-                    ImageIcon.Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Source);
+                    ImageIcon.Source = Base64ImageHelper.LoadImageFromBase64(AgentIcon.Source, Size);
                     ImageIcon.Visibility = Visibility.Visible;
                     break;
                 case AgentIconType.FontIconGlyph:

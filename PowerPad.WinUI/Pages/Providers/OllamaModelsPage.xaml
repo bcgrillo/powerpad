@@ -52,6 +52,8 @@
                     Height="32"
                     ToolTipService.ToolTip="Refrescar"
                     Margin="12,0,0,0"
+                    BorderThickness="0"
+                    Padding="8"
                     Command="{x:Bind _ollamaModelsViewModel.RefreshModelsCommand}"
                     IsEnabled="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToBoolConverter}}">
                     <Button.Content>

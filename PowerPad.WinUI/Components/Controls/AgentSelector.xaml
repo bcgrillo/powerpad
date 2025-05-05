@@ -8,17 +8,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
-        <Button x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Agente">
-            <Button.Flyout>
+        <DropDownButton x:Name="AgentButton" Height="32" ToolTipService.ToolTip="Agente">
+            <DropDownButton.Flyout>
                 <MenuFlyout x:Name="AgentFlyoutMenu" Placement="TopEdgeAlignedLeft">
                 </MenuFlyout>
-            </Button.Flyout>
-            <Button.Content>
+            </DropDownButton.Flyout>
+            <DropDownButton.Content>
                 <StackPanel Orientation="Horizontal">
                     <local:AgentIconControl x:Name="AgentIconControl" Size="16" />
                     <TextBlock x:Name="AgentName" Margin="8,0,0,0" Text="Seleccione" />
                 </StackPanel>
-            </Button.Content>
-        </Button>
+            </DropDownButton.Content>
+        </DropDownButton>
     </Grid>
 </UserControl>
