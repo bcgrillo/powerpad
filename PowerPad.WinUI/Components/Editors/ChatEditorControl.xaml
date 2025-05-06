@@ -113,13 +113,13 @@
             </Grid>
         </DataTemplate>
     </local:EditorControl.Resources>
-    <Grid>
+    <Grid Margin="28">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="36,24,36,12" ColumnSpacing="8">
+        <Grid Margin="0,-8,0,12" ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
@@ -184,7 +184,6 @@
             <ListView
                 x:Name="InvertedListView"
                 Padding="-12,0,-12,0"
-                Margin="36,0,36,0"
                 ItemTemplateSelector="{StaticResource ChatTemplateSelector}"
                 ItemsSource="{x:Bind _chat.Messages}"
                 SelectionMode="None"
@@ -203,7 +202,7 @@
             <lcontrols:ChatControl
                 x:Name="ChatControl"
                 Grid.Row="1"
-                Margin="36,18,36,36"
+                Margin="0,18,0,0"
                 SendButtonClicked="ChatControl_SendButtonClicked"
                 ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged"
                 IsEnabled="{x:Bind _chat.ChatError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}" />

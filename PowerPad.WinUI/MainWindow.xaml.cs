@@ -51,7 +51,7 @@ namespace PowerPad.WinUI
             };
 
             // Registrar HotKey
-            HotKeyHelper.Register(this);
+            if (_settings.General.EnableHotKeys) HotKeyHelper.Register(this, true);
         }
 
         private void NavView_Loaded(object _, RoutedEventArgs __)
@@ -158,12 +158,12 @@ namespace PowerPad.WinUI
                 if (navWidth > 0)
                 {
                     Splitter.Visibility = Visibility.Visible;
-                    ToggleMenuIcon.Source = (ImageSource)Application.Current.Resources["HideMenuSvg"];
+                    ToggleMenuIcon.Glyph = "\uE8A0";
                 }
                 else
                 {
                     Splitter.Visibility = Visibility.Collapsed;
-                    ToggleMenuIcon.Source = (ImageSource)Application.Current.Resources["ShowMenuSvg"];
+                    ToggleMenuIcon.Glyph = "\uE89F";
                 }
 
                 ToggleMenuBtn.Visibility = Visibility.Visible;
@@ -198,6 +198,13 @@ namespace PowerPad.WinUI
         public void SetBackdrop(bool value)
         {
             BackdropHelper.SetBackdrop(value, _settings.General.AppTheme, this, MainPage);
+        }
+
+        public void ShowNotes()
+        {
+            this.Show();
+            BringToFront();
+            NavView.SelectedItem = NavView.MenuItems[0];
         }
     }
 }

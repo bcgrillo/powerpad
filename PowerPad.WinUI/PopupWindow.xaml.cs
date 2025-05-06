@@ -9,6 +9,7 @@ using WinUIEx;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Windows.UI.WindowManagement;
 
 namespace PowerPad.WinUI
 {
@@ -23,35 +24,42 @@ namespace PowerPad.WinUI
             _settings = App.Get<SettingsViewModel>();
 
             ExtendsContentIntoTitleBar = true;
+
+            OverlappedPresenter presenter = OverlappedPresenter.Create();
+            presenter.IsResizable = false;
+            presenter.SetBorderAndTitleBar(true, false);
+            AppWindow.SetPresenter(presenter);
+
+            SetTitleBar(PopupEditorPage.TitleBar);
+
             BackdropHelper.SetBackdrop(_settings.General.AcrylicBackground, _settings.General.AppTheme, this, PopupEditorPage);
 
-            Closed += (s, e) =>
+            _settings.General.PropertyChanged += (s, e) =>
             {
-                e.Handled = true;
-                this.SetIsAlwaysOnTop(false);
-                this.Hide();
+                if (e.PropertyName == nameof(_settings.General.AcrylicBackground))
+                {
+                    BackdropHelper.SetBackdrop(_settings.General.AcrylicBackground, _settings.General.AppTheme, this, PopupEditorPage);
+                }
             };
         }
 
-        public void Invoke()
+        public void ShowPopup()
         {
             this.CenterOnScreen();
             this.Show();
             this.SetIsAlwaysOnTop(true);
+            PopupEditorPage.SetFocus();
         }
 
         public void SetContent(string newContent) => PopupEditorPage.SetContent(newContent);
 
-        //Visual tree may not have been loaded yet at Ctor. 
-        //It's suggested registering Loaded event of the root element of the window.
-        private void RootGrid_Loaded(object sender, RoutedEventArgs e)
+        private void PopupEditorPage_CloseRequested(object _, EventArgs __) => Close();
+
+        private void PopupWindow_Closed(object _, WindowEventArgs eventArgs)
         {
-            //Gets the close button element. Refer to the Visual Tree.
-            var contentPresenter = VisualTreeHelper.GetParent(this.Content);
-            var layoutRoot = VisualTreeHelper.GetParent(contentPresenter);
-            var titleBar = VisualTreeHelper.GetChild(layoutRoot, 1) as Grid;
-            var buttonContainer = VisualTreeHelper.GetChild(titleBar, 0) as Grid;
-            buttonContainer.Visibility = Visibility.Collapsed;
+            eventArgs.Handled = true;
+            this.SetIsAlwaysOnTop(false);
+            this.Hide();
         }
     }
 }

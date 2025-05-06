@@ -76,6 +76,9 @@ namespace PowerPad.WinUI.ViewModels.Settings
         [ObservableProperty]
         public partial string? AgentPrompt { get; set; }
 
+        [ObservableProperty]
+        public partial bool EnableHotKeys { get; set; }
+
         public event EventHandler? ProviderAvaibilityChanged;
         public event EventHandler? ServiceEnablementChanged;
 
@@ -181,6 +184,12 @@ namespace PowerPad.WinUI.ViewModels.Settings
         partial void OnAcrylicBackgroundChanging(bool value)
         {
             App.MainWindow?.SetBackdrop(value);
+        }
+
+        partial void OnEnableHotKeysChanging(bool value)
+        {
+            if (App.MainWindow is not null)
+                HotKeyHelper.Register(App.MainWindow, value);
         }
     };
 }

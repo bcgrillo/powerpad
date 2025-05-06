@@ -14,29 +14,59 @@ namespace PowerPad.WinUI.Helpers
 {
     public static class HotKeyHelper
     {
-        private const uint VK_C = 0x43;
+        private const byte VK_C = 0x43;
+        private const byte VK_V = 0x56;
+        private const byte VK_SPACE = 0x20;
         private const uint WM_HOTKEY = 0x0312;
-        private static PopupWindow? _popupWindow;
+        private const byte VK_CONTROL = 0x11;
+        private const uint KEYEVENTF_KEYDOWN = 0x0000;
+        private const int HOTKEY_C = 1;
+        private const int HOTKEY_SPACE = 2;
 
-        public static void Register(Window window)
+        private static PopupWindow? _popupWindow;
+        private static bool _registered;
+
+        public static void Register(Window window, bool register)
         {
             var hwnd = new HWND(WindowNative.GetWindowHandle(window).ToInt32());
-            var success = PInvoke.RegisterHotKey
-            (
-                hwnd,
-                0,
-                HOT_KEY_MODIFIERS.MOD_CONTROL | HOT_KEY_MODIFIERS.MOD_SHIFT,
-                VK_C
-            );
 
-            if (success)
+            if (register && !_registered)
             {
-                var _monitor = new WindowMessageMonitor(hwnd);
-                _monitor.WindowMessageReceived += OnWindowMessageReceived;
+                var success = PInvoke.RegisterHotKey(
+                    hwnd,
+                    HOTKEY_C,
+                    HOT_KEY_MODIFIERS.MOD_CONTROL | HOT_KEY_MODIFIERS.MOD_SHIFT,
+                    VK_C
+                );
+
+                if (success)
+                {
+                    success = PInvoke.RegisterHotKey(
+                        hwnd,
+                        HOTKEY_SPACE,
+                        HOT_KEY_MODIFIERS.MOD_CONTROL | HOT_KEY_MODIFIERS.MOD_SHIFT,
+                        VK_SPACE
+                    );
+                }
+
+                if (success)
+                {
+                    var _monitor = new WindowMessageMonitor(hwnd);
+                    _monitor.WindowMessageReceived += OnWindowMessageReceived;
+
+                    _registered = true;
+                }
+                else
+                {
+                    throw new COMException("Failed to register hotkey.", Marshal.GetLastWin32Error());
+                }
             }
-            else
+            else if (!register && _registered)
             {
-                throw new COMException("Failed to register hotkey.", Marshal.GetLastWin32Error());
+                PInvoke.UnregisterHotKey(hwnd, HOTKEY_C);
+                PInvoke.UnregisterHotKey(hwnd, HOTKEY_SPACE);
+
+                _registered = false;
             }
         }
 
@@ -44,27 +74,44 @@ namespace PowerPad.WinUI.Helpers
         {
             if (eventArgs.Message.MessageId == WM_HOTKEY)
             {
-                //await SimulateCtrlC();
+                var copyMode = eventArgs.Message.WParam == HOTKEY_C;
+
+                if (copyMode)
+                {
+                    SimulateCtrlC();
+                    await Task.Delay(300);
+                }
 
                 _popupWindow ??= new PopupWindow();
 
-                _popupWindow.Invoke();               
+                if (copyMode)
+                {
+                    DataPackageView dataPackageView = Clipboard.GetContent();
+                    _popupWindow.SetContent((await dataPackageView.GetTextAsync()) ?? string.Empty);
+                }
+                else
+                {
+                    _popupWindow.SetContent(string.Empty);
+                }
 
-                DataPackageView dataPackageView = Clipboard.GetContent();
-                _popupWindow.SetContent(await dataPackageView.GetTextAsync());
+                _popupWindow.ShowPopup();
             }
         }
 
-        //private static async Task SimulateCtrlC()
-        //{
-        //    const byte VK_CONTROL = 0x11;
-        //    const byte VK_C = 0x43;
-        //    const uint KEYEVENTF_KEYDOWN = 0x0000;
+        public static void SimulateCtrlC()
+        {
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_C, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_C, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+        }
 
-        //    PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
-        //    PInvoke.keybd_event(VK_C, 0, KEYEVENTF_KEYDOWN, 0);
-        //    PInvoke.keybd_event(VK_C, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
-        //    PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
-        //}
+        public static void SimulateCtrlV()
+        {
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_V, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_V, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+        }
     }
 }

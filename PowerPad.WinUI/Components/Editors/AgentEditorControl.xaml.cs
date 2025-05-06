@@ -129,9 +129,7 @@ namespace PowerPad.WinUI.Components.Editors
                 _agent.PromptParameterName = _originalAgent.PromptParameterName ?? string.Empty;
                 _agent.PromptParameterDescription = _originalAgent.PromptParameterDescription ?? string.Empty;
 
-                if (_agent.PromptParameterName == string.Empty)
-                    PromptParameterExpander.IsExpanded = true;
-
+                PromptParameterExpander.IsExpanded = true;
                 PromptParameterControls.IsEnabled = true;
             }
             else
@@ -158,9 +156,7 @@ namespace PowerPad.WinUI.Components.Editors
                 _agent.TopP = _originalAgent.TopP ?? _settings.Models.DefaultParameters.TopP;
                 _agent.MaxOutputTokens = _originalAgent.MaxOutputTokens ?? _settings.Models.DefaultParameters.MaxOutputTokens;
 
-                if (_agent.Temperature == _settings.Models.DefaultParameters.Temperature)
-                    AIParametersExpander.IsExpanded = true;
-
+                AIParametersExpander.IsExpanded = true;
                 AIParametersControls.IsEnabled = true;
             }
             else

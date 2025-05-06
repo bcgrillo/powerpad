@@ -69,7 +69,9 @@ namespace PowerPad.WinUI.Configuration
                     $"IMPORTANTE:\n" +
                     $"- El mensaje de usuario recibido es tu información de entrada.\n" +
                     $"- Si necesitas realizar una modificación, tu respuesta debe ser el texto completo modificado, manteniendo intacto lo que no sea necesario cambiar.\n" +
-                    $"- No incluyas explicaciones, saludos ni mensajes adicionales, solamente el texto solicitado.",
+                    $"- No incluyas explicaciones, saludos ni mensajes adicionales, solamente el texto requerido.",
+
+                EnableHotKeys = true
             };
 
             public static ModelsSettingsViewModel GenerateDefaultModelsSettings()

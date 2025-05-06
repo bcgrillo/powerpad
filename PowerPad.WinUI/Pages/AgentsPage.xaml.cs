@@ -105,7 +105,7 @@ namespace PowerPad.WinUI.Pages
         private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
             var newIcon = _agentsCollection.GenerateIcon();
-            var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente que..."}, newIcon);
+            var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente amable y resolutivo."}, newIcon);
 
             _agentsCollection.Agents.Add(newAgent);
 
@@ -169,6 +169,11 @@ namespace PowerPad.WinUI.Pages
         public override void Dispose()
         {
             GC.SuppressFinalize(this);
+        }
+
+        private void TreeViewItem_DropCompleted(UIElement sender, DropCompletedEventArgs args)
+        {
+            TreeView.SelectedItem ??= (AgentViewModel?)((TreeViewItem)sender).DataContext;
         }
     }
 }

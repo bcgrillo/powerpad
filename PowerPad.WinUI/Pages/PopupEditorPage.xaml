@@ -12,20 +12,47 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
         <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+        <converters:EmptyStringToObjectConverter x:Key="EmptyStringToObjectConverter" EmptyValue="False" NotEmptyValue="True" />
     </Page.Resources>
-    <Grid>
+    <Grid Margin="28">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="36,24,36,12" ColumnSpacing="8">
+        <Grid Margin="0,0,0,18" ColumnSpacing="8">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="SaveBtn"
+                    ToolTipService.ToolTip="Crear nota"
+                    Padding="8" BorderThickness="0"
+                    Click="SaveBtn_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <FontIcon FontSize="16" Glyph="&#xE710;" />
+                            <FontIcon FontSize="18" Glyph="&#xE70B;" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="CopyBtn"
+                    ToolTipService.ToolTip="Copiar"
+                    Click="CopyBtn_Click"
+                    Padding="8" BorderThickness="0"
+                    IsEnabled="{x:Bind _document.Content, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}">
+                    <Button.Content>
+                        <FontIcon FontSize="18" Glyph="&#xE8C8;" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+            <Border x:Name="BorderTitleBar" Grid.Column="1" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
                 <Button
                     x:Name="UndoButton"
                     ToolTipService.ToolTip="Deshacer"
@@ -47,23 +74,22 @@
                     </Button.Content>
                 </Button>
                 <Button
-                    x:Name="CopyBtn"
-                    ToolTipService.ToolTip="Copiar"
-                    Click="CopyBtn_Click"
+                    x:Name="ApplyBtn"
+                    ToolTipService.ToolTip="Volver y aplicar"
+                    Click="ApplyBtn_Click"
                     Padding="8" BorderThickness="0"
-                    IsEnabled="false">
+                    IsEnabled="{x:Bind _document.Content, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}">
                     <Button.Content>
-                        <FontIcon FontSize="18" Glyph="&#xE8C8;" />
+                        <FontIcon FontSize="18" Glyph="&#xE768;" />
                     </Button.Content>
                 </Button>
                 <Button
-                    x:Name="SaveBtn"
-                    ToolTipService.ToolTip="Guardar"
-                    IsEnabled="{x:Bind _document.CanSave, Mode=OneWay}"
-                    Command="{x:Bind _document.SaveCommand}"
-                    Padding="8" BorderThickness="0">
+                    x:Name="HideBtn"
+                    ToolTipService.ToolTip="Cerrar"
+                    Padding="8" BorderThickness="0"
+                    Click="HideBtn_Click">
                     <Button.Content>
-                        <FontIcon FontSize="18" Glyph="&#xE74E;" />
+                        <FontIcon FontSize="18" Glyph="&#xE8BB;" />
                     </Button.Content>
                 </Button>
             </StackPanel>
@@ -74,7 +100,6 @@
             Grid.Row="1"
             TextWrapping="Wrap" 
             AcceptsReturn="True"
-            Margin="36,0"
             Padding="0"
             FontFamily="Consolas"
             SelectionHighlightColor="Gray"
@@ -86,7 +111,7 @@
         <lcontrols:NoteAgentControl
             x:Name="AgentControl"
             Grid.Row="2"
-            Margin="36,18,36,36"
+            Margin="0,18,0,0"
             MaxWidth="1128"
             SendButtonClicked="AgentControl_SendButtonClicked" />
 

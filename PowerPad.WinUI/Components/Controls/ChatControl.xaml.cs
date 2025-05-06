@@ -29,7 +29,6 @@ namespace PowerPad.WinUI.Components.Controls
         private const double LOADING_ANIMATION_INTERVAL = 200;
         private static readonly string[] THINK_START_TAG = ["<think>", "<thought>"];
         private static readonly string[] THINK_END_TAG = ["</think>", "</thought>"];
-        private const string MARKDOWN_QUOTE = "> ";
 
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;

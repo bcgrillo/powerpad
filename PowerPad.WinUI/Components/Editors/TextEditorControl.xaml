@@ -16,14 +16,14 @@
         </Style>
         <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
     </local:EditorControl.Resources>
-    <Grid>
+    <Grid Margin="28">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="36,24,36,12" ColumnSpacing="8">
+        <Grid Margin="0,-8,0,12" ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
@@ -84,7 +84,6 @@
             Grid.Row="1"
             TextWrapping="Wrap" 
             AcceptsReturn="True"
-            Margin="36,0"
             Padding="0"
             FontFamily="Consolas"
             SelectionHighlightColor="Gray"
@@ -95,7 +94,7 @@
         <lcontrols:NoteAgentControl
             x:Name="AgentControl"
             Grid.Row="2"
-            Margin="36,18,36,36"
+            Margin="0,18,0,0"
             MaxWidth="1128"
             SendButtonClicked="AgentControl_SendButtonClicked" />
 

@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
-using PowerPad.Core.Contracts;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using Microsoft.UI.Xaml.Media;
@@ -10,19 +9,26 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using System;
+using WinUIEx;
 
 namespace PowerPad.WinUI.Pages
 {
     public sealed partial class PopupEditorPage : Page
     {
+        private readonly WorkspaceViewModel _workspace;
         private readonly DraftDocumentViewModel _document;
+        
+        public event EventHandler? CloseRequested;
 
         public PopupEditorPage()
         {
             this.InitializeComponent();
 
+            _workspace = App.Get<WorkspaceViewModel>();
             _document = new();
         }
+
+        public Border TitleBar => BorderTitleBar;
 
         private void TextEditor_SizeChanged(object? _, SizeChangedEventArgs? __)
         {
@@ -69,21 +75,21 @@ namespace PowerPad.WinUI.Pages
 
         private void UndoButton_Click(object _, RoutedEventArgs __)
         {
-            _document.NextContent = TextEditor.Text;
-            TextEditor.Text = _document.PreviousContent;
+            _document.NextContent = _document.Content;
+            _document.Content = _document.PreviousContent;
             _document.PreviousContent = null;
         }
 
         private void RedoButton_Click(object _, RoutedEventArgs __)
         {
-            _document.PreviousContent = TextEditor.Text;
-            TextEditor.Text = _document.NextContent;
+            _document.PreviousContent = _document.Content;
+            _document.Content = _document.NextContent;
             _document.NextContent = null;
         }
 
         private async void CopyBtn_Click(object sender, RoutedEventArgs __)
         {
-            var textToCopy = TextEditor.Text;
+            var textToCopy = _document.Content;
 
             var dataPackage = new DataPackage();
             dataPackage.SetText(textToCopy);
@@ -106,9 +112,18 @@ namespace PowerPad.WinUI.Pages
             flyout.Hide();
         }
 
+        private void ApplyBtn_Click(object sender, RoutedEventArgs eventArgs)
+        {
+            CopyBtn_Click(sender, eventArgs);
+
+            CloseRequested?.Invoke(this, EventArgs.Empty);
+
+            HotKeyHelper.SimulateCtrlV();
+        }
+
         private async void AgentControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
-            var originalText = TextEditor.Text;
+            var originalText = _document.Content ?? string.Empty;
             _document.PreviousContent = originalText;
 
             var hasSelection = TextEditor.SelectionLength > 0;
@@ -137,9 +152,32 @@ namespace PowerPad.WinUI.Pages
             {
                 if (hasSelection) TextEditor.SelectedText = resultText;
                 else TextEditor.Text = resultText;
+
+                _document.Content = TextEditor.Text;
             }
         }
 
-        public void SetContent(string newContent) => TextEditor.Text = newContent;
+        public void SetContent(string newContent)
+        {
+            _document.PreviousContent = null;
+            _document.NextContent = null;
+            _document.Content = newContent;
+        }
+
+        private void SaveBtn_Click(object _, RoutedEventArgs __)
+        {
+            App.MainWindow!.ShowNotes();
+
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Note, null, _document.Content));
+
+            CloseRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void HideBtn_Click(object _, RoutedEventArgs __)
+        {
+            CloseRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetFocus() => AgentControl.SetFocus();
     }
 }

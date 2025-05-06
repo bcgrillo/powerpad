@@ -12,8 +12,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 {
     public partial class DraftDocumentViewModel : ObservableObject
     {
-        public bool CanSave => true;
-
         [ObservableProperty]
         public partial string? Content { get; set; }
 
@@ -22,25 +20,5 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         [ObservableProperty]
         public partial string? NextContent { get; set; }
-
-        public IAsyncRelayCommand SaveCommand { get; }
-
-        public IAsyncRelayCommand AutosaveCommand { get; }
-
-        public DraftDocumentViewModel()
-        {
-            SaveCommand = new AsyncRelayCommand(Save);
-            AutosaveCommand = new AsyncRelayCommand(Autosave);
-        }
-
-        private async Task Save()
-        {
-
-        }
-
-        private async Task Autosave()
-        {
-
-        }
     }
 }

@@ -16,7 +16,7 @@ namespace PowerPad.Core.Services.FileSystem
 
         void SetPosition(Folder folder, int targetPosition);
 
-        void CreateDocument(Folder parent, Document document);
+        void CreateDocument(Folder parent, Document document, string? content = null);
 
         void CreateFolder(Folder parent, Folder folder);
 
@@ -139,11 +139,11 @@ namespace PowerPad.Core.Services.FileSystem
             _orderService.UpdateOrderAfterMove(folder.Parent!, null, folder.Name, targetPosition);
         }
 
-        public void CreateDocument(Folder parent, Document newDocument)
+        public void CreateDocument(Folder parent, Document newDocument, string? content = null)
         {
             string newPath = GetAvailableNewPath(parent, newDocument);
 
-            File.WriteAllText(newPath, string.Empty);
+            File.WriteAllText(newPath, content ?? string.Empty);
 
             parent.AddDocument(newDocument);
 

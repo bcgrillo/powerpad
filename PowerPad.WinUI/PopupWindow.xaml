@@ -10,6 +10,7 @@
     Height="500"
     Width="800"
     mc:Ignorable="d"
-    Title="PopupWindow">
-    <local:PopupEditorPage x:Name="PopupEditorPage" Loaded="RootGrid_Loaded" />
+    Title="PopupWindow"
+    Closed="PopupWindow_Closed">
+    <local:PopupEditorPage x:Name="PopupEditorPage" CloseRequested="PopupEditorPage_CloseRequested" />
 </winuiex:WindowEx>

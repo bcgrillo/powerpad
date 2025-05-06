@@ -10,6 +10,8 @@ using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Agents;
 using Microsoft.UI.Dispatching;
+using Windows.UI;
+using Microsoft.UI.Xaml.Media;
 
 namespace PowerPad.WinUI
 {

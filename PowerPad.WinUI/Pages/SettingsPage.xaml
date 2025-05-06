@@ -12,6 +12,7 @@
     xmlns:mux="using:Microsoft.UI.Xaml"
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:uitoolkit="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:converters="using:PowerPad.WinUI.Converters"
     xmlns:toolkitconverters="using:CommunityToolkit.WinUI.Converters"
     xmlns:ai="using:PowerPad.Core.Models.AI"
@@ -534,6 +535,12 @@
                                             Value="{x:Bind _settings.General.AgentPrompt, Mode=TwoWay}" />
                                     </Grid>
                                 </Border>
+                                <toolkit:SettingsCard  ContentAlignment="Left">
+                                    <CheckBox 
+                                        IsChecked="{x:Bind _settings.General.EnableHotKeys, Mode=TwoWay}">
+                                        <uitoolkit:MarkdownTextBlock IsTextSelectionEnabled="False" Margin="8,-4,0,0" Text="Habilitar `Ctrl`+`Mayús`+`C` y `Ctrl`+`Mayús`+`Espacio` para iniciar notas rápidas" />
+                                    </CheckBox>
+                                </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>
                         </toolkit:SettingsExpander>
                         

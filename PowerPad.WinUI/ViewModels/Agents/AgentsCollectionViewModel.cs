@@ -16,8 +16,19 @@ namespace PowerPad.WinUI.ViewModels.Agents
 {
     public class AgentsCollectionViewModel : ObservableObject
     {
+        private static readonly string[] RANDOM_GLYPHS =
+        [
+            "\uE99A", "\uE70F", "\uE734", "\uE74C", "\uE76E", "\uE774", "\uE7C1", "\uE7E6",
+            "\uE805", "\uE81B", "\uE82F", "\uE897", "\uE8C6", "\uE8C9", "\uE8EC", "\uE909",
+            "\uE932", "\uE943", "\uE945", "\uE950", "\uE98F", "\uE9F5", "\uEB50", "\uEA91",
+            "\uEB51", "\uEBE8", "\uEC26", "\uEC32", "\uECAD", "\uED15", "\uED63", "\uEDC6",
+            "\uEE56", "\uF0B9", "\uF0E3", "\uF133", "\uF156", "\uF22C", "\uF384", "\uF49A",
+            "\uF4A5", "\uF4AA", "\uF6B8", "\uF7BB", "\uF87B", "\uF2B7"
+        ];
+
         private readonly SettingsViewModel _settings;
         private readonly IConfigStore _configStore;
+        private int _currentGlyphIndex = 0;
 
         public required ObservableCollection<AgentViewModel> Agents
         {
@@ -115,7 +126,11 @@ namespace PowerPad.WinUI.ViewModels.Agents
                     (byte)Math.Max(color.B - 50, 0));
             }
 
-            return new("\uE99A", AgentIconType.FontIconGlyph, color);
+            var actualGlyphIndex = _currentGlyphIndex % RANDOM_GLYPHS.Length;
+            _currentGlyphIndex++;
+            var glyph = RANDOM_GLYPHS[actualGlyphIndex];
+
+            return new(glyph, AgentIconType.FontIconGlyph, color);
         }
 
         private void SaveAgents() => _configStore.Set(StoreKey.Agents, Agents);
