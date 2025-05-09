@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.Agents;
-using System;
 
 namespace PowerPad.WinUI.Components.Controls
 {

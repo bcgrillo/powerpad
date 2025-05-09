@@ -3,8 +3,6 @@ using PowerPad.Core.Models.AI;
 using System.Text;
 using ChatRole = Microsoft.Extensions.AI.ChatRole;
 using PowerPad.Core.Contracts;
-using OllamaSharp.Models.Chat;
-using OllamaSharp.Models;
 
 namespace PowerPad.Core.Services.AI
 {

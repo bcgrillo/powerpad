@@ -6,7 +6,6 @@ using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {

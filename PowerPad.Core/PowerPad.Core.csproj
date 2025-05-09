@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
-    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.4.0-preview.1.25207.5" />
-    <PackageReference Include="Microsoft.Extensions.AI.AzureAIInference" Version="9.4.0-preview.1.25207.5" />
-    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.4.0-preview.1.25207.5" />
-    <PackageReference Include="OllamaSharp" Version="5.1.13" />
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.4.3-preview.1.25230.7" />
+    <PackageReference Include="Microsoft.Extensions.AI.AzureAIInference" Version="9.4.3-preview.1.25230.7" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.4.3-preview.1.25230.7" />
+    <PackageReference Include="OllamaSharp" Version="5.1.14" />
   </ItemGroup>
 
 </Project>

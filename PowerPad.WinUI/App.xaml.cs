@@ -1,17 +1,12 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using PowerPad.WinUI.Configuration;
-using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Services.Config;
 using PowerPad.Core.Services.FileSystem;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Agents;
-using Microsoft.UI.Dispatching;
-using Windows.UI;
-using Microsoft.UI.Xaml.Media;
 
 namespace PowerPad.WinUI
 {

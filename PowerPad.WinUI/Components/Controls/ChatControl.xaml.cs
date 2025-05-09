@@ -13,14 +13,11 @@ using System.Threading;
 using System.Linq;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 using PowerPad.WinUI.ViewModels.Agents;
-using System.Collections.Specialized;
-using PowerPad.Core.Models.AI;
 
 namespace PowerPad.WinUI.Components.Controls
 {

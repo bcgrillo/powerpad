@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PowerPad.WinUI.Pages
+﻿namespace PowerPad.WinUI.Pages
 {
     public interface IToggleMenuPage
     {

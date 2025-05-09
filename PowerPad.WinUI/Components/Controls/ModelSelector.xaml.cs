@@ -2,7 +2,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
-using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Linq;

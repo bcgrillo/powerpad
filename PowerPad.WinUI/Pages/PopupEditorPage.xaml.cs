@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using System;
-using WinUIEx;
 
 namespace PowerPad.WinUI.Pages
 {

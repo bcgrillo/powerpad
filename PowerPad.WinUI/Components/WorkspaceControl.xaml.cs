@@ -4,8 +4,6 @@ using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Dialogs;
 using System.Collections.Generic;
 using Windows.Storage.Pickers;
-using Windows.Storage;
-using PowerPad.WinUI.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.Core.Models.FileSystem;

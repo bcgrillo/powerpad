@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.WinUI.Dialogs;
@@ -8,7 +7,6 @@ using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace PowerPad.WinUI.Components.Editors
 {

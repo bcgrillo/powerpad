@@ -9,7 +9,6 @@ using CommunityToolkit.WinUI.Converters;
 using System.Diagnostics;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Models.AI;
-using Microsoft.UI.Input;
 
 namespace PowerPad.WinUI.Dialogs
 {

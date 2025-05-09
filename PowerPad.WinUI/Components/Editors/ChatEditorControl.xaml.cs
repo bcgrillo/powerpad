@@ -9,7 +9,6 @@ using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.Core.Models.FileSystem;
 using Windows.System;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
 using PowerPad.WinUI.Components.Controls;
 using Windows.ApplicationModel.DataTransfer;

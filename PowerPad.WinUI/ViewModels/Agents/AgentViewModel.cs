@@ -4,13 +4,7 @@ using PowerPad.Core.Models.AI;
 using System.Text.Json.Serialization;
 using PowerPad.WinUI.Helpers;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
-using PowerPad.WinUI.ViewModels.AI;
 using System;
-using OllamaSharp.Models;
-using Windows.UI;
-using PowerPad.WinUI.ViewModels.Settings;
-using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {

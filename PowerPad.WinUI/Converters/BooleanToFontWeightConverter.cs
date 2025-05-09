@@ -1,5 +1,4 @@
 ﻿using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml;
 using System;
 using Microsoft.UI.Text;
 

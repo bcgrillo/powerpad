@@ -1,6 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
 using PowerPad.WinUI.Components;
 
 namespace PowerPad.WinUI.Pages

@@ -4,7 +4,6 @@ using WinUIEx.Messaging;
 using Windows.Win32.Foundation;
 using Windows.Win32;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
-using H.NotifyIcon;
 using System.Runtime.InteropServices;
 using System;
 using Windows.ApplicationModel.DataTransfer;

@@ -7,7 +7,6 @@ using PowerPad.WinUI.Dialogs;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.Core.Models.FileSystem;
-using PowerPad.Core.Services.AI;
 using System.Text;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Threading.Tasks;

@@ -1,13 +1,9 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.ViewModels.Agents;
-using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 

@@ -52,7 +52,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.3916" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250401001" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
     <Manifest Include="$(ApplicationManifest)" />
@@ -95,6 +95,7 @@
     <AppxBundle>Never</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <NoWarn>IL2104</NoWarn>
+    <AppxPackageDir>D:\OneDrive\Escritorio\</AppxPackageDir>
   </PropertyGroup>
 
   <!--<PropertyGroup>

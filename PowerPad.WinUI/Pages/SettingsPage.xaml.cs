@@ -9,7 +9,6 @@ using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;

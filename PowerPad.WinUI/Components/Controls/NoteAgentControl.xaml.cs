@@ -7,13 +7,10 @@ using System;
 using Windows.System;
 using Windows.UI.Core;
 using System.Threading;
-using System.Linq;
 using PowerPad.Core.Services.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.WinUI.ViewModels.Agents;
 using System.Text;
-using System.Collections.Specialized;
-using OllamaSharp.Models;
 
 namespace PowerPad.WinUI.Components.Controls
 {

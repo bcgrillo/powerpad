@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using PowerPad.Core.Models.AI;
-using PowerPad.WinUI.ViewModels.Agents;
 using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.AI
