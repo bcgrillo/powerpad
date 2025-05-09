@@ -7,6 +7,10 @@ using PowerPad.Core.Models.AI;
 
 namespace PowerPad.Core.Services.AI
 {
+    /// <summary>  
+    /// Implementation of <see cref="IAIService"/> for interacting with Azure AI services.  
+    /// Provides methods for initialization, testing connections, managing chat clients, and searching AI models.  
+    /// </summary>  
     public class AzureAIService : IAIService
     {
         private const string TEST_MODEL = "openai/gpt-4.1-nano";
@@ -15,29 +19,15 @@ namespace PowerPad.Core.Services.AI
         private ChatCompletionsClient? _azureAI;
         private AIServiceConfig? _config;
 
+        /// <inheritdoc />  
         public void Initialize(AIServiceConfig? config)
         {
             _config = config;
             _azureAI = null;
         }
 
-        private ChatCompletionsClient GetClient()
-        {
-            if (_config is null) throw new InvalidOperationException("Azure AI service is not initialized.");
-            if (_azureAI is not null) return _azureAI;
-
-            try
-            {
-                _azureAI = new(new(_config.BaseUrl!), new AzureKeyCredential(_config.Key!));
-                return _azureAI;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException("Failed to initialize Azure AI service.", ex);
-            }
-        }
-
-        public async Task<TestConnectionResult> TestConection()
+        /// <inheritdoc />  
+        public async Task<TestConnectionResult> TestConnection()
         {
             if (_config is null) return new(ServiceStatus.Unconfigured, "Azure AI service is not initialized.");
 
@@ -59,15 +49,38 @@ namespace PowerPad.Core.Services.AI
             }
         }
 
+        /// <inheritdoc />  
         public IChatClient ChatClient(AIModel model, out IEnumerable<string>? notAllowedParameters)
         {
             notAllowedParameters = null;
             return GetClient().AsIChatClient(model.Name);
         }
 
+        /// <inheritdoc />  
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
             return await GitHubMarktplaceModelsHelper.Search(query);
+        }
+
+        /// <summary>  
+        /// Retrieves or initializes the Azure AI client.  
+        /// </summary>  
+        /// <returns>An instance of <see cref="ChatCompletionsClient"/>.</returns>  
+        /// <exception cref="InvalidOperationException">Thrown if the service is not initialized or fails to initialize.</exception>  
+        private ChatCompletionsClient GetClient()
+        {
+            if (_config is null) throw new InvalidOperationException("Azure AI service is not initialized.");
+            if (_azureAI is not null) return _azureAI;
+
+            try
+            {
+                _azureAI = new(new(_config.BaseUrl!), new AzureKeyCredential(_config.Key!));
+                return _azureAI;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to initialize Azure AI service.", ex);
+            }
         }
     }
 }

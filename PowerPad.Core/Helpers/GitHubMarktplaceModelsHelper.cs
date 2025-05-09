@@ -4,6 +4,10 @@ using System.Net.Http.Json;
 
 namespace PowerPad.Core.Helpers
 {
+    /// <summary>
+    /// Helper class for interacting with the GitHub Marketplace to search for AI models.
+    /// Provides methods to query and filter models based on specific criteria.
+    /// </summary>
     public static class GitHubMarktplaceModelsHelper
     {
         private const string GITHUB_BASE_URL = "https://github.com";
@@ -12,26 +16,34 @@ namespace PowerPad.Core.Helpers
         private const string HEADER_APPLICATION_JSON = "application/json";
         private const string NAME_PREFIX = "/models/";
 
-        //Restricted models found in https://github.githubassets.com/assets/ui/packages/github-models/utils/model-access.ts
-        //These models fails with free developer key (GITHUB_TOKEN)
+        // Restricted models found in https://github.githubassets.com/assets/ui/packages/github-models/utils/model-access.ts
+        // These models fail with a free developer key (GITHUB_TOKEN).
         private static readonly string[] RESTRICTED_MODEL_NAMES = ["o", "o1-mini", "o1-preview", "o3-mini", "o3", "o4-mini", "o4"];
 
         private const int MAX_RESULTS = 20;
 
+        /// <summary>
+        /// Searches the GitHub Marketplace for AI models based on the provided query.
+        /// Filters out restricted models and limits the results to a maximum number.
+        /// </summary>
+        /// <param name="query">The search query string to filter models.</param>
+        /// <returns>A collection of AIModel objects matching the search criteria.</returns>
         public static async Task<IEnumerable<AIModel>> Search(string? query)
         {
             var url = GITHUB_MARKETPLACE_SEARCH_URL + Uri.EscapeDataString(query ?? string.Empty);
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add(HEADER_ACCEPT, HEADER_APPLICATION_JSON);
 
+            // Fetch search results from the GitHub Marketplace API.
             var searchResults = await httpClient.GetFromJsonAsync<GitHubMarketplaceResponse>(url);
             if (searchResults?.Results is null) return [];
 
             var results = new List<AIModel>();
 
+            // Filter and process the search results.
             foreach (var model in searchResults.Results
                 .Where(m => !RESTRICTED_MODEL_NAMES.Contains(m.Name))
-                .Where(m => m.Name.Contains(query ?? string.Empty, StringComparison.InvariantCultureIgnoreCase) 
+                .Where(m => m.Name.Contains(query ?? string.Empty, StringComparison.InvariantCultureIgnoreCase)
                          || (m.Friendly_Name is not null && m.Friendly_Name.Contains(query ?? string.Empty, StringComparison.InvariantCultureIgnoreCase)))
                 .Take(MAX_RESULTS))
             {
@@ -55,8 +67,14 @@ namespace PowerPad.Core.Helpers
             return results;
         }
 
+        /// <summary>
+        /// Represents the response structure from the GitHub Marketplace API.
+        /// </summary>
         private record GitHubMarketplaceResponse(List<GitHubModel> Results);
 
+        /// <summary>
+        /// Represents a single AI model entry in the GitHub Marketplace.
+        /// </summary>
         private record GitHubModel(string Name, string? Friendly_Name, string Id, string Model_Url, string Publisher);
     }
 }

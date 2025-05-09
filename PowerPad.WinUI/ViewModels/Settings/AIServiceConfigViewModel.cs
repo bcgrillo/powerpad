@@ -61,7 +61,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             OnPropertyChanged(nameof(ServiceStatus));
             OnPropertyChanged(nameof(ErrorMessage));
 
-            (ServiceStatus, ErrorMessage) = await aiService.TestConection();
+            (ServiceStatus, ErrorMessage) = await aiService.TestConnection();
 
             StatusChanged?.Invoke(this, EventArgs.Empty);
 
