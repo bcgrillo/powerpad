@@ -7,14 +7,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:tkcontrols="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
     <UserControl.Resources>
         <x:Boolean x:Key="TrueValue">True</x:Boolean>
         <x:Boolean x:Key="FalseValue">False</x:Boolean>
     </UserControl.Resources>
-    <toolkit:SwitchPresenter Value="{x:Bind _settings.IsAIAvailable, Mode=TwoWay}">
-        <toolkit:Case Value="{StaticResource TrueValue}">
+    <tkcontrols:SwitchPresenter Value="{x:Bind _settings.IsAIAvailable, Mode=TwoWay}">
+        <tkcontrols:Case Value="{StaticResource TrueValue}">
             <StackPanel 
                 Orientation="Vertical" 
                 Spacing="4"
@@ -141,15 +141,15 @@
                     FontSize="12"
                     Height="18" />
             </StackPanel>
-        </toolkit:Case>
-        <toolkit:Case Value="{StaticResource FalseValue}">
+        </tkcontrols:Case>
+        <tkcontrols:Case Value="{StaticResource FalseValue}">
             <muxc:InfoBar 
                 IsOpen="True"
                 Severity="Informational"
                 Content="No hay modelos disponibles, revise la configuración."
                 IsClosable="False" />
-        </toolkit:Case>
-        <toolkit:Case IsDefault="True">
+        </tkcontrols:Case>
+        <tkcontrols:Case IsDefault="True">
             <StackPanel
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 Padding="16"
@@ -163,6 +163,6 @@
                     Text="Inicializando..." />
                 </StackPanel>
             </StackPanel>
-        </toolkit:Case>
-    </toolkit:SwitchPresenter>
+        </tkcontrols:Case>
+    </tkcontrols:SwitchPresenter>
 </UserControl>

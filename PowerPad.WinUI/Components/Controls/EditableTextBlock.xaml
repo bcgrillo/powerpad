@@ -6,13 +6,13 @@
     xmlns:local="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d"
     PointerEntered="UserControl_PointerEntered"
     PointerExited="UserControl_PointerExited">
     <UserControl.Resources>
-        <converters:BoolNegationConverter x:Key="BoolNegationConverter" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <tkconverters:BoolNegationConverter x:Key="BoolNegationConverter" />
+        <tkconverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
     <Grid ColumnSpacing="8" Background="Transparent">
         <Grid.ColumnDefinitions>

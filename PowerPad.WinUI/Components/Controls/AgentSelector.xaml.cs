@@ -9,11 +9,17 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Components.Controls
 {
+    /// <summary>
+    /// Represents a control for selecting an agent based on the document type.
+    /// </summary>
     public sealed partial class AgentSelector : UserControl, IDisposable
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
         private bool _selectFirstAgent;
 
+        /// <summary>
+        /// Gets or sets the document type to filter agents.
+        /// </summary>
         public DocumentType DocumentType
         {
             get => (DocumentType)GetValue(DocumentTypeProperty);
@@ -24,9 +30,15 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Dependency property for <see cref="DocumentType"/>.
+        /// </summary>
         public static readonly DependencyProperty DocumentTypeProperty =
             DependencyProperty.Register(nameof(DocumentType), typeof(DocumentType), typeof(AgentSelector), new(DocumentType.Note));
 
+        /// <summary>
+        /// Gets the currently selected agent.
+        /// </summary>
         public AgentViewModel? SelectedAgent
         {
             get;
@@ -40,8 +52,14 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Event triggered when the selected agent changes.
+        /// </summary>
         public event EventHandler? SelectedAgentChanged;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AgentSelector"/> class.
+        /// </summary>
         public AgentSelector()
         {
             this.InitializeComponent();
@@ -49,6 +67,11 @@ namespace PowerPad.WinUI.Components.Controls
             _agentsCollection = App.Get<AgentsCollectionViewModel>();
         }
 
+        /// <summary>
+        /// Initializes the control with a specific agent and optionally selects the first available agent.
+        /// </summary>
+        /// <param name="agent">The agent to initialize with.</param>
+        /// <param name="selectFirstAgent">Whether to select the first available agent if none is provided.</param>
         public void Initialize(AgentViewModel? agent, bool selectFirstAgent = false)
         {
             _selectFirstAgent = selectFirstAgent;
@@ -60,11 +83,18 @@ namespace PowerPad.WinUI.Components.Controls
             _agentsCollection.AgentsAvaibilityChanged += Agents_AgentsAvaibilityChanged;
         }
 
+        /// <summary>
+        /// Displays the flyout menu for agent selection.
+        /// </summary>
         public void ShowMenu()
         {
             AgentButton.Flyout?.ShowAt(AgentButton);
         }
 
+        /// <summary>
+        /// Selects the specified agent and updates the UI accordingly.
+        /// </summary>
+        /// <param name="agent">The agent to select.</param>
         private void Select(AgentViewModel? agent)
         {
             if (agent is null)
@@ -90,6 +120,9 @@ namespace PowerPad.WinUI.Components.Controls
             UpdateButtonContent();
         }
 
+        /// <summary>
+        /// Updates the checked state of menu items in the flyout menu.
+        /// </summary>
         private async void UpdateChekedItemMenu()
         {
             await Task.Delay(100);
@@ -104,6 +137,9 @@ namespace PowerPad.WinUI.Components.Controls
             if (menuItem is not null) menuItem.IsChecked = true;
         }
 
+        /// <summary>
+        /// Handles changes in agent availability and updates the menu.
+        /// </summary>
         private void Agents_AgentsAvaibilityChanged(object? _, EventArgs __)
         {
             SelectedAgent ??= (_selectFirstAgent ? _agentsCollection.Agents.FirstOrDefault() : null);
@@ -111,6 +147,9 @@ namespace PowerPad.WinUI.Components.Controls
             RegenerateFlyoutMenu();
         }
 
+        /// <summary>
+        /// Regenerates the flyout menu based on the enabled agents.
+        /// </summary>
         private void RegenerateFlyoutMenu()
         {
             AgentFlyoutMenu.Items.Clear();
@@ -141,6 +180,10 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Retrieves the list of enabled agents based on the document type.
+        /// </summary>
+        /// <returns>A collection of enabled agents.</returns>
         private IEnumerable<AgentViewModel> GetEnabledAgents()
         {
             return DocumentType switch
@@ -151,6 +194,10 @@ namespace PowerPad.WinUI.Components.Controls
             };
         }
 
+        /// <summary>
+        /// Handles the click event for an agent menu item.
+        /// </summary>
+        /// <param name="sender">The menu item that was clicked.</param>
         private void AgentItem_Click(object sender, RoutedEventArgs __)
         {
             SelectedAgent = (AgentViewModel?)((RadioMenuFlyoutItem)sender).Tag;
@@ -160,6 +207,9 @@ namespace PowerPad.WinUI.Components.Controls
             UpdateButtonContent();
         }
 
+        /// <summary>
+        /// Updates the content of the button to reflect the selected agent.
+        /// </summary>
         private void UpdateButtonContent()
         {
             if (SelectedAgent is not null)
@@ -174,6 +224,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _agentsCollection.AgentsAvaibilityChanged -= Agents_AgentsAvaibilityChanged;

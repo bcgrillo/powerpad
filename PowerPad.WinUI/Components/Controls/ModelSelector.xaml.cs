@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Components.Controls
 {
+    /// <summary>
+    /// Represents a control for selecting AI models with a flyout menu.
+    /// </summary>
     public sealed partial class ModelSelector : UserControl, IDisposable
     {
         private const double DEBOURCE_INTERVAL = 200;
@@ -16,6 +19,9 @@ namespace PowerPad.WinUI.Components.Controls
         private readonly SettingsViewModel _settings;
         private readonly DispatcherTimer _debounceTimer;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to show the default model on the button content.
+        /// </summary>
         public bool ShowDefaultOnButtonContent
         {
             get => (bool)GetValue(ShowDefaultOnButtonContentProperty);
@@ -26,9 +32,15 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Dependency property for <see cref="ShowDefaultOnButtonContent"/>.
+        /// </summary>
         public static readonly DependencyProperty ShowDefaultOnButtonContentProperty =
             DependencyProperty.Register(nameof(ShowDefaultOnButtonContent), typeof(bool), typeof(AgentSelector), new(false));
 
+        /// <summary>
+        /// Gets or sets the currently selected AI model.
+        /// </summary>
         public AIModelViewModel? SelectedModel
         {
             get;
@@ -42,8 +54,14 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Event triggered when the selected model changes.
+        /// </summary>
         public event EventHandler? SelectedModelChanged;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSelector"/> class.
+        /// </summary>
         public ModelSelector()
         {
             this.InitializeComponent();
@@ -58,6 +76,10 @@ namespace PowerPad.WinUI.Components.Controls
             _debounceTimer.Stop();
         }
 
+        /// <summary>
+        /// Initializes the control with the specified AI model.
+        /// </summary>
+        /// <param name="model">The AI model to initialize with.</param>
         public void Initialize(AIModelViewModel? model)
         {
             SelectedModel = model;
@@ -68,12 +90,20 @@ namespace PowerPad.WinUI.Components.Controls
             _settings.Models.DefaultModelChanged += DefaultModel_Changed;
         }
 
+        /// <summary>
+        /// Updates the layout of the control based on the enabled state.
+        /// </summary>
+        /// <param name="newValue">The new enabled state.</param>
         public void UpdateEnabledLayout(bool newValue)
         {
             ModelIcon.UpdateEnabledLayout(newValue);
             UpdateChekedItemMenu();
         }
 
+        /// <summary>
+        /// Selects the specified AI model.
+        /// </summary>
+        /// <param name="model">The AI model to select.</param>
         private void Select(AIModelViewModel? model)
         {
             if (model is null)
@@ -98,6 +128,9 @@ namespace PowerPad.WinUI.Components.Controls
             UpdateButtonContent();
         }
 
+        /// <summary>
+        /// Updates the checked state of items in the flyout menu.
+        /// </summary>
         private async void UpdateChekedItemMenu()
         {
             await Task.Delay(100);
@@ -112,18 +145,27 @@ namespace PowerPad.WinUI.Components.Controls
             if (menuItem is not null) menuItem.IsChecked = true;
         }
 
+        /// <summary>
+        /// Handles the debounce timer tick event to regenerate the flyout menu.
+        /// </summary>
         private void DebounceTimer_Tick(object? _, object __)
         {
             _debounceTimer.Stop();
             RegenerateFlyoutMenu();
         }
 
+        /// <summary>
+        /// Handles property changes in the models or providers.
+        /// </summary>
         private void Models_PropertyChanged(object? _, EventArgs __)
         {
             _debounceTimer.Stop();
             _debounceTimer.Start();
         }
 
+        /// <summary>
+        /// Regenerates the flyout menu with the available models and providers.
+        /// </summary>
         private void RegenerateFlyoutMenu()
         {
             ModelFlyoutMenu.Items.Clear();
@@ -174,6 +216,9 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Handles the click event for a model item in the flyout menu.
+        /// </summary>
         private void ModelItem_Click(object sender, RoutedEventArgs __)
         {
             SelectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
@@ -183,6 +228,9 @@ namespace PowerPad.WinUI.Components.Controls
             ((RadioMenuFlyoutItem)sender).IsChecked = true;
         }
 
+        /// <summary>
+        /// Updates the content of the button based on the selected model.
+        /// </summary>
         private void UpdateButtonContent()
         {
             if (SelectedModel is not null)
@@ -204,6 +252,9 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Handles changes to the default model.
+        /// </summary>
         private void DefaultModel_Changed(object? _, EventArgs __)
         {
             if (_settings.Models.DefaultModel is not null && ModelFlyoutMenu.Items.Any())
@@ -227,6 +278,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _settings.General.ProviderAvaibilityChanged -= Models_PropertyChanged;

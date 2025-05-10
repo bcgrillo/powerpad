@@ -70,19 +70,19 @@ namespace PowerPad.Core.Services.AI
 
         private readonly IReadOnlyDictionary<ModelProvider, IAIService> _aiServices = aiServices;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SetDefaultModel(AIModel? defaultModel)
         {
             _defaultModel = defaultModel;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SetDefaultParameters(AIParameters? defaultParameters)
         {
             _defaultParameters = defaultParameters;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IAsyncEnumerable<ChatResponseUpdate> GetChatResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? parameters = null, CancellationToken cancellationToken = default)
         {
             var (chatClient, chatOptions, chatMessages) = PrepareChatParameters(messages, model, parameters);
@@ -90,7 +90,7 @@ namespace PowerPad.Core.Services.AI
             return chatClient.GetStreamingResponseAsync(chatMessages, chatOptions, cancellationToken);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IAsyncEnumerable<ChatResponseUpdate> GetAgentResponse(IList<ChatMessage> messages, Agent agent, CancellationToken cancellationToken = default)
         {
             var (chatClient, chatOptions, chatMessages) = PrepareAgentParameters(messages, agent);
@@ -98,7 +98,7 @@ namespace PowerPad.Core.Services.AI
             return chatClient.GetStreamingResponseAsync(chatMessages, chatOptions, cancellationToken);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task GetAgentSingleResponse(string input, StringBuilder output, Agent agent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default)
         {
             var (chatClient, chatOption, chatMessages) = PrepareAgentParameters(input, agent, promptParameterValue, agentPrompt);

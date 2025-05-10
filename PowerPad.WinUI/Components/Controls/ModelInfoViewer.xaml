@@ -48,7 +48,6 @@
                 <FontIcon Glyph="&#xE8A7;" FontSize="18" Margin="0,1,0,-1" />
             </Button>
         </Grid>
-
         <Grid Grid.Row="1">
             <ProgressRing x:Name="LoadingSpinner" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
             <WebView2 x:Name="WebView" Visibility="Collapsed" NavigationCompleted="WebView_NavigationCompleted" />

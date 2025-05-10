@@ -13,13 +13,13 @@ namespace PowerPad.Core.Models.AI
         /// </summary>
         public string? SystemPrompt { get; set; } = null;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public float? Temperature { get; set; } = null;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public float? TopP { get; set; } = null;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int? MaxOutputTokens { get; set; } = null;
 
         /// <summary>

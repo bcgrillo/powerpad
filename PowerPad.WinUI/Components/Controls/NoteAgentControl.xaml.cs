@@ -14,16 +14,25 @@ using System.Text;
 
 namespace PowerPad.WinUI.Components.Controls
 {
+    /// <summary>
+    /// Represents a control for interacting with AI agents in the NoteAgent system.
+    /// </summary>
     public partial class NoteAgentControl : UserControl, IDisposable
     {
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
         private CancellationTokenSource _cts;
 
+        /// <summary>
+        /// Event triggered when the send button is clicked.
+        /// </summary>
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
 
         private AgentViewModel? _selectedAgent;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NoteAgentControl"/> class.
+        /// </summary>
         public NoteAgentControl()
         {
             this.InitializeComponent();
@@ -36,64 +45,20 @@ namespace PowerPad.WinUI.Components.Controls
             AgentSelector.Initialize(null, selectFirstAgent: true);
         }
 
-        private void UpdateVisibility()
-        {
-            if (_selectedAgent is null)
-            {
-                AgentPanel.Visibility = Visibility.Collapsed;
-                InfoBar.IsOpen = true;
-                InfoBar.Content = "No hay agentes disponibles, revise la configuración.";
-            }
-            else if (_selectedAgent is not null)
-            {
-                AgentPanel.Visibility = Visibility.Visible;
-                InfoBar.IsOpen = false;
-            }
-        }
-
-        private void SelectedAgent_Changed(object? _, EventArgs __)
-        {
-            if (_selectedAgent != AgentSelector.SelectedAgent)
-            {
-                _selectedAgent = AgentSelector.SelectedAgent;
-
-                UpdateVisibility();
-                UpdateParameterInputBox();
-                UpdateParameterInputBox();
-            }
-        }
-
-        private void UpdateParameterInputBox()
-        {
-            if (_selectedAgent!.HasPromptParameter)
-            {
-                PromptParameterInputBox.PlaceholderText = _selectedAgent.PromptParameterDescription;
-                PromptParameterInputBox.Visibility = Visibility.Visible;
-                SendButton.IsEnabled = false;
-            }
-            else
-            {
-                PromptParameterInputBox.Visibility = Visibility.Collapsed;
-                SendButton.IsEnabled = true;
-            }
-        }
-
+        /// <summary>
+        /// Sets focus to the appropriate input element based on the selected agent's configuration.
+        /// </summary>
         public void SetFocus()
         {
             if (_selectedAgent?.HasPromptParameter == true) PromptParameterInputBox.Focus(FocusState.Keyboard);
         }
 
-        private void PromptParameterInputBox_TextChanged(object _, TextChangedEventArgs __)
-        {
-            SendButton.IsEnabled = !string.IsNullOrWhiteSpace(PromptParameterInputBox.Text);
-            if (string.IsNullOrEmpty(PromptParameterInputBox.Text)) PromptParameterInputBox.AcceptsReturn = false;
-        }
-
-        private void SendBtn_Click(object _, RoutedEventArgs e)
-        {
-            SendButtonClicked?.Invoke(this, e);
-        }
-
+        /// <summary>
+        /// Starts an action for the selected agent asynchronously.
+        /// </summary>
+        /// <param name="input">The input text for the agent.</param>
+        /// <param name="output">The output StringBuilder to store the agent's response.</param>
+        /// <param name="exceptionAction">The action to handle exceptions.</param>
         public async Task StartAgentAction(string input, StringBuilder output, Action<Exception> exceptionAction)
         {
             DispatcherQueue.TryEnqueue(() =>
@@ -119,6 +84,76 @@ namespace PowerPad.WinUI.Components.Controls
             if (!_cts.IsCancellationRequested) FinalizeAgentAction();
         }
 
+        /// <summary>
+        /// Updates the visibility of UI elements based on the selected agent.
+        /// </summary>
+        private void UpdateVisibility()
+        {
+            if (_selectedAgent is null)
+            {
+                AgentPanel.Visibility = Visibility.Collapsed;
+                InfoBar.IsOpen = true;
+                InfoBar.Content = "No hay agentes disponibles, revise la configuración.";
+            }
+            else if (_selectedAgent is not null)
+            {
+                AgentPanel.Visibility = Visibility.Visible;
+                InfoBar.IsOpen = false;
+            }
+        }
+
+        /// <summary>
+        /// Handles the event when the selected agent changes.
+        /// </summary>
+        private void SelectedAgent_Changed(object? _, EventArgs __)
+        {
+            if (_selectedAgent != AgentSelector.SelectedAgent)
+            {
+                _selectedAgent = AgentSelector.SelectedAgent;
+
+                UpdateVisibility();
+                UpdateParameterInputBox();
+            }
+        }
+
+        /// <summary>
+        /// Updates the parameter input box based on the selected agent's configuration.
+        /// </summary>
+        private void UpdateParameterInputBox()
+        {
+            if (_selectedAgent!.HasPromptParameter)
+            {
+                PromptParameterInputBox.PlaceholderText = _selectedAgent.PromptParameterDescription;
+                PromptParameterInputBox.Visibility = Visibility.Visible;
+                SendButton.IsEnabled = false;
+            }
+            else
+            {
+                PromptParameterInputBox.Visibility = Visibility.Collapsed;
+                SendButton.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Handles the text changed event for the parameter input box.
+        /// </summary>
+        private void PromptParameterInputBox_TextChanged(object _, TextChangedEventArgs __)
+        {
+            SendButton.IsEnabled = !string.IsNullOrWhiteSpace(PromptParameterInputBox.Text);
+            if (string.IsNullOrEmpty(PromptParameterInputBox.Text)) PromptParameterInputBox.AcceptsReturn = false;
+        }
+
+        /// <summary>
+        /// Handles the click event for the send button.
+        /// </summary>
+        private void SendBtn_Click(object _, RoutedEventArgs e)
+        {
+            SendButtonClicked?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Finalizes the agent action by resetting the UI state.
+        /// </summary>
         private void FinalizeAgentAction()
         {
             DispatcherQueue.TryEnqueue(() =>
@@ -141,12 +176,18 @@ namespace PowerPad.WinUI.Components.Controls
             });
         }
 
+        /// <summary>
+        /// Handles the click event for the stop button.
+        /// </summary>
         private void StopBtn_Click(object _, RoutedEventArgs __)
         {
             _cts.Cancel();
             FinalizeAgentAction();
         }
 
+        /// <summary>
+        /// Handles the key down event for the parameter input box.
+        /// </summary>
         private void PromptParameterInputBox_KeyDown(object _, KeyRoutedEventArgs e)
         {
             if (!PromptParameterInputBox.IsReadOnly)
@@ -170,6 +211,7 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             GC.SuppressFinalize(this);

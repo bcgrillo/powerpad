@@ -8,12 +8,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:PowerPad.WinUI.Converters"
-    xmlns:toolkitconverters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
         <converters:FloatToDoubleConverter x:Key="FloatToDoubleConverter"/>
-        <toolkitconverters:StringFormatConverter x:Key="StringFormatConverter" />
+        <tkconverters:StringFormatConverter x:Key="StringFormatConverter" />
     </UserControl.Resources>
     <Grid Padding="36,24,36,36" RowSpacing="36">
         <Grid.RowDefinitions>
@@ -24,9 +24,8 @@
         <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
             <TextBlock
                 Style="{StaticResource TitleTextBlockStyle}"
-                Text="Agente"/> 
+                Text="Agente"/>
         </StackPanel>
-
         <ScrollViewer x:Name="ScrollViewer"
             Grid.Row="1" CanContentRenderOutsideBounds="False" SizeChanged="ScrollViewer_SizeChanged"
                       VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
@@ -276,7 +275,7 @@
                             </Grid>
                         </ContentControl>
                     </Expander>
-            
+
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <ToggleSwitch
                             OnContent="Mostrar en notas"
@@ -291,7 +290,6 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        
         <StackPanel 
             Grid.Row="2" Grid.ColumnSpan="6" Orientation="Horizontal" Spacing="16" HorizontalAlignment="Right">
             <Button
