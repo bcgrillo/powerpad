@@ -60,7 +60,7 @@
                 Name="TreeView" 
                 ItemsSource="{x:Bind _workspace.Root.Children, Mode=OneWay}" 
                 ItemInvoked="TreeView_ItemInvoked"
-                CanDrag="True"
+                CanDrag="False"
                 CanReorderItems="True"
                 DragItemsCompleted="TreeView_DragItemsCompleted"
                 Loaded="TreeView_Loaded"

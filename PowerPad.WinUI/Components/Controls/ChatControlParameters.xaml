@@ -95,7 +95,6 @@
                 SpinButtonPlacementMode="Inline"
                 SmallChange="10"
                 LargeChange="100"
-                Minimum="10"
                 Value="{x:Bind Parameters.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
                 IsEnabled="{x:Bind IsEnabled}"/>
 

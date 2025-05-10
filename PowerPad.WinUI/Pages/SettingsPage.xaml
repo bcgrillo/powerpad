@@ -494,7 +494,6 @@
                                         Width="296"
                                         SmallChange="10"
                                         LargeChange="100"
-                                        Minimum="10"
                                         Value="{x:Bind _settings.Models.DefaultParameters.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"/>
                                 </toolkit:SettingsCard>
                                 <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
@@ -538,7 +537,7 @@
                                 <toolkit:SettingsCard  ContentAlignment="Left">
                                     <CheckBox 
                                         IsChecked="{x:Bind _settings.General.EnableHotKeys, Mode=TwoWay}">
-                                        <uitoolkit:MarkdownTextBlock IsTextSelectionEnabled="False" Margin="8,-4,0,0" Text="Habilitar `Ctrl`+`Mayús`+`C` y `Ctrl`+`Mayús`+`Espacio` para iniciar notas rápidas" />
+                                        <uitoolkit:MarkdownTextBlock IsTextSelectionEnabled="False" Margin="8,-4,0,0" Text="Habilitar `Ctrl`+`Mayús`+`C` y `Ctrl`+`Mayús`+`Espacio` para iniciar notas rápidas" Background="Transparent" />
                                     </CheckBox>
                                 </toolkit:SettingsCard>
                             </toolkit:SettingsExpander.Items>

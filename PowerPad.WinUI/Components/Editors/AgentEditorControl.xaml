@@ -15,7 +15,7 @@
         <converters:FloatToDoubleConverter x:Key="FloatToDoubleConverter"/>
         <tkconverters:StringFormatConverter x:Key="StringFormatConverter" />
     </UserControl.Resources>
-    <Grid Padding="36,24,36,36" RowSpacing="36">
+    <Grid Padding="36,24,36,36" RowSpacing="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -32,7 +32,7 @@
             <Grid>
                 <StackPanel 
                     x:Name="AgentForm"
-                    Spacing="16" 
+                    Spacing="8" 
                     MaxWidth="1000" 
                     HorizontalAlignment="Stretch" 
                     VerticalAlignment="Center">
@@ -269,7 +269,6 @@
                                     SpinButtonPlacementMode="Inline"
                                     SmallChange="10"
                                     LargeChange="100"
-                                    Minimum="10"
                                     Value="{x:Bind _agent.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
                                     IsEnabled="{x:Bind IsEnabled}"/>
                             </Grid>

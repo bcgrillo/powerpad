@@ -89,6 +89,13 @@ namespace PowerPad.WinUI.Components.Editors
             _originalAgent.ShowInNotes = _agent.ShowInNotes;
             _originalAgent.ShowInChats = _agent.ShowInChats;
 
+            if (!AIParametersSwitch.IsOn)
+            {
+                _originalAgent.Temperature = null;
+                _originalAgent.TopP = null;
+                _originalAgent.MaxOutputTokens = null;
+            }
+
             SaveButton.IsEnabled = false;
             CancelButton.IsEnabled = false;
         }
@@ -109,6 +116,12 @@ namespace PowerPad.WinUI.Components.Editors
                 _agent.Icon = _originalAgent.Icon;
                 _agent.ShowInNotes = _originalAgent.ShowInNotes;
                 _agent.ShowInChats = _originalAgent.ShowInChats;
+
+                PromptParameterExpander.IsExpanded = _agent.HasPromptParameter;
+                PromptParameterControls.IsEnabled = _agent.HasPromptParameter;
+
+                PromptParameterExpander.IsExpanded = _agent.HasAIParameters;
+                PromptParameterControls.IsEnabled = _agent.HasAIParameters;
 
                 SaveButton.IsEnabled = false;
                 CancelButton.IsEnabled = false;
@@ -132,11 +145,11 @@ namespace PowerPad.WinUI.Components.Editors
             }
             else
             {
-                _agent.PromptParameterName = null;
-                _agent.PromptParameterDescription = null;
-
                 PromptParameterExpander.IsExpanded = false;
                 PromptParameterControls.IsEnabled = false;
+
+                _agent.PromptParameterName = null;
+                _agent.PromptParameterDescription = null;
             }
 
             DispatcherQueue.TryEnqueue(async () =>
@@ -144,6 +157,10 @@ namespace PowerPad.WinUI.Components.Editors
                 await Task.Delay(PromptParameterSwitch.IsOn ? 100 : 200);
                 UpdateScrollViewerMargin();
             });
+
+            var hasChanges = PromptParameterSwitch.IsOn != _originalAgent.HasPromptParameter;
+            SaveButton.IsEnabled = hasChanges;
+            CancelButton.IsEnabled = hasChanges;
         }
 
         private void AIParametersSwitch_Toggled(object _, RoutedEventArgs __)
@@ -159,10 +176,6 @@ namespace PowerPad.WinUI.Components.Editors
             }
             else
             {
-                _agent.Temperature = null;
-                _agent.TopP = null;
-                _agent.MaxOutputTokens = null;
-
                 AIParametersExpander.IsExpanded = false;
                 AIParametersControls.IsEnabled = false;
             }
@@ -170,8 +183,13 @@ namespace PowerPad.WinUI.Components.Editors
             DispatcherQueue.TryEnqueue(async () =>
             {
                 await Task.Delay(AIParametersSwitch.IsOn ? 100 : 200);
+
                 UpdateScrollViewerMargin();
             });
+
+            var hasChanges = AIParametersSwitch.IsOn != _originalAgent.HasAIParameters;
+            SaveButton.IsEnabled = hasChanges;
+            CancelButton.IsEnabled = hasChanges;
         }
 
         public void Dispose()
