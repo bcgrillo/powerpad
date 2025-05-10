@@ -61,7 +61,7 @@ namespace PowerPad.WinUI.Helpers
                 }
                 catch
                 {
-                    //TODO: Trace
+                    // Timeout or other exceptions, return null
                 }
             }
 

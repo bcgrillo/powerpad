@@ -3,6 +3,8 @@ using OpenAI;
 using OpenAI.Models;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -116,7 +118,7 @@ namespace PowerPad.Core.Services.AI
             string modelId = openAIModel.Id;
             string infoUrl = $"{OPENAI_MODELS_BASE_URL}{modelId}";
 
-            if (modelId.Length > 10 && DateTime.TryParseExact(modelId[^10..], "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out _))
+            if (modelId.Length > 10 && DateTime.TryParseExact(modelId[^10..], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             {
                 infoUrl = $"{OPENAI_MODELS_BASE_URL}{modelId[..^11]}";
             }

@@ -56,13 +56,13 @@ namespace PowerPad.Core.Services.FileSystem
         private readonly JsonSerializerContext _context = context;
 
         /// <inheritdoc />
-        public void LoadOrderRecursive(Folder folder)
+        public void LoadOrderRecursive(Folder root)
         {
-            LoadOrder(folder);
+            LoadOrder(root);
 
-            if (folder.Folders is not null)
+            if (root.Folders is not null)
             {
-                foreach (var subFolder in folder.Folders) LoadOrderRecursive(subFolder);
+                foreach (var subFolder in root.Folders) LoadOrderRecursive(subFolder);
             }
         }
 

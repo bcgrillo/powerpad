@@ -59,10 +59,10 @@ namespace PowerPad.WinUI.Components
             ModelInfoViewer.Show(model.CardName, model.InfoUrl!);
         }
 
-        private void ModelInfoViewer_VisibilityChanged(object sender, ModelInfoViewerVisibilityEventArgs e)
+        private void ModelInfoViewer_VisibilityChanged(object sender, ModelInfoViewerVisibilityEventArgs eventArgs)
         {
-            ModelsScrollViewer.Visibility = e.IsVisible ? Visibility.Collapsed : Visibility.Visible;
-            ModelInfoViewerVisibilityChanged?.Invoke(sender, e);
+            ModelsScrollViewer.Visibility = eventArgs.IsVisible ? Visibility.Collapsed : Visibility.Visible;
+            ModelInfoViewerVisibilityChanged?.Invoke(sender, eventArgs);
         }
 
         public void CloseModelInfoViewer() => ModelInfoViewer.Hide();

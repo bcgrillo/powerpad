@@ -36,7 +36,7 @@ namespace PowerPad.WinUI.Components.Editors
             };
         }
 
-        public override string GetContent(bool _ = false)
+        public override string GetContent(bool plainText = false)
         {
             return TextEditor.Text;
         }

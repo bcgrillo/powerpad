@@ -33,7 +33,7 @@ namespace PowerPad.Core.Services.AI
 
             try
             {
-                //TODO: Check a better way to do this
+                // As of May 2025, there is no way to test the connection without sending a request.
                 using var cts = new CancellationTokenSource(TEST_CONNECTION_TIMEOUT);
                 await GetClient().AsIChatClient(TEST_MODEL).GetResponseAsync("just put ok", null, cts.Token);
 
@@ -59,7 +59,7 @@ namespace PowerPad.Core.Services.AI
         /// <inheritdoc />  
         public async Task<IEnumerable<AIModel>> SearchModels(ModelProvider modelProvider, string? query)
         {
-            return await GitHubMarktplaceModelsHelper.Search(query);
+            return await GitHubMarketplaceModelsHelper.Search(query);
         }
 
         /// <summary>  

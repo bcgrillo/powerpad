@@ -22,7 +22,7 @@ namespace PowerPad.WinUI.Pages.Providers
             _modelsViewModel.RemoveModelCommand.Execute(eventArgs.Model);
         }
 
-        protected void AvailableModelsRepeater_AddButtonClick(object sender, System.EventArgs e) => AddButtonClick?.Invoke(sender, e);
+        protected void AvailableModelsRepeater_AddButtonClick(object sender, EventArgs eventArgs) => AddButtonClick?.Invoke(sender, eventArgs);
 
         ~AIModelsPageBase()
         {

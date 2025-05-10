@@ -22,7 +22,7 @@ namespace PowerPad.WinUI.Helpers
 
             var bitmapImage = new BitmapImage();
 
-            if (size != DEFAULT_SIZE)
+            if (Convert.ToUInt64(size) != DEFAULT_SIZE)
             {
                 using var randomAccessStream = stream.AsRandomAccessStream();
                 var decoder = BitmapDecoder.CreateAsync(randomAccessStream).GetAwaiter().GetResult();
@@ -80,9 +80,9 @@ namespace PowerPad.WinUI.Helpers
                 }
 
                 using var stream = await file.OpenReadAsync();
-                var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+                var decoder = await BitmapDecoder.CreateAsync(stream);
 
-                double scale = DEFAULT_SIZE / Math.Max(decoder.PixelWidth, decoder.PixelHeight);
+                double scale = Convert.ToDouble(DEFAULT_SIZE) / Math.Max(decoder.PixelWidth, decoder.PixelHeight);
                 uint newWidth = (uint)(decoder.PixelWidth * scale);
                 uint newHeight = (uint)(decoder.PixelHeight * scale);
 

@@ -37,7 +37,7 @@ namespace PowerPad.Core.Services.AI
         /// <param name="updateAction">An action to report download progress.</param>  
         /// <param name="errorAction">An action to handle errors during the download.</param>  
         /// <param name="cancellationToken">A token to cancel the download operation.</param>  
-        Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction, CancellationToken cancellationToken);
+        Task DownloadModel(AIModel model, Action<double> updateAction, Action errorAction, CancellationToken cancellationToken);
 
         /// <summary>  
         /// Deletes an installed AI model.  
@@ -182,11 +182,11 @@ namespace PowerPad.Core.Services.AI
         }
 
         /// <inheritdoc />  
-        public async Task DownloadModel(AIModel model, Action<double> updateAction, Action<Exception> errorAction, CancellationToken cancellationToken)
+        public async Task DownloadModel(AIModel model, Action<double> updateAction, Action errorAction, CancellationToken cancellationToken)
         {
             if (_config is null)
             {
-                errorAction(new Exception("Ollama is not initialized."));
+                errorAction();
             }
             else
             {
@@ -203,9 +203,9 @@ namespace PowerPad.Core.Services.AI
 
                     updateAction(100);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    errorAction(ex);
+                    errorAction();
                 }
             }
         }
@@ -213,10 +213,14 @@ namespace PowerPad.Core.Services.AI
         /// <inheritdoc />  
         public async Task DeleteModel(AIModel model)
         {
-            if (_config is null) return;
-
-            //TODO: Error si no se ha descargado aun  
-            await GetClient()!.DeleteModelAsync(model.Name);
+            if (_config is null)
+            {
+                throw new InvalidOperationException("Ollama is not initialized.");
+            }
+            else
+            {
+                await GetClient()!.DeleteModelAsync(model.Name);
+            }
         }
 
         /// <summary>  

@@ -7,13 +7,14 @@ using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
+using System.Linq;
 
 namespace PowerPad.WinUI.Components
 {
     public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     {
-        private static EditorManager? _registredInstance = null;
-        private readonly object _lock = new();
+        private static EditorManager? _activeInstance = null;
+        private static readonly object _lock = new();
 
         private readonly WorkspaceViewModel _workspace;
         private const long AUTO_SAVE_INTERVAL = 3000;
@@ -34,13 +35,18 @@ namespace PowerPad.WinUI.Components
             _timer.Tick += (o, e) => EditorManagerHelper.AutoSaveEditors();
             _timer.Start();
 
+            SetActiveInstance(this);
+        }
+
+        public static void SetActiveInstance(EditorManager instance)
+        {
             lock (_lock)
             {
-                if (_registredInstance is not null)
-                    WeakReferenceMessenger.Default.Unregister<FolderEntryDeleted>(_registredInstance);
+                if (_activeInstance is not null)
+                    WeakReferenceMessenger.Default.Unregister<FolderEntryDeleted>(_activeInstance);
 
-                WeakReferenceMessenger.Default.Register(this);
-                _registredInstance = this;
+                WeakReferenceMessenger.Default.Register(instance);
+                _activeInstance = instance;
             }
         }
 
@@ -105,12 +111,8 @@ namespace PowerPad.WinUI.Components
 
         public void Receive(FolderEntryDeleted message)
         {
-            FolderEntryViewModel? key = null;
-
-            foreach (var kvp in EditorManagerHelper.Editors)
-            {
-                if (kvp.Key.ModelEntry == message.Value) key = kvp.Key;
-            }
+            var key = EditorManagerHelper.Editors
+                .FirstOrDefault(kvp => kvp.Key.ModelEntry == message.Value).Key;
 
             if (key is not null)
             {

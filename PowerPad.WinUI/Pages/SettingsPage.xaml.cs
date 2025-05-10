@@ -268,42 +268,33 @@ namespace PowerPad.WinUI.Pages
 
         private void OllamaModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.OllamaEnabled)
+            if (!_settings.General.OllamaEnabled && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
             {
-                if (string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
-                {
-                    OllamaModelsExpander.IsExpanded = true;
-                    OllamaUrlTextBox.Focus(FocusState.Keyboard);
-                    OllamaUrlTextBox.EnterEditMode();
-                }
+                OllamaModelsExpander.IsExpanded = true;
+                OllamaUrlTextBox.Focus(FocusState.Keyboard);
+                OllamaUrlTextBox.EnterEditMode();
             }
         }
 
         private void AzureAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.AzureAIEnabled)
+            if (!_settings.General.AzureAIEnabled && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key))
             {
-                if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key))
-                {
-                    AzureAIModelsExpander.IsExpanded = true;
-                    AzureAIUrlTextBox.Focus(FocusState.Keyboard);
-                    AzureAIUrlTextBox.EnterEditMode();
-                    AzureAIKeyTextBox.EnterEditMode();
-                }
+                AzureAIModelsExpander.IsExpanded = true;
+                AzureAIUrlTextBox.Focus(FocusState.Keyboard);
+                AzureAIUrlTextBox.EnterEditMode();
+                AzureAIKeyTextBox.EnterEditMode();
             }
         }
 
         private void OpenAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.OpenAIEnabled)
+            if (!_settings.General.OpenAIEnabled && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key))
             {
-                if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key))
-                {
-                    OpenAIModelsExpander.IsExpanded = true;
-                    OpenAIUrlTextBox.Focus(FocusState.Keyboard);
-                    OpenAIUrlTextBox.EnterEditMode();
-                    OpenAIKeyTextBox.EnterEditMode();
-                }
+                OpenAIModelsExpander.IsExpanded = true;
+                OpenAIUrlTextBox.Focus(FocusState.Keyboard);
+                OpenAIUrlTextBox.EnterEditMode();
+                OpenAIKeyTextBox.EnterEditMode();
             }
         }
 

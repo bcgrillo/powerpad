@@ -27,7 +27,7 @@ namespace PowerPad.Core.Services.FileSystem
         /// <summary>
         /// Sets the position of a document within its parent folder.
         /// </summary>
-        void SetPosition(Document entry, int targetPosition);
+        void SetPosition(Document document, int targetPosition);
 
         /// <summary>
         /// Sets the position of a folder within its parent folder.
@@ -37,12 +37,12 @@ namespace PowerPad.Core.Services.FileSystem
         /// <summary>
         /// Creates a new document in the specified parent folder.
         /// </summary>
-        void CreateDocument(Folder parent, Document document, string? content = null);
+        void CreateDocument(Folder parent, Document newDocument, string? content = null);
 
         /// <summary>
         /// Creates a new folder in the specified parent folder.
         /// </summary>
-        void CreateFolder(Folder parent, Folder folder);
+        void CreateFolder(Folder parent, Folder newFolder);
 
         /// <summary>
         /// Deletes a document and moves it to the trash folder.

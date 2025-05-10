@@ -97,6 +97,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <NoWarn>IL2104</NoWarn>
     <AppxPackageDir>D:\OneDrive\Escritorio\</AppxPackageDir>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!--<PropertyGroup>

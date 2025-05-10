@@ -62,9 +62,9 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
                         var newAvailableModel = newAvailableModels
                             .FirstOrDefault(m => m.Name == currentAvailableModel.Name && m.ModelProvider == currentAvailableModel.ModelProvider);
 
-                        if (newAvailableModel is null)
+                        if (newAvailableModel is null && !currentAvailableModel.Downloading)
                         {
-                            if (!currentAvailableModel.Downloading) currentAvailableModels.RemoveAt(i);
+                            currentAvailableModels.RemoveAt(i);
                         }
                     }
                 }
@@ -109,7 +109,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
                 (
                     aiModel.GetRecord(),
                     aiModel.UpdateDownloadProgress,
-                    aiModel.UpdateDownloadError,
+                    aiModel.SetDownloadError,
                     aiModel.DownloadCancelationToken.Token
                 );
             }

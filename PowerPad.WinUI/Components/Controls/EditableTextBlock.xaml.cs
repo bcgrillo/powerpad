@@ -110,12 +110,12 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the KeyDown event for the integrated text box.
         /// </summary>
-        private void IntegratedTextBox_KeyDown(object _, KeyRoutedEventArgs e)
+        private void IntegratedTextBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
             if (_state.IsEditing)
             {
-                if (e.Key == Windows.System.VirtualKey.Enter) Confirm();
-                else if (e.Key == Windows.System.VirtualKey.Escape) Cancel();
+                if (eventArgs.Key == Windows.System.VirtualKey.Enter) Confirm();
+                else if (eventArgs.Key == Windows.System.VirtualKey.Escape) Cancel();
             }
         }
 

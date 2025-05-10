@@ -37,9 +37,6 @@ namespace PowerPad.WinUI.Components.Controls
 
             // Subscribe to the IsEnabledChanged event to update the layout when the enabled state changes.
             IsEnabledChanged += (s, e) => UpdateEnabledLayout((bool)e.NewValue);
-
-            // TODO: Check if it is possible to register a new callback to the IsEnabledProperty.
-            // The IsEnabledChanged event is not fired when the change of IsEnabled comes from the parent control's "IsEnabled" change.
         }
 
         /// <summary>

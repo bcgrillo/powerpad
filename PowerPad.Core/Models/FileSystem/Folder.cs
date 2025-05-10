@@ -45,7 +45,7 @@ namespace PowerPad.Core.Models.FileSystem
         /// <summary>
         /// Gets or sets the order of entries within this folder.
         /// </summary>
-        public List<string>? Order;
+        public List<string>? Order { get; set; }
 
         /// <summary>
         /// Adds a subfolder to this folder.

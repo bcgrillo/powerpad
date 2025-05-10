@@ -103,10 +103,6 @@ namespace PowerPad.WinUI.ViewModels.AI
             }
         }
 
-        public void UpdateDownloadError(Exception _)
-        {
-            //TODO: Handle error or show message
-            DownloadError = true;
-        }
+        public void SetDownloadError() => DownloadError = true;
     }
 }

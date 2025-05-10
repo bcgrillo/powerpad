@@ -16,9 +16,9 @@ namespace PowerPad.WinUI.Pages.Providers
 
         protected void Search_Click(object _, RoutedEventArgs __) => Search();
 
-        protected void Search_KeyDown(object _, KeyRoutedEventArgs e)
+        protected void Search_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (e.Key == Windows.System.VirtualKey.Enter) Search();
+            if (eventArgs.Key == Windows.System.VirtualKey.Enter) Search();
         }
 
         public virtual void Search() => _modelsViewModel.SearchModelCommand.Execute(GetSearchTextBox().Text);

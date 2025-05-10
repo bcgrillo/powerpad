@@ -131,18 +131,21 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Updates the checked state of items in the flyout menu.
         /// </summary>
-        private async void UpdateCheckedItemMenu()
+        private void UpdateCheckedItemMenu()
         {
-            await Task.Delay(100);
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(100);
 
-            foreach (RadioMenuFlyoutItem item in ModelFlyoutMenu.Items.OfType<RadioMenuFlyoutItem>())
-                item.IsChecked = false;
+                foreach (RadioMenuFlyoutItem item in ModelFlyoutMenu.Items.OfType<RadioMenuFlyoutItem>())
+                    item.IsChecked = false;
 
-            var menuItem = SelectedModel is null
-                ? (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault()
-                : (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == SelectedModel);
+                var menuItem = SelectedModel is null
+                    ? (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault()
+                    : (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == SelectedModel);
 
-            menuItem?.IsChecked = true;
+                menuItem?.IsChecked = true;
+            });
         }
 
         /// <summary>
@@ -259,7 +262,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             if (_settings.Models.DefaultModel is not null && ModelFlyoutMenu.Items.Any())
             {
-                var firstItem = (RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First();
+                var firstItem = (RadioMenuFlyoutItem)ModelFlyoutMenu.Items[0];
 
                 firstItem.Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})";
                 firstItem.Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() };

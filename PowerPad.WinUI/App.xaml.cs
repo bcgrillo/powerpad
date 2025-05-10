@@ -16,9 +16,8 @@ namespace PowerPad.WinUI
     public partial class App : Application
     {
         private static IServiceProvider _serviceProvider = null!;
-        private static MainWindow? _window;
-
-        private readonly IConfigStore _appConfigStore;
+        private static IConfigStore _appConfigStore = null!;
+        private static MainWindow _window = null!;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -28,6 +27,23 @@ namespace PowerPad.WinUI
         {
             this.InitializeComponent();
 
+            InitializeServiceCollection();
+
+            var appTheme = Get<SettingsViewModel>().General.AppTheme;
+            if (appTheme is not null) Current.RequestedTheme = appTheme.Value;
+        }
+
+        /// <summary>
+        /// Invoked when the application is launched.
+        /// </summary>
+        /// <param name="args">Details about the launch request and process.</param>
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        {
+            InitializeMainWindow();
+        }
+
+        private static void InitializeServiceCollection()
+        {
             _serviceProvider = new ServiceCollection()
                 .ConfigureWorkspaceService()
                 .ConfigureOllamaService()
@@ -44,16 +60,9 @@ namespace PowerPad.WinUI
                 .BuildServiceProvider();
 
             AppConfiguration.InitializeAppConfigStore(out _appConfigStore);
-
-            var appTheme = Get<SettingsViewModel>().General.AppTheme;
-            if (appTheme is not null) Current.RequestedTheme = appTheme.Value;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        private static void InitializeMainWindow()
         {
             _window = new();
             _window.Activate();

@@ -7,15 +7,12 @@ namespace PowerPad.WinUI.Helpers
     {
         public static DocumentType FromFilePath(string filePath)
         {
-            string extension = filePath.Split('.').Last().ToLower();
+            string extension = filePath.Split('.')[^1].ToLower();
 
             return extension switch
             {
                 "txt" => DocumentType.Note,
                 "chat" => DocumentType.Chat,
-                /*"md" => DocumentType.Markdown,
-                "todo" => DocumentType.ToDo,
-                "search" => DocumentType.Search,*/
                 _ => DocumentType.Note
             };
         }

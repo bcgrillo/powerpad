@@ -242,7 +242,6 @@ namespace PowerPad.WinUI.Components.Editors
 
         private void ChatControl_ParametersVisibilityChanged(object _, bool parametersPanelVisible)
         {
-            //TODO: Error if it is called multiple times
             if (Landing.Visibility == Visibility.Visible)
             {
                 LandingContent.Visibility = parametersPanelVisible ? Visibility.Collapsed : Visibility.Visible;

@@ -18,7 +18,7 @@ namespace PowerPad.WinUI.Components
     public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>, IRecipient<FolderEntryChanged>
     {
         private static WorkspaceControl? _registredInstance = null;
-        private readonly object _lock = new();
+        private static readonly object _lock = new();
 
         private readonly WorkspaceViewModel _workspace;
         private readonly List<MenuFlyoutItem> _menuFlyoutItems;
@@ -34,7 +34,11 @@ namespace PowerPad.WinUI.Components
 
             UpdateWorkspacesMenu();
 
-            //TODO: Change for use dispose
+            SetActiveInstance(this);
+        }
+
+        public static void SetActiveInstance(WorkspaceControl instance)
+        {
             lock (_lock)
             {
                 if (_registredInstance is not null)
@@ -43,9 +47,9 @@ namespace PowerPad.WinUI.Components
                     WeakReferenceMessenger.Default.Unregister<FolderEntryChanged>(_registredInstance);
                 }
 
-                WeakReferenceMessenger.Default.Register<FolderEntryCreated>(this);
-                WeakReferenceMessenger.Default.Register<FolderEntryChanged>(this);
-                _registredInstance = this;
+                WeakReferenceMessenger.Default.Register<FolderEntryCreated>(instance);
+                WeakReferenceMessenger.Default.Register<FolderEntryChanged>(instance);
+                _registredInstance = instance;
             }
         }
 
@@ -238,12 +242,8 @@ namespace PowerPad.WinUI.Components
                 {
                     DispatcherQueue.TryEnqueue(async () =>
                     {
-                        //TODO: Check it, sometimes the entry is not selected because treeview is not loaded yet
-                        for (int i = 0; i < 5; i++)
-                        {
-                            await Task.Delay(100);
-                            entry.IsSelected = true;
-                        }
+                        await Task.Delay(100);
+                        entry.IsSelected = true;
                     });
 
                     ItemInvoked?.Invoke(this, new(entry));
@@ -251,15 +251,15 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void TreeView_PointerPressed(object _, PointerRoutedEventArgs e)
+        private void TreeView_PointerPressed(object _, PointerRoutedEventArgs eventArgs)
         {
-            var pointerPoint = e.GetCurrentPoint(TreeView);
+            var pointerPoint = eventArgs.GetCurrentPoint(TreeView);
             if (pointerPoint.Properties.PointerUpdateKind != PointerUpdateKind.RightButtonPressed) ClearSelection();
         }
 
-        private void TreeView_KeyDown(object _, KeyRoutedEventArgs e)
+        private void TreeView_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (e.Key == Windows.System.VirtualKey.Escape) ClearSelection();
+            if (eventArgs.Key == Windows.System.VirtualKey.Escape) ClearSelection();
         }
 
         public void Receive(FolderEntryCreated message)

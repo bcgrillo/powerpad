@@ -30,9 +30,9 @@ namespace PowerPad.Core.Helpers
 
             var results = new List<AIModel>();
 
-            foreach (var model in searchResults.Take(MAX_RESULTS))
+            foreach (var modelId in searchResults.Select(m => m.Id).Take(MAX_RESULTS))
             {
-                var modelDetailsUrl = $"{HUGGINGFACE_MODEL_URL}{model.Id}/tree/main";
+                var modelDetailsUrl = $"{HUGGINGFACE_MODEL_URL}{modelId}/tree/main";
                 var modelFiles = await httpClient.GetFromJsonAsync<List<HuggingFaceFile>>(modelDetailsUrl);
                 if (modelFiles is null) continue;
 
@@ -41,11 +41,11 @@ namespace PowerPad.Core.Helpers
                 {
                     var tag = ExtractTagFromFileName(file.Path);
                     results.Add(new AIModel(
-                        $"{HF_OLLAMA_PREFIX}/{model.Id}:{tag}",
+                        $"{HF_OLLAMA_PREFIX}/{modelId}:{tag}",
                         ModelProvider.HuggingFace,
-                        GetModelUrl(model.Id),
+                        GetModelUrl(modelId),
                         file.Size,
-                        $"{model.Id}:{tag}"
+                        $"{modelId}:{tag}"
                     ));
                 }
             }
@@ -82,11 +82,11 @@ namespace PowerPad.Core.Helpers
         /// <summary>
         /// Represents a model retrieved from the Hugging Face API.
         /// </summary>
-        private record HuggingFaceModel(string Id);
+        private sealed record HuggingFaceModel(string Id);
 
         /// <summary>
         /// Represents a file associated with a model in the Hugging Face API.
         /// </summary>
-        private record HuggingFaceFile(string Path, long Size);
+        private sealed record HuggingFaceFile(string Path, long Size);
     }
 }

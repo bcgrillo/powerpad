@@ -87,7 +87,6 @@ namespace PowerPad.WinUI
 
         private void UpdateNavMenuItems()
         {
-            //TODO: Add a better way to handle this
             ModelsNavViewItem.IsEnabled = _settings.General.OllamaEnabled || _settings.General.AzureAIEnabled || _settings.General.OpenAIEnabled;
             AgentesNavViewItem.IsEnabled = _settings.IsAIAvailable == true;
 
@@ -121,7 +120,7 @@ namespace PowerPad.WinUI
 
         private void NavigateToPage(string? page)
         {
-            ArgumentException.ThrowIfNullOrEmpty(page, nameof(page));
+            ArgumentException.ThrowIfNullOrEmpty(page);
 
             if (_activePageName != page)
             {

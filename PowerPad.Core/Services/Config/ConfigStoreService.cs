@@ -30,8 +30,11 @@ namespace PowerPad.Core.Services.Config
         private const double STORE_INTERVAL = 2000;
 
         private readonly JsonSerializerContext _context;
-        private readonly Timer _timer;
         private readonly Dictionary<string, ConfigStore> _configStores;
+
+#pragma warning disable S1450 // Private field _timer required for keep the timer instance
+        private readonly Timer _timer;
+#pragma warning restore S1450
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigStoreService"/> class.

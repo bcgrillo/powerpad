@@ -131,7 +131,10 @@ namespace PowerPad.WinUI.Dialogs
                     {
                         //Try delete the temp file if it exists
                         try { if (File.Exists(_tempFilePath)) File.Delete(_tempFilePath); }
-                        catch { }
+                        catch
+                        {
+                            // It's ok, is a temp file
+                        }
 
                         Message.Text = "Descarga cancelada.";
 
@@ -151,7 +154,7 @@ namespace PowerPad.WinUI.Dialogs
                 else if (_isDownloading)
                 {
                     // Cancel the download
-                    _cts?.Cancel();
+                    await _cts!.CancelAsync();
                 }
                 else //Download completed
                 {
@@ -177,7 +180,10 @@ namespace PowerPad.WinUI.Dialogs
                     {
                         //Try delete the temp file if it exists
                         try { if (File.Exists(_tempFilePath)) File.Delete(_tempFilePath); }
-                        catch { }
+                        catch
+                        {
+                            // It's ok, is a temp file
+                        }
 
                         Message.Text = $"¡Instalación finalizada con éxito!" +
                             "\nInstale algún modelo de inteligencia artificial para empezar a utilizar Ollama.";
@@ -225,6 +231,11 @@ namespace PowerPad.WinUI.Dialogs
                         _fileSizeConverter.Convert(totalBytes, typeof(string), null!, null!);
                 }
             }
+        }
+
+        private void ContentDialog_Closed(ContentDialog _, ContentDialogClosedEventArgs __)
+        {
+            _cts?.Dispose();
         }
     }
 }

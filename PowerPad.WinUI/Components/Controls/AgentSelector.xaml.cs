@@ -116,25 +116,28 @@ namespace PowerPad.WinUI.Components.Controls
                 }
             }
 
-            DispatcherQueue.TryEnqueue(UpdateCheckedItemMenu);
+            UpdateCheckedItemMenu();
             UpdateButtonContent();
         }
 
         /// <summary>
         /// Updates the checked state of menu items in the flyout menu.
         /// </summary>
-        private async void UpdateCheckedItemMenu()
+        private void UpdateCheckedItemMenu()
         {
-            await Task.Delay(100);
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(100);
 
-            foreach (RadioMenuFlyoutItem item in AgentFlyoutMenu.Items.OfType<RadioMenuFlyoutItem>())
-                item.IsChecked = false;
+                foreach (RadioMenuFlyoutItem item in AgentFlyoutMenu.Items.OfType<RadioMenuFlyoutItem>())
+                    item.IsChecked = false;
 
-            var menuItem = SelectedAgent is null
-                ? null
-                : (RadioMenuFlyoutItem?)AgentFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AgentViewModel == SelectedAgent);
+                var menuItem = SelectedAgent is null
+                    ? null
+                    : (RadioMenuFlyoutItem?)AgentFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AgentViewModel == SelectedAgent);
 
-            menuItem?.IsChecked = true;
+                menuItem?.IsChecked = true;
+            });
         }
 
         /// <summary>

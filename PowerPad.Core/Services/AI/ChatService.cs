@@ -49,12 +49,12 @@ namespace PowerPad.Core.Services.AI
         /// </summary>
         /// <param name="input">The user input to process.</param>
         /// <param name="output">The output StringBuilder to append the response to.</param>
-        /// <param name="selectedAgent">The AI agent to interact with.</param>
+        /// <param name="agent">The AI agent to interact with.</param>
         /// <param name="promptParameterValue">An optional parameter value to include in the agent's prompt.</param>
         /// <param name="agentPrompt">An optional additional prompt for the agent.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task GetAgentSingleResponse(string input, StringBuilder output, Agent selectedAgent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default);
+        Task GetAgentSingleResponse(string input, StringBuilder output, Agent agent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default);
     }
 
     /// <summary>
@@ -249,10 +249,10 @@ namespace PowerPad.Core.Services.AI
         /// <summary>
         /// Prepares the chat options based on the provided configuration and restricted parameters.
         /// </summary>
-        /// <param name="chatoptions">The chat options to configure.</param>
+        /// <param name="chatOptions">The chat options to configure.</param>
         /// <param name="notAllowedParameters">A list of parameters that are not allowed for the specified model.</param>
         /// <returns>An instance of <see cref="ChatOptions"/> with the configured parameters.</returns>
-        private static ChatOptions PrepareChatOptions(IChatOptions chatoptions, IEnumerable<string>? notAllowedParameters)
+        private static ChatOptions PrepareChatOptions(IChatOptions chatOptions, IEnumerable<string>? notAllowedParameters)
         {
             ChatOptions chatOption;
 
@@ -260,18 +260,18 @@ namespace PowerPad.Core.Services.AI
             {
                 chatOption = new()
                 {
-                    Temperature = notAllowedParameters.Contains(nameof(IChatOptions.Temperature)) ? null : chatoptions.Temperature,
-                    TopP = notAllowedParameters.Contains(nameof(IChatOptions.TopP)) ? null : chatoptions.TopP,
-                    MaxOutputTokens = notAllowedParameters.Contains(nameof(IChatOptions.MaxOutputTokens)) ? null : chatoptions.MaxOutputTokens,
+                    Temperature = notAllowedParameters.Contains(nameof(IChatOptions.Temperature)) ? null : chatOptions.Temperature,
+                    TopP = notAllowedParameters.Contains(nameof(IChatOptions.TopP)) ? null : chatOptions.TopP,
+                    MaxOutputTokens = notAllowedParameters.Contains(nameof(IChatOptions.MaxOutputTokens)) ? null : chatOptions.MaxOutputTokens,
                 };
             }
             else
             {
                 chatOption = new()
                 {
-                    Temperature = chatoptions.Temperature,
-                    TopP = chatoptions.TopP,
-                    MaxOutputTokens = chatoptions.MaxOutputTokens,
+                    Temperature = chatOptions.Temperature,
+                    TopP = chatOptions.TopP,
+                    MaxOutputTokens = chatOptions.MaxOutputTokens,
                 };
             }
 

@@ -51,7 +51,7 @@ namespace PowerPad.WinUI.Pages
                     }
 
                     selectedItem.IsExpanded = true;
-                    NavView.SelectedItem = selectedItem.MenuItems.First();
+                    NavView.SelectedItem = selectedItem.MenuItems[0];
                 });
             }
         }
@@ -127,7 +127,7 @@ namespace PowerPad.WinUI.Pages
             if (firstItem is not null)
             {
                 firstItem.IsExpanded = true;
-                NavView.SelectedItem = firstItem.MenuItems.First();
+                NavView.SelectedItem = firstItem.MenuItems[0];
             }
         }
 

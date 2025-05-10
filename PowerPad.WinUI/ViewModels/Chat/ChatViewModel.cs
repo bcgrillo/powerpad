@@ -32,8 +32,8 @@ namespace PowerPad.WinUI.ViewModels.Chat
             }
         }
 
-        public IRelayCommand RemoveLastMessageCommand;
-        public IRelayCommand ClearMessagesCommand;
+        public IRelayCommand RemoveLastMessageCommand { get; }
+        public IRelayCommand ClearMessagesCommand { get; }
 
         public ChatViewModel()
         {

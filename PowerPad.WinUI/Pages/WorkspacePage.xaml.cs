@@ -18,9 +18,9 @@ namespace PowerPad.WinUI.Pages
             WorkspaceControl.Visibility = WorkspaceControl.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        private void WorkspaceControl_ItemInvoked(object sender, WorkspaceControlItemInvokedEventArgs e)
+        private void WorkspaceControl_ItemInvoked(object sender, WorkspaceControlItemInvokedEventArgs eventArgs)
         {
-            EditorManager.OpenFile(e.SelectedFile);
+            EditorManager.OpenFile(eventArgs.SelectedFile);
         }
     }
 }

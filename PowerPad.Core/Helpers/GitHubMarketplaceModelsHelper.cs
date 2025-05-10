@@ -8,7 +8,7 @@ namespace PowerPad.Core.Helpers
     /// Helper class for interacting with the GitHub Marketplace to search for AI models.
     /// Provides methods to query and filter models based on specific criteria.
     /// </summary>
-    public static class GitHubMarktplaceModelsHelper
+    public static class GitHubMarketplaceModelsHelper
     {
         private const string GITHUB_BASE_URL = "https://github.com";
         private const string GITHUB_MARKETPLACE_SEARCH_URL = "https://github.com/marketplace?type=models&task=chat-completion&query=";
@@ -70,11 +70,11 @@ namespace PowerPad.Core.Helpers
         /// <summary>
         /// Represents the response structure from the GitHub Marketplace API.
         /// </summary>
-        private record GitHubMarketplaceResponse(List<GitHubModel> Results);
+        private sealed record GitHubMarketplaceResponse(List<GitHubModel> Results);
 
         /// <summary>
         /// Represents a single AI model entry in the GitHub Marketplace.
         /// </summary>
-        private record GitHubModel(string Name, string? Friendly_Name, string Id, string Model_Url, string Publisher);
+        private sealed record GitHubModel(string Name, string? Friendly_Name, string Id, string Model_Url, string Publisher);
     }
 }

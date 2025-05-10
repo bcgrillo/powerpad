@@ -26,7 +26,7 @@ namespace PowerPad.WinUI.Configuration
             Agents,
         }
 
-        public class StoreDefault
+        public static class StoreDefault
         {
             private static readonly (string Name, string Url)[] _initialGitHubModels =
             [
@@ -57,9 +57,9 @@ namespace PowerPad.WinUI.Configuration
 
                 OllamaConfig = new(new() { BaseUrl = "http://localhost:11434" }),
                 OllamaAutostart = true,
-                //TODO: Remove
-                AzureAIConfig = new(new() { BaseUrl = "https://models.github.ai/inference" }), //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
-                OpenAIConfig = new(new() { BaseUrl = "https://api.openai.com/v1" }), //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
+
+                AzureAIConfig = new(new() { BaseUrl = "https://models.github.ai/inference" }),
+                OpenAIConfig = new(new() { BaseUrl = "https://api.openai.com/v1" }),
 
                 AvailableProviders = [],
 

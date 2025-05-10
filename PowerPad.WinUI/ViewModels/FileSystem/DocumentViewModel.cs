@@ -98,7 +98,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         {
             _untitled = false;
 
-            ArgumentException.ThrowIfNullOrWhiteSpace(newName, nameof(newName));
+            ArgumentException.ThrowIfNullOrWhiteSpace(newName);
 
             var workspaceService = App.Get<IWorkspaceService>();
 
@@ -135,13 +135,10 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public void Receive(FolderEntryChanged message)
         {
-            if (message.Value == _document)
+            if (message.Value == _document && message.NameChanged)
             {
-                if (message.NameChanged)
-                {
-                    _untitled = false;
-                    OnPropertyChanged(nameof(Name));
-                }
+                _untitled = false;
+                OnPropertyChanged(nameof(Name));
             }
         }
     }

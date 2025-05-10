@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.System;
@@ -60,7 +61,6 @@ namespace PowerPad.WinUI.Components.Controls
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
 
-
             _loadingAnimationTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(LOADING_ANIMATION_INTERVAL)
@@ -75,6 +75,9 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Initializes the parameters for the chat control, including model, parameters, and agent.
         /// </summary>
+        /// <param name="model">The AI model to use for the chat.</param>
+        /// <param name="parameters">The parameters for the chat. Can be null.</param>
+        /// <param name="agentId">The ID of the agent to use. Can be null.</param>
         public void InitializeParameters(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId)
         {
             _selectedModel = model;
@@ -115,6 +118,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Starts streaming chat messages and updates the UI accordingly.
         /// </summary>
+        /// <param name="messageList">The list of messages to display in the chat.</param>
+        /// <param name="endAction">The action to execute when the chat ends. Can be null.</param>
         public void StartStreamingChat(ICollection<MessageViewModel> messageList, Action? endAction)
         {
             _messageList = messageList;
@@ -145,7 +150,7 @@ namespace PowerPad.WinUI.Components.Controls
                 var parameters = _sendParameters ? _parameters
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
 
-                string messageBuffer = string.Empty;
+                var messageBuffer = new StringBuilder();
                 try
                 {
                     var responseUpdates = _useAgents
@@ -154,38 +159,39 @@ namespace PowerPad.WinUI.Components.Controls
 
                     await foreach (var update in responseUpdates)
                     {
-                        messageBuffer += update.Text;
+                        messageBuffer.Append(update.Text);
+                        var messageBufferString = messageBuffer.ToString();
 
                         string? reasoning = null;
                         string? content = null;
                         bool loading = true;
 
-                        var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => messageBuffer.Contains(tag));
+                        var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
 
                         // Logic to parse and update reasoning and content from the message buffer
                         if (thinkStartTag is not null)
                         {
-                            var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => messageBuffer.Contains(tag));
+                            var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
 
-                            var startIndex = messageBuffer.IndexOf(thinkStartTag) + thinkStartTag.Length;
+                            var startIndex = messageBufferString.IndexOf(thinkStartTag) + thinkStartTag.Length;
 
                             if (thinkEndTag is not null)
                             {
-                                var endIndex = messageBuffer.IndexOf(thinkEndTag, startIndex);
+                                var endIndex = messageBufferString.IndexOf(thinkEndTag, startIndex);
 
-                                reasoning = messageBuffer[startIndex..endIndex].Trim().Replace("\n\n", "\n");
-                                content = messageBuffer[(endIndex + thinkEndTag.Length)..].Trim();
+                                reasoning = messageBufferString[startIndex..endIndex].Trim().Replace("\n\n", "\n");
+                                content = messageBufferString[(endIndex + thinkEndTag.Length)..].Trim();
 
                                 if (loading) loading = false;
                             }
                             else
                             {
-                                reasoning = messageBuffer[startIndex..].Trim().Replace("\n\n", "\n");
+                                reasoning = messageBufferString[startIndex..].Trim().Replace("\n\n", "\n");
                             }
                         }
                         else
                         {
-                            content = messageBuffer;
+                            content = messageBufferString;
                             if (loading) loading = false;
                         }
 
@@ -222,6 +228,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the event when the control's enabled state changes.
         /// </summary>
+        /// <param name="eventArgs">The event arguments containing the new value.</param>
         private void OnEnabledChanged(object? _, DependencyPropertyChangedEventArgs eventArgs)
         {
             ModelSelector.UpdateEnabledLayout((bool)eventArgs.NewValue);
@@ -306,9 +313,10 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the click event of the send button.
         /// </summary>
-        private void SendBtn_Click(object _, RoutedEventArgs e)
+        /// <param name="eventArgs">The event arguments.</param>
+        private void SendBtn_Click(object _, RoutedEventArgs eventArgs)
         {
-            SendButtonClicked?.Invoke(this, e);
+            SendButtonClicked?.Invoke(this, eventArgs);
         }
 
         /// <summary>
@@ -359,25 +367,23 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the key down event for the chat input box, enabling multi-line input or sending messages.
         /// </summary>
-        private void ChatInputBox_KeyDown(object _, KeyRoutedEventArgs e)
+        /// <param name="eventArgs">The event arguments.</param>
+        private void ChatInputBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (!ChatInputBox.IsReadOnly)
+            if (!ChatInputBox.IsReadOnly && eventArgs.Key == VirtualKey.Enter)
             {
-                if (e.Key == VirtualKey.Enter)
-                {
-                    if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
+                if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
                         .HasFlag(CoreVirtualKeyStates.Down) &&
                         !string.IsNullOrWhiteSpace(ChatInputBox.Text))
-                    {
-                        SendButtonClicked?.Invoke(this, e);
-                    }
-                    else
-                    {
-                        ChatInputBox.AcceptsReturn = true;
-                        var cursorPosition = ChatInputBox.SelectionStart;
-                        ChatInputBox.Text = ChatInputBox.Text.Insert(cursorPosition, Environment.NewLine);
-                        ChatInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
-                    }
+                {
+                    SendButtonClicked?.Invoke(this, eventArgs);
+                }
+                else
+                {
+                    ChatInputBox.AcceptsReturn = true;
+                    var cursorPosition = ChatInputBox.SelectionStart;
+                    ChatInputBox.Text = ChatInputBox.Text.Insert(cursorPosition, Environment.NewLine);
+                    ChatInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
                 }
             }
         }
@@ -385,6 +391,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Toggles the visibility of the parameters panel.
         /// </summary>
+        /// <param name="_">The sender of the event.</param>
+        /// <param name="__">The event arguments.</param>
         private void ParametersButton_Click(object _, RoutedEventArgs __)
         {
             var parameterPanelVisible = ParametersPanel.Visibility == Visibility.Visible;
@@ -408,6 +416,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Toggles the parameter visibility and updates the chat options.
         /// </summary>
+        /// <param name="_">The sender of the event.</param>
+        /// <param name="__">The event arguments.</param>
         private void EnableParametersSwitch_Toggled(object _, RoutedEventArgs __)
         {
             ToggleParameterVisibility();
@@ -438,6 +448,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the click event of the close parameters button.
         /// </summary>
+        /// <param name="o">The sender of the event.</param>
+        /// <param name="eventArgs">The event arguments.</param>
         private void CloseParametersButton_Click(object o, RoutedEventArgs eventArgs)
         {
             ParametersButton.IsChecked = false;
@@ -447,6 +459,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles property changes in the parameters and updates the chat options.
         /// </summary>
+        /// <param name="_">The sender of the event.</param>
+        /// <param name="__">The event arguments.</param>
         private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __) => OnChatOptionsChanged();
 
         /// <summary>
@@ -460,6 +474,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the tick event of the loading animation timer, updating the assistant's loading message.
         /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">The event arguments.</param>
         private void LoadingAnimationTimer_Tick(object? sender, object e)
         {
             if (_lastAssistantMessage is not null)
@@ -484,7 +500,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// Disposes the resources used by the ChatControl.
         /// </summary>
         /// <param name="disposing">Indicates whether the method is called from the Dispose method (true) or from the finalizer (false).</param>
-        protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -501,6 +517,9 @@ namespace PowerPad.WinUI.Components.Controls
     /// <summary>
     /// Event arguments for chat options changes, including selected model, parameters, and agent ID.
     /// </summary>
+    /// <param name="model">The selected AI model.</param>
+    /// <param name="parameters">The parameters for the chat. Can be null.</param>
+    /// <param name="agentId">The ID of the selected agent. Can be null.</param>
     public class ChatOptionsChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId) : EventArgs
     {
         public AIModelViewModel? SelectedModel { get; set; } = model;

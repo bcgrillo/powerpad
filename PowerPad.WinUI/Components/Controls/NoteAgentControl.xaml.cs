@@ -21,7 +21,7 @@ namespace PowerPad.WinUI.Components.Controls
     {
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource? _cts;
 
         /// <summary>
         /// Event triggered when the send button is clicked.
@@ -39,7 +39,6 @@ namespace PowerPad.WinUI.Components.Controls
 
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
-            _cts = new();
 
             AgentSelector.SelectedAgentChanged += SelectedAgent_Changed;
             AgentSelector.Initialize(null, selectFirstAgent: true);
@@ -59,6 +58,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <param name="input">The input text for the agent.</param>
         /// <param name="output">The output StringBuilder to store the agent's response.</param>
         /// <param name="exceptionAction">The action to handle exceptions.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task StartAgentAction(string input, StringBuilder output, Action<Exception> exceptionAction)
         {
             DispatcherQueue.TryEnqueue(() =>
@@ -70,6 +70,7 @@ namespace PowerPad.WinUI.Components.Controls
                 AgentSelector.IsEnabled = false;
             });
 
+            _cts?.Dispose();
             _cts = new();
 
             try
@@ -146,9 +147,10 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the click event for the send button.
         /// </summary>
-        private void SendBtn_Click(object _, RoutedEventArgs e)
+        /// <param name="eventArgs">The event arguments for the click event.</param>
+        private void SendBtn_Click(object _, RoutedEventArgs eventArgs)
         {
-            SendButtonClicked?.Invoke(this, e);
+            SendButtonClicked?.Invoke(this, eventArgs);
         }
 
         /// <summary>
@@ -165,7 +167,7 @@ namespace PowerPad.WinUI.Components.Controls
                 PromptParameterInputBox.IsReadOnly = false;
                 AgentSelector.IsEnabled = true;
 
-                if (_selectedAgent!.HasPromptParameter == true)
+                if (_selectedAgent!.HasPromptParameter)
                 {
                     PromptParameterInputBox.Focus(FocusState.Keyboard);
                 }
@@ -181,32 +183,30 @@ namespace PowerPad.WinUI.Components.Controls
         /// </summary>
         private void StopBtn_Click(object _, RoutedEventArgs __)
         {
-            _cts.Cancel();
+            _cts?.Cancel();
             FinalizeAgentAction();
         }
 
         /// <summary>
         /// Handles the key down event for the parameter input box.
         /// </summary>
-        private void PromptParameterInputBox_KeyDown(object _, KeyRoutedEventArgs e)
+        /// <param name="eventArgs">The key event arguments.</param>
+        private void PromptParameterInputBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (!PromptParameterInputBox.IsReadOnly)
+            if (!PromptParameterInputBox.IsReadOnly && eventArgs.Key == VirtualKey.Enter)
             {
-                if (e.Key == VirtualKey.Enter)
-                {
-                    if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
+                if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
                         .HasFlag(CoreVirtualKeyStates.Down) &&
                         !string.IsNullOrWhiteSpace(PromptParameterInputBox.Text))
-                    {
-                        SendButtonClicked?.Invoke(this, e);
-                    }
-                    else
-                    {
-                        PromptParameterInputBox.AcceptsReturn = true;
-                        var cursorPosition = PromptParameterInputBox.SelectionStart;
-                        PromptParameterInputBox.Text = PromptParameterInputBox.Text.Insert(cursorPosition, Environment.NewLine);
-                        PromptParameterInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
-                    }
+                {
+                    SendButtonClicked?.Invoke(this, eventArgs);
+                }
+                else
+                {
+                    PromptParameterInputBox.AcceptsReturn = true;
+                    var cursorPosition = PromptParameterInputBox.SelectionStart;
+                    PromptParameterInputBox.Text = PromptParameterInputBox.Text.Insert(cursorPosition, Environment.NewLine);
+                    PromptParameterInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
                 }
             }
         }
@@ -214,7 +214,21 @@ namespace PowerPad.WinUI.Components.Controls
         /// <inheritdoc />
         public void Dispose()
         {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes resources used by the control.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method is called from Dispose.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                AgentSelector.SelectedAgentChanged += SelectedAgent_Changed;
+                _cts?.Dispose();
+            }
         }
     }
 }

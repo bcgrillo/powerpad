@@ -134,10 +134,13 @@ namespace PowerPad.Core.Services.Config
             {
                 if (_store.TryGetValue(key.ToString(), out var config))
                 {
-                    return _store[key.ToString()].GetValue<T>(_context);
+                    return config.GetValue<T>(_context);
                 }
             }
-            catch { } //It's ok
+            catch
+            {
+                // It's ok
+            } 
 
             return default;
         }
@@ -146,7 +149,7 @@ namespace PowerPad.Core.Services.Config
         public T Get<T>(Enum key)
         {
             return _store[key.ToString()].GetValue<T>(_context)
-                ?? throw new NullReferenceException($"Config value for key '{key}' is not found.");
+                ?? throw new KeyNotFoundException($"Config value for key '{key}' is not found.");
         }
 
         /// <summary>
