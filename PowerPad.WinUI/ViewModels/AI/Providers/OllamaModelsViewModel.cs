@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
+using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
         private readonly IOllamaService _ollamaService;
 
         public IAsyncRelayCommand RefreshModelsCommand { get; }
-        
+
         public OllamaModelsViewModel()
             : this(ModelProvider.Ollama)
         {
@@ -107,7 +108,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
                 await _ollamaService.DownloadModel
                 (
                     aiModel.GetRecord(),
-                    aiModel.UpdateDownloadProgess,
+                    aiModel.UpdateDownloadProgress,
                     aiModel.UpdateDownloadError,
                     aiModel.DownloadCancelationToken.Token
                 );

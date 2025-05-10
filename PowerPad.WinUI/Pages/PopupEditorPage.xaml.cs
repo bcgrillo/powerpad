@@ -16,7 +16,7 @@ namespace PowerPad.WinUI.Pages
     {
         private readonly WorkspaceViewModel _workspace;
         private readonly DraftDocumentViewModel _document;
-        
+
         public event EventHandler? CloseRequested;
 
         public PopupEditorPage()

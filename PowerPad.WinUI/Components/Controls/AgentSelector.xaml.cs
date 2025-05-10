@@ -80,7 +80,7 @@ namespace PowerPad.WinUI.Components.Controls
 
             RegenerateFlyoutMenu();
 
-            _agentsCollection.AgentsAvaibilityChanged += Agents_AgentsAvaibilityChanged;
+            _agentsCollection.AgentsAvailabilityChanged += Agents_AgentsAvailabilityChanged;
         }
 
         /// <summary>
@@ -116,14 +116,14 @@ namespace PowerPad.WinUI.Components.Controls
                 }
             }
 
-            DispatcherQueue.TryEnqueue(() => UpdateChekedItemMenu());
+            DispatcherQueue.TryEnqueue(UpdateCheckedItemMenu);
             UpdateButtonContent();
         }
 
         /// <summary>
         /// Updates the checked state of menu items in the flyout menu.
         /// </summary>
-        private async void UpdateChekedItemMenu()
+        private async void UpdateCheckedItemMenu()
         {
             await Task.Delay(100);
 
@@ -134,13 +134,13 @@ namespace PowerPad.WinUI.Components.Controls
                 ? null
                 : (RadioMenuFlyoutItem?)AgentFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AgentViewModel == SelectedAgent);
 
-            if (menuItem is not null) menuItem.IsChecked = true;
+            menuItem?.IsChecked = true;
         }
 
         /// <summary>
         /// Handles changes in agent availability and updates the menu.
         /// </summary>
-        private void Agents_AgentsAvaibilityChanged(object? _, EventArgs __)
+        private void Agents_AgentsAvailabilityChanged(object? _, EventArgs __)
         {
             SelectedAgent ??= (_selectFirstAgent ? _agentsCollection.Agents.FirstOrDefault() : null);
 
@@ -227,7 +227,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <inheritdoc />
         public void Dispose()
         {
-            _agentsCollection.AgentsAvaibilityChanged -= Agents_AgentsAvaibilityChanged;
+            _agentsCollection.AgentsAvailabilityChanged -= Agents_AgentsAvailabilityChanged;
 
             GC.SuppressFinalize(this);
         }

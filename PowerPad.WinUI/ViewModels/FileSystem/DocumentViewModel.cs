@@ -128,7 +128,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public void NameChanged()
         {
-            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true});
+            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true });
 
             OnPropertyChanged(nameof(Name));
         }

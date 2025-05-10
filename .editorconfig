@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# S1121: Assignments should not be made from within sub-expressions
+dotnet_diagnostic.S1121.severity = silent

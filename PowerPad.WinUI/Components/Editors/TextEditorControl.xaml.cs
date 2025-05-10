@@ -105,7 +105,7 @@ namespace PowerPad.WinUI.Components.Editors
 
         protected override void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
             {
                 _document = null!;
                 TextEditor = null;

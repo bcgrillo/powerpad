@@ -63,7 +63,8 @@ namespace PowerPad.WinUI.Dialogs
 
         private async void OnPrimaryButtonClick(object _, ContentDialogButtonClickEventArgs eventArgs)
         {
-            if (!_installationCompleted) {
+            if (!_installationCompleted)
+            {
                 eventArgs.Cancel = true;
 
                 if ((!_isDownloading && !_downloadCompleted) || _tryInstallationAgain)
@@ -178,7 +179,7 @@ namespace PowerPad.WinUI.Dialogs
                         try { if (File.Exists(_tempFilePath)) File.Delete(_tempFilePath); }
                         catch { }
 
-                        Message.Text = $"¡Instalación finalizada con éxito!"+
+                        Message.Text = $"¡Instalación finalizada con éxito!" +
                             "\nInstale algún modelo de inteligencia artificial para empezar a utilizar Ollama.";
 
                         Reset();

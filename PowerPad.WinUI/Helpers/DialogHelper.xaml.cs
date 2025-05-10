@@ -81,12 +81,12 @@ namespace PowerPad.WinUI.Dialogs
 
         private void TextBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (eventArgs.Key == Windows.System.VirtualKey.Enter) 
+            if (eventArgs.Key == Windows.System.VirtualKey.Enter)
             {
                 _accepted = true;
                 Hide();
             }
-            else if(eventArgs.Key == Windows.System.VirtualKey.Escape)
+            else if (eventArgs.Key == Windows.System.VirtualKey.Escape)
             {
                 Hide();
             }

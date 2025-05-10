@@ -46,7 +46,7 @@ namespace PowerPad.WinUI.Components
         private void OnSetDefaultClick(object? sender, RoutedEventArgs __)
         {
             var model = (AIModelViewModel)((MenuFlyoutItem)sender!).Tag;
-            
+
             if (!model.Enabled) model.Enabled = true;
 
             SetDefaultClick?.Invoke(sender, new(model));

@@ -24,8 +24,8 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public partial bool OllamaAutostart { get; set; }
 
         public required AIServiceConfigViewModel OllamaConfig
-        { 
-            get; 
+        {
+            get;
             init
             {
                 field = value;
@@ -78,7 +78,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         [ObservableProperty]
         public partial bool EnableHotKeys { get; set; }
 
-        public event EventHandler? ProviderAvaibilityChanged;
+        public event EventHandler? ProviderAvailabilityChanged;
         public event EventHandler? ServiceEnablementChanged;
 
         public void InitializeAIServices()
@@ -176,7 +176,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         private void AvailableProvidersCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
-            ProviderAvaibilityChanged?.Invoke(this, EventArgs.Empty);
+            ProviderAvailabilityChanged?.Invoke(this, EventArgs.Empty);
             OnPropertyChanged(nameof(AvailableProviders));
         }
 

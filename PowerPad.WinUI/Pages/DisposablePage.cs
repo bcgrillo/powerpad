@@ -6,13 +6,16 @@ namespace PowerPad.WinUI.Pages
 {
     public abstract class DisposablePage : Page, IDisposable
     {
-        protected bool _disposed;
-
         protected DisposablePage()
         {
             PageLifeCycleHelper.RegisterPage(this);
         }
 
-        public abstract void Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected abstract void Dispose(bool disposing);
     }
 }

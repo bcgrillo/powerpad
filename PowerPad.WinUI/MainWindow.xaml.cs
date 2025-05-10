@@ -59,11 +59,11 @@ namespace PowerPad.WinUI
                 _settings.General.OllamaConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
                 _settings.General.AzureAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
                 _settings.General.OpenAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
-                _settings.Models.ModelAvaibilityChanged += (s, e) => UpdateNavMenuItems();
+                _settings.Models.ModelAvailabilityChanged += (s, e) => UpdateNavMenuItems();
 
                 await _settings.TestConnections();
 
-                if(_settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
+                if (_settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
                 {
                     var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
 
@@ -92,7 +92,7 @@ namespace PowerPad.WinUI
             AgentesNavViewItem.IsEnabled = _settings.IsAIAvailable == true;
 
             ErrorBadge.Visibility = (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error)
-                || (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound) 
+                || (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
                 || (_settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error)
                 || (_settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error)
                 ? Visibility.Visible : Visibility.Collapsed;

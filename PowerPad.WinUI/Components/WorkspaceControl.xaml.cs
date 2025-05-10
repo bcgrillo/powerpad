@@ -35,7 +35,7 @@ namespace PowerPad.WinUI.Components
             UpdateWorkspacesMenu();
 
             //TODO: Change for use dispose
-            lock(_lock)
+            lock (_lock)
             {
                 if (_registredInstance is not null)
                 {
@@ -120,7 +120,7 @@ namespace PowerPad.WinUI.Components
         {
             var parent = TreeView.SelectedItem as FolderEntryViewModel;
             if (parent is not null && parent.Type != EntryType.Folder) parent = (FolderEntryViewModel)TreeView.SelectedNode.Parent.Content;
-            if (parent is not null) parent.IsExpanded = true;
+            parent?.IsExpanded = true;
             return parent;
         }
 
@@ -307,9 +307,9 @@ namespace PowerPad.WinUI.Components
             {
                 var container = (TreeViewItem)TreeView.ContainerFromItem(selectedEntry);
                 container?.StartBringIntoView(new BringIntoViewOptions
-                    {
-                        AnimationDesired = true
-                    });
+                {
+                    AnimationDesired = true
+                });
             }
         }
 

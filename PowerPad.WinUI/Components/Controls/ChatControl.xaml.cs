@@ -476,14 +476,25 @@ namespace PowerPad.WinUI.Components.Controls
         /// <inheritdoc />
         public void Dispose()
         {
-            _parameters.PropertyChanged -= Parameters_PropertyChanged;
-
-            ModelSelector.Dispose();
-            AgentSelector.Dispose();
-
-            _cts?.Dispose();
-
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>   
+        /// Disposes the resources used by the ChatControl.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method is called from the Dispose method (true) or from the finalizer (false).</param>
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _parameters.PropertyChanged -= Parameters_PropertyChanged;
+
+                ModelSelector.Dispose();
+                AgentSelector.Dispose();
+
+                _cts?.Dispose();
+            }
         }
     }
 

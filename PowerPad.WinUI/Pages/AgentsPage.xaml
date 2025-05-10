@@ -41,7 +41,7 @@
                         <DataTemplate x:DataType="vm:AgentViewModel">
                             <TreeViewItem 
                                 Padding="0,0,8,0"
-                                AllowDrop="{x:Bind AllowDropFalse}" DropCompleted="TreeViewItem_DropCompleted">
+                                AllowDrop="{x:Bind AllowDrop}" DropCompleted="TreeViewItem_DropCompleted">
                                 <Grid ColumnSpacing="4" Margin="-30,0,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />

@@ -39,7 +39,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
             }
         }
 
-        public event EventHandler? AgentsAvaibilityChanged;
+        public event EventHandler? AgentsAvailabilityChanged;
 
         public AgentsCollectionViewModel()
         {
@@ -76,13 +76,13 @@ namespace PowerPad.WinUI.ViewModels.Agents
                     throw new NotImplementedException("Only Add and Remove actions are supported.");
             }
 
-            AgentsAvaibilityChanged?.Invoke(null, EventArgs.Empty);
+            AgentsAvailabilityChanged?.Invoke(null!, EventArgs.Empty);
             SaveAgents();
         }
 
         private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
         {
-            AgentsAvaibilityChanged?.Invoke(null, EventArgs.Empty);
+            AgentsAvailabilityChanged?.Invoke(null!, EventArgs.Empty);
             SaveAgents();
         }
 

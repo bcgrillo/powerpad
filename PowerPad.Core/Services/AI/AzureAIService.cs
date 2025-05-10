@@ -35,7 +35,7 @@ namespace PowerPad.Core.Services.AI
             {
                 //TODO: Check a better way to do this
                 using var cts = new CancellationTokenSource(TEST_CONNECTION_TIMEOUT);
-                var result = await GetClient().AsIChatClient(TEST_MODEL).GetResponseAsync("just put ok", null, cts.Token);
+                await GetClient().AsIChatClient(TEST_MODEL).GetResponseAsync("just put ok", null, cts.Token);
 
                 return new(ServiceStatus.Online);
             }

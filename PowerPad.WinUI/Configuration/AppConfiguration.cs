@@ -17,9 +17,9 @@ namespace PowerPad.WinUI.Configuration
 {
     public static class AppConfiguration
     {
-        public static IServiceCollection ConfigureWorkspaceService(this IServiceCollection serviceColection)
+        public static IServiceCollection ConfigureWorkspaceService(this IServiceCollection serviceCollection)
         {
-            return serviceColection.AddSingleton<IWorkspaceService, WorkspaceService>(sp =>
+            return serviceCollection.AddSingleton<IWorkspaceService, WorkspaceService>(sp =>
             {
                 var lastWorkspace = sp.GetRequiredService<IConfigStore>().Get<ObservableCollection<string>>(StoreKey.RecentlyWorkspaces).First();
                 var orderService = sp.GetRequiredService<IOrderService>();
@@ -28,27 +28,27 @@ namespace PowerPad.WinUI.Configuration
             });
         }
 
-        public static IServiceCollection ConfigureOllamaService(this IServiceCollection serviceColection)
+        public static IServiceCollection ConfigureOllamaService(this IServiceCollection serviceCollection)
         {
-            return serviceColection.AddSingleton<OllamaService>()
+            return serviceCollection.AddSingleton<OllamaService>()
                 .AddSingleton<IOllamaService, OllamaService>(sp => sp.GetRequiredService<OllamaService>())
                 .AddKeyedSingleton<IAIService, OllamaService>(ModelProvider.Ollama, (sp, _) => sp.GetRequiredService<OllamaService>())
                 .AddKeyedSingleton<IAIService, OllamaService>(ModelProvider.HuggingFace, (sp, _) => sp.GetRequiredService<OllamaService>());
         }
 
-        public static IServiceCollection ConfigureAzureAIService(this IServiceCollection serviceColection)
+        public static IServiceCollection ConfigureAzureAIService(this IServiceCollection serviceCollection)
         {
-            return serviceColection.AddKeyedSingleton<IAIService, AzureAIService>(ModelProvider.GitHub);
+            return serviceCollection.AddKeyedSingleton<IAIService, AzureAIService>(ModelProvider.GitHub);
         }
 
-        public static IServiceCollection ConfigureOpenAIService(this IServiceCollection serviceColection)
+        public static IServiceCollection ConfigureOpenAIService(this IServiceCollection serviceCollection)
         {
-            return serviceColection.AddKeyedSingleton<IAIService, OpenAIService>(ModelProvider.OpenAI);
+            return serviceCollection.AddKeyedSingleton<IAIService, OpenAIService>(ModelProvider.OpenAI);
         }
 
-        public static IServiceCollection ConfigureAIService(this IServiceCollection serviceColection)
+        public static IServiceCollection ConfigureAIService(this IServiceCollection serviceCollection)
         {
-            return serviceColection.AddSingleton<IChatService, ChatService>(sp =>
+            return serviceCollection.AddSingleton<IChatService, ChatService>(sp =>
             {
                 var aiServices = new Dictionary<ModelProvider, IAIService>
                 {
@@ -64,14 +64,14 @@ namespace PowerPad.WinUI.Configuration
             });
         }
 
-        public static IServiceCollection ConfigureConfigStoreService(this IServiceCollection serviceColection)
+        public static IServiceCollection ConfigureConfigStoreService(this IServiceCollection serviceCollection)
         {
-            return serviceColection.AddSingleton<IConfigStoreService, ConfigStoreService>(sp => new(AppJsonContext.Custom));
+            return serviceCollection.AddSingleton<IConfigStoreService, ConfigStoreService>(sp => new(AppJsonContext.Custom));
         }
 
-        public static IServiceCollection ConfigureOrderService(this IServiceCollection serviceColection)
+        public static IServiceCollection ConfigureOrderService(this IServiceCollection serviceCollection)
         {
-            return serviceColection.AddSingleton<IOrderService, OrderService>(sp => new(AppJsonContext.Custom));
+            return serviceCollection.AddSingleton<IOrderService, OrderService>(sp => new(AppJsonContext.Custom));
         }
 
         public static void InitializeAppConfigStore(out IConfigStore appConfigStore)
@@ -99,7 +99,7 @@ namespace PowerPad.WinUI.Configuration
                 appConfigStore.Set(StoreKey.GeneralSettings, generalSettings);
             }
 
-            //Initizalize models settings if necessary
+            //Initialize models settings if necessary
             var modelsSettings = appConfigStore.TryGet<ModelsSettingsViewModel>(StoreKey.ModelsSettings);
 
             if (modelsSettings is null)
@@ -108,7 +108,7 @@ namespace PowerPad.WinUI.Configuration
                 appConfigStore.Set(StoreKey.ModelsSettings, modelsSettings);
             }
 
-            //Initizalize agents if necessary
+            //Initialize agents if necessary
             var agents = appConfigStore.TryGet<ObservableCollection<AgentViewModel>>(StoreKey.Agents);
 
             if (agents is null)

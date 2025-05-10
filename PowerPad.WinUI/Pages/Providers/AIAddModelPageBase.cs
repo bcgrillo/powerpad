@@ -42,20 +42,9 @@ namespace PowerPad.WinUI.Pages.Providers
             Dispose(false);
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing) _modelsViewModel.Dispose();
-
-                _disposed = true;
-            }
+            if (disposing) _modelsViewModel.Dispose();
         }
 
         public abstract void CloseModelInfoViewer();

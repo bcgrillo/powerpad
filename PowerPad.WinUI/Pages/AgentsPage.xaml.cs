@@ -13,7 +13,6 @@ namespace PowerPad.WinUI.Pages
     public partial class AgentsPage : DisposablePage, IToggleMenuPage
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
-        private readonly SettingsViewModel _settings;
         private bool _undoSelectionChange = false;
 
         private AgentViewModel? _selectedAgent;
@@ -26,7 +25,6 @@ namespace PowerPad.WinUI.Pages
             this.InitializeComponent();
 
             _agentsCollection = App.Get<AgentsCollectionViewModel>();
-            _settings = App.Get<SettingsViewModel>();
 
             foreach (var agent in _agentsCollection.Agents) agent.IsSelected = false;
         }
@@ -56,8 +54,8 @@ namespace PowerPad.WinUI.Pages
                 }
                 else
                 {
-                    if (_selectedAgent is not null) _selectedAgent.IsSelected = false;
-                    if (invokedEntry is not null) invokedEntry.IsSelected = true;
+                    _selectedAgent?.IsSelected = false;
+                    invokedEntry?.IsSelected = true;
                     _selectedAgent = invokedEntry;
 
                     if (_editorControl is not null)
@@ -102,7 +100,7 @@ namespace PowerPad.WinUI.Pages
         private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
             var newIcon = _agentsCollection.GenerateIcon();
-            var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente amable y resolutivo."}, newIcon);
+            var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente amable y resolutivo." }, newIcon);
 
             _agentsCollection.Agents.Add(newAgent);
 
@@ -135,7 +133,7 @@ namespace PowerPad.WinUI.Pages
 
             if (result == ContentDialogResult.Primary)
             {
-                if (entry.IsSelected == true)
+                if (entry.IsSelected)
                 {
                     TreeView.SelectedItem = null;
 
@@ -149,7 +147,7 @@ namespace PowerPad.WinUI.Pages
 
                     UpdateLandingVisibility(showLanding: true);
                 }
-                
+
                 _agentsCollection.Agents.Remove(entry);
             }
         }
@@ -163,12 +161,12 @@ namespace PowerPad.WinUI.Pages
             if (container?.ContextFlyout is MenuFlyout flyout) flyout.ShowAt(button);
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            GC.SuppressFinalize(this);
+            // Nothing to dispose in this case
         }
 
-        private void TreeViewItem_DropCompleted(UIElement sender, DropCompletedEventArgs args)
+        private void TreeViewItem_DropCompleted(UIElement sender, DropCompletedEventArgs __)
         {
             TreeView.SelectedItem ??= (AgentViewModel?)((TreeViewItem)sender).DataContext;
         }

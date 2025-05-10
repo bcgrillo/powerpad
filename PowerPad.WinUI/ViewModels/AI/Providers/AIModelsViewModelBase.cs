@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
 
         public bool RepeaterEnabled { get; protected set; }
 
-        public AIModelsViewModelBase(ModelProvider modelProvider)
+        protected AIModelsViewModelBase(ModelProvider modelProvider)
         {
             _aiService = App.Get<IAIService>(modelProvider);
             _settings = App.Get<SettingsViewModel>();
@@ -50,14 +51,14 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             AddModelCommand = new AsyncRelayCommand<AIModelViewModel>(AddModel);
             SearchModelCommand = new AsyncRelayCommand<string>(SearchModels);
 
-            FilteredModels = 
-            [.. 
+            FilteredModels =
+            [..
                 _settings.Models.AvailableModels
                     .Where(m => m.ModelProvider == _modelProvider)
-                    .OrderBy(m => m.Name) 
+                    .OrderBy(m => m.Name)
             ];
 
-            _settings.General.ProviderAvaibilityChanged += UpdateRepeaterState;
+            _settings.General.ProviderAvailabilityChanged += UpdateRepeaterState;
             _settings.Models.AvailableModels.CollectionChanged += FilterModels;
 
             RepeaterEnabled = _settings.General.AvailableProviders.Contains(_modelProvider);
@@ -77,9 +78,9 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (AIModelViewModel model in eventArgs.OldItems!)
+                    foreach (var model in eventArgs.OldItems!.OfType<AIModelViewModel>().Where(model => FilteredModels.Contains(model)))
                     {
-                        if (FilteredModels.Any(m => m == model)) FilteredModels.Remove(FilteredModels.Single(m => m == model));
+                        FilteredModels.Remove(model);
                     }
                     break;
                 default:
@@ -167,7 +168,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             {
                 if (disposing)
                 {
-                    _settings.General.ProviderAvaibilityChanged -= UpdateRepeaterState;
+                    _settings.General.ProviderAvailabilityChanged -= UpdateRepeaterState;
                     _settings.Models.AvailableModels.CollectionChanged -= FilterModels;
                 }
 

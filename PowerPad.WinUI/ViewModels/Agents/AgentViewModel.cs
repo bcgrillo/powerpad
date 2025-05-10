@@ -118,7 +118,7 @@ namespace PowerPad.WinUI.ViewModels.Agents
         public partial bool ShowInChats { get; set; }
 
         [JsonIgnore]
-        public bool AllowDropFalse => false; //Allowdrops false only works with binding to a property, not with a constant
+        public bool AllowDrop { get; private init; } = false; //AllowDrop = false only works with binding to a property, not with a constant
 
         [ObservableProperty]
         [JsonIgnore]

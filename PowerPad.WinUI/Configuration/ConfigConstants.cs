@@ -1,4 +1,5 @@
 ﻿using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Settings;
@@ -98,7 +99,7 @@ namespace PowerPad.WinUI.Configuration
                 return defaultModelSettings;
             }
 
-            public readonly static AgentViewModel DefaultAgent1 = new(new()
+            public static readonly AgentViewModel DefaultAgent1 = new(new()
             {
                 Name = "PowerEditor",
                 Prompt = "Eres un editor de texto que cumples la acción solicitada por el usuario.",
@@ -114,7 +115,7 @@ namespace PowerPad.WinUI.Configuration
                 ShowInChats = false
             };
 
-            public readonly static AgentViewModel DefaultAgent2 = new(new()
+            public static readonly AgentViewModel DefaultAgent2 = new(new()
             {
                 Name = "Traductor",
                 Prompt = "Eres un traductor de texto que traduces todo al idioma solicitado por el usuario.",
@@ -129,7 +130,7 @@ namespace PowerPad.WinUI.Configuration
                 Id = new Guid("00000000-0000-0000-0000-000000000001"),
             };
 
-            public readonly static AgentViewModel DefaultAgent3 = new(new()
+            public static readonly AgentViewModel DefaultAgent3 = new(new()
             {
                 Name = "Hazlo más corto",
                 Prompt = "Eres experto en resumir textos, haciendo los textos más cortos pero sin omitir nada importante.",
@@ -141,7 +142,7 @@ namespace PowerPad.WinUI.Configuration
                 Id = new Guid("00000000-0000-0000-0000-000000000002"),
             };
 
-            public readonly static AgentViewModel DefaultAgent4 = new(new()
+            public static readonly AgentViewModel DefaultAgent4 = new(new()
             {
                 Name = "Poeta",
                 Prompt = "Eres un poeta experto en escribir bonitos poemas sobre cualquier cosa."
@@ -151,7 +152,7 @@ namespace PowerPad.WinUI.Configuration
                 ShowInNotes = false
             };
 
-            public readonly static ObservableCollection<AgentViewModel> AgentsCollection = 
+            public static readonly ObservableCollection<AgentViewModel> AgentsCollection =
             [
                 DefaultAgent1,
                 DefaultAgent2,

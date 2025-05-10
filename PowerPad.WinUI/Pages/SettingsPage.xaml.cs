@@ -35,8 +35,8 @@ namespace PowerPad.WinUI.Pages
             _settings.General.ServiceEnablementChanged += TestEnabledService;
 
             SetModelsMenu(null, null);
-            _settings.General.ProviderAvaibilityChanged += SetModelsMenu;
-            _settings.Models.ModelAvaibilityChanged += SetModelsMenu;
+            _settings.General.ProviderAvailabilityChanged += SetModelsMenu;
+            _settings.Models.ModelAvailabilityChanged += SetModelsMenu;
 
             LightThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Light;
             DarkThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Dark;
@@ -45,7 +45,7 @@ namespace PowerPad.WinUI.Pages
             DarkThemeRadioButton.Checked += ThemeRadioButton_Checked;
             SystemThemeRadioButton.Checked += ThemeRadioButton_Checked;
 
-            OllamaModelsExpander.IsExpanded = _settings.General.OllamaEnabled 
+            OllamaModelsExpander.IsExpanded = _settings.General.OllamaEnabled
                 && (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error || _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound);
             AzureAIModelsExpander.IsExpanded = _settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error;
             OpenAIModelsExpander.IsExpanded = _settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error;
@@ -56,11 +56,11 @@ namespace PowerPad.WinUI.Pages
                 if (_settings.General.OllamaEnabled && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
                     _settings.General.OllamaEnabled = false;
 
-                if (_settings.General.AzureAIEnabled && 
+                if (_settings.General.AzureAIEnabled &&
                     (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key)))
                     _settings.General.AzureAIEnabled = false;
 
-                if (_settings.General.OpenAIEnabled && 
+                if (_settings.General.OpenAIEnabled &&
                     (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key)))
                     _settings.General.OpenAIEnabled = false;
             };
@@ -325,32 +325,17 @@ namespace PowerPad.WinUI.Pages
             else if (config == OpenAIRetryButton) TestOpenAI(null, null);
         }
 
-        ~SettingsPage()
-        {
-            Dispose(false);
-        }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    _settings.General.OllamaConfig.ConfigChanged -= TestOllama;
-                    _settings.General.AzureAIConfig.ConfigChanged -= TestAzureAI;
-                    _settings.General.OpenAIConfig.ConfigChanged -= TestOpenAI;
-                    _settings.General.ServiceEnablementChanged -= TestEnabledService;
-                    _settings.General.ProviderAvaibilityChanged -= SetModelsMenu;
-                    _settings.Models.ModelAvaibilityChanged -= SetModelsMenu;
-                }
-
-                _disposed = true;
+                _settings.General.OllamaConfig.ConfigChanged -= TestOllama;
+                _settings.General.AzureAIConfig.ConfigChanged -= TestAzureAI;
+                _settings.General.OpenAIConfig.ConfigChanged -= TestOpenAI;
+                _settings.General.ServiceEnablementChanged -= TestEnabledService;
+                _settings.General.ProviderAvailabilityChanged -= SetModelsMenu;
+                _settings.Models.ModelAvailabilityChanged -= SetModelsMenu;
             }
         }
     }

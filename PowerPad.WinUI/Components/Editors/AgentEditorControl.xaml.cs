@@ -71,7 +71,7 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        private void RandonIconButton_Click(object? _, RoutedEventArgs? __)
+        private void RandomIconButton_Click(object? _, RoutedEventArgs? __)
         {
             _agent.Icon = _agentsCollection.GenerateIcon();
         }
@@ -176,7 +176,13 @@ namespace PowerPad.WinUI.Components.Editors
 
         public void Dispose()
         {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool _)
+        {
+            // Nothing to dispose in this case
         }
 
         private void AgentNameTextBox_TextChanging(TextBox _, TextBoxTextChangingEventArgs __)

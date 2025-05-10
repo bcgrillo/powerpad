@@ -1,4 +1,6 @@
-﻿namespace System.Collections.Generic
+﻿using System.Collections.Generic;
+
+namespace PowerPad.WinUI.Helpers
 {
     public static class CollectionExtensions
     {

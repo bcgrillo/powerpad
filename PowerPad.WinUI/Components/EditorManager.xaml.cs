@@ -48,7 +48,7 @@ namespace PowerPad.WinUI.Components
         {
             if (document is null)
             {
-                if (_currentEditor is not null) _currentEditor.Visibility = Visibility.Collapsed;
+                _currentEditor?.Visibility = Visibility.Collapsed;
                 _currentEditor = null;
 
                 Landing.Visibility = Visibility.Visible;

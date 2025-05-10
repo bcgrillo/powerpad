@@ -16,6 +16,8 @@ namespace PowerPad.WinUI
     public partial class App : Application
     {
         private static IServiceProvider _serviceProvider = null!;
+        private static MainWindow? _window;
+
         private readonly IConfigStore _appConfigStore;
 
         /// <summary>
@@ -41,9 +43,6 @@ namespace PowerPad.WinUI
                 .AddSingleton(_ => _appConfigStore!)
                 .BuildServiceProvider();
 
-            //Remove?
-            //Ioc.Default.ConfigureServices(_serviceProvider);
-
             AppConfiguration.InitializeAppConfigStore(out _appConfigStore);
 
             var appTheme = Get<SettingsViewModel>().General.AppTheme;
@@ -54,14 +53,13 @@ namespace PowerPad.WinUI
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs _)
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            m_window = new();
-            m_window.Activate();
+            _window = new();
+            _window.Activate();
         }
 
-        private static MainWindow? m_window;
-        public static MainWindow? MainWindow => m_window;
+        public static MainWindow? MainWindow => _window;
 
         public static T Get<T>(object? key = null) where T : notnull
         {

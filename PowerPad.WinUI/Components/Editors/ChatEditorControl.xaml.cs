@@ -34,7 +34,7 @@ namespace PowerPad.WinUI.Components.Editors
         public override string GetContent(bool plainText = false)
         {
             return plainText
-                ? string.Join('\n', _chat!.Messages.Select((Func<MessageViewModel, string>)(m => $"{m.Role}: {m.Content}")))
+                ? string.Join('\n', _chat!.Messages.Select(m => $"{m.Role}: {m.Content}"))
                 : JsonSerializer.Serialize(_chat, typeof(ChatViewModel), AppJsonContext.Custom);
         }
 
@@ -42,7 +42,8 @@ namespace PowerPad.WinUI.Components.Editors
         {
             var error = false;
 
-            if (!string.IsNullOrEmpty(content)) {
+            if (!string.IsNullOrEmpty(content))
+            {
                 try
                 {
                     _chat = (ChatViewModel?)JsonSerializer.Deserialize(content, typeof(ChatViewModel), AppJsonContext.Custom);
@@ -58,7 +59,7 @@ namespace PowerPad.WinUI.Components.Editors
             this.InitializeComponent();
 
             ChatControl.InitializeParameters(_chat.Model, _chat.Parameters, _chat.AgentId);
-            
+
             if (_chat.Messages.Any()) UpdateLandingVisibility(showLanding: false);
 
             ChatControl.ChatOptionsChanged += ChatControl_ChatOptionsChanged;
@@ -72,7 +73,7 @@ namespace PowerPad.WinUI.Components.Editors
                     (
                         XamlRoot,
                         "Error",
-                        "No ha sido posible deserializar el contenido del chat."
+                        "No ha sido posible procesar el contenido del chat."
                     );
                 });
             }
@@ -114,7 +115,7 @@ namespace PowerPad.WinUI.Components.Editors
             //Chat elements always save automatically (instead of autosaving)
             _document.SaveCommand.Execute(null);
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -282,11 +283,11 @@ namespace PowerPad.WinUI.Components.Editors
         {
             var result = await DialogHelper.Confirm
             (
-                XamlRoot, 
-                "Eliminar último mensaje", 
+                XamlRoot,
+                "Eliminar último mensaje",
                 "Esta acción eliminará su último mensaje y la última respuesta del asistente.\n¿Está seguro?"
             );
-            
+
             if (result == ContentDialogResult.Primary)
             {
                 _chat!.RemoveLastMessageCommand.Execute(null);
@@ -300,8 +301,8 @@ namespace PowerPad.WinUI.Components.Editors
         {
             var result = await DialogHelper.Confirm
             (
-                XamlRoot, 
-                "Eliminar la conversación", 
+                XamlRoot,
+                "Eliminar la conversación",
                 "Esta acción eliminará toda la conversación. ¿Está seguro?"
             );
 

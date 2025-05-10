@@ -85,8 +85,8 @@ namespace PowerPad.WinUI.Components.Controls
             SelectedModel = model;
             RegenerateFlyoutMenu();
 
-            _settings.General.ProviderAvaibilityChanged += Models_PropertyChanged;
-            _settings.Models.ModelAvaibilityChanged += Models_PropertyChanged;
+            _settings.General.ProviderAvailabilityChanged += Models_PropertyChanged;
+            _settings.Models.ModelAvailabilityChanged += Models_PropertyChanged;
             _settings.Models.DefaultModelChanged += DefaultModel_Changed;
         }
 
@@ -97,7 +97,7 @@ namespace PowerPad.WinUI.Components.Controls
         public void UpdateEnabledLayout(bool newValue)
         {
             ModelIcon.UpdateEnabledLayout(newValue);
-            UpdateChekedItemMenu();
+            UpdateCheckedItemMenu();
         }
 
         /// <summary>
@@ -124,14 +124,14 @@ namespace PowerPad.WinUI.Components.Controls
                 }
             }
 
-            UpdateChekedItemMenu();
+            UpdateCheckedItemMenu();
             UpdateButtonContent();
         }
 
         /// <summary>
         /// Updates the checked state of items in the flyout menu.
         /// </summary>
-        private async void UpdateChekedItemMenu()
+        private async void UpdateCheckedItemMenu()
         {
             await Task.Delay(100);
 
@@ -142,7 +142,7 @@ namespace PowerPad.WinUI.Components.Controls
                 ? (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault()
                 : (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == SelectedModel);
 
-            if (menuItem is not null) menuItem.IsChecked = true;
+            menuItem?.IsChecked = true;
         }
 
         /// <summary>
@@ -281,8 +281,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <inheritdoc />
         public void Dispose()
         {
-            _settings.General.ProviderAvaibilityChanged -= Models_PropertyChanged;
-            _settings.Models.ModelAvaibilityChanged -= Models_PropertyChanged;
+            _settings.General.ProviderAvailabilityChanged -= Models_PropertyChanged;
+            _settings.Models.ModelAvailabilityChanged -= Models_PropertyChanged;
             _settings.Models.DefaultModelChanged -= DefaultModel_Changed;
 
             GC.SuppressFinalize(this);

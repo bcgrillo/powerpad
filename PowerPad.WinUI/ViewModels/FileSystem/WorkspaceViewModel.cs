@@ -64,7 +64,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
                     var document = (Document)parameters.Entry.ModelEntry;
                     _workspaceService.SetPosition(document, targetPosition);
                 }
-                else 
+                else
                 {
                     var folder = (Folder)parameters.Entry.ModelEntry;
                     _workspaceService.SetPosition(folder, targetPosition);
@@ -135,7 +135,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             RecentlyWorkspaces.Remove(path);
             RecentlyWorkspaces.Insert(0, path);
 
-            if(RecentlyWorkspaces.Count > MAX_RECENTLY_WORKSPACES)
+            if (RecentlyWorkspaces.Count > MAX_RECENTLY_WORKSPACES)
             {
                 RecentlyWorkspaces.RemoveAt(5);
             }

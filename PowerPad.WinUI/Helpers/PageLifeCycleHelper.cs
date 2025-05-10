@@ -6,7 +6,7 @@ namespace PowerPad.WinUI.Helpers
 {
     public static class PageLifeCycleHelper
     {
-        private readonly static Dictionary<Type, DisposablePage> _openPages = [];
+        private static readonly Dictionary<Type, DisposablePage> _openPages = [];
 
         public static void RegisterPage(DisposablePage page)
         {

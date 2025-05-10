@@ -42,7 +42,7 @@ namespace PowerPad.WinUI.Pages
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    
+
                     foreach (var item in NavView.MenuItems)
                     {
                         var navItem = (NavigationViewItem)item;
@@ -62,7 +62,7 @@ namespace PowerPad.WinUI.Pages
             if (_currentPage is AIModelsPageBase currentAIModelsPage) currentAIModelsPage.AddButtonClick -= AddButtonClick;
 
             if (menuOption.Option == MenuOption.AvailableModels)
-            { 
+            {
                 switch (menuOption.ModelProvider)
                 {
                     case ModelProvider.Ollama:
@@ -158,12 +158,13 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _currentPage?.Dispose();
-            if (_currentPage is AIModelsPageBase currentAIModelsPage) currentAIModelsPage.AddButtonClick -= AddButtonClick;
-
-            GC.SuppressFinalize(this);
+            if (disposing)
+            {
+                _currentPage?.Dispose();
+                if (_currentPage is AIModelsPageBase currentAIModelsPage) currentAIModelsPage.AddButtonClick -= AddButtonClick;
+            }
         }
 
         private void NavView_PointerPressed(object _, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs __)

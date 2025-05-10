@@ -27,7 +27,7 @@ namespace PowerPad.WinUI.ViewModels.AI
 
         [ObservableProperty]
         [JsonIgnore]
-        public partial bool Available { get; set; }= available;
+        public partial bool Available { get; set; } = available;
 
         [ObservableProperty]
         [JsonIgnore]
@@ -88,11 +88,11 @@ namespace PowerPad.WinUI.ViewModels.AI
         partial void OnAvailableChanged(bool value) => OnPropertyChanged(nameof(CanAdd));
         partial void OnDownloadingChanged(bool value) => OnPropertyChanged(nameof(CanAdd));
 
-        public void UpdateDownloadProgess(double progress)
+        public void UpdateDownloadProgress(double progress)
         {
             if (progress < 100)
             {
-                Progress = progress; 
+                Progress = progress;
             }
             else
             {
