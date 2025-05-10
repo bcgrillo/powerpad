@@ -25,9 +25,9 @@ namespace PowerPad.Core.Contracts
         /// Creates a chat client for the specified AI model.
         /// </summary>
         /// <param name="model">The AI model to use for the chat client.</param>
-        /// <param name="notAllowedParamers">Outputs a list of parameters that are not allowed for the specified model.</param>
+        /// <param name="notAllowedParameters">Outputs a list of parameters that are not allowed for the specified model.</param>
         /// <returns>An instance of <see cref="IChatClient"/> for interacting with the AI model.</returns>
-        IChatClient ChatClient(AIModel model, out IEnumerable<string>? notAllowedParamers);
+        IChatClient ChatClient(AIModel model, out IEnumerable<string>? notAllowedParameters);
 
         /// <summary>
         /// Searches for AI models based on the specified provider and query.

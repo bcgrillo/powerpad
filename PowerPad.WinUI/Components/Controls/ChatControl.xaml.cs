@@ -1,23 +1,23 @@
+using Microsoft.Extensions.AI;
+using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using PowerPad.Core.Services.AI;
+using PowerPad.WinUI.ViewModels.Agents;
+using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Chat;
-using System.Threading.Tasks;
+using PowerPad.WinUI.ViewModels.Settings;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
-using System.Collections.Generic;
-using Microsoft.Extensions.AI;
-using System.Threading;
-using System.Linq;
-using PowerPad.Core.Services.AI;
-using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.WinUI.ViewModels.AI;
-using System.ComponentModel;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI;
-using PowerPad.WinUI.ViewModels.Agents;
 
 namespace PowerPad.WinUI.Components.Controls
 {
@@ -35,7 +35,7 @@ namespace PowerPad.WinUI.Components.Controls
         private readonly DispatcherTimer _loadingAnimationTimer;
         private readonly AIParametersViewModel _parameters;
 
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource? _cts;
         private int _loadingStep = 0;
         private Action? _finalizeChatAction;
         private ICollection<MessageViewModel>? _messageList;
@@ -59,7 +59,7 @@ namespace PowerPad.WinUI.Components.Controls
 
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
-            _cts = new();
+
 
             _loadingAnimationTimer = new DispatcherTimer
             {
@@ -197,7 +197,10 @@ namespace PowerPad.WinUI.Components.Controls
                         });
                     }
                 }
-                catch (TaskCanceledException) { }
+                catch (TaskCanceledException)
+                {
+                    // Cancellation is expected, no action needed
+                }
                 catch (Exception ex)
                 {
                     DispatcherQueue.TryEnqueue(() =>
@@ -349,7 +352,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// </summary>
         private void StopBtn_Click(object _, RoutedEventArgs __)
         {
-            _cts.Cancel();
+            _cts!.Cancel();
             FinalizeChat();
         }
 
@@ -477,6 +480,8 @@ namespace PowerPad.WinUI.Components.Controls
 
             ModelSelector.Dispose();
             AgentSelector.Dispose();
+
+            _cts?.Dispose();
 
             GC.SuppressFinalize(this);
         }

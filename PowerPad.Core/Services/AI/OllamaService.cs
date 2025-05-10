@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OllamaSharp.Models;
-using System.Diagnostics;
-using PowerPad.Core.Models.AI;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Helpers;
+using PowerPad.Core.Models.AI;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace PowerPad.Core.Services.AI
 {
@@ -82,6 +82,7 @@ namespace PowerPad.Core.Services.AI
             }
             catch
             {
+                // Connection test failed, but we can still check if the process is running
             }
 
             if (connected)
@@ -112,7 +113,7 @@ namespace PowerPad.Core.Services.AI
                         await process.WaitForExitAsync();
 
                         if (process.ExitCode == 0) return new(ServiceStatus.Available);
-                        else return new(ServiceStatus.Error, $"Ollama error: {process.StandardError.ReadToEnd()}");
+                        else return new(ServiceStatus.Error, $"Ollama error: {await process.StandardError.ReadToEndAsync()}");
                     }
                 }
                 catch (Exception ex)

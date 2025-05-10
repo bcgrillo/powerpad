@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.AI;
+using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using System.Text;
 using ChatRole = Microsoft.Extensions.AI.ChatRole;
-using PowerPad.Core.Contracts;
 
 namespace PowerPad.Core.Services.AI
 {

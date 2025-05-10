@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using static PowerPad.Core.Services.Conventions;
-using PowerPad.Core.Models.FileSystem;
+﻿using PowerPad.Core.Models.FileSystem;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using static PowerPad.Core.Services.Conventions;
 
 namespace PowerPad.Core.Services.FileSystem
 {
