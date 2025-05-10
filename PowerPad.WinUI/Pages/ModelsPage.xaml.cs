@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.WinUI.Pages.Providers;
-using PowerPad.WinUI.ViewModels.Settings;
 using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.Pages.Providers;
 using PowerPad.WinUI.ViewModels.AI;
+using PowerPad.WinUI.ViewModels.Settings;
+using System;
+using System.Linq;
 
 namespace PowerPad.WinUI.Pages
 {

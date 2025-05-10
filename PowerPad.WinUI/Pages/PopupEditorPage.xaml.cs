@@ -1,14 +1,14 @@
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
-using PowerPad.WinUI.Helpers;
-using PowerPad.WinUI.ViewModels.FileSystem;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.WinUI.Dialogs;
+using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.ViewModels.FileSystem;
+using System;
 using System.Text;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using System;
 
 namespace PowerPad.WinUI.Pages
 {

@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Data;
+﻿using Microsoft.UI.Text;
+using Microsoft.UI.Xaml.Data;
 using System;
-using Microsoft.UI.Text;
 
 namespace PowerPad.WinUI.Converters
 {

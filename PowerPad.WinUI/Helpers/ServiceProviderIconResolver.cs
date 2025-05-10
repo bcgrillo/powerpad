@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Models.AI;
 using System;
-using Microsoft.UI.Xaml;
 
 namespace PowerPad.WinUI.Helpers
 {

@@ -3,10 +3,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.WinUI.Components.Editors;
+using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
-using PowerPad.WinUI.Helpers;
 
 namespace PowerPad.WinUI.Components
 {

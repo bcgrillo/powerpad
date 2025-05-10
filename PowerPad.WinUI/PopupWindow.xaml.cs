@@ -1,10 +1,10 @@
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
-using WinUIEx;
-using Microsoft.UI.Xaml;
 using Windows.UI.WindowManagement;
+using WinUIEx;
 
 namespace PowerPad.WinUI
 {

@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
-using PowerPad.Core.Models.AI;
-using System.Text.Json.Serialization;
-using PowerPad.WinUI.Helpers;
 using Microsoft.UI.Xaml.Media;
+using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.Helpers;
 using System;
+using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {

@@ -62,7 +62,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             _editorControl = editorControl;
 
             _documentService.LoadDocument(_document, _editorControl);
-            _lastSaveTime = DateTime.Now;
+            _lastSaveTime = DateTime.UtcNow;
 
             SaveCommand = new AsyncRelayCommand(Save);
             AutosaveCommand = new AsyncRelayCommand(Autosave);
@@ -76,7 +76,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         private async Task Save()
         {
             await _documentService.SaveDocument(_document, _editorControl);
-            _lastSaveTime = DateTime.Now;
+            _lastSaveTime = DateTime.UtcNow;
 
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(CanSave));
@@ -87,7 +87,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         private async Task Autosave()
         {
             await _documentService.AutosaveDocument(_document, _editorControl);
-            _lastSaveTime = DateTime.Now;
+            _lastSaveTime = DateTime.UtcNow;
 
             OnPropertyChanged(nameof(Status));
 

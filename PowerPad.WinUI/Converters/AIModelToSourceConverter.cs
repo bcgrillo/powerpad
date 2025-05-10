@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Data;
-using System;
-using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.ViewModels.AI;
+using System;
 
 namespace PowerPad.WinUI.Converters
 {

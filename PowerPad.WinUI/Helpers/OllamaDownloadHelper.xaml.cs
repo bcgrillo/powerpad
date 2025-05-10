@@ -1,14 +1,14 @@
-using System;
+using CommunityToolkit.WinUI.Converters;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System.Threading.Tasks;
+using PowerPad.Core.Models.AI;
+using PowerPad.WinUI.ViewModels.Settings;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
-using CommunityToolkit.WinUI.Converters;
-using System.Diagnostics;
-using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.Core.Models.AI;
+using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Dialogs
 {

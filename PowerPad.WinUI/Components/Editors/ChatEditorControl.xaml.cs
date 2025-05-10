@@ -1,19 +1,19 @@
-using System;
-using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using System.Text.Json;
-using PowerPad.WinUI.Dialogs;
-using PowerPad.WinUI.ViewModels.FileSystem;
-using PowerPad.WinUI.ViewModels.Chat;
-using PowerPad.Core.Models.FileSystem;
-using Windows.System;
-using System.Threading.Tasks;
-using PowerPad.WinUI.Components.Controls;
-using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.WinUI.Components.Controls;
 using PowerPad.WinUI.Configuration;
+using PowerPad.WinUI.Dialogs;
+using PowerPad.WinUI.ViewModels.Chat;
+using PowerPad.WinUI.ViewModels.FileSystem;
+using System;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -115,15 +115,17 @@ namespace PowerPad.WinUI.Components.Editors
             _document.SaveCommand.Execute(null);
         }
         
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _document = null!;
-            _chat!.Messages.Clear();
+            if (disposing)
+            {
+                _document = null!;
+                _chat!.Messages.Clear();
 
-            ChatControl.ChatOptionsChanged -= ChatControl_ChatOptionsChanged;
+                ChatControl.ChatOptionsChanged -= ChatControl_ChatOptionsChanged;
+            }
+
             ChatControl.Dispose();
-
-            GC.SuppressFinalize(this);
         }
 
         private void InvertedListView_Loaded(object _, RoutedEventArgs __)

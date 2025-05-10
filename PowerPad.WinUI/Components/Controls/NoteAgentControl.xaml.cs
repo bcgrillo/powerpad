@@ -2,15 +2,15 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using System.Threading.Tasks;
+using PowerPad.Core.Services.AI;
+using PowerPad.WinUI.ViewModels.Agents;
+using PowerPad.WinUI.ViewModels.Settings;
 using System;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
-using System.Threading;
-using PowerPad.Core.Services.AI;
-using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.WinUI.ViewModels.Agents;
-using System.Text;
 
 namespace PowerPad.WinUI.Components.Controls
 {

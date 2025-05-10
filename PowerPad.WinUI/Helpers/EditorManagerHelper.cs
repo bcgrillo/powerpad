@@ -20,7 +20,7 @@ namespace PowerPad.WinUI.Helpers
                 {
                     editor.AutoSave();
                 }
-                else if ((DateTime.Now - editor.LastSaveTime).TotalMinutes > 10
+                else if ((DateTime.UtcNow - editor.LastSaveTime).TotalMinutes > 10
                     && !kvp.Value.IsActive)
                 {
                     editorsToRemove.Add(kvp.Key);

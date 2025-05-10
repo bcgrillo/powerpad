@@ -1,16 +1,16 @@
-using System;
+using Microsoft.Extensions.AI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Windows.ApplicationModel.DataTransfer;
-using Microsoft.Extensions.AI;
-using PowerPad.WinUI.Dialogs;
-using PowerPad.WinUI.ViewModels.FileSystem;
-using PowerPad.WinUI.ViewModels.Chat;
-using PowerPad.Core.Models.FileSystem;
-using System.Text;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.WinUI.Dialogs;
+using PowerPad.WinUI.ViewModels.Chat;
+using PowerPad.WinUI.ViewModels.FileSystem;
+using System;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace PowerPad.WinUI.Components.Editors
 {
@@ -103,14 +103,15 @@ namespace PowerPad.WinUI.Components.Editors
             _document.AutosaveCommand.Execute(null);
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _document = null!;
-            TextEditor = null;
+            if(disposing)
+            {
+                _document = null!;
+                TextEditor = null;
+            }
 
             AgentControl.Dispose();
-
-            GC.SuppressFinalize(this);
         }
 
         private async void AgentControl_SendButtonClicked(object _, RoutedEventArgs __)

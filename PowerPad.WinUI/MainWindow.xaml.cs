@@ -1,16 +1,16 @@
-using System;
-using System.Collections.Generic;
+using H.NotifyIcon;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using WinUIEx;
-using PowerPad.WinUI.Pages;
-using Microsoft.UI.Windowing;
-using PowerPad.WinUI.Helpers;
-using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.Core.Services.Config;
 using PowerPad.Core.Models.AI;
+using PowerPad.Core.Services.Config;
 using PowerPad.WinUI.Dialogs;
-using H.NotifyIcon;
+using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.Pages;
+using PowerPad.WinUI.ViewModels.Settings;
+using System;
+using System.Collections.Generic;
+using WinUIEx;
 
 namespace PowerPad.WinUI
 {

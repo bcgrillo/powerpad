@@ -12,8 +12,13 @@ namespace PowerPad.WinUI.Components.Editors
         public abstract bool IsDirty { get; }
         public abstract void AutoSave();
         public abstract DateTime LastSaveTime { get; }
-        public abstract void Dispose();
         public abstract int WordCount();
         public bool IsActive { get; set; } = true;
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected abstract void Dispose(bool disposing);
     }
 }
