@@ -5,7 +5,9 @@
     /// </summary>
     public enum EntryType
     {
+        /// <summary>Folder entry type.</summary>
         Folder,
+        /// <summary>Document entry type.</summary>
         Document
     }
 }

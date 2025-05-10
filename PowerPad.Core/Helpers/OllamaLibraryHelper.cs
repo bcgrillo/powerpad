@@ -37,6 +37,10 @@ namespace PowerPad.Core.Helpers
 
             foreach (var modelNode in modelNodes)
             {
+                // Skip nodes containing <span x-test-capability ...>embedding</span>
+                var capabilityNode = modelNode.SelectSingleNode(".//span[@x-test-capability and text()='embedding']");
+                if (capabilityNode != null) continue;
+
                 var linkNode = modelNode.SelectSingleNode(".//a[1]");
                 if (linkNode is null) continue;
 

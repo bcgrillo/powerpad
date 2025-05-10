@@ -11,17 +11,23 @@ using System.Linq;
 
 namespace PowerPad.WinUI.Components
 {
+    /// <summary>
+    /// Represents a manager for handling editor controls and managing the workspace.
+    /// </summary>
     public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     {
+        private const long AUTO_SAVE_INTERVAL = 3000;
+        
         private static EditorManager? _activeInstance = null;
         private static readonly object _lock = new();
 
         private readonly WorkspaceViewModel _workspace;
-        private const long AUTO_SAVE_INTERVAL = 3000;
+        private readonly DispatcherTimer _timer;
         private EditorControl? _currentEditor;
 
-        private readonly DispatcherTimer _timer;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditorManager"/> class.
+        /// </summary>
         public EditorManager()
         {
             this.InitializeComponent();
@@ -38,6 +44,10 @@ namespace PowerPad.WinUI.Components
             SetActiveInstance(this);
         }
 
+        /// <summary>
+        /// Sets the active instance of the <see cref="EditorManager"/>.
+        /// </summary>
+        /// <param name="instance">The instance to set as active.</param>
         public static void SetActiveInstance(EditorManager instance)
         {
             lock (_lock)
@@ -50,6 +60,10 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Opens a file in the editor manager.
+        /// </summary>
+        /// <param name="document">The document to open. If null, the editor will close the current file.</param>
         public void OpenFile(FolderEntryViewModel? document)
         {
             if (document is null)
@@ -109,6 +123,10 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the receipt of a <see cref="FolderEntryDeleted"/> message.
+        /// </summary>
+        /// <param name="message">The message containing the folder entry that was deleted.</param>
         public void Receive(FolderEntryDeleted message)
         {
             var key = EditorManagerHelper.Editors
@@ -131,16 +149,25 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the click event for creating a new chat document.
+        /// </summary>
         private void NewChatButton_Click(object _, RoutedEventArgs __)
         {
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Chat));
         }
 
+        /// <summary>
+        /// Handles the click event for creating a new note document.
+        /// </summary>
         private void NewNoteButton_Click(object _, RoutedEventArgs __)
         {
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Note));
         }
 
+        /// <summary>
+        /// Handles the unload event of the user control.
+        /// </summary>
         private void UserControl_Unloaded(object _, RoutedEventArgs __)
         {
             if (_currentEditor is not null)

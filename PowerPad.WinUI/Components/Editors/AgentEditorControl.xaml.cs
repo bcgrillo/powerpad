@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Components.Editors
 {
+    /// <summary>
+    /// Represents a control for editing an AI agent's properties and settings.
+    /// </summary>
     public partial class AgentEditorControl : UserControl, IDisposable
     {
         private readonly SettingsViewModel _settings;
@@ -18,6 +21,11 @@ namespace PowerPad.WinUI.Components.Editors
         private readonly AgentViewModel _originalAgent;
         private readonly XamlRoot _xamlRoot;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AgentEditorControl"/> class.
+        /// </summary>
+        /// <param name="agent">The agent to be edited.</param>
+        /// <param name="xamlRoot">The XAML root for dialog placement.</param>
         public AgentEditorControl(AgentViewModel agent, XamlRoot xamlRoot)
         {
             this.InitializeComponent();
@@ -36,6 +44,10 @@ namespace PowerPad.WinUI.Components.Editors
             AgentPromptTextBox.TextChanging += AgentPromptTextBox_TextChanging;
         }
 
+        /// <summary>
+        /// Confirms whether the user wants to close the editor, prompting to save changes if necessary.
+        /// </summary>
+        /// <returns>A task that resolves to <c>true</c> if the editor can be closed; otherwise, <c>false</c>.</returns>
         public async Task<bool> ConfirmClose()
         {
             if (SaveButton.IsEnabled)
@@ -61,6 +73,11 @@ namespace PowerPad.WinUI.Components.Editors
             return true;
         }
 
+        /// <summary>
+        /// Handles the click event for selecting an image for the agent.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private async void SelectImageButton_Click(object? _, RoutedEventArgs? __)
         {
             var base64Image = await Base64ImageHelper.PickImageToBase64(_xamlRoot);
@@ -71,17 +88,32 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Handles the click event for generating a random icon for the agent.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void RandomIconButton_Click(object? _, RoutedEventArgs? __)
         {
             _agent.Icon = _agentsCollection.GenerateIcon();
         }
 
+        /// <summary>
+        /// Handles property changes in the agent and enables the Save and Cancel buttons.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void Agent_PropertyChanged(object? _, PropertyChangedEventArgs __)
         {
             SaveButton.IsEnabled = true;
             CancelButton.IsEnabled = true;
         }
 
+        /// <summary>
+        /// Saves the changes made to the agent and disables the Save and Cancel buttons.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void SaveButton_Click(object? _, RoutedEventArgs? __)
         {
             _originalAgent.SetRecord(_agent.GetRecord());
@@ -100,6 +132,11 @@ namespace PowerPad.WinUI.Components.Editors
             CancelButton.IsEnabled = false;
         }
 
+        /// <summary>
+        /// Cancels the changes made to the agent, restoring the original values.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private async void CancelButton_Click(object? _, RoutedEventArgs? __)
         {
             var result = await DialogHelper.Confirm
@@ -128,11 +165,21 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Handles changes in the selected AI model.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void ModelSelector_SelectedModelChanged(object _, EventArgs __)
         {
             _agent.AIModel = ModelSelector.SelectedModel?.GetRecord();
         }
 
+        /// <summary>
+        /// Toggles the visibility and state of the prompt parameter controls.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void PromptParameterSwitch_Toggled(object _, RoutedEventArgs __)
         {
             if (PromptParameterSwitch.IsOn)
@@ -163,6 +210,11 @@ namespace PowerPad.WinUI.Components.Editors
             CancelButton.IsEnabled = hasChanges;
         }
 
+        /// <summary>
+        /// Toggles the visibility and state of the AI parameters controls.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void AIParametersSwitch_Toggled(object _, RoutedEventArgs __)
         {
             if (AIParametersSwitch.IsOn)
@@ -192,17 +244,11 @@ namespace PowerPad.WinUI.Components.Editors
             CancelButton.IsEnabled = hasChanges;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool _)
-        {
-            // Nothing to dispose in this case
-        }
-
+        /// <summary>
+        /// Handles text changes in the agent name text box.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void AgentNameTextBox_TextChanging(TextBox _, TextBoxTextChangingEventArgs __)
         {
             if (AgentNameTextBox.Text != _originalAgent.Name)
@@ -212,6 +258,11 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Handles text changes in the agent prompt text box.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void AgentPromptTextBox_TextChanging(TextBox _, TextBoxTextChangingEventArgs __)
         {
             if (AgentPromptTextBox.Text != _originalAgent.Prompt)
@@ -221,14 +272,40 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Handles size changes in the scroll viewer and updates the margin.
+        /// </summary>
+        /// <param name="_">The sender of the event (unused).</param>
+        /// <param name="__">The event arguments (unused).</param>
         private void ScrollViewer_SizeChanged(object _, SizeChangedEventArgs __) => UpdateScrollViewerMargin();
 
+        /// <summary>
+        /// Updates the margin of the scroll viewer based on its visibility and width.
+        /// </summary>
         private void UpdateScrollViewerMargin()
         {
             var changeMargin = ScrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible
                 && ScrollViewer.ActualWidth < 1024;
 
             AgentForm.Margin = AgentForm.Margin with { Left = 0, Right = changeMargin ? 24 : 0 };
+        }
+
+        /// <summary>
+        /// Disposes of resources used by the control.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of resources used by the control.
+        /// </summary>
+        /// <param name="_">A boolean indicating whether to dispose managed resources (unused).</param>
+        protected virtual void Dispose(bool _)
+        {
+            // Nothing to dispose in this case
         }
     }
 }

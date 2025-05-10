@@ -17,20 +17,30 @@ using Windows.System;
 
 namespace PowerPad.WinUI.Components.Editors
 {
+    /// <summary>
+    /// Represents a control for editing chat documents within the application.
+    /// </summary>
     public partial class ChatEditorControl : EditorControl
     {
         private DocumentViewModel _document;
         private ChatViewModel? _chat;
 
+        /// <inheritdoc />
         public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
 
+        /// <inheritdoc />
         public override DateTime LastSaveTime { get => _document.LastSaveTime; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChatEditorControl"/> class.
+        /// </summary>
+        /// <param name="document">The document to be edited.</param>
         public ChatEditorControl(Document document)
         {
             _document = new(document, this);
         }
 
+        /// <inheritdoc />
         public override string GetContent(bool plainText = false)
         {
             return plainText
@@ -38,6 +48,7 @@ namespace PowerPad.WinUI.Components.Editors
                 : JsonSerializer.Serialize(_chat, typeof(ChatViewModel), AppJsonContext.Custom);
         }
 
+        /// <inheritdoc />
         public override void SetContent(string content)
         {
             var error = false;
@@ -81,6 +92,7 @@ namespace PowerPad.WinUI.Components.Editors
             ItemsStackPanel_SizeChanged(null, null);
         }
 
+        /// <inheritdoc />
         public override void SetFocus()
         {
             DispatcherQueue.TryEnqueue(async () =>
@@ -90,6 +102,22 @@ namespace PowerPad.WinUI.Components.Editors
             });
         }
 
+        /// <inheritdoc />
+        public override void AutoSave()
+        {
+            // Chat elements always save automatically (instead of autosaving)
+            _document.SaveCommand.Execute(null);
+        }
+
+        /// <inheritdoc />
+        public override int WordCount()
+        {
+            return _chat!.Messages.Sum(m => m.Content?.Split(' ')?.Length ?? 0);
+        }
+
+        /// <summary>
+        /// Handles the event when the editable text block is edited.
+        /// </summary>
         private void EditableTextBlock_Edited(object _, EventArgs __)
         {
             try
@@ -110,25 +138,9 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        public override void AutoSave()
-        {
-            //Chat elements always save automatically (instead of autosaving)
-            _document.SaveCommand.Execute(null);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _document = null!;
-                _chat!.Messages.Clear();
-
-                ChatControl.ChatOptionsChanged -= ChatControl_ChatOptionsChanged;
-            }
-
-            ChatControl.Dispose();
-        }
-
+        /// <summary>
+        /// Handles the event when the inverted list view is loaded.
+        /// </summary>
         private void InvertedListView_Loaded(object _, RoutedEventArgs __)
         {
             ItemsStackPanel? itemsStackPanel = FindElement<ItemsStackPanel>(InvertedListView);
@@ -138,6 +150,12 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Finds a child element of a specific type within the visual tree.
+        /// </summary>
+        /// <typeparam name="T">The type of the element to find.</typeparam>
+        /// <param name="element">The parent element to search within.</param>
+        /// <returns>The found element, or null if not found.</returns>
         private T? FindElement<T>(DependencyObject element)
             where T : DependencyObject
         {
@@ -159,6 +177,10 @@ namespace PowerPad.WinUI.Components.Editors
             return null;
         }
 
+        /// <summary>
+        /// Updates the visibility of the landing page.
+        /// </summary>
+        /// <param name="showLanding">If true, shows the landing page; otherwise, hides it.</param>
         private void UpdateLandingVisibility(bool showLanding)
         {
             if (showLanding)
@@ -179,6 +201,9 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Handles the size changed event for the items stack panel.
+        /// </summary>
         private void ItemsStackPanel_SizeChanged(object? _, SizeChangedEventArgs? __)
         {
             DispatcherQueue.TryEnqueue(() =>
@@ -194,6 +219,9 @@ namespace PowerPad.WinUI.Components.Editors
             });
         }
 
+        /// <summary>
+        /// Handles the event when the send button is clicked in the chat control.
+        /// </summary>
         private async void ChatControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
             if (Landing.Visibility == Visibility.Visible) UpdateLandingVisibility(showLanding: false);
@@ -227,6 +255,9 @@ namespace PowerPad.WinUI.Components.Editors
             );
         }
 
+        /// <summary>
+        /// Handles the event when chat options are changed in the chat control.
+        /// </summary>
         private void ChatControl_ChatOptionsChanged(object? _, ChatOptionsChangedEventArgs eventArgs)
         {
             if (_chat!.Model != eventArgs.SelectedModel
@@ -240,6 +271,9 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Handles the event when the parameters visibility changes in the chat control.
+        /// </summary>
         private void ChatControl_ParametersVisibilityChanged(object _, bool parametersPanelVisible)
         {
             if (Landing.Visibility == Visibility.Visible)
@@ -248,11 +282,9 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
-        public override int WordCount()
-        {
-            return _chat!.Messages.Sum(m => m.Content?.Split(' ')?.Length ?? 0);
-        }
-
+        /// <summary>
+        /// Handles the event when the copy button is clicked.
+        /// </summary>
         private async void CopyButton_Click(object sender, RoutedEventArgs __)
         {
             var message = (MessageViewModel)((HyperlinkButton)sender).Tag;
@@ -278,6 +310,9 @@ namespace PowerPad.WinUI.Components.Editors
             flyout.Hide();
         }
 
+        /// <summary>
+        /// Handles the event when the undo button is clicked.
+        /// </summary>
         private async void UndoButton_Click(object _, RoutedEventArgs __)
         {
             var result = await DialogHelper.Confirm
@@ -296,6 +331,9 @@ namespace PowerPad.WinUI.Components.Editors
             }
         }
 
+        /// <summary>
+        /// Handles the event when the clean button is clicked.
+        /// </summary>
         private async void CleanButton_Click(object _, RoutedEventArgs __)
         {
             var result = await DialogHelper.Confirm
@@ -312,6 +350,20 @@ namespace PowerPad.WinUI.Components.Editors
 
                 UpdateLandingVisibility(showLanding: true);
             }
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _document = null!;
+                _chat!.Messages.Clear();
+
+                ChatControl.ChatOptionsChanged -= ChatControl_ChatOptionsChanged;
+            }
+
+            ChatControl.Dispose();
         }
     }
 }

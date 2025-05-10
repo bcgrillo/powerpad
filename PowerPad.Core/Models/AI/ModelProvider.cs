@@ -5,9 +5,13 @@
     /// </summary>
     public enum ModelProvider
     {
+        /// <summary>Ollama Library Provider</summary>
         Ollama,
+        /// <summary>HuggingFace Provider</summary>
         HuggingFace,
+        /// <summary>GitHub Models Provider</summary>
         GitHub,
+        /// <summary>OpenAI Provider</summary>
         OpenAI,
     }
 }

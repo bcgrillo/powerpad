@@ -1,17 +1,22 @@
-﻿<UserControl
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl
     x:Class="PowerPad.WinUI.Components.AvailableModelsRepeater"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
-    xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:local="using:PowerPad.WinUI.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vmai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:localc="using:PowerPad.WinUI.Components.Controls">
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
+    xmlns:tkui="using:CommunityToolkit.WinUI"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:tkcontrols="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:EmptyObjectToObjectConverter x:Key="EmptyObjectToVisibilityConverter"
+        <tkconverters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
+        <tkconverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <tkconverters:EmptyObjectToObjectConverter x:Key="EmptyObjectToVisibilityConverter"
                                                  EmptyValue="Collapsed"
                                                  NotEmptyValue="Visible" />
     </UserControl.Resources>
@@ -24,13 +29,13 @@
                 <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
                     <ItemsRepeater ItemsSource="{x:Bind Models, Mode=OneWay}">
                         <ItemsRepeater.ItemTemplate>
-                            <DataTemplate x:DataType="ai:AIModelViewModel">
-                                <toolkit:SettingsCard
+                            <DataTemplate x:DataType="vmai:AIModelViewModel">
+                                <tkcontrols:SettingsCard
                                     x:Name="ModelsExpander"
                                     AutomationProperties.AccessibilityView="Raw"
-                                    HeaderIcon="{ui:FontIcon Glyph=&#xF158;}"
+                                    HeaderIcon="{tkui:FontIcon Glyph=&#xF158;}"
                                     Margin="0,0,0,4">
-                                    <toolkit:SettingsCard.Header>
+                                    <tkcontrols:SettingsCard.Header>
                                         <Grid ColumnSpacing="8">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -53,15 +58,15 @@
                                                 <FontIcon Glyph="&#xE946;" FontSize="18" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
                                             </HyperlinkButton>
                                         </Grid>
-                                    </toolkit:SettingsCard.Header>
-                                    <toolkit:SettingsCard.Description>
+                                    </tkcontrols:SettingsCard.Header>
+                                    <tkcontrols:SettingsCard.Description>
                                         <StackPanel Orientation="Horizontal" Spacing="8"
                                             Visibility="{x:Bind Size, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                                             <TextBlock
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                 Text="{x:Bind Size, Converter={StaticResource FileSizeToFriendlyStringConverter}}"/>
                                         </StackPanel>
-                                    </toolkit:SettingsCard.Description>
+                                    </tkcontrols:SettingsCard.Description>
                                     <StackPanel Orientation="Horizontal" Spacing="12">
                                         <ToggleSwitch 
                                             IsOn="{x:Bind Enabled, Mode=TwoWay}" 
@@ -78,7 +83,7 @@
                                             Value="{x:Bind Progress, Mode=OneWay}"
                                             IsIndeterminate="False" />
                                         <Button
-                                            Content="{ui:FontIcon Glyph=&#xE712;,FontSize=22}"
+                                            Content="{tkui:FontIcon Glyph=&#xE712;,FontSize=22}"
                                             Padding="6,0"
                                             ToolTipService.ToolTip="Más opciones"
                                             Background="Transparent"
@@ -91,12 +96,12 @@
                                                 <MenuFlyout Placement="BottomEdgeAlignedRight">
                                                    <MenuFlyoutItem
                                                        Text="Eliminar"
-                                                       Icon="{ui:FontIcon Glyph=&#xE74D;,FontSize=14}"
+                                                       Icon="{tkui:FontIcon Glyph=&#xE74D;,FontSize=14}"
                                                        Tag="{x:Bind}"
                                                        Click="OnDeleteClick" />
                                                    <MenuFlyoutItem
                                                        Text="Establecer como predeterminado"
-                                                       Icon="{ui:FontIcon Glyph=&#xE718;,FontSize=14}"
+                                                       Icon="{tkui:FontIcon Glyph=&#xE718;,FontSize=14}"
                                                        Tag="{x:Bind}"
                                                        IsEnabled="{x:Bind Available, Mode=OneWay}" 
                                                        Click="OnSetDefaultClick" />
@@ -104,7 +109,7 @@
                                            </Button.Flyout>
                                         </Button>
                                     </StackPanel>
-                                </toolkit:SettingsCard>
+                                </tkcontrols:SettingsCard>
                             </DataTemplate>
                         </ItemsRepeater.ItemTemplate>
                     </ItemsRepeater>
@@ -118,7 +123,7 @@
             VerticalAlignment="Center"
             Spacing="8">
             <Image Margin="0,0,0,28" Source="{ThemeResource EmptyBoxSvg}" Height="120" Opacity="0.2"/>
-            <localc:Label HorizontalAlignment="Center" FontWeight="SemiBold"
+            <controls:Label HorizontalAlignment="Center" FontWeight="SemiBold"
                 Text="Todavía no has añadido ningún modelo" />
             <Button 
                 x:Name="AddModelsButton"
@@ -134,6 +139,6 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        <localc:ModelInfoViewer x:Name="ModelInfoViewer" VisibilityChanged="ModelInfoViewer_VisibilityChanged"/>
+        <controls:ModelInfoViewer x:Name="ModelInfoViewer" VisibilityChanged="ModelInfoViewer_VisibilityChanged"/>
     </Grid>
 </UserControl>
