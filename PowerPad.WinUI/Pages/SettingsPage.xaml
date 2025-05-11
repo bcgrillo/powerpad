@@ -4,18 +4,17 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Pages"
-    xmlns:components="using:PowerPad.WinUI.Components"
-    xmlns:localc="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mai="using:PowerPad.Core.Models.AI"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
+    xmlns:converters="using:PowerPad.WinUI.Converters"
+    xmlns:tkui="using:CommunityToolkit.WinUI"
+    xmlns:tkcontrols="using:CommunityToolkit.WinUI.Controls"
+    xmlns:tkuicontrols="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml"
-    xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
-    xmlns:uitoolkit="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:converters="using:PowerPad.WinUI.Converters"
-    xmlns:toolkitconverters="using:CommunityToolkit.WinUI.Converters"
-    xmlns:ai="using:PowerPad.Core.Models.AI"
     mc:Ignorable="d">
     <local:DisposablePage.Resources>
         <converters:ServiceStatusToColorBrushConverter x:Key="ServiceStatusToColorBrushConverter" />
@@ -26,8 +25,8 @@
         <converters:AIModelToSourceConverter x:Key="AIModelToSourceConverter" />
         <converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
         <converters:FloatToDoubleConverter x:Key="FloatToDoubleConverter"/>
-        <toolkitconverters:StringFormatConverter x:Key="StringFormatConverter" />
-        <toolkitconverters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+        <tkconverters:StringFormatConverter x:Key="StringFormatConverter" />
+        <tkconverters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
         <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
             <Setter Property="Margin" Value="1,30,0,6" />
         </Style>
@@ -75,25 +74,25 @@
                             <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="Servicios locales" />
                         </StackPanel>
                         <!-- Ollama -->
-                        <toolkit:SettingsExpander
+                        <tkcontrols:SettingsExpander
                             x:Name="OllamaModelsExpander"
                             Description="IA generativa en tu equipo local o red privada con Ollama">
-                            <toolkit:SettingsExpander.HeaderIcon>
+                            <tkcontrols:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OllamaSvg}"/>
-                            </toolkit:SettingsExpander.HeaderIcon>
-                            <toolkit:SettingsExpander.Header>
+                            </tkcontrols:SettingsExpander.HeaderIcon>
+                            <tkcontrols:SettingsExpander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="-38,0,0,0" Glyph="&#xF167;"
                                         Visibility="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"/>
                                     <TextBlock Text="Ollama" />
                                 </StackPanel>
-                            </toolkit:SettingsExpander.Header>
+                            </tkcontrols:SettingsExpander.Header>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch 
                                     IsOn="{x:Bind _settings.General.OllamaEnabled, Mode=TwoWay}" 
                                     Toggled="OllamaModelsExpander_Toggled" />
                             </StackPanel>
-                            <toolkit:SettingsExpander.ItemsHeader>
+                            <tkcontrols:SettingsExpander.ItemsHeader>
                                 <Border 
                                     Style="{StaticResource InfoBarSettingCard}"
                                     Visibility="{x:Bind _settings.General.OllamaConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
@@ -118,16 +117,16 @@
                                         </Button>
                                     </Grid>
                                 </Border>
-                            </toolkit:SettingsExpander.ItemsHeader>
-                            <toolkit:SettingsExpander.Items>
-                                <toolkit:SettingsCard>
-                                    <toolkit:SettingsCard.Header>
+                            </tkcontrols:SettingsExpander.ItemsHeader>
+                            <tkcontrols:SettingsExpander.Items>
+                                <tkcontrols:SettingsCard>
+                                    <tkcontrols:SettingsCard.Header>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <localc:Label 
+                                            <controls:Label 
                                                 IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}"
                                                 Text="Estado:" />
                                             <TextBlock 
@@ -135,9 +134,9 @@
                                                 Foreground="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToColorBrushConverter}}"
                                                 Text="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay, Converter={StaticResource ServiceStatusToStringConverter}, ConverterParameter=True}"/>
                                         </Grid>
-                                    </toolkit:SettingsCard.Header>
-                                    <toolkit:SwitchPresenter Value="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay}">
-                                        <toolkit:Case Value="{x:Bind ai:ServiceStatus.Online}">
+                                    </tkcontrols:SettingsCard.Header>
+                                    <tkcontrols:SwitchPresenter Value="{x:Bind _settings.General.OllamaConfig.ServiceStatus, Mode=OneWay}">
+                                        <tkcontrols:Case Value="{x:Bind mai:ServiceStatus.Online}">
                                             <Button 
                                                 x:Name="StopOllama"
                                                 ToolTipService.ToolTip="Parar" 
@@ -147,8 +146,8 @@
                                                     <TextBlock>Parar</TextBlock>
                                                 </StackPanel>
                                             </Button>
-                                        </toolkit:Case>
-                                        <toolkit:Case Value="{x:Bind ai:ServiceStatus.Available}">
+                                        </tkcontrols:Case>
+                                        <tkcontrols:Case Value="{x:Bind mai:ServiceStatus.Available}">
                                             <Button 
                                                 x:Name="StartOllama"
                                                 ToolTipService.ToolTip="Iniciar" 
@@ -158,8 +157,8 @@
                                                     <TextBlock>Iniciar</TextBlock>
                                                 </StackPanel>
                                             </Button>
-                                        </toolkit:Case>
-                                        <toolkit:Case Value="{x:Bind ai:ServiceStatus.NotFound}">
+                                        </tkcontrols:Case>
+                                        <tkcontrols:Case Value="{x:Bind mai:ServiceStatus.NotFound}">
                                             <Button 
                                                 x:Name="InstallOllama"
                                                 ToolTipService.ToolTip="Instalar" 
@@ -169,34 +168,34 @@
                                                     <TextBlock>Instalar</TextBlock>
                                                 </StackPanel>
                                             </Button>
-                                        </toolkit:Case>
-                                    </toolkit:SwitchPresenter>
-                                </toolkit:SettingsCard>
+                                        </tkcontrols:Case>
+                                    </tkcontrols:SwitchPresenter>
+                                </tkcontrols:SettingsCard>
                                 <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <localc:Label
+                                        <controls:Label
                                             IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}"
                                             Text="URL:" />
-                                        <localc:EditableTextBlock
+                                        <controls:EditableTextBlock
                                             Grid.Column="1"
                                             x:Name="OllamaUrlTextBox"
                                             Value="{x:Bind _settings.General.OllamaConfig.BaseUrl, Mode=TwoWay}"
                                             IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}" />
                                     </Grid>
                                 </Border>
-                                <toolkit:SettingsCard  ContentAlignment="Left">
+                                <tkcontrols:SettingsCard  ContentAlignment="Left">
                                     <CheckBox 
                                         IsChecked="{x:Bind _settings.General.OllamaAutostart, Mode=TwoWay}"
                                         IsEnabled="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                                         <TextBlock Margin="8,2,0,0">Iniciar Ollama automáticamente al abrir</TextBlock>
                                     </CheckBox>
-                                </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.Items>
-                        </toolkit:SettingsExpander>
+                                </tkcontrols:SettingsCard>
+                            </tkcontrols:SettingsExpander.Items>
+                        </tkcontrols:SettingsExpander>
 
                         <!-- Cloud Services Section -->
                         <StackPanel Orientation="Horizontal">
@@ -204,23 +203,23 @@
                             <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="Servicios en línea" />
                         </StackPanel>
                         <!-- AzureAI -->
-                        <toolkit:SettingsExpander
+                        <tkcontrols:SettingsExpander
                             x:Name="AzureAIModelsExpander"
                             Description="Utiliza los modelos de GitHub con el API de Azure AI">
-                            <toolkit:SettingsExpander.HeaderIcon>
+                            <tkcontrols:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource AzureAISvg}"/>
-                            </toolkit:SettingsExpander.HeaderIcon>
-                            <toolkit:SettingsExpander.Header>
+                            </tkcontrols:SettingsExpander.HeaderIcon>
+                            <tkcontrols:SettingsExpander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="-38,0,0,0" Glyph="&#xF167;"
                                         Visibility="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"/>
                                     <TextBlock Text="Azure AI" />
                                 </StackPanel>
-                            </toolkit:SettingsExpander.Header>
+                            </tkcontrols:SettingsExpander.Header>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" Toggled="AzureAIModelsExpander_Toggled" />
                             </StackPanel>
-                            <toolkit:SettingsExpander.ItemsHeader>
+                            <tkcontrols:SettingsExpander.ItemsHeader>
                                 <Border 
                                     Style="{StaticResource InfoBarSettingCard}"
                                     Visibility="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
@@ -245,18 +244,18 @@
                                         </Button>
                                     </Grid>
                                 </Border>
-                            </toolkit:SettingsExpander.ItemsHeader>
-                            <toolkit:SettingsExpander.Items>
+                            </tkcontrols:SettingsExpander.ItemsHeader>
+                            <tkcontrols:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <localc:Label
+                                        <controls:Label
                                             IsEnabled="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}"
                                             Text="URL:" />
-                                        <localc:EditableTextBlock
+                                        <controls:EditableTextBlock
                                             Grid.Column="1"
                                             x:Name="AzureAIUrlTextBox"
                                             Value="{x:Bind _settings.General.AzureAIConfig.BaseUrl, Mode=TwoWay}"
@@ -269,10 +268,10 @@
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <localc:Label
+                                        <controls:Label
                                             IsEnabled="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}"
                                             Text="Clave:" />
-                                        <localc:EditableTextBlock
+                                        <controls:EditableTextBlock
                                             Grid.Column="1"
                                             x:Name="AzureAIKeyTextBox"
                                             Value="{x:Bind _settings.General.AzureAIConfig.Key, Mode=TwoWay}"
@@ -280,33 +279,33 @@
                                             PasswordMode="True" />
                                     </Grid>
                                 </Border>
-                                <toolkit:SettingsCard ContentAlignment="Left">
+                                <tkcontrols:SettingsCard ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0"
                                         Orientation="Vertical">
                                         <HyperlinkButton Content="Pruebe modelos gratuitos de GitHub Models con un token de desarrollador" NavigateUri="https://github.com/settings/tokens" />
                                         <HyperlinkButton Content="Consiga una clave de Azure AI de pago por uso" NavigateUri="https://ai.azure.com/github" />
                                     </StackPanel>
-                                </toolkit:SettingsCard><!-- Links -->
-                            </toolkit:SettingsExpander.Items>
-                        </toolkit:SettingsExpander>
+                                </tkcontrols:SettingsCard><!-- Links -->
+                            </tkcontrols:SettingsExpander.Items>
+                        </tkcontrols:SettingsExpander>
                         <!-- OpenAI -->
-                        <toolkit:SettingsExpander
+                        <tkcontrols:SettingsExpander
                             x:Name="OpenAIModelsExpander"
                             Description="Utiliza modelos de ChatGPT a través de su API">
-                            <toolkit:SettingsExpander.HeaderIcon>
+                            <tkcontrols:SettingsExpander.HeaderIcon>
                                 <ImageIcon Source="{ThemeResource OpenAISvg}"/>
-                            </toolkit:SettingsExpander.HeaderIcon>
-                            <toolkit:SettingsExpander.Header>
+                            </tkcontrols:SettingsExpander.HeaderIcon>
+                            <tkcontrols:SettingsExpander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon x:Name="ErrorBadge" FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="-38,0,0,0" Glyph="&#xF167;"
                                         Visibility="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}"/>
                                     <TextBlock Text="OpenAI" />
                                 </StackPanel>
-                            </toolkit:SettingsExpander.Header>
+                            </tkcontrols:SettingsExpander.Header>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" Toggled="OpenAIModelsExpander_Toggled" />
                             </StackPanel>
-                            <toolkit:SettingsExpander.ItemsHeader>
+                            <tkcontrols:SettingsExpander.ItemsHeader>
                                 <Border 
                                     Style="{StaticResource InfoBarSettingCard}"
                                     Visibility="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
@@ -331,19 +330,19 @@
                                         </Button>
                                     </Grid>
                                 </Border>
-                            </toolkit:SettingsExpander.ItemsHeader>
-                            <toolkit:SettingsExpander.Items>
+                            </tkcontrols:SettingsExpander.ItemsHeader>
+                            <tkcontrols:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <localc:Label 
+                                        <controls:Label 
                                             VerticalAlignment="Center"
                                             Text="URL:"
                                             IsEnabled="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}" />
-                                        <localc:EditableTextBlock
+                                        <controls:EditableTextBlock
                                             Grid.Column="1"
                                             x:Name="OpenAIUrlTextBox"
                                             Value="{x:Bind _settings.General.OpenAIConfig.BaseUrl, Mode=TwoWay}"
@@ -356,11 +355,11 @@
                                             <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <localc:Label 
+                                        <controls:Label 
                                             VerticalAlignment="Center"
                                             Text="Clave:"
                                             IsEnabled="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}" />
-                                        <localc:EditableTextBlock
+                                        <controls:EditableTextBlock
                                             Grid.Column="1"
                                             x:Name="OpenAIKeyTextBox"
                                             Value="{x:Bind _settings.General.OpenAIConfig.Key, Mode=TwoWay}"
@@ -368,23 +367,23 @@
                                             PasswordMode="True" />
                                     </Grid>
                                 </Border>
-                                <toolkit:SettingsCard ContentAlignment="Left">
+                                <tkcontrols:SettingsCard ContentAlignment="Left">
                                     <StackPanel Margin="-12,0,0,0"
                                         Orientation="Vertical">
                                         <HyperlinkButton Content="Consiga una clave de de OpenAI de pago por uso" NavigateUri="https://platform.openai.com/signup" />
                                     </StackPanel>
-                                </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.Items>
-                        </toolkit:SettingsExpander>
+                                </tkcontrols:SettingsCard>
+                            </tkcontrols:SettingsExpander.Items>
+                        </tkcontrols:SettingsExpander>
 
                         <!-- Default Config -->
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                             Text="Configuración por defecto" />
-                        <toolkit:SettingsCard
+                        <tkcontrols:SettingsCard
                             x:Name="DefaultModelCard"
                             Description="Modelo predeterminado nuevos chats y agentes"
                             Header="Modelo"
-                            HeaderIcon="{ui:FontIcon Glyph=&#xF158;}">
+                            HeaderIcon="{tkui:FontIcon Glyph=&#xF158;}">
                             <StackPanel>
                                 <Button x:Name="FakeButton" Visibility="Collapsed">Unavailable</Button>
                                 <DropDownButton x:Name="DefaultModelButton" Click="DefaultModelButton_Click" Height="32">
@@ -396,7 +395,7 @@
                                     </DropDownButton.Flyout>
                                     <DropDownButton.Content>
                                         <StackPanel Orientation="Horizontal">
-                                            <localc:ButtonIcon 
+                                            <controls:ButtonIcon 
                                                 x:Name="ModelIcon"
                                                 Source="{x:Bind _settings.Models.DefaultModel, Mode=OneWay, Converter={StaticResource AIModelToSourceConverter}}"/>
                                             <TextBlock 
@@ -409,40 +408,40 @@
                                     </DropDownButton.Content>
                                 </DropDownButton>
                             </StackPanel>
-                        </toolkit:SettingsCard>
-                        <toolkit:SettingsExpander
+                        </tkcontrols:SettingsCard>
+                        <tkcontrols:SettingsExpander
                             x:Name="DefaultParameterCard"
                             Header="Parámetros"
                             Description="Enviar parámetros adicionales de forma predeterminada"
-                            HeaderIcon="{ui:FontIcon FontFamily='Segoe MDL2 Assets', Glyph=&#xE9E9;}">
-                            <toolkit:SettingsExpander.Resources>
+                            HeaderIcon="{tkui:FontIcon FontFamily='Segoe MDL2 Assets', Glyph=&#xE9E9;}">
+                            <tkcontrols:SettingsExpander.Resources>
                                 <SolidColorBrush x:Key="SettingsCardBorderBrushDisabled" Color="Transparent" />
-                            </toolkit:SettingsExpander.Resources>
+                            </tkcontrols:SettingsExpander.Resources>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <ToggleSwitch IsOn="{x:Bind _settings.Models.SendDefaultParameters, Mode=TwoWay}" />
                             </StackPanel>
-                            <toolkit:SettingsExpander.Items>
+                            <tkcontrols:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
                                     <StackPanel Spacing="0" Margin="0,8,0,0">
-                                        <localc:Label
+                                        <controls:Label
                                             IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}"
                                             Text="Instrucciones de sistema:" />
-                                        <localc:EditableTextBlock
+                                        <controls:EditableTextBlock
                                             Value="{x:Bind _settings.Models.DefaultParameters.SystemPrompt, Mode=TwoWay}"
                                             PlaceholderText="Escriba aquí las indicaciones para el modelo"
                                             IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}"/>
                                     </StackPanel>
                                 </Border>
-                                <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
-                                    <toolkit:SettingsCard.Header>
+                                <tkcontrols:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
+                                    <tkcontrols:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Margin="0,0,8,0">Temperatura</TextBlock>
-                                            <localc:Label 
+                                            <controls:Label 
                                                 Text="(nivel de aleatoriedad)" 
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
                                                 VerticalAlignment="Center" />
                                         </StackPanel>
-                                    </toolkit:SettingsCard.Header>
+                                    </tkcontrols:SettingsCard.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Slider
                                             Width="250"
@@ -451,23 +450,23 @@
                                             StepFrequency="0.01" 
                                             IsThumbToolTipEnabled="False"
                                             Value="{x:Bind _settings.Models.DefaultParameters.Temperature, Mode=TwoWay, Converter={StaticResource FloatToDoubleConverter}}" />
-                                        <localc:Label 
+                                        <controls:Label 
                                             Margin="16,0,0,0" 
                                             VerticalAlignment="Center" 
                                             Width="28"
                                             Text="{x:Bind _settings.Models.DefaultParameters.Temperature, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.00}'}" />
                                     </StackPanel>
-                                </toolkit:SettingsCard>
-                                <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
-                                    <toolkit:SettingsCard.Header>
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
+                                    <tkcontrols:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Margin="0,0,8,0">Top P</TextBlock>
-                                            <localc:Label 
+                                            <controls:Label 
                                                 Text="(núcleo de palabras candidatas)" 
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
                                                 VerticalAlignment="Center" />
                                         </StackPanel>
-                                    </toolkit:SettingsCard.Header>
+                                    </tkcontrols:SettingsCard.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Slider
                                             Width="250"
@@ -476,32 +475,32 @@
                                             StepFrequency="0.01" 
                                             IsThumbToolTipEnabled="False"
                                             Value="{x:Bind _settings.Models.DefaultParameters.TopP, Mode=TwoWay, Converter={StaticResource FloatToDoubleConverter}}" />
-                                        <localc:Label 
+                                        <controls:Label 
                                             Margin="16,0,0,0" 
                                             VerticalAlignment="Center" 
                                             Width="28"
                                             Text="{x:Bind _settings.Models.DefaultParameters.TopP, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.00}'}" />
                                     </StackPanel>
-                                </toolkit:SettingsCard>
-                                <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
-                                    <toolkit:SettingsCard.Header>
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
+                                    <tkcontrols:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Margin="0,0,8,0">Número máximo de tokens generados</TextBlock>
                                         </StackPanel>
-                                    </toolkit:SettingsCard.Header>
+                                    </tkcontrols:SettingsCard.Header>
                                     <NumberBox 
                                         SpinButtonPlacementMode="Inline"
                                         Width="296"
                                         SmallChange="10"
                                         LargeChange="100"
                                         Value="{x:Bind _settings.Models.DefaultParameters.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"/>
-                                </toolkit:SettingsCard>
-                                <toolkit:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
-                                    <toolkit:SettingsCard.Header>
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard IsEnabled="{x:Bind _settings.Models.SendDefaultParameters, Mode=OneWay}">
+                                    <tkcontrols:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Margin="0,0,8,0">Tamaño máximo de la conversación</TextBlock>
                                         </StackPanel>
-                                    </toolkit:SettingsCard.Header>
+                                    </tkcontrols:SettingsCard.Header>
                                     <NumberBox 
                                         SpinButtonPlacementMode="Inline"
                                         Width="296"
@@ -509,47 +508,47 @@
                                         LargeChange="100"
                                         Minimum="1"
                                         Value="{x:Bind _settings.Models.DefaultParameters.MaxConversationLength, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"/>
-                                </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.Items>
-                        </toolkit:SettingsExpander>
-                        <toolkit:SettingsExpander
+                                </tkcontrols:SettingsCard>
+                            </tkcontrols:SettingsExpander.Items>
+                        </tkcontrols:SettingsExpander>
+                        <tkcontrols:SettingsExpander
                             x:Name="AgentConfigCard"
                             Header="Agentes"
                             Description="Configuración específica para los agentes"
-                            HeaderIcon="{ui:FontIcon Glyph=&#xE99A;}">
-                            <toolkit:SettingsExpander.Resources>
+                            HeaderIcon="{tkui:FontIcon Glyph=&#xE99A;}">
+                            <tkcontrols:SettingsExpander.Resources>
                                 <SolidColorBrush x:Key="SettingsCardBorderBrushDisabled" Color="Transparent" />
-                            </toolkit:SettingsExpander.Resources>
-                            <toolkit:SettingsExpander.Items>
+                            </tkcontrols:SettingsExpander.Resources>
+                            <tkcontrols:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="200" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <localc:Label
+                                        <controls:Label
                                             Text="Prompt adicional para notas:" />
-                                        <localc:EditableTextBlock
+                                        <controls:EditableTextBlock
                                             Grid.Column="1"
                                             Value="{x:Bind _settings.General.AgentPrompt, Mode=TwoWay}" />
                                     </Grid>
                                 </Border>
-                                <toolkit:SettingsCard  ContentAlignment="Left">
+                                <tkcontrols:SettingsCard  ContentAlignment="Left">
                                     <CheckBox 
                                         IsChecked="{x:Bind _settings.General.EnableHotKeys, Mode=TwoWay}">
-                                        <uitoolkit:MarkdownTextBlock IsTextSelectionEnabled="False" Margin="8,-4,0,0" Text="Habilitar `Ctrl`+`Mayús`+`C` y `Ctrl`+`Mayús`+`Espacio` para iniciar notas rápidas" Background="Transparent" />
+                                        <tkuicontrols:MarkdownTextBlock IsTextSelectionEnabled="False" Margin="8,-4,0,0" Text="Habilitar `Ctrl`+`Mayús`+`C` y `Ctrl`+`Mayús`+`Espacio` para iniciar notas rápidas" Background="Transparent" />
                                     </CheckBox>
-                                </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.Items>
-                        </toolkit:SettingsExpander>
+                                </tkcontrols:SettingsCard>
+                            </tkcontrols:SettingsExpander.Items>
+                        </tkcontrols:SettingsExpander>
                         
                         <!-- Visual Settings -->
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                            Text="Aparencia" />
-                        <toolkit:SettingsExpander Description="Seleccionar el tema que se mostrará en la aplicación"
+                        <tkcontrols:SettingsExpander Description="Seleccionar el tema que se mostrará en la aplicación"
                                            Header="Tema de la aplicación"
-                                           HeaderIcon="{ui:FontIcon Glyph=&#xE790;}">
-                            <toolkit:SettingsExpander.ItemsHeader>
+                                           HeaderIcon="{tkui:FontIcon Glyph=&#xE790;}">
+                            <tkcontrols:SettingsExpander.ItemsHeader>
                                 <Border 
                                     x:Name="ThemeInfoBar"
                                     Style="{StaticResource InfoBarSettingCard}"
@@ -571,9 +570,9 @@
                                         </Button>
                                     </Grid>
                                 </Border>
-                            </toolkit:SettingsExpander.ItemsHeader>
-                            <toolkit:SettingsExpander.Items>
-                                <toolkit:SettingsCard ContentAlignment="Left">
+                            </tkcontrols:SettingsExpander.ItemsHeader>
+                            <tkcontrols:SettingsExpander.Items>
+                                <tkcontrols:SettingsCard ContentAlignment="Left">
                                     <StackPanel Orientation="Vertical">
                                         <RadioButton
                                             x:Name="LightThemeRadioButton"
@@ -587,30 +586,30 @@
                                             x:Name="SystemThemeRadioButton"
                                             Content="Configuración del sistema" />
                                     </StackPanel>
-                                </toolkit:SettingsCard>
-                                <toolkit:SettingsCard ContentAlignment="Left">
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard ContentAlignment="Left">
                                     <StackPanel Orientation="Vertical">
                                         <CheckBox
                                             IsChecked="{x:Bind _settings.General.AcrylicBackground, Mode=TwoWay}">
                                             <TextBlock Margin="8,2,0,0">Fondo con efecto transparente</TextBlock>
                                         </CheckBox>
                                     </StackPanel>
-                                </toolkit:SettingsCard>
-                            </toolkit:SettingsExpander.Items>
-                        </toolkit:SettingsExpander>
+                                </tkcontrols:SettingsCard>
+                            </tkcontrols:SettingsExpander.Items>
+                        </tkcontrols:SettingsExpander>
 
                         <!-- About Section -->
                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                            Text="Acerca de PowerPad" />
-                        <toolkit:SettingsCard Description="2025 · Trabajo Fin de Grado · Ingenieria de Software · ETSISI UPM"
+                        <tkcontrols:SettingsCard Description="2025 · Trabajo Fin de Grado · Ingenieria de Software · ETSISI UPM"
                             Header="PowerPad">
-                            <toolkit:SettingsCard.HeaderIcon>
+                            <tkcontrols:SettingsCard.HeaderIcon>
                                 <ImageIcon Margin="-4" Source="ms-appx:///Assets/Square44x44Logo.altform-lightunplated_targetsize-48.png" />
-                            </toolkit:SettingsCard.HeaderIcon>
+                            </tkcontrols:SettingsCard.HeaderIcon>
                             <TextBlock
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Text="Versión 1.0.0" />
-                        </toolkit:SettingsCard>
+                        </tkcontrols:SettingsCard>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

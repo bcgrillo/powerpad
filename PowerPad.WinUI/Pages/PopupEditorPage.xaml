@@ -4,15 +4,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Components.Editors"
-    xmlns:lcontrols="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
-        <converters:EmptyStringToObjectConverter x:Key="EmptyStringToObjectConverter" EmptyValue="False" NotEmptyValue="True" />
+        <tkconverters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+        <tkconverters:EmptyStringToObjectConverter x:Key="EmptyStringToObjectConverter" EmptyValue="False" NotEmptyValue="True" />
     </Page.Resources>
     <Grid Margin="28">
         <Grid.RowDefinitions>
@@ -99,7 +99,7 @@
             </StackPanel>
         </Grid>
 
-        <lcontrols:IntegratedTextBox
+        <controls:IntegratedTextBox
             x:Name="TextEditor" 
             Grid.Row="1"
             TextWrapping="Wrap" 
@@ -112,7 +112,7 @@
             SizeChanged="TextEditor_SizeChanged"
             Text="{x:Bind _document.Content, Mode=TwoWay}"/>
 
-        <lcontrols:NoteAgentControl
+        <controls:NoteAgentControl
             x:Name="AgentControl"
             Grid.Row="2"
             Margin="0,18,0,0"
