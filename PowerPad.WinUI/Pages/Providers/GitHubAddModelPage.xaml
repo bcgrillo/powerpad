@@ -26,7 +26,7 @@
 
         <StackPanel Orientation="Vertical" Margin="36,36,36,36" VerticalAlignment="Center" Spacing="24">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
-                <Image Source="{ThemeResource GithubSvg}" Width="42" Height="42" />
+                <Image Source="{ThemeResource GitHubSvg}" Width="42" Height="42" />
                 <TextBlock
                     Style="{StaticResource TitleTextBlockStyle}"
                     Text="Buscar modelos en GitHub Models" />

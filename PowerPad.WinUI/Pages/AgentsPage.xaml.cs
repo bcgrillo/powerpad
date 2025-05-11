@@ -120,7 +120,7 @@ namespace PowerPad.WinUI.Pages
         {
             var entry = (AgentViewModel)((MenuFlyoutItem)sender).DataContext;
 
-            var result = await DialogHelper.Imput(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
+            var result = await DialogHelper.Input(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
 
             if (result is not null) entry.Name = result;
         }

@@ -11,6 +11,9 @@ using WinUIEx.Messaging;
 
 namespace PowerPad.WinUI.Helpers
 {
+    /// <summary>
+    /// Provides helper methods for registering and handling global hotkeys.
+    /// </summary>
     public static class HotKeyHelper
     {
         private const byte VK_C = 0x43;
@@ -25,6 +28,12 @@ namespace PowerPad.WinUI.Helpers
         private static PopupWindow? _popupWindow;
         private static bool _registered;
 
+        /// <summary>
+        /// Registers or unregisters global hotkeys for the specified window.
+        /// </summary>
+        /// <param name="window">The window to associate the hotkeys with.</param>
+        /// <param name="register">True to register the hotkeys, false to unregister them.</param>
+        /// <exception cref="COMException">Thrown if registering the hotkeys fails.</exception>
         public static void Register(Window window, bool register)
         {
             var hwnd = new HWND(WindowNative.GetWindowHandle(window).ToInt32());
@@ -69,6 +78,11 @@ namespace PowerPad.WinUI.Helpers
             }
         }
 
+        /// <summary>
+        /// Handles window messages and processes hotkey events.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing the window message.</param>
         private static async void OnWindowMessageReceived(object? _, WindowMessageEventArgs eventArgs)
         {
             if (eventArgs.Message.MessageId == WM_HOTKEY)
@@ -97,6 +111,9 @@ namespace PowerPad.WinUI.Helpers
             }
         }
 
+        /// <summary>
+        /// Simulates the Ctrl+C keyboard shortcut.
+        /// </summary>
         public static void SimulateCtrlC()
         {
             PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
@@ -105,6 +122,9 @@ namespace PowerPad.WinUI.Helpers
             PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
         }
 
+        /// <summary>
+        /// Simulates the Ctrl+V keyboard shortcut.
+        /// </summary>
         public static void SimulateCtrlV()
         {
             PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);

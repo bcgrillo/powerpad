@@ -12,19 +12,39 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Dialogs
 {
+    /// <summary>
+    /// A ContentDialog class that handles the download and installation process of the Ollama application.
+    /// </summary>
     public partial class OllamaDownloadHelper : ContentDialog
     {
         private const string OLLAMA_DOWNLOAD_URL = "https://ollama.com/download/OllamaSetup.exe";
         private const int BUFFER_SIZE = 8192;
+
+        private readonly string _tempFilePath;
+        private readonly FileSizeToFriendlyStringConverter _fileSizeConverter;
 
         private CancellationTokenSource? _cts;
         private bool _isDownloading;
         private bool _downloadCompleted;
         private bool _tryInstallationAgain;
         private bool _installationCompleted;
-        private readonly string _tempFilePath;
-        private readonly FileSizeToFriendlyStringConverter _fileSizeConverter;
 
+        /// <summary>
+        /// Displays the dialog asynchronously.
+        /// </summary>
+        /// <param name="xamlRoot">The XAML root to associate with this dialog.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the dialog result.</returns>
+        public static async Task<ContentDialogResult> ShowAsync(XamlRoot xamlRoot)
+        {
+            var dialog = new OllamaDownloadHelper(xamlRoot);
+
+            return await dialog.ShowAsync();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OllamaDownloadHelper"/> class.
+        /// </summary>
+        /// <param name="xamlRoot">The XAML root to associate with this dialog.</param>
         private OllamaDownloadHelper(XamlRoot xamlRoot)
         {
             InitializeComponent();
@@ -40,6 +60,9 @@ namespace PowerPad.WinUI.Dialogs
             DefaultButton = ContentDialogButton.Primary;
         }
 
+        /// <summary>
+        /// Resets the dialog to its initial state.
+        /// </summary>
         private void Reset()
         {
             PrimaryButtonText = "Descargar Ollama";
@@ -54,13 +77,11 @@ namespace PowerPad.WinUI.Dialogs
             _isDownloading = false;
         }
 
-        public static async Task<ContentDialogResult> ShowAsync(XamlRoot xamlRoot)
-        {
-            var dialog = new OllamaDownloadHelper(xamlRoot);
-
-            return await dialog.ShowAsync();
-        }
-
+        /// <summary>
+        /// Handles the primary button click event.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments.</param>
         private async void OnPrimaryButtonClick(object _, ContentDialogButtonClickEventArgs eventArgs)
         {
             if (!_installationCompleted)
@@ -95,7 +116,7 @@ namespace PowerPad.WinUI.Dialogs
                             var driveInfo = new DriveInfo(Path.GetPathRoot(_tempFilePath)!);
                             if (driveInfo.AvailableFreeSpace < fileSize)
                             {
-                                Message.Text = "No hay suficiente espacio en disco para descargar el instalador .";
+                                Message.Text = "No hay suficiente espacio en disco para descargar el instalador.";
 
                                 Reset();
                                 PrimaryButtonText = "Volver a intentar";
@@ -129,7 +150,7 @@ namespace PowerPad.WinUI.Dialogs
                     }
                     catch (OperationCanceledException)
                     {
-                        //Try delete the temp file if it exists
+                        // Try to delete the temp file if it exists
                         try { if (File.Exists(_tempFilePath)) File.Delete(_tempFilePath); }
                         catch
                         {
@@ -156,7 +177,7 @@ namespace PowerPad.WinUI.Dialogs
                     // Cancel the download
                     await _cts!.CancelAsync();
                 }
-                else //Download completed
+                else // Download completed
                 {
                     var generalSettings = App.Get<SettingsViewModel>();
 
@@ -178,7 +199,7 @@ namespace PowerPad.WinUI.Dialogs
                     }
                     else
                     {
-                        //Try delete the temp file if it exists
+                        // Try to delete the temp file if it exists
                         try { if (File.Exists(_tempFilePath)) File.Delete(_tempFilePath); }
                         catch
                         {
@@ -199,6 +220,10 @@ namespace PowerPad.WinUI.Dialogs
             }
         }
 
+        /// <summary>
+        /// Downloads the file asynchronously.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         private async Task DownloadFileAsync()
         {
             var cancellationToken = _cts?.Token ?? default;
@@ -233,6 +258,11 @@ namespace PowerPad.WinUI.Dialogs
             }
         }
 
+        /// <summary>
+        /// Handles the dialog closed event.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void ContentDialog_Closed(ContentDialog _, ContentDialogClosedEventArgs __)
         {
             _cts?.Dispose();

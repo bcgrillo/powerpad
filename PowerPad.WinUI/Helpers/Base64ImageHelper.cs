@@ -10,10 +10,19 @@ using Windows.Storage.Streams;
 
 namespace PowerPad.WinUI.Helpers
 {
+    /// <summary>
+    /// Provides helper methods for handling Base64 image encoding and decoding.
+    /// </summary>
     public static class Base64ImageHelper
     {
         private const ulong DEFAULT_SIZE = 48;
 
+        /// <summary>
+        /// Converts a Base64 string to a <see cref="BitmapImage"/> and optionally resizes it.
+        /// </summary>
+        /// <param name="base64String">The Base64 string representing the image.</param>
+        /// <param name="size">The desired size for the image. Defaults to 48.</param>
+        /// <returns>A <see cref="BitmapImage"/> created from the Base64 string.</returns>
         public static BitmapImage LoadImageFromBase64(string base64String, double size = DEFAULT_SIZE)
         {
             var imageBytes = Convert.FromBase64String(base64String);
@@ -49,6 +58,11 @@ namespace PowerPad.WinUI.Helpers
             return bitmapImage;
         }
 
+        /// <summary>
+        /// Opens a file picker to select an image and converts it to a Base64 string.
+        /// </summary>
+        /// <param name="xamlRoot">The <see cref="XamlRoot"/> of the current UI context.</param>
+        /// <returns>A Base64 string representation of the selected image, or null if no image is selected.</returns>
         public static async Task<string?> PickImageToBase64(XamlRoot xamlRoot)
         {
             var filePicker = new FileOpenPicker

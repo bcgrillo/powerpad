@@ -98,7 +98,7 @@
                     Tag="{x:Bind m:ModelProvider.GitHub}"
                     Visibility="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
-                        <ImageIcon Source="{ThemeResource GithubSvg}"/>
+                        <ImageIcon Source="{ThemeResource GitHubSvg}"/>
                     </NavigationViewItem.Icon>
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
