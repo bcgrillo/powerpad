@@ -30,6 +30,9 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// DependencyProperty for the Value property.
+        /// </summary>
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register(nameof(Value), typeof(string), typeof(EditableTextBlock), new(null));
 
@@ -42,6 +45,9 @@ namespace PowerPad.WinUI.Components.Controls
             set => SetValue(ConfirmOnLostFocusProperty, value);
         }
 
+        /// <summary>
+        /// DependencyProperty for the ConfirmOnLostFocus property.
+        /// </summary>
         public static readonly DependencyProperty ConfirmOnLostFocusProperty =
             DependencyProperty.Register(nameof(ConfirmOnLostFocus), typeof(bool), typeof(EditableTextBlock), new(false));
 
@@ -54,6 +60,9 @@ namespace PowerPad.WinUI.Components.Controls
             set => SetValue(PasswordModeProperty, value);
         }
 
+        /// <summary>
+        /// DependencyProperty for the PasswordMode property.
+        /// </summary>
         public static readonly DependencyProperty PasswordModeProperty =
             DependencyProperty.Register(nameof(PasswordMode), typeof(bool), typeof(EditableTextBlock), new(false));
 
@@ -66,6 +75,9 @@ namespace PowerPad.WinUI.Components.Controls
             set => SetValue(PlaceholderTextProperty, value);
         }
 
+        /// <summary>
+        /// DependencyProperty for the PlaceholderText property.
+        /// </summary>
         public static readonly DependencyProperty PlaceholderTextProperty =
             DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(EditableTextBlock), new(null));
 
@@ -78,6 +90,9 @@ namespace PowerPad.WinUI.Components.Controls
             set => SetValue(ForcedForegroundProperty, value);
         }
 
+        /// <summary>
+        /// DependencyProperty for the ForcedForeground property.
+        /// </summary>
         public static readonly DependencyProperty ForcedForegroundProperty =
             DependencyProperty.Register(nameof(ForcedForeground), typeof(Brush), typeof(EditableTextBlock), new(null));
 

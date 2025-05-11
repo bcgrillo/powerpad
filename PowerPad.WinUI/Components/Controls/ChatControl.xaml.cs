@@ -47,8 +47,19 @@ namespace PowerPad.WinUI.Components.Controls
         private AgentViewModel? _selectedAgent;
         private bool _useAgents;
 
+        /// <summary>
+        /// Occurs when the send button is clicked.
+        /// </summary>
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
+
+        /// <summary>
+        /// Occurs when the chat options change, including model, parameters, and agent ID.
+        /// </summary>
         public event EventHandler<ChatOptionsChangedEventArgs>? ChatOptionsChanged;
+
+        /// <summary>
+        /// Occurs when the parameters visibility changes.
+        /// </summary>
         public event EventHandler<bool>? ParametersVisibilityChanged;
 
         /// <summary>
@@ -525,8 +536,17 @@ namespace PowerPad.WinUI.Components.Controls
     /// <param name="agentId">The ID of the selected agent. Can be null.</param>
     public class ChatOptionsChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId) : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the selected AI model for the chat.
+        /// </summary>
         public AIModelViewModel? SelectedModel { get; set; } = model;
+        /// <summary>
+        /// Gets or sets the parameters used for configuring the AI chat behavior.
+        /// </summary>
         public AIParametersViewModel? Parameters { get; set; } = parameters;
+        /// <summary>
+        /// Gets or sets the ID of the selected agent for the chat.
+        /// </summary>
         public Guid? AgentId { get; set; } = agentId;
     }
 }

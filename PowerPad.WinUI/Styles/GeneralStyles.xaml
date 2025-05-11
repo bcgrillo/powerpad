@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ResourceDictionary 
-     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-     xmlns:controls="using:Microsoft.UI.Xaml.Controls" 
-     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" 
-     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" 
-     xmlns:media="using:Microsoft.UI.Xaml.Media"
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-     xmlns:localc="using:PowerPad.WinUI.Components.Controls">
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+     xmlns:controls="using:PowerPad.WinUI.Components.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="localc:IntegratedTextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
+    <Style TargetType="controls:IntegratedTextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
     <Style TargetType="TextBlock" x:Key="WSTitleStyle" BasedOn="{StaticResource TitleTextBlockStyle}">
         <Style.Setters>
             <Setter Property="FontSize" Value="18" />
