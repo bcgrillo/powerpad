@@ -128,7 +128,7 @@ namespace PowerPad.WinUI.Components
         /// <summary>
         /// Handles the event when an item in the tree view is invoked.
         /// </summary>
-        /// <param name="_">The tree view instance.</param>
+        /// <param name="_">The tree view instance (not used).</param>
         /// <param name="eventArgs">The event arguments containing the invoked item.</param>
         private void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs eventArgs)
         {
@@ -148,7 +148,7 @@ namespace PowerPad.WinUI.Components
         /// <summary>
         /// Handles the event when drag-and-drop operation is completed in the tree view.
         /// </summary>
-        /// <param name="_">The tree view instance.</param>
+        /// <param name="_">The tree view instance (not used).</param>
         /// <param name="eventArgs">The event arguments containing drag-and-drop details.</param>
         private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs eventArgs)
         {
@@ -206,6 +206,7 @@ namespace PowerPad.WinUI.Components
         /// Handles the click event for renaming a folder or document.
         /// </summary>
         /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
@@ -234,6 +235,7 @@ namespace PowerPad.WinUI.Components
         /// Handles the click event for deleting a folder or document.
         /// </summary>
         /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void DeleteFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
@@ -288,6 +290,7 @@ namespace PowerPad.WinUI.Components
         /// Handles the click event for opening a recently accessed workspace.
         /// </summary>
         /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void OpenRecentlyFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             _workspace.OpenWorkspaceCommand.Execute(((MenuFlyoutItem)sender).Tag);
@@ -404,6 +407,7 @@ namespace PowerPad.WinUI.Components
         /// Handles the click event for showing the context menu of a tree view item.
         /// </summary>
         /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void MoreButton_Click(object sender, RoutedEventArgs __)
         {
             var button = sender as Button;

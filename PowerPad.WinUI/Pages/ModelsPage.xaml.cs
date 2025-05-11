@@ -9,22 +9,43 @@ using System.Linq;
 
 namespace PowerPad.WinUI.Pages
 {
+    /// <summary>
+    /// Represents the page for managing AI models and navigation between different model-related pages.
+    /// </summary>
     public partial class ModelsPage : DisposablePage, IToggleMenuPage
     {
+        private readonly SettingsViewModel _settings;
+
         private IModelProviderPage? _currentPage;
         private bool _runSearch;
 
+        /// <summary>
+        /// Gets the width of the navigation pane.
+        /// </summary>
         public double NavigationWidth => NavView.IsPaneVisible ? NavView.OpenPaneLength : 0;
 
-        private readonly SettingsViewModel _settings;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelsPage"/> class.
+        /// </summary>
         public ModelsPage()
         {
             this.InitializeComponent();
-
             _settings = App.Get<SettingsViewModel>();
         }
 
+        /// <summary>
+        /// Toggles the visibility of the navigation pane.
+        /// </summary>
+        public void ToggleNavigationVisibility()
+        {
+            NavView.IsPaneVisible = !NavView.IsPaneVisible;
+        }
+
+        /// <summary>
+        /// Handles the selection change event in the navigation view.
+        /// </summary>
+        /// <param name="__">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing the selected item.</param>
         private void NavView_SelectionChanged(NavigationView __, NavigationViewSelectionChangedEventArgs eventArgs)
         {
             if (eventArgs.SelectedItem is null) return;
@@ -42,7 +63,6 @@ namespace PowerPad.WinUI.Pages
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
-
                     foreach (var item in NavView.MenuItems)
                     {
                         var navItem = (NavigationViewItem)item;
@@ -56,6 +76,10 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Navigates to the specified page based on the provided menu option.
+        /// </summary>
+        /// <param name="menuOption">The menu option specifying the target page and model provider.</param>
         private void NavigateToPage(ModelsMenuOption menuOption)
         {
             _currentPage?.Dispose();
@@ -85,7 +109,7 @@ namespace PowerPad.WinUI.Pages
 
                 ((AIModelsPageBase)_currentPage!).AddButtonClick += AddButtonClick;
             }
-            else //MenuOption.AddModels
+            else // MenuOption.AddModels
             {
                 switch (menuOption.ModelProvider)
                 {
@@ -115,11 +139,11 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        public void ToggleNavigationVisibility()
-        {
-            NavView.IsPaneVisible = !NavView.IsPaneVisible;
-        }
-
+        /// <summary>
+        /// Handles the loaded event of the navigation view.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void NavView_Loaded(object _, RoutedEventArgs __)
         {
             var firstItem = NavView.MenuItems.FirstOrDefault(mi => ((NavigationViewItem)mi).Visibility == Visibility.Visible) as NavigationViewItem;
@@ -131,6 +155,11 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Handles the Add button click event to navigate to the Add Models page.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void AddButtonClick(object? _, EventArgs __)
         {
             ModelsMenuOption? modelsMenuOption = null;
@@ -158,6 +187,20 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Handles the pointer pressed event to close the model information viewer.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
+        private void NavView_PointerPressed(object _, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs __)
+        {
+            _currentPage?.CloseModelInfoViewer();
+        }
+
+        /// <summary>
+        /// Disposes resources used by the page.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method is called from Dispose.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -165,11 +208,6 @@ namespace PowerPad.WinUI.Pages
                 _currentPage?.Dispose();
                 if (_currentPage is AIModelsPageBase currentAIModelsPage) currentAIModelsPage.AddButtonClick -= AddButtonClick;
             }
-        }
-
-        private void NavView_PointerPressed(object _, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs __)
-        {
-            _currentPage?.CloseModelInfoViewer();
         }
     }
 }

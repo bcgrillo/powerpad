@@ -228,6 +228,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the event when the control's enabled state changes.
         /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
         /// <param name="eventArgs">The event arguments containing the new value.</param>
         private void OnEnabledChanged(object? _, DependencyPropertyChangedEventArgs eventArgs)
         {
@@ -313,6 +314,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the click event of the send button.
         /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
         /// <param name="eventArgs">The event arguments.</param>
         private void SendBtn_Click(object _, RoutedEventArgs eventArgs)
         {
@@ -367,6 +369,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the key down event for the chat input box, enabling multi-line input or sending messages.
         /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
         /// <param name="eventArgs">The event arguments.</param>
         private void ChatInputBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
@@ -391,8 +394,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Toggles the visibility of the parameters panel.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void ParametersButton_Click(object _, RoutedEventArgs __)
         {
             var parameterPanelVisible = ParametersPanel.Visibility == Visibility.Visible;
@@ -416,8 +419,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Toggles the parameter visibility and updates the chat options.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void EnableParametersSwitch_Toggled(object _, RoutedEventArgs __)
         {
             ToggleParameterVisibility();
@@ -459,8 +462,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles property changes in the parameters and updates the chat options.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __) => OnChatOptionsChanged();
 
         /// <summary>

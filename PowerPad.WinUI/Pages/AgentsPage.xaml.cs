@@ -10,6 +10,9 @@ using System.Linq;
 
 namespace PowerPad.WinUI.Pages
 {
+    /// <summary>
+    /// Represents the page for managing AI agents, including their creation, editing, and deletion.
+    /// </summary>
     public partial class AgentsPage : DisposablePage, IToggleMenuPage
     {
         private readonly AgentsCollectionViewModel _agentsCollection;
@@ -18,8 +21,19 @@ namespace PowerPad.WinUI.Pages
         private AgentViewModel? _selectedAgent;
         private AgentEditorControl? _editorControl;
 
+        /// <summary>
+        /// Gets the width of the navigation menu based on its visibility.
+        /// </summary>
         public double NavigationWidth => AgentsMenu.Visibility == Visibility.Visible ? TreeView.ActualWidth : 0;
 
+        /// <summary>
+        /// Occurs when the visibility of the navigation menu changes.
+        /// </summary>
+        public event EventHandler? NavigationVisibilityChanged;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AgentsPage"/> class.
+        /// </summary>
         public AgentsPage()
         {
             this.InitializeComponent();
@@ -29,8 +43,21 @@ namespace PowerPad.WinUI.Pages
             foreach (var agent in _agentsCollection.Agents) agent.IsSelected = false;
         }
 
-        public event EventHandler? NavigationVisibilityChanged;
+        /// <summary>
+        /// Toggles the visibility of the navigation menu.
+        /// </summary>
+        public void ToggleNavigationVisibility()
+        {
+            AgentsMenu.Visibility = AgentsMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
 
+            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Handles the selection change event in the TreeView.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing the selection details.</param>
         private async void TreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs eventArgs)
         {
             var invokedEntry = (AgentViewModel?)eventArgs.AddedItems.FirstOrDefault();
@@ -76,6 +103,10 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Updates the visibility of the landing page or editor content.
+        /// </summary>
+        /// <param name="showLanding">A boolean indicating whether to show the landing page.</param>
         private void UpdateLandingVisibility(bool showLanding)
         {
             if (showLanding)
@@ -90,13 +121,11 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
-        public void ToggleNavigationVisibility()
-        {
-            AgentsMenu.Visibility = AgentsMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-
-            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
-        }
-
+        /// <summary>
+        /// Handles the click event for creating a new agent.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
             var newIcon = _agentsCollection.GenerateIcon();
@@ -116,6 +145,11 @@ namespace PowerPad.WinUI.Pages
             });
         }
 
+        /// <summary>
+        /// Handles the click event for renaming an agent.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var entry = (AgentViewModel)((MenuFlyoutItem)sender).DataContext;
@@ -125,6 +159,11 @@ namespace PowerPad.WinUI.Pages
             if (result is not null) entry.Name = result;
         }
 
+        /// <summary>
+        /// Handles the click event for deleting an agent.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void DeleteFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var entry = (AgentViewModel)((MenuFlyoutItem)sender).DataContext;
@@ -152,6 +191,11 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Handles the click event for showing the context menu of an agent.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void MoreButton_Click(object sender, RoutedEventArgs __)
         {
             var button = sender as Button;
@@ -161,14 +205,23 @@ namespace PowerPad.WinUI.Pages
             if (container?.ContextFlyout is MenuFlyout flyout) flyout.ShowAt(button);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            // Nothing to dispose in this case
-        }
-
+        /// <summary>
+        /// Handles the drop completed event for a TreeView item.
+        /// </summary>
+        /// <param name="sender">The UI element that triggered the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void TreeViewItem_DropCompleted(UIElement sender, DropCompletedEventArgs __)
         {
             TreeView.SelectedItem ??= (AgentViewModel?)((TreeViewItem)sender).DataContext;
+        }
+
+        /// <summary>
+        /// Disposes of resources used by the page.
+        /// </summary>
+        /// <param name="disposing">A boolean indicating whether to dispose managed resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            // Nothing to dispose in this case
         }
     }
 }

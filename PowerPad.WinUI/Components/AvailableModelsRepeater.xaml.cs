@@ -79,7 +79,7 @@ namespace PowerPad.WinUI.Components
         /// Handles the delete button click event for a model.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void OnDeleteClick(object? sender, RoutedEventArgs __)
         {
             DeleteClick?.Invoke(sender, new((AIModelViewModel)((MenuFlyoutItem)sender!).Tag));
@@ -89,7 +89,7 @@ namespace PowerPad.WinUI.Components
         /// Handles the set default button click event for a model.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void OnSetDefaultClick(object? sender, RoutedEventArgs __)
         {
             var model = (AIModelViewModel)((MenuFlyoutItem)sender!).Tag;
@@ -103,7 +103,7 @@ namespace PowerPad.WinUI.Components
         /// Handles the hyperlink button click event to show model information.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void HyperlinkButton_Click(object sender, RoutedEventArgs __)
         {
             var model = (AIModelViewModel)((HyperlinkButton)sender!).Tag;
@@ -125,8 +125,8 @@ namespace PowerPad.WinUI.Components
         /// <summary>
         /// Handles the add models button click event.
         /// </summary>
-        /// <param name="_">The source of the event (unused).</param>
-        /// <param name="__">The event arguments (unused).</param>
+        /// <param name="_">The source of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void AddModelsButton_Click(object _, RoutedEventArgs __)
         {
             AddButtonClick?.Invoke(this, EventArgs.Empty);

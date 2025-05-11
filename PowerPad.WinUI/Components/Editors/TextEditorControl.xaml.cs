@@ -68,8 +68,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the event when the editable text block is edited.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void EditableTextBlock_Edited(object _, EventArgs __)
         {
             try
@@ -94,7 +94,7 @@ namespace PowerPad.WinUI.Components.Editors
         /// Handles the click event of the copy button.
         /// </summary>
         /// <param name="sender">The button that triggered the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void CopyBtn_Click(object sender, RoutedEventArgs __)
         {
             var textToCopy = TextEditor.Text;
@@ -135,8 +135,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the event when the send button in the agent control is clicked.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void AgentControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
             var originalText = TextEditor.Text;
@@ -174,8 +174,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the click event of the undo button.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void UndoButton_Click(object _, RoutedEventArgs __)
         {
             _document.NextContent = TextEditor.Text;
@@ -186,8 +186,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the click event of the redo button.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void RedoButton_Click(object _, RoutedEventArgs __)
         {
             _document.PreviousContent = TextEditor.Text;
@@ -198,8 +198,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the size changed event of the text editor.
         /// </summary>
-        /// <param name="_">The sender of the event.</param>
-        /// <param name="__">The event arguments.</param>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void TextEditor_SizeChanged(object? _, SizeChangedEventArgs? __)
         {
             DispatcherQueue.TryEnqueue(() =>

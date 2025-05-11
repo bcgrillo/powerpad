@@ -201,6 +201,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// Handles the click event for an agent menu item.
         /// </summary>
         /// <param name="sender">The menu item that was clicked.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void AgentItem_Click(object sender, RoutedEventArgs __)
         {
             SelectedAgent = (AgentViewModel?)((RadioMenuFlyoutItem)sender).Tag;

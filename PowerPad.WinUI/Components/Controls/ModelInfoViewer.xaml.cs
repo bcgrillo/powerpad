@@ -104,6 +104,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Cancels navigation in the WebView2 component and opens the URL in the default browser.
         /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
         /// <param name="eventArgs">Event arguments for the navigation starting event.</param>
         private async void WebView_NavigationStarting(CoreWebView2 _, CoreWebView2NavigationStartingEventArgs eventArgs)
         {
@@ -114,6 +115,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles permission requests in the WebView2 component by denying them.
         /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
         /// <param name="eventArgs">Event arguments for the permission request.</param>
         private void WebView_PermissionRequested(CoreWebView2 _, CoreWebView2PermissionRequestedEventArgs eventArgs)
         {
