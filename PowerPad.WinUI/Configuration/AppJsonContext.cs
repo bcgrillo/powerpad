@@ -8,6 +8,11 @@ using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.Configuration
 {
+    /// <summary>
+    /// Provides a custom JSON serialization context for the application.
+    /// This class is used to predefine the types that can be serialized/deserialized
+    /// using System.Text.Json for improved performance and reduced runtime reflection.
+    /// </summary>
     [JsonSerializable(typeof(GeneralSettingsViewModel))]
     [JsonSerializable(typeof(AIServiceConfigViewModel))]
     [JsonSerializable(typeof(ModelsSettingsViewModel))]
@@ -23,6 +28,10 @@ namespace PowerPad.WinUI.Configuration
     [JsonSerializable(typeof(MessageViewModel))]
     public partial class AppJsonContext : JsonSerializerContext
     {
+        /// <summary>
+        /// Gets a custom instance of <see cref="AppJsonContext"/> configured with
+        /// predefined JSON serializer options.
+        /// </summary>
         public static AppJsonContext Custom { get; } = new(ConfigConstants.JSON_SERIALIZER_OPTIONS);
     }
 }

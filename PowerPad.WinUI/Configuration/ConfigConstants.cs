@@ -13,21 +13,40 @@ using System.Text.Json.Serialization;
 
 namespace PowerPad.WinUI.Configuration
 {
+    /// <summary>
+    /// Contains constants and default configurations for the application.
+    /// </summary>
     public static class ConfigConstants
     {
+        /// <summary>
+        /// Enum representing keys for storing configuration data.
+        /// </summary>
         public enum StoreKey
         {
+            /// <summary>Key for recently used workspaces.</summary>
             RecentlyWorkspaces,
+            /// <summary>Key for general settings.</summary>
             GeneralSettings,
+            /// <summary>Key for model settings.</summary>
             ModelsSettings,
+            /// <summary>Key for GitHub models.</summary>
             GitHubModels,
+            /// <summary>Key for OpenAI models.</summary>
             OpenAIModels,
+            /// <summary>Key for the current document path.</summary>
             CurrentDocumentPath,
+            /// <summary>Key for agents.</summary>
             Agents,
         }
 
+        /// <summary>
+        /// Contains default values for various configuration settings.
+        /// </summary>
         public static class StoreDefault
         {
+            /// <summary>
+            /// Initial GitHub models with their names and URLs.
+            /// </summary>
             private static readonly (string Name, string Url)[] _initialGitHubModels =
             [
                 ("OpenAI/gpt-4.1", "https://github.com/marketplace/models/azure-openai/gpt-4-1"),
@@ -38,6 +57,9 @@ namespace PowerPad.WinUI.Configuration
                 ("Microsoft/Phi-4", "https://github.com/marketplace/models/azureml/Phi-4")
             ];
 
+            /// <summary>
+            /// Initial OpenAI models with their names and URLs.
+            /// </summary>
             private static readonly (string Name, string Url)[] _initialOpenAIModels =
             [
                 ("gpt-4.1", "https://platform.openai.com/docs/models/gpt-4.1"),
@@ -47,8 +69,14 @@ namespace PowerPad.WinUI.Configuration
                 ("o3", "https://platform.openai.com/docs/models/o3")
             ];
 
+            /// <summary>
+            /// Default folder path for workspaces.
+            /// </summary>
             public static readonly string WorkspaceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), nameof(PowerPad));
 
+            /// <summary>
+            /// Default general settings for the application.
+            /// </summary>
             public static readonly GeneralSettingsViewModel GeneralSettings = new()
             {
                 OllamaEnabled = true,
@@ -63,7 +91,7 @@ namespace PowerPad.WinUI.Configuration
 
                 AvailableProviders = [],
 
-                AppTheme = null, //Use system configuration
+                AppTheme = null, // Use system configuration
                 AcrylicBackground = true,
 
                 AgentPrompt =
@@ -75,6 +103,10 @@ namespace PowerPad.WinUI.Configuration
                 EnableHotKeys = true
             };
 
+            /// <summary>
+            /// Generates default model settings for the application.
+            /// </summary>
+            /// <returns>A <see cref="ModelsSettingsViewModel"/> instance with default settings.</returns>
             public static ModelsSettingsViewModel GenerateDefaultModelsSettings()
             {
                 var defaultModelSettings = new ModelsSettingsViewModel
@@ -99,6 +131,9 @@ namespace PowerPad.WinUI.Configuration
                 return defaultModelSettings;
             }
 
+            /// <summary>
+            /// Default agent configurations for the application: PowerEditor
+            /// </summary>
             public static readonly AgentViewModel DefaultAgent1 = new(new()
             {
                 Name = "PowerEditor",
@@ -115,6 +150,9 @@ namespace PowerPad.WinUI.Configuration
                 ShowInChats = false
             };
 
+            /// <summary>
+            /// Default agent configurations for the application: Traductor
+            /// </summary>
             public static readonly AgentViewModel DefaultAgent2 = new(new()
             {
                 Name = "Traductor",
@@ -130,6 +168,9 @@ namespace PowerPad.WinUI.Configuration
                 Id = new Guid("00000000-0000-0000-0000-000000000001"),
             };
 
+            /// <summary>
+            /// Default agent configurations for the application: Hazlo más corto
+            /// </summary>
             public static readonly AgentViewModel DefaultAgent3 = new(new()
             {
                 Name = "Hazlo más corto",
@@ -142,6 +183,9 @@ namespace PowerPad.WinUI.Configuration
                 Id = new Guid("00000000-0000-0000-0000-000000000002"),
             };
 
+            /// <summary>
+            /// Default agent configurations for the application: Poeta
+            /// </summary>
             public static readonly AgentViewModel DefaultAgent4 = new(new()
             {
                 Name = "Poeta",
@@ -152,6 +196,9 @@ namespace PowerPad.WinUI.Configuration
                 ShowInNotes = false
             };
 
+            /// <summary>
+            /// Agents collection containing default agents for the application.
+            /// </summary>
             public static readonly ObservableCollection<AgentViewModel> AgentsCollection =
             [
                 DefaultAgent1,
@@ -161,6 +208,9 @@ namespace PowerPad.WinUI.Configuration
             ];
         }
 
+        /// <summary>
+        /// JSON serializer options for configuration data.
+        /// </summary>
         public static readonly JsonSerializerOptions JSON_SERIALIZER_OPTIONS = new()
         {
             WriteIndented = true,
