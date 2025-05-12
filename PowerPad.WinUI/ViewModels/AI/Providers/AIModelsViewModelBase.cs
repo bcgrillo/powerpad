@@ -13,33 +13,83 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.AI.Providers
 {
+    /// <summary>
+    /// Base class for managing AI models in the application. Provides functionality for filtering, searching, adding, and removing models.
+    /// </summary>
     public abstract partial class AIModelsViewModelBase : ObservableObject, IDisposable
     {
-        private bool _disposed;
         private bool _searchCompleted;
 
+        /// <summary>
+        /// The AI service used for searching and managing models.
+        /// </summary>
         protected readonly IAIService _aiService;
+
+        /// <summary>
+        /// The settings view model containing application settings.
+        /// </summary>
         protected readonly SettingsViewModel _settings;
+
+        /// <summary>
+        /// The provider of the AI models (e.g., OpenAI, HuggingFace).
+        /// </summary>
         protected readonly ModelProvider _modelProvider;
 
+        /// <summary>
+        /// Command to set the default AI model.
+        /// </summary>
         public IRelayCommand<AIModelViewModel> SetDefaultModelCommand { get; }
+
+        /// <summary>
+        /// Command to remove an AI model.
+        /// </summary>
         public IAsyncRelayCommand<AIModelViewModel> RemoveModelCommand { get; }
+
+        /// <summary>
+        /// Command to add an AI model.
+        /// </summary>
         public IAsyncRelayCommand<AIModelViewModel> AddModelCommand { get; }
+
+        /// <summary>
+        /// Command to search for AI models.
+        /// </summary>
         public IAsyncRelayCommand<string> SearchModelCommand { get; }
 
+        /// <summary>
+        /// Collection of filtered AI models based on the current provider.
+        /// </summary>
         public ObservableCollection<AIModelViewModel> FilteredModels { get; }
 
+        /// <summary>
+        /// Collection of AI models resulting from a search query.
+        /// </summary>
         public ObservableCollection<AIModelViewModel> SearchResultModels { get; }
 
+        /// <summary>
+        /// Indicates whether a search operation is currently in progress.
+        /// </summary>
         [ObservableProperty]
         public partial bool Searching { get; set; }
 
+        /// <summary>
+        /// Indicates whether the filtered models collection is empty.
+        /// </summary>
         public bool FilteredModelsEmpty => !FilteredModels.Any();
 
+        /// <summary>
+        /// Indicates whether the search result models collection is empty.
+        /// </summary>
         public bool SearchResultModelsEmpty => _searchCompleted && !SearchResultModels.Any();
 
+        /// <summary>
+        /// Indicates whether the repeater functionality is enabled for the current provider.
+        /// </summary>
         public bool RepeaterEnabled { get; protected set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AIModelsViewModelBase"/> class.
+        /// </summary>
+        /// <param name="modelProvider">The provider of the AI models.</param>
         protected AIModelsViewModelBase(ModelProvider modelProvider)
         {
             _aiService = App.Get<IAIService>(modelProvider);
@@ -66,6 +116,11 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             SearchResultModels = [];
         }
 
+        /// <summary>
+        /// Filters the models based on the current provider and updates the filtered models collection.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing details about the collection change.</param>
         protected void FilterModels(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
             switch (eventArgs.Action)
@@ -91,11 +146,20 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             OnPropertyChanged(nameof(FilteredModelsEmpty));
         }
 
+        /// <summary>
+        /// Sets the specified AI model as the default model.
+        /// </summary>
+        /// <param name="aiModel">The AI model to set as default.</param>
         protected void SetDefaultModel(AIModelViewModel? aiModel)
         {
             _settings.Models.DefaultModel = aiModel;
         }
 
+        /// <summary>
+        /// Searches for AI models based on the specified query.
+        /// </summary>
+        /// <param name="query">The search query string.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         protected virtual async Task SearchModels(string? query)
         {
             Searching = true;
@@ -118,6 +182,11 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             OnPropertyChanged(nameof(SearchResultModelsEmpty));
         }
 
+        /// <summary>
+        /// Adds the specified AI model to the available models collection.
+        /// </summary>
+        /// <param name="aiModel">The AI model to add.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         protected virtual Task AddModel(AIModelViewModel? aiModel)
         {
             ArgumentNullException.ThrowIfNull(aiModel);
@@ -133,6 +202,11 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Removes the specified AI model from the available models collection.
+        /// </summary>
+        /// <param name="aiModel">The AI model to remove.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         protected virtual Task RemoveModel(AIModelViewModel? aiModel)
         {
             ArgumentNullException.ThrowIfNull(aiModel);
@@ -145,34 +219,36 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Updates the state of the repeater functionality based on the provider availability.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         protected void UpdateRepeaterState(object? _, EventArgs __)
         {
             RepeaterEnabled = _settings.General.AvailableProviders.Contains(_modelProvider);
             OnPropertyChanged(nameof(RepeaterEnabled));
         }
 
-        ~AIModelsViewModelBase()
-        {
-            Dispose(false);
-        }
-
+        /// <summary>
+        /// Disposes the resources used by the <see cref="AIModelsViewModelBase"/> class.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes the resources used by the <see cref="AIModelsViewModelBase"/> class.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method is called from the Dispose method.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    _settings.General.ProviderAvailabilityChanged -= UpdateRepeaterState;
-                    _settings.Models.AvailableModels.CollectionChanged -= FilterModels;
-                }
-
-                _disposed = true;
+                _settings.General.ProviderAvailabilityChanged -= UpdateRepeaterState;
+                _settings.Models.AvailableModels.CollectionChanged -= FilterModels;
             }
         }
     }

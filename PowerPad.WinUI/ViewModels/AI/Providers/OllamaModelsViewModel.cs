@@ -10,18 +10,31 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.AI.Providers
 {
+    /// <summary>
+    /// ViewModel for managing Ollama AI models, including refreshing, searching, adding, and removing models.
+    /// </summary>
     public partial class OllamaModelsViewModel : AIModelsViewModelBase
     {
         private readonly IOllamaService _ollamaService;
 
+        /// <summary>
+        /// Command to refresh the list of available models.
+        /// </summary>
         public IAsyncRelayCommand RefreshModelsCommand { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OllamaModelsViewModel"/> class with the default model provider.
+        /// </summary>
         public OllamaModelsViewModel()
             : this(ModelProvider.Ollama)
         {
             _ = RefreshModels();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OllamaModelsViewModel"/> class with the specified model provider.
+        /// </summary>
+        /// <param name="modelProvider">The provider of the AI models.</param>
         protected OllamaModelsViewModel(ModelProvider modelProvider)
             : base(modelProvider)
         {
@@ -30,6 +43,10 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             RefreshModelsCommand = new AsyncRelayCommand(RefreshModels);
         }
 
+        /// <summary>
+        /// Refreshes the list of available models by synchronizing with the Ollama service.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         protected async Task RefreshModels()
         {
             if (_settings.General.OllamaConfig.ServiceStatus != ServiceStatus.Online)
@@ -71,6 +88,11 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             }
         }
 
+        /// <summary>
+        /// Searches for AI models based on the specified query.
+        /// </summary>
+        /// <param name="query">The search query string.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         protected override async Task SearchModels(string? query)
         {
             Searching = true;
@@ -93,6 +115,12 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             Searching = false;
         }
 
+        /// <summary>
+        /// Adds the specified AI model to the available models collection.
+        /// </summary>
+        /// <param name="aiModel">The AI model to add.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="aiModel"/> is null.</exception>
         protected override async Task AddModel(AIModelViewModel? aiModel)
         {
             ArgumentNullException.ThrowIfNull(aiModel);
@@ -115,6 +143,12 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             }
         }
 
+        /// <summary>
+        /// Removes the specified AI model from the available models collection.
+        /// </summary>
+        /// <param name="aiModel">The AI model to remove.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="aiModel"/> is null.</exception>
         protected override async Task RemoveModel(AIModelViewModel? aiModel)
         {
             ArgumentNullException.ThrowIfNull(aiModel);

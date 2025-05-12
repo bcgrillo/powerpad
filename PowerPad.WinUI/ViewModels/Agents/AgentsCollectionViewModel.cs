@@ -12,6 +12,9 @@ using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels.Agents
 {
+    /// <summary>
+    /// ViewModel for managing a collection of agents, including their properties and events.
+    /// </summary>
     public class AgentsCollectionViewModel : ObservableObject
     {
         private static readonly string[] RANDOM_GLYPHS =
@@ -28,6 +31,9 @@ namespace PowerPad.WinUI.ViewModels.Agents
         private readonly IConfigStore _configStore;
         private int _currentGlyphIndex = 0;
 
+        /// <summary>
+        /// Gets or initializes the collection of agents.
+        /// </summary>
         public required ObservableCollection<AgentViewModel> Agents
         {
             get;
@@ -39,8 +45,14 @@ namespace PowerPad.WinUI.ViewModels.Agents
             }
         }
 
+        /// <summary>
+        /// Event triggered when the availability of agents changes.
+        /// </summary>
         public event EventHandler? AgentsAvailabilityChanged;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AgentsCollectionViewModel"/> class.
+        /// </summary>
         public AgentsCollectionViewModel()
         {
             _settings = App.Get<SettingsViewModel>();
@@ -49,43 +61,17 @@ namespace PowerPad.WinUI.ViewModels.Agents
             Agents = _configStore.Get<ObservableCollection<AgentViewModel>>(StoreKey.Agents);
         }
 
+        /// <summary>
+        /// Retrieves an agent by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the agent.</param>
+        /// <returns>The agent with the specified ID, or <c>null</c> if not found.</returns>
         public AgentViewModel? GetAgent(Guid id) => Agents.FirstOrDefault(x => x.Id == id);
 
-        private void CollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
-        {
-            OnPropertyChanged($"{nameof(Agents)}");
-
-            switch (eventArgs.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (AgentViewModel model in eventArgs.NewItems!)
-                    {
-                        model.PropertyChanged += CollectionPropertyChangedHandler;
-                    }
-
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (AgentViewModel model in eventArgs.OldItems!)
-                    {
-                        model.PropertyChanged -= CollectionPropertyChangedHandler;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                default:
-                    throw new NotImplementedException("Only Add and Remove actions are supported.");
-            }
-
-            AgentsAvailabilityChanged?.Invoke(null!, EventArgs.Empty);
-            SaveAgents();
-        }
-
-        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
-        {
-            AgentsAvailabilityChanged?.Invoke(null!, EventArgs.Empty);
-            SaveAgents();
-        }
-
+        /// <summary>
+        /// Generates a random icon for an agent based on the current application theme.
+        /// </summary>
+        /// <returns>An <see cref="AgentIcon"/> object with a random glyph and color.</returns>
         public AgentIcon GenerateIcon()
         {
             var mode = _settings.General.AppTheme ?? Application.Current.RequestedTheme;
@@ -131,6 +117,54 @@ namespace PowerPad.WinUI.ViewModels.Agents
             return new(glyph, AgentIconType.FontIconGlyph, color);
         }
 
+        /// <summary>
+        /// Handles changes to the collection of agents.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing details of the change.</param>
+        private void CollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
+        {
+            OnPropertyChanged($"{nameof(Agents)}");
+
+            switch (eventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AgentViewModel model in eventArgs.NewItems!)
+                    {
+                        model.PropertyChanged += CollectionPropertyChangedHandler;
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AgentViewModel model in eventArgs.OldItems!)
+                    {
+                        model.PropertyChanged -= CollectionPropertyChangedHandler;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                default:
+                    throw new NotImplementedException("Only Add and Remove actions are supported.");
+            }
+
+            AgentsAvailabilityChanged?.Invoke(null!, EventArgs.Empty);
+            SaveAgents();
+        }
+
+        /// <summary>
+        /// Handles property changes within the collection of agents.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing details of the property change.</param>
+        private void CollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
+        {
+            AgentsAvailabilityChanged?.Invoke(null!, EventArgs.Empty);
+            SaveAgents();
+        }
+
+        /// <summary>
+        /// Saves the current collection of agents to the configuration store.
+        /// </summary>
         private void SaveAgents() => _configStore.Set(StoreKey.Agents, Agents);
     }
 }
