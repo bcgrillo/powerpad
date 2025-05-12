@@ -14,13 +14,12 @@ using WinUIEx;
 
 namespace PowerPad.WinUI
 {
+    /// <summary>
+    /// Represents the main window of the application, providing navigation and UI management.
+    /// </summary>
     public partial class MainWindow : WindowEx
     {
         private readonly SettingsViewModel _settings;
-
-        private string? _activePageName;
-        private IToggleMenuPage? _activeToggleMenuPage;
-
         private readonly Dictionary<string, Type> _navigation = new()
         {
             { nameof(WorkspacePage), typeof(WorkspacePage) },
@@ -29,6 +28,12 @@ namespace PowerPad.WinUI
             { nameof(AgentsPage), typeof(AgentsPage) },
         };
 
+        private string? _activePageName;
+        private IToggleMenuPage? _activeToggleMenuPage;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
             this.InitializeComponent();
@@ -46,10 +51,35 @@ namespace PowerPad.WinUI
                 BackdropHelper.DisposeController();
             };
 
-            // Registrar HotKey
+            // Register HotKey
             if (_settings.General.EnableHotKeys) HotKeyHelper.Register(this, true);
         }
 
+
+        /// <summary>
+        /// Sets the backdrop effect for the application window.
+        /// </summary>
+        /// <param name="value">A value indicating whether to enable the backdrop effect.</param>
+        public void SetBackdrop(bool value)
+        {
+            BackdropHelper.SetBackdrop(value, _settings.General.AppTheme, this, MainPage);
+        }
+
+        /// <summary>
+        /// Displays the notes page in the application.
+        /// </summary>
+        public void ShowNotes()
+        {
+            this.Show();
+            BringToFront();
+            NavView.SelectedItem = NavView.MenuItems[0];
+        }
+
+        /// <summary>
+        /// Handles the Loaded event of the NavigationView control.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void NavView_Loaded(object _, RoutedEventArgs __)
         {
             DispatcherQueue.TryEnqueue(async () =>
@@ -70,7 +100,7 @@ namespace PowerPad.WinUI
                     switch (ollamaInstallationDialog)
                     {
                         case ContentDialogResult.Primary:
-                            NavView.SelectedItem = NavView.MenuItems[1]; //Go to models
+                            NavView.SelectedItem = NavView.MenuItems[1]; // Go to models
                             break;
                         case ContentDialogResult.Secondary:
                             NavView.SelectedItem = NavView.SettingsItem;
@@ -85,6 +115,9 @@ namespace PowerPad.WinUI
             });
         }
 
+        /// <summary>
+        /// Updates the navigation menu items based on the current settings.
+        /// </summary>
         private void UpdateNavMenuItems()
         {
             ModelsNavViewItem.IsEnabled = _settings.General.OllamaEnabled || _settings.General.AzureAIEnabled || _settings.General.OpenAIEnabled;
@@ -97,6 +130,9 @@ namespace PowerPad.WinUI
                 ? Visibility.Visible : Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Configures the title bar of the application window.
+        /// </summary>
         private void SetTitleBar()
         {
             ExtendsContentIntoTitleBar = true;
@@ -104,6 +140,11 @@ namespace PowerPad.WinUI
             AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the NavigationView control.
+        /// </summary>
+        /// <param name="_">The sender of the event.</param>
+        /// <param name="eventArgs">The event arguments containing selection details.</param>
         private void NavView_SelectionChanged(object _, NavigationViewSelectionChangedEventArgs eventArgs)
         {
             if (eventArgs.IsSettingsSelected)
@@ -118,6 +159,10 @@ namespace PowerPad.WinUI
             }
         }
 
+        /// <summary>
+        /// Navigates to the specified page.
+        /// </summary>
+        /// <param name="page">The name of the page to navigate to.</param>
         private void NavigateToPage(string? page)
         {
             ArgumentException.ThrowIfNullOrEmpty(page);
@@ -134,6 +179,9 @@ namespace PowerPad.WinUI
             }
         }
 
+        /// <summary>
+        /// Sets the visual elements for toggling the navigation menu.
+        /// </summary>
         private void SetToggleVisualElements()
         {
             if (_activeToggleMenuPage is null)
@@ -163,9 +211,13 @@ namespace PowerPad.WinUI
 
                 ToggleMenuBtn.Visibility = Visibility.Visible;
             }
-
         }
 
+        /// <summary>
+        /// Handles the click event of the ToggleMenu button.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void ToggleMenuBtn_Click(object _, RoutedEventArgs __)
         {
             (NavFrame.Content as IToggleMenuPage)?.ToggleNavigationVisibility();
@@ -173,33 +225,36 @@ namespace PowerPad.WinUI
             SetToggleVisualElements();
         }
 
+        /// <summary>
+        /// Minimizes the application window to the system tray.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void MinimizeToTray_Click(object _, RoutedEventArgs __)
         {
             TaskbarIcon.Visibility = Visibility.Visible;
             this.Hide(enableEfficiencyMode: false);
         }
 
+        /// <summary>
+        /// Restores the application window from the system tray.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void Show_Click(object _, RoutedEventArgs __)
         {
             TaskbarIcon.Visibility = Visibility.Collapsed;
             this.Show();
         }
 
+        /// <summary>
+        /// Exits the application.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void Exit_Click(object _, RoutedEventArgs __)
         {
             Application.Current.Exit();
-        }
-
-        public void SetBackdrop(bool value)
-        {
-            BackdropHelper.SetBackdrop(value, _settings.General.AppTheme, this, MainPage);
-        }
-
-        public void ShowNotes()
-        {
-            this.Show();
-            BringToFront();
-            NavView.SelectedItem = NavView.MenuItems[0];
         }
     }
 }

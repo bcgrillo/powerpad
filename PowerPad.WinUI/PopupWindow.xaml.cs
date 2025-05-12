@@ -8,10 +8,16 @@ using WinUIEx;
 
 namespace PowerPad.WinUI
 {
+    /// <summary>
+    /// Represents a popup window with custom behavior and settings.
+    /// </summary>
     public sealed partial class PopupWindow : WindowEx
     {
         private readonly SettingsViewModel _settings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PopupWindow"/> class.
+        /// </summary>
         public PopupWindow()
         {
             this.InitializeComponent();
@@ -38,6 +44,9 @@ namespace PowerPad.WinUI
             };
         }
 
+        /// <summary>
+        /// Displays the popup window, centers it on the screen, and sets it to always be on top.
+        /// </summary>
         public void ShowPopup()
         {
             this.CenterOnScreen();
@@ -46,10 +55,24 @@ namespace PowerPad.WinUI
             PopupEditorPage.SetFocus();
         }
 
+        /// <summary>
+        /// Sets the content of the popup editor page.
+        /// </summary>
+        /// <param name="newContent">The new content to display in the popup editor.</param>
         public void SetContent(string newContent) => PopupEditorPage.SetContent(newContent);
 
+        /// <summary>
+        /// Handles the close request event for the popup editor page.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void PopupEditorPage_CloseRequested(object _, EventArgs __) => Close();
 
+        /// <summary>
+        /// Handles the closed event for the popup window.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing details about the window close event.</param>
         private void PopupWindow_Closed(object _, WindowEventArgs eventArgs)
         {
             eventArgs.Handled = true;
