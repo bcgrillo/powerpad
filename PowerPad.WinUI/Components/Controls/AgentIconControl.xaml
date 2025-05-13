@@ -6,12 +6,9 @@
     xmlns:local="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    xmlns:vm="using:PowerPad.WinUI.ViewModels.Agents"
     mc:Ignorable="d">
     <Grid>
-        <ImageIcon x:Name="ImageIcon" />
-        <TextBlock x:Name="TextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Image x:Name="ImageIcon" />
         <FontIcon x:Name="FontIcon" />
     </Grid>
 </UserControl>

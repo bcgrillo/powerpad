@@ -1,29 +1,34 @@
-﻿<UserControl
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl
     x:Class="PowerPad.WinUI.Components.SearchModelsResultRepeater"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
-    xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
+    xmlns:local="using:PowerPad.WinUI.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
-    xmlns:localc="using:PowerPad.WinUI.Components.Controls">
+    xmlns:vmai="using:PowerPad.WinUI.ViewModels.AI"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
+    xmlns:tkui="using:CommunityToolkit.WinUI"
+    xmlns:tkcontrols="using:CommunityToolkit.WinUI.Controls"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <x:Double x:Key="SettingsCardWrapThreshold">300</x:Double>
-        <converters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:EmptyObjectToObjectConverter x:Key="EmptyObjectToVisibilityConverter"
+        <tkconverters:FileSizeToFriendlyStringConverter x:Key="FileSizeToFriendlyStringConverter" />
+        <tkconverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <tkconverters:EmptyObjectToObjectConverter x:Key="EmptyObjectToVisibilityConverter"
                                                  EmptyValue="Collapsed"
                                                  NotEmptyValue="Visible" />
     </UserControl.Resources>
     <Grid>
-        <toolkit:SwitchPresenter 
+        <tkcontrols:SwitchPresenter 
             x:Name="MainContent"
             HorizontalAlignment="Center"
             TargetType="x:Boolean"
             Value="{x:Bind SearchingFlag, Mode=OneWay}"
             Visibility="{x:Bind SearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-        <toolkit:Case Value="True">
+        <tkcontrols:Case Value="True">
                 <StackPanel
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -36,8 +41,8 @@
                         FontSize="18"
                         Text="Buscando..." />
                 </StackPanel>
-            </toolkit:Case>
-            <toolkit:Case Value="False">
+            </tkcontrols:Case>
+            <tkcontrols:Case Value="False">
                 <ScrollView x:Name="ModelsScrollViewer" VerticalAlignment="Center">
                     <Grid Padding="36,0,36,36">
                         <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
@@ -50,10 +55,10 @@
                                         MinRowSpacing="12" />
                                 </ItemsRepeater.Layout>
                                 <ItemsRepeater.ItemTemplate>
-                                    <DataTemplate x:DataType="ai:AIModelViewModel">
-                                        <toolkit:SettingsCard
-                                            HeaderIcon="{ui:FontIcon Glyph=&#xF158;}" Padding="18, 0">
-                                            <toolkit:SettingsCard.Header>
+                                    <DataTemplate x:DataType="vmai:AIModelViewModel">
+                                        <tkcontrols:SettingsCard
+                                            HeaderIcon="{tkui:FontIcon Glyph=&#xF158;}" Padding="18, 0">
+                                            <tkcontrols:SettingsCard.Header>
                                                 <Grid ColumnSpacing="8">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*" />
@@ -76,8 +81,8 @@
                                                         <FontIcon Glyph="&#xE946;" FontSize="18" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
                                                     </HyperlinkButton>
                                                 </Grid>
-                                            </toolkit:SettingsCard.Header>
-                                            <toolkit:SettingsCard.Description>
+                                            </tkcontrols:SettingsCard.Header>
+                                            <tkcontrols:SettingsCard.Description>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock
                                                         VerticalAlignment="Center"
@@ -95,7 +100,7 @@
                                                         Visibility="{x:Bind IsSizeTooLargeForExecution, Mode=OneWay}"
                                                         Text="Demasiado grande para este equipo" />
                                                 </StackPanel>
-                                            </toolkit:SettingsCard.Description>
+                                            </tkcontrols:SettingsCard.Description>
                                             <StackPanel Orientation="Horizontal" Spacing="4" Height="40">
                                                 <TextBlock
                                                     VerticalAlignment="Center"
@@ -103,19 +108,19 @@
                                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                     Text="{x:Bind Size, Converter={StaticResource FileSizeToFriendlyStringConverter}}" />
                                                 <Button Width="35" Height="35" Padding="0"
-                                                    Content="{ui:FontIcon Glyph=&#xE710;,FontSize=14}"
+                                                    Content="{tkui:FontIcon Glyph=&#xE710;,FontSize=14}"
                                                     Tag="{x:Bind}"
                                                     ToolTipService.ToolTip="Añadir"
                                                     Visibility="{x:Bind CanAdd, Mode=OneWay}"
                                                     Click="OnAddModelClick" 
                                                     Style="{StaticResource AccentButtonStyle}"/>
                                                 <Button Width="35" Height="35" Padding="0"
-                                                    Content="{ui:FontIcon Glyph=&#xE73E;,FontSize=14}"
+                                                    Content="{tkui:FontIcon Glyph=&#xE73E;,FontSize=14}"
                                                     Visibility="{x:Bind Available, Mode=OneWay}"
                                                     IsEnabled="False"
                                                     Style="{StaticResource AccentButtonStyle}"/>
                                                 <Button Width="35" Height="35" Padding="0"
-                                                    Content="{ui:FontIcon Glyph=&#xF140;,FontSize=14}"
+                                                    Content="{tkui:FontIcon Glyph=&#xF140;,FontSize=14}"
                                                     Visibility="{x:Bind IsSizeTooLargeForExecution, Mode=OneWay}"
                                                     IsEnabled="False"
                                                     Style="{StaticResource AccentButtonStyle}"/>
@@ -125,15 +130,15 @@
                                                     Value="{x:Bind Progress, Mode=OneWay}"
                                                     IsIndeterminate="False" />
                                             </StackPanel>
-                                        </toolkit:SettingsCard>
+                                        </tkcontrols:SettingsCard>
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
                             </ItemsRepeater>
                         </StackPanel>
                     </Grid>
                 </ScrollView>
-            </toolkit:Case>
-        </toolkit:SwitchPresenter>
+            </tkcontrols:Case>
+        </tkcontrols:SwitchPresenter>
         <StackPanel 
             Visibility="{x:Bind SearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
             Orientation="Vertical" 
@@ -149,6 +154,6 @@
                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                 Glyph="&#xEA39;" />
         </StackPanel>
-        <localc:ModelInfoViewer x:Name="ModelInfoViewer" VisibilityChanged="ModelInfoViewer_VisibilityChanged"/>
+        <controls:ModelInfoViewer x:Name="ModelInfoViewer" VisibilityChanged="ModelInfoViewer_VisibilityChanged"/>
     </Grid>
 </UserControl>

@@ -1,34 +1,25 @@
-using System;
-using System.Collections.Generic;
+using H.NotifyIcon;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using WinUIEx;
-using Microsoft.UI.Composition.SystemBackdrops;
-using WinRT;
-using Microsoft.UI.Composition;
-using PowerPad.WinUI.Pages;
-using Microsoft.UI.Windowing;
-using Windows.UI;
-using PowerPad.WinUI.Helpers;
-using PowerPad.WinUI.ViewModels.Settings;
-using Microsoft.UI.Xaml.Media;
-using PowerPad.Core.Services.Config;
 using PowerPad.Core.Models.AI;
+using PowerPad.Core.Services.Config;
 using PowerPad.WinUI.Dialogs;
-using System.Threading.Tasks;
+using PowerPad.WinUI.Helpers;
+using PowerPad.WinUI.Pages;
+using PowerPad.WinUI.ViewModels.Settings;
+using System;
+using System.Collections.Generic;
+using WinUIEx;
 
 namespace PowerPad.WinUI
 {
+    /// <summary>
+    /// Represents the main window of the application, providing navigation and UI management.
+    /// </summary>
     public partial class MainWindow : WindowEx
     {
-        private DesktopAcrylicController? _acrylicController;
-        private SystemBackdropConfiguration? _configurationSource;
         private readonly SettingsViewModel _settings;
-
-        private string? _activePageName;
-        private IToggleMenuPage? _activeToggleMenuPage;
-
         private readonly Dictionary<string, Type> _navigation = new()
         {
             { nameof(WorkspacePage), typeof(WorkspacePage) },
@@ -37,6 +28,12 @@ namespace PowerPad.WinUI
             { nameof(AgentsPage), typeof(AgentsPage) },
         };
 
+        private string? _activePageName;
+        private IToggleMenuPage? _activeToggleMenuPage;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
             this.InitializeComponent();
@@ -51,10 +48,36 @@ namespace PowerPad.WinUI
                 App.Get<IConfigStoreService>().StoreConfigs();
                 EditorManagerHelper.AutoSaveEditors();
 
-                _acrylicController?.Dispose();
+                BackdropHelper.DisposeController();
             };
+
+            // Register HotKey
+            if (_settings.General.EnableHotKeys) HotKeyHelper.Register(this, true);
         }
 
+
+        /// <summary>
+        /// Sets the backdrop effect for the application window.
+        /// </summary>
+        /// <param name="value">A value indicating whether to enable the backdrop effect.</param>
+        public void SetBackdrop(bool value)
+        {
+            BackdropHelper.SetBackdrop(value, _settings.General.AppTheme, this, MainPage);
+        }
+
+        /// <summary>
+        /// Displays the notes page in the application.
+        /// </summary>
+        public void ShowNotes()
+        {
+            this.Show();
+            BringToFront();
+            NavView.SelectedItem = NavView.MenuItems[0];
+        }
+
+        /// <summary>
+        /// Handles the Loaded event of the NavigationView control.
+        /// </summary>
         private void NavView_Loaded(object _, RoutedEventArgs __)
         {
             DispatcherQueue.TryEnqueue(async () =>
@@ -64,18 +87,18 @@ namespace PowerPad.WinUI
                 _settings.General.OllamaConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
                 _settings.General.AzureAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
                 _settings.General.OpenAIConfig.StatusChanged += (s, e) => UpdateNavMenuItems();
-                _settings.Models.ModelAvaibilityChanged += (s, e) => UpdateNavMenuItems();
+                _settings.Models.ModelAvailabilityChanged += (s, e) => UpdateNavMenuItems();
 
                 await _settings.TestConnections();
 
-                if(_settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
+                if (_settings.General.OllamaEnabled && _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
                 {
                     var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
 
                     switch (ollamaInstallationDialog)
                     {
                         case ContentDialogResult.Primary:
-                            NavView.SelectedItem = NavView.MenuItems[1]; //Go to models
+                            NavView.SelectedItem = NavView.MenuItems[1]; // Go to models
                             break;
                         case ContentDialogResult.Secondary:
                             NavView.SelectedItem = NavView.SettingsItem;
@@ -90,48 +113,24 @@ namespace PowerPad.WinUI
             });
         }
 
+        /// <summary>
+        /// Updates the navigation menu items based on the current settings.
+        /// </summary>
         private void UpdateNavMenuItems()
         {
-            //TODO: Add a better way to handle this
             ModelsNavViewItem.IsEnabled = _settings.General.OllamaEnabled || _settings.General.AzureAIEnabled || _settings.General.OpenAIEnabled;
             AgentesNavViewItem.IsEnabled = _settings.IsAIAvailable == true;
 
             ErrorBadge.Visibility = (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error)
-                || (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound) 
+                || (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
                 || (_settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error)
                 || (_settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error)
                 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public void SetBackdrop(bool setAcrylicBackDrop)
-        {
-            if (setAcrylicBackDrop && DesktopAcrylicController.IsSupported())
-            {
-                _configurationSource ??= new()
-                {
-                    IsInputActive = true,
-                    Theme = _settings.General.AppTheme is null
-                        ? (SystemBackdropTheme)((FrameworkElement)Content).ActualTheme
-                        : (_settings.General.AppTheme == ApplicationTheme.Light ? SystemBackdropTheme.Light : SystemBackdropTheme.Dark)
-                };
-
-                _acrylicController ??= new()
-                {
-                    Kind = DesktopAcrylicKind.Thin,
-                    TintColor = ((SolidColorBrush)Application.Current.Resources["PowerPadBackgroundBrush"]).Color,
-                    TintOpacity = 0.8F
-                };
-
-                MainPage.Background = null;
-                _acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
-                _acrylicController.SetSystemBackdropConfiguration(_configurationSource);
-            }
-            else
-            {
-                MainPage.Background = (Brush)Application.Current.Resources["PowerPadBackgroundBrush"];
-            }
-        }
-
+        /// <summary>
+        /// Configures the title bar of the application window.
+        /// </summary>
         private void SetTitleBar()
         {
             ExtendsContentIntoTitleBar = true;
@@ -139,6 +138,11 @@ namespace PowerPad.WinUI
             AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the NavigationView control.
+        /// </summary>
+        /// <param name="_">The sender of the event.</param>
+        /// <param name="eventArgs">The event arguments containing selection details.</param>
         private void NavView_SelectionChanged(object _, NavigationViewSelectionChangedEventArgs eventArgs)
         {
             if (eventArgs.IsSettingsSelected)
@@ -153,9 +157,13 @@ namespace PowerPad.WinUI
             }
         }
 
+        /// <summary>
+        /// Navigates to the specified page.
+        /// </summary>
+        /// <param name="page">The name of the page to navigate to.</param>
         private void NavigateToPage(string? page)
         {
-            ArgumentException.ThrowIfNullOrEmpty(page, nameof(page));
+            ArgumentException.ThrowIfNullOrEmpty(page);
 
             if (_activePageName != page)
             {
@@ -169,11 +177,15 @@ namespace PowerPad.WinUI
             }
         }
 
+        /// <summary>
+        /// Sets the visual elements for toggling the navigation menu.
+        /// </summary>
         private void SetToggleVisualElements()
         {
             if (_activeToggleMenuPage is null)
             {
-                TitleContent.Margin = new(0);
+                TitleContent.Margin = TitleContent.Margin with { Left = 0 };
+                TitleBar.Margin = new(0);
                 Splitter.Visibility = Visibility.Collapsed;
                 ToggleMenuBtn.Visibility = Visibility.Collapsed;
             }
@@ -182,28 +194,57 @@ namespace PowerPad.WinUI
                 var navWidth = _activeToggleMenuPage.NavigationWidth;
 
                 TitleContent.Margin = TitleContent.Margin with { Left = navWidth };
+                TitleBar.Margin = new(8, 0, 0, 0);
 
                 if (navWidth > 0)
                 {
                     Splitter.Visibility = Visibility.Visible;
-                    ToggleMenuIcon.Source = (ImageSource)Application.Current.Resources["HideMenuSvg"];
+                    ToggleMenuIcon.Glyph = "\uE8A0";
                 }
                 else
                 {
                     Splitter.Visibility = Visibility.Collapsed;
-                    ToggleMenuIcon.Source = (ImageSource)Application.Current.Resources["ShowMenuSvg"];
+                    ToggleMenuIcon.Glyph = "\uE89F";
                 }
 
                 ToggleMenuBtn.Visibility = Visibility.Visible;
             }
-
         }
 
+        /// <summary>
+        /// Handles the click event of the ToggleMenu button.
+        /// </summary>
         private void ToggleMenuBtn_Click(object _, RoutedEventArgs __)
         {
             (NavFrame.Content as IToggleMenuPage)?.ToggleNavigationVisibility();
 
             SetToggleVisualElements();
+        }
+
+        /// <summary>
+        /// Minimizes the application window to the system tray.
+        /// </summary>
+        private void MinimizeToTray_Click(object _, RoutedEventArgs __)
+        {
+            TaskbarIcon.Visibility = Visibility.Visible;
+            this.Hide(enableEfficiencyMode: false);
+        }
+
+        /// <summary>
+        /// Restores the application window from the system tray.
+        /// </summary>
+        private void Show_Click(object _, RoutedEventArgs __)
+        {
+            TaskbarIcon.Visibility = Visibility.Collapsed;
+            this.Show();
+        }
+
+        /// <summary>
+        /// Exits the application.
+        /// </summary>
+        private void Exit_Click(object _, RoutedEventArgs __)
+        {
+            Application.Current.Exit();
         }
     }
 }

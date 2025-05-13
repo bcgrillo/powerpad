@@ -4,13 +4,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Pages"
-    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
-    xmlns:components="using:PowerPad.WinUI.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:m="using:PowerPad.Core.Models.AI"
-    xmlns:vm="using:PowerPad.WinUI.ViewModels.AI"
+    xmlns:mai="using:PowerPad.Core.Models.AI"
+    xmlns:vmai="using:PowerPad.WinUI.ViewModels.AI"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
+    xmlns:tkui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
     <Grid>
         <NavigationView
@@ -28,8 +27,8 @@
             PointerPressed="NavView_PointerPressed">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
-                <Thickness x:Key="NavigationViewContentGridBorderThickness">0,0,0,0</Thickness>
-                <Thickness x:Key="NavigationViewMinimalContentMargin">0,0,0,0</Thickness>
+                <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
+                <Thickness x:Key="NavigationViewMinimalContentMargin">0</Thickness>
                 <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">10,0,0,0</CornerRadius>
             </NavigationView.Resources>
@@ -45,7 +44,7 @@
                     x:Name="OllamaMenuItem"
                     Content="Ollama"
                     Margin="0,8,0,0"
-                    Tag="{x:Bind m:ModelProvider.Ollama}"
+                    Tag="{x:Bind mai:ModelProvider.Ollama}"
                     Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OllamaSvg}"/>
@@ -53,14 +52,14 @@
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Content="Modelos disponibles"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.Ollama,vm:MenuOption.AvailableModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.Ollama,vmai:MenuOption.AvailableModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xE71D;" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                         <NavigationViewItem
                             Content="Añadir modelo"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.Ollama,vm:MenuOption.AddModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.Ollama,vmai:MenuOption.AddModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xECC8;" />
                             </NavigationViewItem.Icon>
@@ -70,7 +69,7 @@
                 <NavigationViewItem
                     x:Name="HuggingFaceMenuItem"
                     Content="Hugging Face"
-                    Tag="{x:Bind m:ModelProvider.HuggingFace}"
+                    Tag="{x:Bind mai:ModelProvider.HuggingFace}"
                     Visibility="{x:Bind _settings.General.OllamaEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource HuggingFaceSvg}"/>
@@ -78,14 +77,14 @@
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Content="Modelos disponibles"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.HuggingFace,vm:MenuOption.AvailableModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.HuggingFace,vmai:MenuOption.AvailableModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xE71D;" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                         <NavigationViewItem
                             Content="Añadir modelo"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.HuggingFace,vm:MenuOption.AddModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.HuggingFace,vmai:MenuOption.AddModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xECC8;" />
                             </NavigationViewItem.Icon>
@@ -95,22 +94,22 @@
                 <NavigationViewItem
                     x:Name="GitHubMenuItem"
                     Content="GitHub"
-                    Tag="{x:Bind m:ModelProvider.GitHub}"
+                    Tag="{x:Bind mai:ModelProvider.GitHub}"
                     Visibility="{x:Bind _settings.General.AzureAIEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
-                        <ImageIcon Source="{ThemeResource GithubSvg}"/>
+                        <ImageIcon Source="{ThemeResource GitHubSvg}"/>
                     </NavigationViewItem.Icon>
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Content="Modelos disponibles"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.GitHub,vm:MenuOption.AvailableModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.GitHub,vmai:MenuOption.AvailableModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xE71D;" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                         <NavigationViewItem
                             Content="Añadir modelo"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.GitHub,vm:MenuOption.AddModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.GitHub,vmai:MenuOption.AddModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xECC8;" />
                             </NavigationViewItem.Icon>
@@ -120,7 +119,7 @@
                 <NavigationViewItem
                     x:Name="OpenAIMenuItem"
                     Content="OpenAI"
-                    Tag="{x:Bind m:ModelProvider.OpenAI}"
+                    Tag="{x:Bind mai:ModelProvider.OpenAI}"
                     Visibility="{x:Bind _settings.General.OpenAIEnabled, Mode=OneWay}">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="{ThemeResource OpenAISvg}"/>
@@ -128,14 +127,14 @@
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Content="Modelos disponibles"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.OpenAI,vm:MenuOption.AvailableModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.OpenAI,vmai:MenuOption.AvailableModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xE71D;" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                         <NavigationViewItem
                             Content="Añadir modelo"
-                            Tag="{x:Bind vm:ModelsMenuOption.Create(m:ModelProvider.OpenAI,vm:MenuOption.AddModels)}">
+                            Tag="{x:Bind vmai:ModelsMenuOption.Create(mai:ModelProvider.OpenAI,vmai:MenuOption.AddModels)}">
                             <NavigationViewItem.Icon>
                                 <FontIcon Glyph="&#xECC8;" />
                             </NavigationViewItem.Icon>

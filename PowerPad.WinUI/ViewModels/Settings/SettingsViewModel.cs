@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.UI.Dispatching;
 using PowerPad.Core.Contracts;
 using PowerPad.Core.Models.AI;
 using PowerPad.Core.Services.AI;
@@ -32,15 +31,15 @@ namespace PowerPad.WinUI.ViewModels.Settings
             General.PropertyChanged += (s, e) => _configStore.Set(StoreKey.GeneralSettings, General);
             Models.PropertyChanged += (s, e) => _configStore.Set(StoreKey.ModelsSettings, Models);
 
-            General.ProviderAvaibilityChanged += UpdateAIAvaibility;
-            Models.ModelAvaibilityChanged += UpdateAIAvaibility;
+            General.ProviderAvailabilityChanged += UpdateAIAvaibility;
+            Models.ModelAvailabilityChanged += UpdateAIAvaibility;
 
             General.InitializeAIServices();
         }
 
         public async Task TestConnections()
         {
-            General.ProviderAvaibilityChanged -= UpdateAIAvaibility;
+            General.ProviderAvailabilityChanged -= UpdateAIAvaibility;
 
             try
             {
@@ -66,7 +65,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             {
                 UpdateAIAvaibility(null, null);
 
-                General.ProviderAvaibilityChanged += UpdateAIAvaibility;
+                General.ProviderAvailabilityChanged += UpdateAIAvaibility;
             }
         }
 
@@ -74,7 +73,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         {
             var availableModels = Models.AvailableModels
                 .Where(m => General.AvailableProviders.Contains(m.ModelProvider) && m.Enabled);
-                
+
             if (!availableModels.Any())
             {
                 Models.DefaultModel = null;
@@ -86,7 +85,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
                 {
                     Models.DefaultModel = availableModels.OrderBy(m => m.ModelProvider).First();
                 }
-                
+
                 IsAIAvailable = true;
             }
         }

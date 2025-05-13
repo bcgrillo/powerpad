@@ -6,11 +6,11 @@
     xmlns:local="using:PowerPad.WinUI.Pages.Providers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
-    xmlns:ui="using:CommunityToolkit.WinUI"
-    xmlns:ai="using:PowerPad.WinUI.ViewModels.AI"
+    xmlns:vmai="using:PowerPad.WinUI.ViewModels.AI"
     xmlns:components="using:PowerPad.WinUI.Components"
     xmlns:converters="using:PowerPad.WinUI.Converters"
+    xmlns:tkcontrols="using:CommunityToolkit.WinUI.Controls"
+    xmlns:tkui="using:CommunityToolkit.WinUI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource PowerPadEditorBrush}">
@@ -26,7 +26,7 @@
 
         <StackPanel Orientation="Vertical" Margin="36,36,36,36" VerticalAlignment="Center" Spacing="24">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
-                <Image Source="{ThemeResource GithubSvg}" Width="42" Height="42" />
+                <Image Source="{ThemeResource GitHubSvg}" Width="42" Height="42" />
                 <TextBlock
                     Style="{StaticResource TitleTextBlockStyle}"
                     Text="Buscar modelos en GitHub Models" />

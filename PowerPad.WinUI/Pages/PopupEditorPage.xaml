@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PowerPad.WinUI.Pages.PopupEditorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PowerPad.WinUI.Components.Editors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <tkconverters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+        <tkconverters:EmptyStringToObjectConverter x:Key="EmptyStringToObjectConverter" EmptyValue="False" NotEmptyValue="True" />
+    </Page.Resources>
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="0,0,0,18" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="SaveBtn"
+                    ToolTipService.ToolTip="Crear nota"
+                    Padding="8" BorderThickness="0"
+                    Click="SaveBtn_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <FontIcon FontSize="16" Glyph="&#xE710;" />
+                            <FontIcon FontSize="18" Glyph="&#xE70B;" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="CopyBtn"
+                    ToolTipService.ToolTip="Copiar"
+                    Click="CopyBtn_Click"
+                    Padding="8" BorderThickness="0"
+                    IsEnabled="{x:Bind _document.Content, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}">
+                    <Button.Content>
+                        <FontIcon FontSize="18" Glyph="&#xE8C8;" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+            <Border
+                x:Name="BorderTitleBar"
+                Grid.Column="1"
+                CornerRadius="4"
+                Background="{ThemeResource ControlAltFillColorTertiaryBrush}"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="UndoButton"
+                    ToolTipService.ToolTip="Deshacer"
+                    Click="UndoButton_Click"
+                    Padding="8" BorderThickness="0"
+                    Visibility="{x:Bind _document.PreviousContent, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
+                    <Button.Content>
+                        <FontIcon FontSize="18" Glyph="&#xE7A7;" />
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="RedoButton"
+                    ToolTipService.ToolTip="Rehacer"
+                    Click="RedoButton_Click"
+                    Padding="8" BorderThickness="0"
+                    Visibility="{x:Bind _document.NextContent, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
+                    <Button.Content>
+                        <FontIcon FontSize="18" Glyph="&#xE7A6;" />
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="ApplyBtn"
+                    ToolTipService.ToolTip="Volver y aplicar"
+                    Click="ApplyBtn_Click"
+                    Padding="8" BorderThickness="0"
+                    IsEnabled="{x:Bind _document.Content, Mode=OneWay, Converter={StaticResource EmptyStringToObjectConverter}}">
+                    <Button.Content>
+                        <FontIcon FontSize="18" Glyph="&#xE768;" />
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="HideBtn"
+                    ToolTipService.ToolTip="Cerrar"
+                    Padding="10" BorderThickness="0"
+                    Click="HideBtn_Click">
+                    <Button.Content>
+                        <FontIcon FontSize="14" Glyph="&#xE8BB;" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <controls:IntegratedTextBox
+            x:Name="TextEditor" 
+            Grid.Row="1"
+            TextWrapping="Wrap" 
+            AcceptsReturn="True"
+            Padding="0"
+            FontFamily="Consolas"
+            SelectionHighlightColor="Gray"
+            SelectionHighlightColorWhenNotFocused="Gray"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SizeChanged="TextEditor_SizeChanged"
+            Text="{x:Bind _document.Content, Mode=TwoWay}"/>
+
+        <controls:NoteAgentControl
+            x:Name="AgentControl"
+            Grid.Row="2"
+            Margin="0,18,0,0"
+            MaxWidth="1128"
+            SendButtonClicked="AgentControl_SendButtonClicked" />
+
+    </Grid>
+</Page>

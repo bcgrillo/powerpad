@@ -62,7 +62,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             _editorControl = editorControl;
 
             _documentService.LoadDocument(_document, _editorControl);
-            _lastSaveTime = DateTime.Now;
+            _lastSaveTime = DateTime.UtcNow;
 
             SaveCommand = new AsyncRelayCommand(Save);
             AutosaveCommand = new AsyncRelayCommand(Autosave);
@@ -76,7 +76,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         private async Task Save()
         {
             await _documentService.SaveDocument(_document, _editorControl);
-            _lastSaveTime = DateTime.Now;
+            _lastSaveTime = DateTime.UtcNow;
 
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(CanSave));
@@ -87,7 +87,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         private async Task Autosave()
         {
             await _documentService.AutosaveDocument(_document, _editorControl);
-            _lastSaveTime = DateTime.Now;
+            _lastSaveTime = DateTime.UtcNow;
 
             OnPropertyChanged(nameof(Status));
 
@@ -98,7 +98,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         {
             _untitled = false;
 
-            ArgumentException.ThrowIfNullOrWhiteSpace(newName, nameof(newName));
+            ArgumentException.ThrowIfNullOrWhiteSpace(newName);
 
             var workspaceService = App.Get<IWorkspaceService>();
 
@@ -128,20 +128,17 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
         public void NameChanged()
         {
-            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true});
+            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true });
 
             OnPropertyChanged(nameof(Name));
         }
 
         public void Receive(FolderEntryChanged message)
         {
-            if (message.Value == _document)
+            if (message.Value == _document && message.NameChanged)
             {
-                if (message.NameChanged)
-                {
-                    _untitled = false;
-                    OnPropertyChanged(nameof(Name));
-                }
+                _untitled = false;
+                OnPropertyChanged(nameof(Name));
             }
         }
     }

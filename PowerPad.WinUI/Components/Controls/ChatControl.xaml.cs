@@ -1,77 +1,76 @@
+using Microsoft.Extensions.AI;
+using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using PowerPad.Core.Services.AI;
+using PowerPad.WinUI.ViewModels.Agents;
+using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Chat;
-using System.Threading.Tasks;
+using PowerPad.WinUI.ViewModels.Settings;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
-using System.Collections.Generic;
-using Microsoft.Extensions.AI;
-using System.Threading;
-using System.Linq;
-using PowerPad.Core.Services.AI;
-using PowerPad.WinUI.ViewModels.Settings;
-using PowerPad.WinUI.Helpers;
-using PowerPad.WinUI.ViewModels.AI;
-using System.ComponentModel;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI;
 
 namespace PowerPad.WinUI.Components.Controls
 {
+    /// <summary>
+    /// Represents a control for managing chat interactions, including AI model and agent selection, parameter configuration, and message streaming.
+    /// </summary>
     public partial class ChatControl : UserControl, IDisposable
     {
-        private const double DEBOURCE_INTERVAL = 200;
         private const double LOADING_ANIMATION_INTERVAL = 200;
         private static readonly string[] THINK_START_TAG = ["<think>", "<thought>"];
         private static readonly string[] THINK_END_TAG = ["</think>", "</thought>"];
-        private const string MARKDOWN_QUOTE = "> ";
 
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
-        private readonly DispatcherTimer _debounceTimer;
         private readonly DispatcherTimer _loadingAnimationTimer;
-        private CancellationTokenSource _cts;
+        private readonly AIParametersViewModel _parameters;
 
+        private CancellationTokenSource? _cts;
         private int _loadingStep = 0;
         private Action? _finalizeChatAction;
         private ICollection<MessageViewModel>? _messageList;
         private MessageViewModel? _lastUserMessage;
         private MessageViewModel? _lastAssistantMessage;
+        private AIModelViewModel? _selectedModel;
+        private bool _sendParameters;
+        private AgentViewModel? _selectedAgent;
+        private bool _useAgents;
 
+        /// <summary>
+        /// Occurs when the send button is clicked.
+        /// </summary>
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
-        public event EventHandler<ChatOptionChangedEventArgs>? ChatOptionsChanged;
+
+        /// <summary>
+        /// Occurs when the chat options change, including model, parameters, and agent ID.
+        /// </summary>
+        public event EventHandler<ChatOptionsChangedEventArgs>? ChatOptionsChanged;
+
+        /// <summary>
+        /// Occurs when the parameters visibility changes.
+        /// </summary>
         public event EventHandler<bool>? ParametersVisibilityChanged;
 
-        public string ChatPlaceHolder
-        {
-            get => (string)GetValue(ChatPlaceHolderProperty);
-            set => SetValue(ChatPlaceHolderProperty, value);
-        }
-
-        public static readonly DependencyProperty ChatPlaceHolderProperty =
-            DependencyProperty.Register(nameof(ChatPlaceHolder), typeof(string), typeof(ChatControl), new(null));
-
-        private AIModelViewModel? _selectedModel;
-        private readonly AIParametersViewModel _parameters;
-        private bool _sendParameters;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChatControl"/> class.
+        /// </summary>
         public ChatControl()
         {
             this.InitializeComponent();
 
             _chatService = App.Get<IChatService>();
             _settings = App.Get<SettingsViewModel>();
-            _cts = new();
-
-            _debounceTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(DEBOURCE_INTERVAL)
-            };
-            _debounceTimer.Tick += DebounceTimer_Tick;
-            _debounceTimer.Stop();
 
             _loadingAnimationTimer = new DispatcherTimer
             {
@@ -84,29 +83,17 @@ namespace PowerPad.WinUI.Components.Controls
             IsEnabledChanged += OnEnabledChanged;
         }
 
-        private void OnEnabledChanged(object? _, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            ModelIcon.UpdateEnabledLayout((bool)eventArgs.NewValue);
-            ParametersIcon.UpdateEnabledLayout((bool)eventArgs.NewValue);
-        }
-
-        private void Models_PropertyChanged(object? _, EventArgs __)
-        {
-            _debounceTimer.Stop();
-            _debounceTimer.Start();
-        }
-
-        private void DebounceTimer_Tick(object? _, object __)
-        {
-            _debounceTimer.Stop();
-            SetModelsMenu();
-        }
-
-        public void InitializeParameters(AIModelViewModel? model, AIParametersViewModel? parameters)
+        /// <summary>
+        /// Initializes the parameters for the chat control, including model, parameters, and agent.
+        /// </summary>
+        /// <param name="model">The AI model to use for the chat.</param>
+        /// <param name="parameters">The parameters for the chat. Can be null.</param>
+        /// <param name="agentId">The ID of the agent to use. Can be null.</param>
+        public void InitializeParameters(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId)
         {
             _selectedModel = model;
-
-            SetModelsMenu();
+            ModelSelector.SelectedModelChanged += SelectedModel_Changed;
+            ModelSelector.Initialize(model);
 
             if (parameters is not null)
             {
@@ -116,177 +103,34 @@ namespace PowerPad.WinUI.Components.Controls
                 EnableParametersSwitch.IsOn = true;
                 ToggleParameterVisibility();
             }
-
             _parameters.PropertyChanged += Parameters_PropertyChanged;
-            _settings.General.ProviderAvaibilityChanged += Models_PropertyChanged;
-            _settings.Models.ModelAvaibilityChanged += Models_PropertyChanged;
-            _settings.Models.DefaultModelChanged += DefaultModel_Changed;
+
+            _selectedAgent = agentId.HasValue
+                ? App.Get<AgentsCollectionViewModel>().GetAgent(agentId.Value)
+                : null;
+            AgentSelector.SelectedAgentChanged += SelectedAgent_Changed;
+            AgentSelector.Initialize(_selectedAgent);
+
+            if (agentId.HasValue)
+            {
+                _useAgents = true;
+                UpdateChatButtonsLayout();
+            }
         }
 
+        /// <summary>
+        /// Sets focus to the chat input box.
+        /// </summary>
         public void SetFocus()
         {
             ChatInputBox.Focus(FocusState.Keyboard);
         }
 
-        private void SetModel(AIModelViewModel? model)
-        {
-            _selectedModel = model;
-
-            if (model is null)
-            {
-                DispatcherQueue.TryEnqueue(async () =>
-                {
-                    await Task.Delay(100);
-                    if (ModelFlyoutMenu.Items.Any()) ((RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First()).IsChecked = true;
-                });
-            }
-            else
-            {
-                var menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault(i => i.Tag as AIModelViewModel == model);
-
-                if (menuItem is not null)
-                {
-                    DispatcherQueue.TryEnqueue(async () =>
-                    {
-                        await Task.Delay(100);
-                        menuItem.IsChecked = true;
-                    });
-                }
-                else
-                {
-                    _selectedModel = null;
-
-                    menuItem = (RadioMenuFlyoutItem?)ModelFlyoutMenu.Items.FirstOrDefault();
-
-                    if (menuItem is not null)
-                    {
-                        DispatcherQueue.TryEnqueue(async () =>
-                        {
-                            await Task.Delay(100);
-                            menuItem.IsChecked = true;
-                        });
-                    }
-
-                    OnChatOptionChanged();
-                }
-            }
-
-            UpdateModelButtonContent();
-        }
-
-        private void SetModelsMenu()
-        {
-            ModelFlyoutMenu.Items.Clear();
-
-            if (_settings.Models.DefaultModel is not null)
-            {
-                var firstItem = new RadioMenuFlyoutItem
-                {
-                    Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})",
-                    Tag = null,
-                    Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() },
-                };
-
-                firstItem.Click += SetModelItem_Click;
-                ModelFlyoutMenu.Items.Add(firstItem);
-                ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
-
-                var availableProviders = _settings.General.AvailableProviders.OrderBy(p => p);
-
-                foreach (var provider in availableProviders)
-                {
-                    var elementAdded = false;
-
-                    foreach (var item in _settings.Models.AvailableModels
-                        .Where(m => m.ModelProvider == provider && m.Enabled)
-                        .OrderBy(m => m.Name))
-                    {
-                        var menuItem = new RadioMenuFlyoutItem
-                        {
-                            Text = item.CardName,
-                            Tag = item,
-                            Icon = new ImageIcon() { Source = provider.GetIcon() }
-                        };
-
-                        ModelFlyoutMenu.Items.Add(menuItem);
-
-                        menuItem.Click += SetModelItem_Click;
-
-                        elementAdded = true;
-                    }
-
-                    if (elementAdded) ModelFlyoutMenu.Items.Add(new MenuFlyoutSeparator());
-                }
-
-                ModelFlyoutMenu.Items.RemoveAt(ModelFlyoutMenu.Items.Count - 1);
-
-                SetModel(_selectedModel);
-            }
-        }
-
-        private void SetModelItem_Click(object sender, RoutedEventArgs __)
-        {
-            _selectedModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
-
-            UpdateModelButtonContent();
-
-            ((RadioMenuFlyoutItem)sender).IsChecked = true;
-            OnChatOptionChanged();
-        }
-
-        private void UpdateModelButtonContent()
-        {
-            if (_selectedModel is not null)
-            {
-                ModelName.Text = _selectedModel.CardName;
-                ModelIcon.Source = _selectedModel.ModelProvider.GetIcon();
-            }
-            else if (_settings.Models.DefaultModel is not null)
-            {
-                ModelName.Text = _settings.Models.DefaultModel.CardName;
-                ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
-            }
-            else
-            {
-                ModelName.Text = "Unavailable";
-                ModelIcon.Source = null;
-            }
-        }
-
-        private void DefaultModel_Changed(object? _, EventArgs __)
-        {
-            if (_settings.Models.DefaultModel is not null && ModelFlyoutMenu.Items.Any())
-            {
-                var firstItem = (RadioMenuFlyoutItem)ModelFlyoutMenu.Items.First();
-
-                firstItem.Text = $"Por defecto ({_settings.Models.DefaultModel!.CardName})";
-                firstItem.Icon = new ImageIcon() { Source = _settings.Models.DefaultModel!.ModelProvider.GetIcon() };
-
-                if (_selectedModel is null)
-                {
-                    ModelName.Text = _settings.Models.DefaultModel.CardName;
-                    ModelIcon.Source = _settings.Models.DefaultModel.ModelProvider.GetIcon();
-
-                    DispatcherQueue.TryEnqueue(async () =>
-                    {
-                        await Task.Delay(100);
-                        firstItem.IsChecked = true;
-                    });
-                }
-            }
-        }
-
-        private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
-        {
-            SendButton.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text);
-            if (string.IsNullOrEmpty(ChatInputBox.Text)) ChatInputBox.AcceptsReturn = false;
-        }
-
-        private void SendBtn_Click(object _, RoutedEventArgs e)
-        {
-            SendButtonClicked?.Invoke(this, e);
-        }
-
+        /// <summary>
+        /// Starts streaming chat messages and updates the UI accordingly.
+        /// </summary>
+        /// <param name="messageList">The list of messages to display in the chat.</param>
+        /// <param name="endAction">The action to execute when the chat ends. Can be null.</param>
         public void StartStreamingChat(ICollection<MessageViewModel> messageList, Action? endAction)
         {
             _messageList = messageList;
@@ -307,7 +151,8 @@ namespace PowerPad.WinUI.Components.Controls
                     SendButton.Visibility = Visibility.Collapsed;
                     StopButton.Visibility = Visibility.Visible;
                     ChatInputBox.IsReadOnly = true;
-                    ModelButton.IsEnabled = false;
+                    ModelSelector.IsEnabled = false;
+                    AgentSelector.IsEnabled = false;
                     ParametersButton.IsEnabled = false;
                 });
 
@@ -316,43 +161,48 @@ namespace PowerPad.WinUI.Components.Controls
                 var parameters = _sendParameters ? _parameters
                     : (_settings.Models.SendDefaultParameters ? _settings.Models.DefaultParameters : null);
 
-                string messageBuffer = string.Empty;
+                var messageBuffer = new StringBuilder();
                 try
                 {
-                    await foreach (var messagePart in _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), parameters?.GetRecord(), _cts.Token))
+                    var responseUpdates = _useAgents
+                        ? _chatService.GetAgentResponse(history, _selectedAgent!.GetRecord(), _cts.Token)
+                        : _chatService.GetChatResponse(history, _selectedModel?.GetRecord(), _sendParameters ? parameters?.GetRecord() : null, _cts.Token);
+
+                    await foreach (var update in responseUpdates)
                     {
-                        messageBuffer += messagePart.Text;
+                        messageBuffer.Append(update.Text);
+                        var messageBufferString = messageBuffer.ToString();
 
                         string? reasoning = null;
                         string? content = null;
                         bool loading = true;
 
-                        var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => messageBuffer.Contains(tag));
+                        var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
 
                         // Logic to parse and update reasoning and content from the message buffer
                         if (thinkStartTag is not null)
                         {
-                            var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => messageBuffer.Contains(tag));
+                            var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
 
-                            var startIndex = messageBuffer.IndexOf(thinkStartTag) + thinkStartTag.Length;
+                            var startIndex = messageBufferString.IndexOf(thinkStartTag) + thinkStartTag.Length;
 
                             if (thinkEndTag is not null)
                             {
-                                var endIndex = messageBuffer.IndexOf(thinkEndTag, startIndex);
+                                var endIndex = messageBufferString.IndexOf(thinkEndTag, startIndex);
 
-                                reasoning = messageBuffer[startIndex..endIndex].Trim().Replace("\n\n", "\n");
-                                content = messageBuffer[(endIndex + thinkEndTag.Length)..].Trim();
+                                reasoning = messageBufferString[startIndex..endIndex].Trim().Replace("\n\n", "\n");
+                                content = messageBufferString[(endIndex + thinkEndTag.Length)..].Trim();
 
                                 if (loading) loading = false;
                             }
                             else
                             {
-                                reasoning = messageBuffer[startIndex..].Trim().Replace("\n\n", "\n");
+                                reasoning = messageBufferString[startIndex..].Trim().Replace("\n\n", "\n");
                             }
                         }
                         else
                         {
-                            content = messageBuffer;
+                            content = messageBufferString;
                             if (loading) loading = false;
                         }
 
@@ -364,7 +214,10 @@ namespace PowerPad.WinUI.Components.Controls
                         });
                     }
                 }
-                catch (TaskCanceledException) { }
+                catch (TaskCanceledException)
+                {
+                    // Cancellation is expected, no action needed
+                }
                 catch (Exception ex)
                 {
                     DispatcherQueue.TryEnqueue(() =>
@@ -383,6 +236,105 @@ namespace PowerPad.WinUI.Components.Controls
             });
         }
 
+        /// <summary>
+        /// Handles the event when the control's enabled state changes.
+        /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments containing the new value.</param>
+        private void OnEnabledChanged(object? _, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            ModelSelector.UpdateEnabledLayout((bool)eventArgs.NewValue);
+            ParametersIcon.UpdateEnabledLayout((bool)eventArgs.NewValue);
+        }
+
+        /// <summary>
+        /// Handles the event when the selected model changes.
+        /// </summary>
+        private void SelectedModel_Changed(object? _, EventArgs __)
+        {
+            if (_selectedModel != ModelSelector.SelectedModel)
+            {
+                _selectedModel = ModelSelector.SelectedModel;
+                OnChatOptionsChanged();
+            }
+        }
+
+        /// <summary>
+        /// Handles the event when the selected agent changes.
+        /// </summary>
+        private void SelectedAgent_Changed(object? _, EventArgs __)
+        {
+            if (_useAgents && _selectedAgent != AgentSelector.SelectedAgent)
+            {
+                _selectedAgent = AgentSelector.SelectedAgent;
+
+                SendButton.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text)
+                    && (!_useAgents || _selectedAgent is not null);
+
+                OnChatOptionsChanged();
+            }
+        }
+
+        /// <summary>
+        /// Toggles the use of agents and updates the chat button layout accordingly.
+        /// </summary>
+        private void AgentToggleButton_Click(object _, RoutedEventArgs __)
+        {
+            _useAgents = !_useAgents;
+
+            OnChatOptionsChanged();
+
+            UpdateChatButtonsLayout();
+
+            if (_useAgents && _selectedAgent is null) AgentSelector.ShowMenu();
+        }
+
+        /// <summary>
+        /// Updates the layout of chat buttons based on the current state of agent usage.
+        /// </summary>
+        private void UpdateChatButtonsLayout()
+        {
+            if (_useAgents)
+            {
+                AgentSelector.Visibility = Visibility.Visible;
+                ModelSelector.Visibility = Visibility.Collapsed;
+                ParametersButton.Visibility = Visibility.Collapsed;
+                ((Border)AgentToggleButton.Content).BorderBrush = (Brush)Application.Current.Resources["AccentFillColorDefaultBrush"];
+            }
+            else
+            {
+                AgentSelector.Visibility = Visibility.Collapsed;
+                ModelSelector.Visibility = Visibility.Visible;
+                ModelSelector.UpdateEnabledLayout(true);
+                ParametersButton.Visibility = Visibility.Visible;
+                ((Border)AgentToggleButton.Content).BorderBrush = new SolidColorBrush(Colors.Transparent);
+            }
+        }
+
+        /// <summary>
+        /// Handles the event when the text in the chat input box changes.
+        /// </summary>
+        private void ChatInputBox_TextChanged(object _, TextChangedEventArgs __)
+        {
+            SendButton.IsEnabled = !string.IsNullOrWhiteSpace(ChatInputBox.Text)
+                && (!_useAgents || _selectedAgent is not null);
+
+            if (string.IsNullOrEmpty(ChatInputBox.Text)) ChatInputBox.AcceptsReturn = false;
+        }
+
+        /// <summary>
+        /// Handles the click event of the send button.
+        /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments.</param>
+        private void SendBtn_Click(object _, RoutedEventArgs eventArgs)
+        {
+            SendButtonClicked?.Invoke(this, eventArgs);
+        }
+
+        /// <summary>
+        /// Finalizes the chat session, resetting the UI and clearing resources.
+        /// </summary>
         private void FinalizeChat()
         {
             DispatcherQueue.TryEnqueue(() =>
@@ -402,7 +354,8 @@ namespace PowerPad.WinUI.Components.Controls
                 StopButton.Visibility = Visibility.Collapsed;
                 SendButton.Visibility = Visibility.Visible;
                 ChatInputBox.IsReadOnly = false;
-                ModelButton.IsEnabled = true;
+                ModelSelector.IsEnabled = true;
+                AgentSelector.IsEnabled = true;
                 ParametersButton.IsEnabled = true;
                 ChatInputBox.Focus(FocusState.Keyboard);
 
@@ -415,35 +368,43 @@ namespace PowerPad.WinUI.Components.Controls
             });
         }
 
+        /// <summary>
+        /// Handles the click event of the stop button, canceling the current chat session.
+        /// </summary>
         private void StopBtn_Click(object _, RoutedEventArgs __)
         {
-            _cts.Cancel();
+            _cts!.Cancel();
             FinalizeChat();
         }
 
-        private void ChatInputBox_KeyDown(object _, KeyRoutedEventArgs e)
+        /// <summary>
+        /// Handles the key down event for the chat input box, enabling multi-line input or sending messages.
+        /// </summary>
+        /// <param name="_"> The sender of the event (not used).</param>
+        /// <param name="eventArgs">The event arguments.</param>
+        private void ChatInputBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (!ChatInputBox.IsReadOnly)
+            if (!ChatInputBox.IsReadOnly && eventArgs.Key == VirtualKey.Enter)
             {
-                if (e.Key == VirtualKey.Enter)
-                {
-                    if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
+                if (!InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift)
                         .HasFlag(CoreVirtualKeyStates.Down) &&
                         !string.IsNullOrWhiteSpace(ChatInputBox.Text))
-                    {
-                        SendButtonClicked?.Invoke(this, e);
-                    }
-                    else
-                    {
-                        ChatInputBox.AcceptsReturn = true;
-                        var cursorPosition = ChatInputBox.SelectionStart;
-                        ChatInputBox.Text = ChatInputBox.Text.Insert(cursorPosition, Environment.NewLine);
-                        ChatInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
-                    }
+                {
+                    SendButtonClicked?.Invoke(this, eventArgs);
+                }
+                else
+                {
+                    ChatInputBox.AcceptsReturn = true;
+                    var cursorPosition = ChatInputBox.SelectionStart;
+                    ChatInputBox.Text = ChatInputBox.Text.Insert(cursorPosition, Environment.NewLine);
+                    ChatInputBox.SelectionStart = cursorPosition + Environment.NewLine.Length;
                 }
             }
         }
 
+        /// <summary>
+        /// Toggles the visibility of the parameters panel.
+        /// </summary>
         private void ParametersButton_Click(object _, RoutedEventArgs __)
         {
             var parameterPanelVisible = ParametersPanel.Visibility == Visibility.Visible;
@@ -464,12 +425,18 @@ namespace PowerPad.WinUI.Components.Controls
             ParametersVisibilityChanged?.Invoke(this, !parameterPanelVisible);
         }
 
+        /// <summary>
+        /// Toggles the parameter visibility and updates the chat options.
+        /// </summary>
         private void EnableParametersSwitch_Toggled(object _, RoutedEventArgs __)
         {
             ToggleParameterVisibility();
-            OnChatOptionChanged();
+            OnChatOptionsChanged();
         }
 
+        /// <summary>
+        /// Toggles the visibility of custom parameters.
+        /// </summary>
         private void ToggleParameterVisibility()
         {
             if (EnableParametersSwitch.IsOn)
@@ -488,16 +455,35 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <summary>
+        /// Handles the click event of the close parameters button.
+        /// </summary>
+        /// <param name="o">The sender of the event.</param>
+        /// <param name="eventArgs">The event arguments.</param>
         private void CloseParametersButton_Click(object o, RoutedEventArgs eventArgs)
         {
             ParametersButton.IsChecked = false;
             ParametersButton_Click(o, eventArgs);
         }
 
-        private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __) => OnChatOptionChanged();
+        /// <summary>
+        /// Handles property changes in the parameters and updates the chat options.
+        /// </summary>
+        private void Parameters_PropertyChanged(object? _, PropertyChangedEventArgs __) => OnChatOptionsChanged();
 
-        private void OnChatOptionChanged() => ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null));
+        /// <summary>
+        /// Invokes the ChatOptionsChanged event with the current chat options.
+        /// </summary>
+        private void OnChatOptionsChanged()
+        {
+            ChatOptionsChanged?.Invoke(this, new(_selectedModel, _sendParameters ? _parameters : null, _useAgents ? _selectedAgent?.Id : null));
+        }
 
+        /// <summary>
+        /// Handles the tick event of the loading animation timer, updating the assistant's loading message.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">The event arguments.</param>
         private void LoadingAnimationTimer_Tick(object? sender, object e)
         {
             if (_lastAssistantMessage is not null)
@@ -511,20 +497,50 @@ namespace PowerPad.WinUI.Components.Controls
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
-            _parameters.PropertyChanged -= Parameters_PropertyChanged;
-            _settings.General.ProviderAvaibilityChanged -= Models_PropertyChanged;
-            _settings.Models.ModelAvaibilityChanged -= Models_PropertyChanged;
-            _settings.Models.DefaultModelChanged -= DefaultModel_Changed;
-            
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>   
+        /// Disposes the resources used by the ChatControl.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method is called from the Dispose method (true) or from the finalizer (false).</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _parameters.PropertyChanged -= Parameters_PropertyChanged;
+
+                ModelSelector.Dispose();
+                AgentSelector.Dispose();
+
+                _cts?.Dispose();
+            }
         }
     }
 
-    public class ChatOptionChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters) : EventArgs
+    /// <summary>
+    /// Event arguments for chat options changes, including selected model, parameters, and agent ID.
+    /// </summary>
+    /// <param name="model">The selected AI model.</param>
+    /// <param name="parameters">The parameters for the chat. Can be null.</param>
+    /// <param name="agentId">The ID of the selected agent. Can be null.</param>
+    public class ChatOptionsChangedEventArgs(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId) : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the selected AI model for the chat.
+        /// </summary>
         public AIModelViewModel? SelectedModel { get; set; } = model;
+        /// <summary>
+        /// Gets or sets the parameters used for configuring the AI chat behavior.
+        /// </summary>
         public AIParametersViewModel? Parameters { get; set; } = parameters;
+        /// <summary>
+        /// Gets or sets the ID of the selected agent for the chat.
+        /// </summary>
+        public Guid? AgentId { get; set; } = agentId;
     }
 }

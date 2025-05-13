@@ -4,10 +4,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Components"
-    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:fs="using:PowerPad.WinUI.ViewModels.FileSystem"
+    xmlns:vmfilesystem="using:PowerPad.WinUI.ViewModels.FileSystem"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
     xmlns:converters="using:PowerPad.WinUI.Converters"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -41,7 +41,7 @@
                 ToolTipService.ToolTip="Cambiar Workspace"
                 Margin="10,0,6,0"
                 Background="Transparent"
-                BorderBrush="Transparent"
+                BorderThickness="0"
                 Canvas.ZIndex="1"
                 IsHitTestVisible="True">
                 <DropDownButton.Content>
@@ -60,7 +60,7 @@
                 Name="TreeView" 
                 ItemsSource="{x:Bind _workspace.Root.Children, Mode=OneWay}" 
                 ItemInvoked="TreeView_ItemInvoked"
-                CanDrag="True"
+                CanDrag="False"
                 CanReorderItems="True"
                 DragItemsCompleted="TreeView_DragItemsCompleted"
                 Loaded="TreeView_Loaded"
@@ -68,7 +68,7 @@
                 PointerPressed="TreeView_PointerPressed"
                 SelectionChanged="TreeView_SelectionChanged">
                 <TreeView.ItemTemplate>
-                    <DataTemplate x:DataType="fs:FolderEntryViewModel">
+                    <DataTemplate x:DataType="vmfilesystem:FolderEntryViewModel">
                         <TreeViewItem 
                             ItemsSource="{x:Bind Children, Mode=OneWay}" 
                             Padding="0,0,8,0"
@@ -96,7 +96,7 @@
                                     Height="18"
                                     Visibility="{x:Bind IsSelected, Mode=OneWay}"
                                     Background="Transparent"
-                                    BorderBrush="Transparent"
+                                    BorderThickness="0"
                                     Margin="0,1,0,0"
                                     ToolTipService.ToolTip="Más opciones"
                                     Click="MoreButton_Click">

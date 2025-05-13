@@ -4,23 +4,23 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PowerPad.WinUI.Components.Editors"
-    xmlns:lcontrols="using:PowerPad.WinUI.Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:chat="using:PowerPad.WinUI.ViewModels.Chat"
-    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:vmchat="using:PowerPad.WinUI.ViewModels.Chat"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
+    xmlns:tkcontrols="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d">
     <local:EditorControl.Resources>
         <local:ChatTemplateSelector
             x:Key="ChatTemplateSelector"
             AssistantTemplate="{StaticResource AssistantDataTemplate}"
             UserTemplate="{StaticResource UserDataTemplate}" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
-        <converters:BoolNegationConverter x:Key="BoolNegationConverter" />
-        <converters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
-        <DataTemplate x:Key="UserDataTemplate" x:DataType="chat:MessageViewModel">
+        <tkconverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <tkconverters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+        <tkconverters:BoolNegationConverter x:Key="BoolNegationConverter" />
+        <tkconverters:CollectionVisibilityConverter x:Key="CollectionVisibilityConverter" />
+        <DataTemplate x:Key="UserDataTemplate" x:DataType="vmchat:MessageViewModel">
             <StackPanel
                 MaxWidth="700"
                 MinWidth="135"
@@ -32,7 +32,7 @@
                 CornerRadius="{StaticResource OverlayCornerRadius}"
                 Spacing="8"
                 Margin="0,8,0,0">
-                <controls:MarkdownTextBlock
+                <tkcontrols:MarkdownTextBlock
                     IsTextSelectionEnabled="True"
                     Text="{x:Bind Content, Mode=OneWay}"
                     Background="Transparent"
@@ -44,7 +44,7 @@
                     Text="{x:Bind DateTime}" />
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="AssistantDataTemplate" x:DataType="chat:MessageViewModel">
+        <DataTemplate x:Key="AssistantDataTemplate" x:DataType="vmchat:MessageViewModel">
             <Grid Margin="0,8,0,0">
                 <StackPanel
                     MaxWidth="700"
@@ -74,7 +74,7 @@
                         Background="{ThemeResource SubtleFillColorSecondaryBrush}"
                         BorderBrush="{ThemeResource SubtleFillColorSecondaryBrush}" MinHeight="0">
                         <Expander.Resources>
-                            <Thickness x:Key="ExpanderHeaderBorderThickness">0,0,0,0</Thickness>
+                            <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
                             <Thickness x:Key="ExpanderChevronMargin">16,0,0,0</Thickness>
                             <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{ThemeResource SubtleFillColorSecondary}" />
                         </Expander.Resources>
@@ -83,7 +83,7 @@
                             FontStyle="Italic" IsTextSelectionEnabled="True"
                             TextWrapping="Wrap" />
                     </Expander>
-                    <controls:MarkdownTextBlock
+                    <tkcontrols:MarkdownTextBlock
                         HorizontalAlignment="Left"
                         Background="Transparent"
                         IsTextSelectionEnabled="True"
@@ -113,18 +113,18 @@
             </Grid>
         </DataTemplate>
     </local:EditorControl.Resources>
-    <Grid>
+    <Grid Margin="28">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="36,24,36,12" ColumnSpacing="8">
+        <Grid Margin="0,-8,0,12" ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <lcontrols:EditableTextBlock
+            <controls:EditableTextBlock
                 x:Name="EditableTextBlock"
                 FontSize="27.5"
                 FontWeight="SemiBold"
@@ -135,17 +135,21 @@
                 <Button
                     x:Name="UndoButton"
                     ToolTipService.ToolTip="Eliminar último mensaje"
-                    Click="UndoButton_Click">
+                    Click="UndoButton_Click"
+                    Visibility="Collapsed"
+                    Padding="8" BorderThickness="0">
                     <Button.Content>
-                        <FontIcon FontSize="20" Glyph="&#xE7A7;" />
+                        <FontIcon FontSize="18" Glyph="&#xE845;" />
                     </Button.Content>
                 </Button>
                 <Button
                     x:Name="CleanButton"
                     ToolTipService.ToolTip="Eliminar toda la conversación"
-                    Click="CleanButton_Click">
+                    Click="CleanButton_Click"
+                    Visibility="Collapsed"
+                    Padding="8" BorderThickness="0">
                     <Button.Content>
-                        <FontIcon FontSize="20" Glyph="&#xEA99;" />
+                        <FontIcon FontSize="18" Glyph="&#xEA99;" />
                     </Button.Content>
                 </Button>
             </StackPanel>
@@ -180,7 +184,6 @@
             <ListView
                 x:Name="InvertedListView"
                 Padding="-12,0,-12,0"
-                Margin="36,0,36,0"
                 ItemTemplateSelector="{StaticResource ChatTemplateSelector}"
                 ItemsSource="{x:Bind _chat.Messages}"
                 SelectionMode="None"
@@ -196,11 +199,10 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
-            <lcontrols:ChatControl
+            <controls:ChatControl
                 x:Name="ChatControl"
                 Grid.Row="1"
-                Margin="36,18,36,36"
-                ChatPlaceHolder="Escribe lo que quieras..."
+                Margin="0,18,0,0"
                 SendButtonClicked="ChatControl_SendButtonClicked"
                 ParametersVisibilityChanged="ChatControl_ParametersVisibilityChanged"
                 IsEnabled="{x:Bind _chat.ChatError, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}" />

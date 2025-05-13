@@ -9,19 +9,24 @@ using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.ViewModels.AI;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
 namespace PowerPad.WinUI.Pages
 {
+    /// <summary>
+    /// Represents the settings page of the application, allowing users to configure AI services, themes, and other settings.
+    /// </summary>
     public partial class SettingsPage : DisposablePage
     {
         private readonly SettingsViewModel _settings;
         private readonly InputCursor _defaultCursor;
         private readonly ApplicationTheme? _originalTheme;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsPage"/> class.
+        /// </summary>
         public SettingsPage()
         {
             this.InitializeComponent();
@@ -36,8 +41,8 @@ namespace PowerPad.WinUI.Pages
             _settings.General.ServiceEnablementChanged += TestEnabledService;
 
             SetModelsMenu(null, null);
-            _settings.General.ProviderAvaibilityChanged += SetModelsMenu;
-            _settings.Models.ModelAvaibilityChanged += SetModelsMenu;
+            _settings.General.ProviderAvailabilityChanged += SetModelsMenu;
+            _settings.Models.ModelAvailabilityChanged += SetModelsMenu;
 
             LightThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Light;
             DarkThemeRadioButton.IsChecked = _settings.General.AppTheme == ApplicationTheme.Dark;
@@ -46,27 +51,30 @@ namespace PowerPad.WinUI.Pages
             DarkThemeRadioButton.Checked += ThemeRadioButton_Checked;
             SystemThemeRadioButton.Checked += ThemeRadioButton_Checked;
 
-            OllamaModelsExpander.IsExpanded = _settings.General.OllamaEnabled 
+            OllamaModelsExpander.IsExpanded = _settings.General.OllamaEnabled
                 && (_settings.General.OllamaConfig.ServiceStatus == ServiceStatus.Error || _settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound);
             AzureAIModelsExpander.IsExpanded = _settings.General.AzureAIEnabled && _settings.General.AzureAIConfig.ServiceStatus == ServiceStatus.Error;
             OpenAIModelsExpander.IsExpanded = _settings.General.OpenAIEnabled && _settings.General.OpenAIConfig.ServiceStatus == ServiceStatus.Error;
 
-            //Disable providers if not configured
+            // Disable providers if not configured
             Unloaded += (s, e) =>
             {
                 if (_settings.General.OllamaEnabled && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
                     _settings.General.OllamaEnabled = false;
 
-                if (_settings.General.AzureAIEnabled && 
+                if (_settings.General.AzureAIEnabled &&
                     (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key)))
                     _settings.General.AzureAIEnabled = false;
 
-                if (_settings.General.OpenAIEnabled && 
+                if (_settings.General.OpenAIEnabled &&
                     (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key)))
                     _settings.General.OpenAIEnabled = false;
             };
         }
 
+        /// <summary>
+        /// Starts the Ollama service and tests its connection.
+        /// </summary>
         private async void StartOllama_Click(object _, RoutedEventArgs __)
         {
             try
@@ -86,6 +94,9 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Opens a dialog to install Ollama and tests connections based on the user's choice.
+        /// </summary>
         private async void InstallOllama_Click(object _, RoutedEventArgs __)
         {
             var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
@@ -103,6 +114,9 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Stops the Ollama service and tests its connection.
+        /// </summary>
         private async void StopOllama_Click(object _, RoutedEventArgs __)
         {
             try
@@ -122,6 +136,9 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Tests the connection for the Ollama service.
+        /// </summary>
         private async void TestOllama(object? _, PropertyChangedEventArgs? __)
         {
             if (string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl)) return;
@@ -131,7 +148,6 @@ namespace PowerPad.WinUI.Pages
                 ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Wait);
 
                 await _settings.General.OllamaConfig.TestConnection(App.Get<IAIService>(ModelProvider.Ollama));
-
             }
             finally
             {
@@ -139,6 +155,9 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Tests the connection for the Azure AI service.
+        /// </summary>
         private async void TestAzureAI(object? _, PropertyChangedEventArgs? __)
         {
             if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl)
@@ -156,6 +175,9 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Tests the connection for the OpenAI service.
+        /// </summary>
         private async void TestOpenAI(object? _, PropertyChangedEventArgs? __)
         {
             if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl)
@@ -173,6 +195,9 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Updates the models menu based on the available providers and models.
+        /// </summary>
         private void SetModelsMenu(object? _, EventArgs? __)
         {
             DefaultModelFlyoutMenu.Items.Clear();
@@ -226,12 +251,20 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Sets the selected model as the default model.
+        /// </summary>
+        /// <param name="sender">The menu item that was clicked.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void SetModelItem_Click(object sender, RoutedEventArgs __)
         {
             ((RadioMenuFlyoutItem)sender).IsChecked = true;
             _settings.Models.DefaultModel = (AIModelViewModel?)((RadioMenuFlyoutItem)sender).Tag;
         }
 
+        /// <summary>
+        /// Handles the click event for the default model button.
+        /// </summary>
         private void DefaultModelButton_Click(object _, RoutedEventArgs __)
         {
             if (_settings.Models.DefaultModel is not null)
@@ -242,6 +275,9 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Restarts the application to apply theme changes.
+        /// </summary>
         private void ThemeInfoBarButton_Click(object _, RoutedEventArgs __)
         {
             var processStartInfo = new ProcessStartInfo
@@ -254,6 +290,11 @@ namespace PowerPad.WinUI.Pages
             Application.Current.Exit();
         }
 
+        /// <summary>
+        /// Handles the theme radio button checked event to update the application theme.
+        /// </summary>
+        /// <param name="sender">The radio button that was checked.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void ThemeRadioButton_Checked(object sender, RoutedEventArgs __)
         {
             var radioButton = ((RadioButton)sender);
@@ -267,48 +308,53 @@ namespace PowerPad.WinUI.Pages
             }
         }
 
+        /// <summary>
+        /// Handles the toggled event for the Ollama models expander.
+        /// </summary>
         private void OllamaModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.OllamaEnabled)
+            if (!_settings.General.OllamaEnabled && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
             {
-                if (string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
-                {
-                    OllamaModelsExpander.IsExpanded = true;
-                    OllamaUrlTextBox.Focus(FocusState.Keyboard);
-                    OllamaUrlTextBox.EnterEditMode();
-                }
+                OllamaModelsExpander.IsExpanded = true;
+                OllamaUrlTextBox.Focus(FocusState.Keyboard);
+                OllamaUrlTextBox.EnterEditMode();
             }
         }
 
+        /// <summary>
+        /// Handles the toggled event for the Azure AI models expander.
+        /// </summary>
         private void AzureAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.AzureAIEnabled)
+            if (!_settings.General.AzureAIEnabled && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key))
             {
-                if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key))
-                {
-                    AzureAIModelsExpander.IsExpanded = true;
-                    AzureAIUrlTextBox.Focus(FocusState.Keyboard);
-                    AzureAIUrlTextBox.EnterEditMode();
-                    AzureAIKeyTextBox.EnterEditMode();
-                }
+                AzureAIModelsExpander.IsExpanded = true;
+                AzureAIUrlTextBox.Focus(FocusState.Keyboard);
+                AzureAIUrlTextBox.EnterEditMode();
+                AzureAIKeyTextBox.EnterEditMode();
             }
         }
 
+        /// <summary>
+        /// Handles the toggled event for the OpenAI models expander.
+        /// </summary>
         private void OpenAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.OpenAIEnabled)
+            if (!_settings.General.OpenAIEnabled && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key))
             {
-                if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key))
-                {
-                    OpenAIModelsExpander.IsExpanded = true;
-                    OpenAIUrlTextBox.Focus(FocusState.Keyboard);
-                    OpenAIUrlTextBox.EnterEditMode();
-                    OpenAIKeyTextBox.EnterEditMode();
-                }
+                OpenAIModelsExpander.IsExpanded = true;
+                OpenAIUrlTextBox.Focus(FocusState.Keyboard);
+                OpenAIUrlTextBox.EnterEditMode();
+                OpenAIKeyTextBox.EnterEditMode();
             }
         }
 
-        private void TestEnabledService(object? sender, EventArgs _)
+        /// <summary>
+        /// Tests the enabled service based on the provided configuration.
+        /// </summary>
+        /// <param name="sender">The configuration that triggered the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
+        private void TestEnabledService(object? sender, EventArgs __)
         {
             var config = (AIServiceConfigViewModel)sender!;
 
@@ -317,6 +363,11 @@ namespace PowerPad.WinUI.Pages
             else if (config == _settings.General.OpenAIConfig && _settings.General.OpenAIEnabled) TestOpenAI(null, null);
         }
 
+        /// <summary>
+        /// Handles the retry button click event to test the corresponding service.
+        /// </summary>
+        /// <param name="sender">The button that was clicked.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void RetryButton_Click(object sender, RoutedEventArgs __)
         {
             var config = (Button)sender!;
@@ -326,32 +377,20 @@ namespace PowerPad.WinUI.Pages
             else if (config == OpenAIRetryButton) TestOpenAI(null, null);
         }
 
-        ~SettingsPage()
+        /// <summary>
+        /// Disposes resources used by the <see cref="SettingsPage"/> class.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method is called from Dispose.</param>
+        protected override void Dispose(bool disposing)
         {
-            Dispose(false);
-        }
-
-        public override void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    _settings.General.OllamaConfig.ConfigChanged -= TestOllama;
-                    _settings.General.AzureAIConfig.ConfigChanged -= TestAzureAI;
-                    _settings.General.OpenAIConfig.ConfigChanged -= TestOpenAI;
-                    _settings.General.ServiceEnablementChanged -= TestEnabledService;
-                    _settings.General.ProviderAvaibilityChanged -= SetModelsMenu;
-                    _settings.Models.ModelAvaibilityChanged -= SetModelsMenu;
-                }
-
-                _disposed = true;
+                _settings.General.OllamaConfig.ConfigChanged -= TestOllama;
+                _settings.General.AzureAIConfig.ConfigChanged -= TestAzureAI;
+                _settings.General.OpenAIConfig.ConfigChanged -= TestOpenAI;
+                _settings.General.ServiceEnablementChanged -= TestEnabledService;
+                _settings.General.ProviderAvailabilityChanged -= SetModelsMenu;
+                _settings.Models.ModelAvailabilityChanged -= SetModelsMenu;
             }
         }
     }

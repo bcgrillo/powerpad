@@ -3,24 +3,31 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.WinUI.Components.Editors;
+using PowerPad.WinUI.Helpers;
 using PowerPad.WinUI.Messages;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
-using PowerPad.WinUI.Helpers;
+using System.Linq;
 
 namespace PowerPad.WinUI.Components
 {
+    /// <summary>
+    /// Represents a manager for handling editor controls and managing the workspace.
+    /// </summary>
     public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     {
-        private static EditorManager? _registredInstance = null;
-        private readonly object _lock = new();
+        private const long AUTO_SAVE_INTERVAL = 3000;
+        
+        private static EditorManager? _activeInstance = null;
+        private static readonly object _lock = new();
 
         private readonly WorkspaceViewModel _workspace;
-        private const long AUTO_SAVE_INTERVAL = 3000;
+        private readonly DispatcherTimer _timer;
         private EditorControl? _currentEditor;
 
-        private readonly DispatcherTimer _timer;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditorManager"/> class.
+        /// </summary>
         public EditorManager()
         {
             this.InitializeComponent();
@@ -34,21 +41,34 @@ namespace PowerPad.WinUI.Components
             _timer.Tick += (o, e) => EditorManagerHelper.AutoSaveEditors();
             _timer.Start();
 
+            SetActiveInstance(this);
+        }
+
+        /// <summary>
+        /// Sets the active instance of the <see cref="EditorManager"/>.
+        /// </summary>
+        /// <param name="instance">The instance to set as active.</param>
+        public static void SetActiveInstance(EditorManager instance)
+        {
             lock (_lock)
             {
-                if (_registredInstance is not null)
-                    WeakReferenceMessenger.Default.Unregister<FolderEntryDeleted>(_registredInstance);
+                if (_activeInstance is not null)
+                    WeakReferenceMessenger.Default.Unregister<FolderEntryDeleted>(_activeInstance);
 
-                WeakReferenceMessenger.Default.Register(this);
-                _registredInstance = this;
+                WeakReferenceMessenger.Default.Register(instance);
+                _activeInstance = instance;
             }
         }
 
+        /// <summary>
+        /// Opens a file in the editor manager.
+        /// </summary>
+        /// <param name="document">The document to open. If null, the editor will close the current file.</param>
         public void OpenFile(FolderEntryViewModel? document)
         {
             if (document is null)
             {
-                if (_currentEditor is not null) _currentEditor.Visibility = Visibility.Collapsed;
+                _currentEditor?.Visibility = Visibility.Collapsed;
                 _currentEditor = null;
 
                 Landing.Visibility = Visibility.Visible;
@@ -103,14 +123,14 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the receipt of a <see cref="FolderEntryDeleted"/> message.
+        /// </summary>
+        /// <param name="message">The message containing the folder entry that was deleted.</param>
         public void Receive(FolderEntryDeleted message)
         {
-            FolderEntryViewModel? key = null;
-
-            foreach (var kvp in EditorManagerHelper.Editors)
-            {
-                if (kvp.Key.ModelEntry == message.Value) key = kvp.Key;
-            }
+            var key = EditorManagerHelper.Editors
+                .FirstOrDefault(kvp => kvp.Key.ModelEntry == message.Value).Key;
 
             if (key is not null)
             {
@@ -129,16 +149,25 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the click event for creating a new chat document.
+        /// </summary>
         private void NewChatButton_Click(object _, RoutedEventArgs __)
         {
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Chat));
         }
 
+        /// <summary>
+        /// Handles the click event for creating a new note document.
+        /// </summary>
         private void NewNoteButton_Click(object _, RoutedEventArgs __)
         {
-            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Text));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(null, DocumentType.Note));
         }
 
+        /// <summary>
+        /// Handles the unload event of the user control.
+        /// </summary>
         private void UserControl_Unloaded(object _, RoutedEventArgs __)
         {
             if (_currentEditor is not null)

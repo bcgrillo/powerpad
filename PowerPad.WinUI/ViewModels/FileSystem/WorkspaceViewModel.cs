@@ -64,7 +64,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
                     var document = (Document)parameters.Entry.ModelEntry;
                     _workspaceService.SetPosition(document, targetPosition);
                 }
-                else 
+                else
                 {
                     var folder = (Folder)parameters.Entry.ModelEntry;
                     _workspaceService.SetPosition(folder, targetPosition);
@@ -115,7 +115,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
                 var newDocumentModel = new Document(parameters.Name, parameters.DocumentType!.Value.ToFileExtension());
 
-                _workspaceService.CreateDocument(folderModel, newDocumentModel);
+                _workspaceService.CreateDocument(folderModel, newDocumentModel, parameters.Content);
 
                 createdEntry = new(newDocumentModel, parent);
                 parent.Children!.Add(createdEntry);
@@ -135,7 +135,7 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             RecentlyWorkspaces.Remove(path);
             RecentlyWorkspaces.Insert(0, path);
 
-            if(RecentlyWorkspaces.Count > MAX_RECENTLY_WORKSPACES)
+            if (RecentlyWorkspaces.Count > MAX_RECENTLY_WORKSPACES)
             {
                 RecentlyWorkspaces.RemoveAt(5);
             }
@@ -151,20 +151,22 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
     public class NewEntryParameters
     {
-        public FolderEntryViewModel? Parent { get; set; }
-        public EntryType Type { get; set; }
-        public DocumentType? DocumentType { get; set; }
-        public string Name { get; set; }
+        public FolderEntryViewModel? Parent { get; private set; }
+        public EntryType Type { get; private set; }
+        public DocumentType? DocumentType { get; private set; }
+        public string Name { get; private set; }
+        public string? Content { get; private set; }
 
         private NewEntryParameters(string name) { Name = name; }
 
-        public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentType documentType, string? name = null)
+        public static NewEntryParameters NewDocument(FolderEntryViewModel? parent, DocumentType documentType, string? name = null, string? content = null)
         {
             return new(name ?? NameGeneratorHelper.NewDocumentName(documentType))
             {
                 Parent = parent,
                 Type = EntryType.Document,
                 DocumentType = documentType,
+                Content = content,
             };
         }
 

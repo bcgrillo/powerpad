@@ -17,7 +17,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public partial bool SendDefaultParameters { get; set; }
 
         public required AIParametersViewModel DefaultParameters
-        { 
+        {
             get;
             init
             {
@@ -38,7 +38,7 @@ namespace PowerPad.WinUI.ViewModels.Settings
             }
         }
 
-        public event EventHandler? ModelAvaibilityChanged;
+        public event EventHandler? ModelAvailabilityChanged;
         public event EventHandler? DefaultModelChanged;
 
         private void AvailableModelsCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
@@ -61,14 +61,14 @@ namespace PowerPad.WinUI.ViewModels.Settings
                     throw new NotImplementedException("Only Add and Remove actions are supported.");
             }
 
-            ModelAvaibilityChanged?.Invoke(this, EventArgs.Empty);
+            ModelAvailabilityChanged?.Invoke(this, EventArgs.Empty);
             OnPropertyChanged(nameof(AvailableModels));
         }
 
-        private void AvailableModelsCollectionPropertyChangedHandler(object? sender , PropertyChangedEventArgs eventArgs)
+        private void AvailableModelsCollectionPropertyChangedHandler(object? _, PropertyChangedEventArgs eventArgs)
         {
             if (eventArgs.PropertyName == nameof(AIModelViewModel.Enabled))
-                ModelAvaibilityChanged?.Invoke(this, EventArgs.Empty);
+                ModelAvailabilityChanged?.Invoke(this, EventArgs.Empty);
 
             OnPropertyChanged(nameof(AvailableModels));
         }

@@ -4,41 +4,89 @@ using static PowerPad.Core.Services.Conventions;
 
 namespace PowerPad.Core.Services.FileSystem
 {
+    /// <summary>
+    /// Provides methods to manage and manipulate the workspace, including folders and documents.
+    /// </summary>
     public interface IWorkspaceService
     {
+        /// <summary>
+        /// Gets the root folder of the workspace.
+        /// </summary>
         Folder Root { get; }
 
+        /// <summary>
+        /// Moves a document to a target folder at a specified position.
+        /// </summary>
         void MoveDocument(Document document, Folder targetFolder, int targetPosition);
 
+        /// <summary>
+        /// Moves a folder to a target folder at a specified position.
+        /// </summary>
         void MoveFolder(Folder folder, Folder targetFolder, int targetPosition);
 
-        void SetPosition(Document entry, int targetPosition);
+        /// <summary>
+        /// Sets the position of a document within its parent folder.
+        /// </summary>
+        void SetPosition(Document document, int targetPosition);
 
+        /// <summary>
+        /// Sets the position of a folder within its parent folder.
+        /// </summary>
         void SetPosition(Folder folder, int targetPosition);
 
-        void CreateDocument(Folder parent, Document document);
+        /// <summary>
+        /// Creates a new document in the specified parent folder.
+        /// </summary>
+        void CreateDocument(Folder parent, Document newDocument, string? content = null);
 
-        void CreateFolder(Folder parent, Folder folder);
+        /// <summary>
+        /// Creates a new folder in the specified parent folder.
+        /// </summary>
+        void CreateFolder(Folder parent, Folder newFolder);
 
+        /// <summary>
+        /// Deletes a document and moves it to the trash folder.
+        /// </summary>
         void DeleteDocument(Document document);
 
+        /// <summary>
+        /// Deletes a folder and moves it to the trash folder.
+        /// </summary>
         void DeleteFolder(Folder folder);
 
+        /// <summary>
+        /// Renames a document to a new name.
+        /// </summary>
         void RenameDocument(Document document, string newName);
 
+        /// <summary>
+        /// Renames a folder to a new name.
+        /// </summary>
         void RenameFolder(Folder folder, string newName);
 
+        /// <summary>
+        /// Opens a workspace by initializing the root folder.
+        /// </summary>
         void OpenWorkspace(string rootFolder);
     }
 
+    /// <summary>
+    /// Implementation of <see cref="IWorkspaceService"/> to manage workspace operations.
+    /// </summary>
     public class WorkspaceService : IWorkspaceService
     {
         private Folder _root;
         private string _trashFolder;
         private readonly IOrderService _orderService;
 
+        /// <inheritdoc />
         public Folder Root => _root;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkspaceService"/> class.
+        /// </summary>
+        /// <param name="rootFolder">The root folder of the workspace.</param>
+        /// <param name="orderService">The service to manage folder and document order.</param>
         public WorkspaceService(string rootFolder, IOrderService orderService)
         {
             _orderService = orderService;
@@ -47,51 +95,7 @@ namespace PowerPad.Core.Services.FileSystem
             _root = InitializeRootFolder(rootFolder);
         }
 
-        private Root InitializeRootFolder(string rootFolder)
-        {
-            if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
-
-            var root = new Root(rootFolder);
-            root.AddFolders(GetFoldersRecursive(rootFolder));
-            root.AddDocuments(GetDocuments(rootFolder));
-
-            _orderService.LoadOrderRecursive(root);
-
-            return root;
-        }
-
-        private Collection<Folder> GetFoldersRecursive(string path)
-        {
-            Collection<Folder> folders = [];
-
-            var directories = Directory.GetDirectories(path).Where(d => d != _trashFolder);
-
-            foreach (var directory in directories)
-            {
-                var folder = new Folder(Path.GetFileName(directory));
-                folder.AddFolders(GetFoldersRecursive(directory));
-                folder.AddDocuments(GetDocuments(directory));
-                folders.Add(folder);
-            }
-            return folders;
-        }
-
-        private static Collection<Document>GetDocuments(string directory)
-        {
-            Collection<Document> documents = [];
-            foreach (var file in Directory.GetFiles(directory))
-            {
-                var filename = Path.GetFileNameWithoutExtension(file);
-                var extension = Path.GetExtension(file);
-
-                if (extension != AUTO_SAVE_EXTENSION && extension != ORDER_FILE_NAME)
-                {
-                    documents.Add(new(filename, extension));
-                }
-            }
-            return documents;
-        }
-
+        /// <inheritdoc />
         public void MoveDocument(Document document, Folder targetFolder, int targetPosition)
         {
             var originalFullName = $"{document.Name}{document.Extension}";
@@ -112,6 +116,7 @@ namespace PowerPad.Core.Services.FileSystem
             _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, originalFullName, targetPosition);
         }
 
+        /// <inheritdoc />
         public void MoveFolder(Folder folder, Folder targetFolder, int targetPosition)
         {
             var originalName = folder.Name;
@@ -129,27 +134,31 @@ namespace PowerPad.Core.Services.FileSystem
             _orderService.UpdateOrderAfterMove(sourceFolder, targetFolder, originalName, targetPosition);
         }
 
+        /// <inheritdoc />
         public void SetPosition(Document document, int targetPosition)
         {
             _orderService.UpdateOrderAfterMove(document.Parent!, null, $"{document.Name}{document.Extension}", targetPosition);
         }
 
+        /// <inheritdoc />
         public void SetPosition(Folder folder, int targetPosition)
         {
             _orderService.UpdateOrderAfterMove(folder.Parent!, null, folder.Name, targetPosition);
         }
 
-        public void CreateDocument(Folder parent, Document newDocument)
+        /// <inheritdoc />
+        public void CreateDocument(Folder parent, Document newDocument, string? content = null)
         {
             string newPath = GetAvailableNewPath(parent, newDocument);
 
-            File.WriteAllText(newPath, string.Empty);
+            File.WriteAllText(newPath, content ?? string.Empty);
 
             parent.AddDocument(newDocument);
 
             _orderService.UpdateOrderAfterCreation(parent, $"{newDocument.Name}{newDocument.Extension}");
         }
-       
+
+        /// <inheritdoc />
         public void CreateFolder(Folder parent, Folder newFolder)
         {
             string newPath = GetAvailableNewPath(parent, newFolder);
@@ -159,9 +168,9 @@ namespace PowerPad.Core.Services.FileSystem
             parent.AddFolder(newFolder);
 
             _orderService.UpdateOrderAfterCreation(parent, newFolder.Name);
-
         }
 
+        /// <inheritdoc />
         public void DeleteDocument(Document document)
         {
             var sourceFolder = document.Parent!;
@@ -185,6 +194,7 @@ namespace PowerPad.Core.Services.FileSystem
             _orderService.UpdateOrderAfterDeletion(sourceFolder, $"{originalName}{document.Extension}");
         }
 
+        /// <inheritdoc />
         public void DeleteFolder(Folder folder)
         {
             var sourceFolder = folder.Parent!;
@@ -206,6 +216,7 @@ namespace PowerPad.Core.Services.FileSystem
             _orderService.UpdateOrderAfterDeletion(sourceFolder, originalName);
         }
 
+        /// <inheritdoc />
         public void RenameDocument(Document document, string newName)
         {
             var oldFullName = $"{document.Name}{document.Extension}";
@@ -221,6 +232,7 @@ namespace PowerPad.Core.Services.FileSystem
             _orderService.UpdateOrderAfterRename(document.Parent!, oldFullName, $"{document.Name}{document.Extension}");
         }
 
+        /// <inheritdoc />
         public void RenameFolder(Folder folder, string newName)
         {
             var oldName = folder.Name;
@@ -233,12 +245,76 @@ namespace PowerPad.Core.Services.FileSystem
             _orderService.UpdateOrderAfterRename(folder.Parent!, oldName, folder.Name);
         }
 
+        /// <inheritdoc />
         public void OpenWorkspace(string rootFolder)
         {
             _trashFolder = Path.Combine(rootFolder, TRASH_FOLDER_NAME);
             _root = InitializeRootFolder(rootFolder);
         }
 
+        /// <summary>
+        /// Initializes the root folder and loads its contents recursively.
+        /// </summary>
+        /// <param name="rootFolder">The path to the root folder.</param>
+        private Root InitializeRootFolder(string rootFolder)
+        {
+            if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
+
+            var root = new Root(rootFolder);
+            root.AddFolders(GetFoldersRecursive(rootFolder));
+            root.AddDocuments(GetDocuments(rootFolder));
+
+            _orderService.LoadOrderRecursive(root);
+
+            return root;
+        }
+
+        /// <summary>
+        /// Recursively retrieves all subfolders from the specified path.
+        /// </summary>
+        /// <param name="path"> The path to search for subfolders.</param>
+        private Collection<Folder> GetFoldersRecursive(string path)
+        {
+            Collection<Folder> folders = [];
+
+            var directories = Directory.GetDirectories(path).Where(d => d != _trashFolder);
+
+            foreach (var directory in directories)
+            {
+                var folder = new Folder(Path.GetFileName(directory));
+                folder.AddFolders(GetFoldersRecursive(directory));
+                folder.AddDocuments(GetDocuments(directory));
+                folders.Add(folder);
+            }
+            return folders;
+        }
+
+        /// <summary>
+        /// Retrieves all documents from the specified path.
+        /// </summary>
+        /// <param name="path"> The path to search for documents.</param>
+        private static Collection<Document> GetDocuments(string path)
+        {
+            Collection<Document> documents = [];
+            foreach (var file in Directory.GetFiles(path))
+            {
+                var filename = Path.GetFileNameWithoutExtension(file);
+                var extension = Path.GetExtension(file);
+
+                if (extension != AUTO_SAVE_EXTENSION && extension != ORDER_FILE_NAME)
+                {
+                    documents.Add(new(filename, extension));
+                }
+            }
+            return documents;
+        }
+
+        /// <summary>
+        /// Gets a new available path for a document, ensuring no name conflicts.
+        /// </summary>
+        /// <param name="parent">The parent folder where the document resides.</param>
+        /// <param name="child">The document for which a new path is being generated.</param>
+        /// <param name="newName">The new name for the document, if provided.</param>
         private static string GetAvailableNewPath(Folder parent, Document child, string? newName = null)
         {
             if (newName is not null) child.Name = newName;
@@ -256,6 +332,12 @@ namespace PowerPad.Core.Services.FileSystem
             return newPath;
         }
 
+        /// <summary>
+        /// Gets a new available path for a folder, ensuring no name conflicts.
+        /// </summary>
+        /// <param name="parent">The parent folder where the folder resides.</param>
+        /// <param name="child">The folder for which a new path is being generated.</param>
+        /// <param name="newName">The new name for the folder, if provided.</param>
         private static string GetAvailableNewPath(Folder parent, Folder child, string? newName = null)
         {
             if (newName is not null) child.Name = newName;

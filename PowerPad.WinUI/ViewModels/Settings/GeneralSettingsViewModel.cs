@@ -6,7 +6,6 @@ using PowerPad.WinUI.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
@@ -25,8 +24,8 @@ namespace PowerPad.WinUI.ViewModels.Settings
         public partial bool OllamaAutostart { get; set; }
 
         public required AIServiceConfigViewModel OllamaConfig
-        { 
-            get; 
+        {
+            get;
             init
             {
                 field = value;
@@ -76,7 +75,10 @@ namespace PowerPad.WinUI.ViewModels.Settings
         [ObservableProperty]
         public partial string? AgentPrompt { get; set; }
 
-        public event EventHandler? ProviderAvaibilityChanged;
+        [ObservableProperty]
+        public partial bool EnableHotKeys { get; set; }
+
+        public event EventHandler? ProviderAvailabilityChanged;
         public event EventHandler? ServiceEnablementChanged;
 
         public void InitializeAIServices()
@@ -174,13 +176,19 @@ namespace PowerPad.WinUI.ViewModels.Settings
 
         private void AvailableProvidersCollectionChangedHandler(object? _, NotifyCollectionChangedEventArgs eventArgs)
         {
-            ProviderAvaibilityChanged?.Invoke(this, EventArgs.Empty);
+            ProviderAvailabilityChanged?.Invoke(this, EventArgs.Empty);
             OnPropertyChanged(nameof(AvailableProviders));
         }
 
         partial void OnAcrylicBackgroundChanging(bool value)
         {
             App.MainWindow?.SetBackdrop(value);
+        }
+
+        partial void OnEnableHotKeysChanging(bool value)
+        {
+            if (App.MainWindow is not null)
+                HotKeyHelper.Register(App.MainWindow, value);
         }
     };
 }

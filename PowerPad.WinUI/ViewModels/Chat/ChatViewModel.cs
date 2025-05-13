@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.VisualBasic;
 using PowerPad.WinUI.ViewModels.AI;
 using System;
 using System.Collections.ObjectModel;
@@ -18,6 +17,9 @@ namespace PowerPad.WinUI.ViewModels.Chat
         public partial AIParametersViewModel? Parameters { get; set; }
 
         [ObservableProperty]
+        public partial Guid? AgentId { get; set; }
+
+        [ObservableProperty]
         public partial bool ChatError { get; set; }
 
         public required ObservableCollection<MessageViewModel> Messages
@@ -30,8 +32,8 @@ namespace PowerPad.WinUI.ViewModels.Chat
             }
         }
 
-        public IRelayCommand RemoveLastMessageCommand;
-        public IRelayCommand ClearMessagesCommand;
+        public IRelayCommand RemoveLastMessageCommand { get; }
+        public IRelayCommand ClearMessagesCommand { get; }
 
         public ChatViewModel()
         {

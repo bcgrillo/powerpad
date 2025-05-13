@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ResourceDictionary 
-     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-     xmlns:controls="using:Microsoft.UI.Xaml.Controls" 
-     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" 
-     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" 
-     xmlns:media="using:Microsoft.UI.Xaml.Media"
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-     xmlns:localc="using:PowerPad.WinUI.Components.Controls">
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+     xmlns:controls="using:PowerPad.WinUI.Components.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="localc:IntegratedTextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
+    <Style TargetType="controls:IntegratedTextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
     <Style TargetType="TextBlock" x:Key="WSTitleStyle" BasedOn="{StaticResource TitleTextBlockStyle}">
         <Style.Setters>
             <Setter Property="FontSize" Value="18" />
@@ -29,7 +25,7 @@
             <SolidColorBrush x:Key="PowerPadStrokeColorDefault" Color="#20FFFFFF" />
 
             <ImageSource x:Key="OllamaSvg">ms-appx:///Assets/Icons/ollama_w.svg</ImageSource>
-            <ImageSource x:Key="GithubSvg">ms-appx:///Assets/Icons/github_w.svg</ImageSource>
+            <ImageSource x:Key="GitHubSvg">ms-appx:///Assets/Icons/github_w.svg</ImageSource>
             <ImageSource x:Key="OpenAISvg">ms-appx:///Assets/Icons/openai_w.svg</ImageSource>
             <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Icons/huggingface_w.svg</ImageSource>
             <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Icons/azureai_w.svg</ImageSource>
@@ -47,7 +43,7 @@
             <SolidColorBrush x:Key="PowerPadStrokeColorDefault" Color="#30000000" />
 
             <ImageSource x:Key="OllamaSvg">ms-appx:///Assets/Icons/ollama_b.svg</ImageSource>
-            <ImageSource x:Key="GithubSvg">ms-appx:///Assets/Icons/github_b.svg</ImageSource>
+            <ImageSource x:Key="GitHubSvg">ms-appx:///Assets/Icons/github_b.svg</ImageSource>
             <ImageSource x:Key="OpenAISvg">ms-appx:///Assets/Icons/openai_b.svg</ImageSource>
             <ImageSource x:Key="HuggingFaceSvg">ms-appx:///Assets/Icons/huggingface_b.svg</ImageSource>
             <ImageSource x:Key="AzureAISvg">ms-appx:///Assets/Icons/azureai_b.svg</ImageSource>

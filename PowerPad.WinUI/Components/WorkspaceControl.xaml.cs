@@ -1,32 +1,39 @@
-using System;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using PowerPad.WinUI.Dialogs;
-using System.Collections.Generic;
-using Windows.Storage.Pickers;
-using Windows.Storage;
-using PowerPad.WinUI.Helpers;
-using Windows.ApplicationModel.DataTransfer;
-using PowerPad.WinUI.ViewModels.FileSystem;
-using PowerPad.Core.Models.FileSystem;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using PowerPad.Core.Models.FileSystem;
+using PowerPad.WinUI.Dialogs;
 using PowerPad.WinUI.Messages;
+using PowerPad.WinUI.ViewModels.FileSystem;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Pickers;
 
 namespace PowerPad.WinUI.Components
 {
+    /// <summary>
+    /// Represents a control for managing and interacting with the workspace, including folders and documents.
+    /// </summary>
     public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>, IRecipient<FolderEntryChanged>
     {
-        private static WorkspaceControl? _registredInstance = null;
-        private readonly object _lock = new();
+        private static WorkspaceControl? _activeInstance = null;
+        private static readonly object _lock = new();
 
         private readonly WorkspaceViewModel _workspace;
         private readonly List<MenuFlyoutItem> _menuFlyoutItems;
 
+        /// <summary>
+        /// Occurs when an item in the workspace is invoked.
+        /// </summary>
         public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkspaceControl"/> class.
+        /// </summary>
         public WorkspaceControl()
         {
             this.InitializeComponent();
@@ -36,21 +43,67 @@ namespace PowerPad.WinUI.Components
 
             UpdateWorkspacesMenu();
 
-            //TODO: Change for use dispose
-            lock(_lock)
+            SetActiveInstance(this);
+        }
+
+        /// <summary>
+        /// Sets the active instance of the <see cref="WorkspaceControl"/> and registers it for receiving messages.
+        /// </summary>
+        /// <param name="instance">The instance to set as active.</param>
+        public static void SetActiveInstance(WorkspaceControl instance)
+        {
+            lock (_lock)
             {
-                if (_registredInstance is not null)
+                if (_activeInstance is not null)
                 {
-                    WeakReferenceMessenger.Default.Unregister<FolderEntryCreated>(_registredInstance);
-                    WeakReferenceMessenger.Default.Unregister<FolderEntryChanged>(_registredInstance);
+                    WeakReferenceMessenger.Default.Unregister<FolderEntryCreated>(_activeInstance);
+                    WeakReferenceMessenger.Default.Unregister<FolderEntryChanged>(_activeInstance);
                 }
 
-                WeakReferenceMessenger.Default.Register<FolderEntryCreated>(this);
-                WeakReferenceMessenger.Default.Register<FolderEntryChanged>(this);
-                _registredInstance = this;
+                WeakReferenceMessenger.Default.Register<FolderEntryCreated>(instance);
+                WeakReferenceMessenger.Default.Register<FolderEntryChanged>(instance);
+                _activeInstance = instance;
             }
         }
 
+        /// <summary>
+        /// Receives a message indicating that a folder entry has been created.
+        /// </summary>
+        /// <param name="message">The message containing the created folder entry.</param>
+        public void Receive(FolderEntryCreated message)
+        {
+            ClearSelection();
+
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(100);
+                message.Value.IsSelected = true;
+            });
+
+            if (!message.Value.IsFolder)
+            {
+                ItemInvoked?.Invoke(this, new(message.Value));
+                _workspace.CurrentDocumentPath = message.Value.ModelEntry.Path;
+            }
+        }
+
+        /// <summary>
+        /// Receives a message indicating that a folder entry has been changed.
+        /// </summary>
+        /// <param name="message">The message containing the changed folder entry.</param>
+        public void Receive(FolderEntryChanged message)
+        {
+            var selectedItem = TreeView.SelectedItem as FolderEntryViewModel;
+
+            if (message.NameChanged && selectedItem?.ModelEntry == message.Value && selectedItem?.IsFolder == false)
+            {
+                _workspace.CurrentDocumentPath = message.Value.Path;
+            }
+        }
+
+        /// <summary>
+        /// Updates the workspace menu with recently accessed workspaces.
+        /// </summary>
         private void UpdateWorkspacesMenu()
         {
             foreach (var item in _menuFlyoutItems) WorkspaceMenu.Items.Remove(item);
@@ -72,6 +125,11 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the event when an item in the tree view is invoked.
+        /// </summary>
+        /// <param name="_">The tree view instance (not used).</param>
+        /// <param name="eventArgs">The event arguments containing the invoked item.</param>
         private void TreeView_ItemInvoked(TreeView _, TreeViewItemInvokedEventArgs eventArgs)
         {
             var invokedEntry = (FolderEntryViewModel)eventArgs.InvokedItem;
@@ -87,6 +145,11 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the event when drag-and-drop operation is completed in the tree view.
+        /// </summary>
+        /// <param name="_">The tree view instance (not used).</param>
+        /// <param name="eventArgs">The event arguments containing drag-and-drop details.</param>
         private void TreeView_DragItemsCompleted(TreeView _, TreeViewDragItemsCompletedEventArgs eventArgs)
         {
             if (eventArgs.DropResult == DataPackageOperation.Move && eventArgs.Items.Count == 1 && eventArgs.Items[0] is FolderEntryViewModel entry)
@@ -97,6 +160,9 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the click event for creating a new chat document.
+        /// </summary>
         private void NewChatButton_Click(object _, RoutedEventArgs __)
         {
             var parent = GetParentForNewElement();
@@ -104,13 +170,19 @@ namespace PowerPad.WinUI.Components
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Chat));
         }
 
+        /// <summary>
+        /// Handles the click event for creating a new note document.
+        /// </summary>
         private void NewNoteButton_Click(object _, RoutedEventArgs __)
         {
             var parent = GetParentForNewElement();
 
-            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Text));
+            _workspace.NewEntryCommand.Execute(NewEntryParameters.NewDocument(parent, DocumentType.Note));
         }
 
+        /// <summary>
+        /// Handles the click event for creating a new folder.
+        /// </summary>
         private void NewFolderButton_Click(object _, RoutedEventArgs __)
         {
             var parent = GetParentForNewElement();
@@ -118,24 +190,31 @@ namespace PowerPad.WinUI.Components
             _workspace.NewEntryCommand.Execute(NewEntryParameters.NewFolder(parent, "Nueva carpeta"));
         }
 
+        /// <summary>
+        /// Gets the parent folder for creating a new element.
+        /// </summary>
+        /// <returns>The parent folder entry view model.</returns>
         private FolderEntryViewModel? GetParentForNewElement()
         {
             var parent = TreeView.SelectedItem as FolderEntryViewModel;
             if (parent is not null && parent.Type != EntryType.Folder) parent = (FolderEntryViewModel)TreeView.SelectedNode.Parent.Content;
-            if (parent is not null) parent.IsExpanded = true;
+            parent?.IsExpanded = true;
             return parent;
         }
 
+        /// <summary>
+        /// Handles the click event for renaming a folder or document.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void RenameFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
 
-            var result = await DialogHelper.Imput(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
+            var newName = await DialogHelper.Input(XamlRoot, "Renombrar", "Nuevo nombre:", entry.Name);
 
-            if (result is not null)
+            if (newName is not null)
             {
-                var newName = result;
-
                 try
                 {
                     entry.RenameCommand.Execute(newName);
@@ -152,6 +231,11 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the click event for deleting a folder or document.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void DeleteFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             var entry = (FolderEntryViewModel)((MenuFlyoutItem)sender).DataContext;
@@ -176,6 +260,9 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the click event for opening a folder using a folder picker.
+        /// </summary>
         private async void OpenFolderFlyoutItem_Click(object _, RoutedEventArgs __)
         {
             var openPicker = new FolderPicker();
@@ -199,6 +286,11 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the click event for opening a recently accessed workspace.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void OpenRecentlyFlyoutItem_Click(object sender, RoutedEventArgs __)
         {
             _workspace.OpenWorkspaceCommand.Execute(((MenuFlyoutItem)sender).Tag);
@@ -207,6 +299,12 @@ namespace PowerPad.WinUI.Components
             UpdateWorkspacesMenu();
         }
 
+        /// <summary>
+        /// Recursively finds a folder entry by its path.
+        /// </summary>
+        /// <param name="entries">The collection of folder entries to search.</param>
+        /// <param name="path">The path of the folder entry to find.</param>
+        /// <returns>The folder entry view model if found; otherwise, null.</returns>
         private static FolderEntryViewModel? FindFolderEntryByPathRecursive(IEnumerable<FolderEntryViewModel> entries, string path)
         {
             foreach (var entry in entries)
@@ -231,6 +329,9 @@ namespace PowerPad.WinUI.Components
             return null;
         }
 
+        /// <summary>
+        /// Handles the loaded event of the tree view.
+        /// </summary>
         private void TreeView_Loaded(object _, RoutedEventArgs __)
         {
             if (_workspace.CurrentDocumentPath is not null)
@@ -242,12 +343,8 @@ namespace PowerPad.WinUI.Components
                 {
                     DispatcherQueue.TryEnqueue(async () =>
                     {
-                        //TODO: Check it, sometimes the entry is not selected because treeview is not loaded yet
-                        for (int i = 0; i < 5; i++)
-                        {
-                            await Task.Delay(100);
-                            entry.IsSelected = true;
-                        }
+                        await Task.Delay(100);
+                        entry.IsSelected = true;
                     });
 
                     ItemInvoked?.Invoke(this, new(entry));
@@ -255,46 +352,32 @@ namespace PowerPad.WinUI.Components
             }
         }
 
-        private void TreeView_PointerPressed(object _, PointerRoutedEventArgs e)
+        /// <summary>
+        /// Handles the pointer pressed event of the tree view.
+        /// </summary>
+        private void TreeView_PointerPressed(object _, PointerRoutedEventArgs eventArgs)
         {
-            var pointerPoint = e.GetCurrentPoint(TreeView);
+            var pointerPoint = eventArgs.GetCurrentPoint(TreeView);
             if (pointerPoint.Properties.PointerUpdateKind != PointerUpdateKind.RightButtonPressed) ClearSelection();
         }
 
-        private void TreeView_KeyDown(object _, KeyRoutedEventArgs e)
+        /// <summary>
+        /// Handles the key down event of the tree view.
+        /// </summary>
+        private void TreeView_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
-            if (e.Key == Windows.System.VirtualKey.Escape) ClearSelection();
+            if (eventArgs.Key == Windows.System.VirtualKey.Escape) ClearSelection();
         }
 
-        public void Receive(FolderEntryCreated message)
-        {
-            ClearSelection();
+        /// <summary>
+        /// Clears the selection of all folder entries in the workspace.
+        /// </summary>
+        private void ClearSelection() => ClearSelection(_workspace.Root.Children);
 
-            DispatcherQueue.TryEnqueue(async () =>
-            {
-                await Task.Delay(100);
-                message.Value.IsSelected = true;
-            });
-
-            if (!message.Value.IsFolder)
-            {
-                ItemInvoked?.Invoke(this, new(message.Value));
-                _workspace.CurrentDocumentPath = message.Value.ModelEntry.Path;
-            }
-        }
-
-        public void Receive(FolderEntryChanged message)
-        {
-            var selectedItem = TreeView.SelectedItem as FolderEntryViewModel;
-
-            if (message.NameChanged && selectedItem?.ModelEntry == message.Value && selectedItem?.IsFolder == false)
-            {
-                _workspace.CurrentDocumentPath = message.Value.Path;
-            }
-        }
-
-        public void ClearSelection() => ClearSelection(_workspace.Root.Children);
-
+        /// <summary>
+        /// Recursively clears the selection of folder entries.
+        /// </summary>
+        /// <param name="entries">The collection of folder entries to clear selection.</param>
         private static void ClearSelection(IEnumerable<FolderEntryViewModel> entries)
         {
             foreach (var entry in entries)
@@ -305,18 +388,26 @@ namespace PowerPad.WinUI.Components
             }
         }
 
+        /// <summary>
+        /// Handles the selection changed event of the tree view.
+        /// </summary>
         private void TreeView_SelectionChanged(TreeView _, TreeViewSelectionChangedEventArgs eventArgs)
         {
             if (eventArgs.AddedItems.Count > 0 && eventArgs.AddedItems[0] is FolderEntryViewModel selectedEntry)
             {
                 var container = (TreeViewItem)TreeView.ContainerFromItem(selectedEntry);
                 container?.StartBringIntoView(new BringIntoViewOptions
-                    {
-                        AnimationDesired = true
-                    });
+                {
+                    AnimationDesired = true
+                });
             }
         }
 
+        /// <summary>
+        /// Handles the click event for showing the context menu of a tree view item.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void MoreButton_Click(object sender, RoutedEventArgs __)
         {
             var button = sender as Button;
@@ -327,16 +418,38 @@ namespace PowerPad.WinUI.Components
         }
     }
 
+    /// <summary>
+    /// Provides event arguments for the <see cref="WorkspaceControl.ItemInvoked"/> event.
+    /// </summary>
     public class WorkspaceControlItemInvokedEventArgs(FolderEntryViewModel? selectedFile) : EventArgs
     {
+        /// <summary>
+        /// Gets the selected file or folder entry.
+        /// </summary>
         public FolderEntryViewModel? SelectedFile { get; } = selectedFile;
     }
 
+    /// <summary>
+    /// Selects a data template based on the type of folder entry (folder or file).
+    /// </summary>
     public class EntryTemplateSelector : DataTemplateSelector
     {
+        /// <summary>
+        /// Gets or sets the data template for folders.
+        /// </summary>
         public DataTemplate? FolderTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the data template for files.
+        /// </summary>
         public DataTemplate? FileTemplate { get; set; }
 
+        /// <summary>
+        /// Selects the appropriate data template based on the type of the item.
+        /// </summary>
+        /// <param name="item">The item to select a template for.</param>
+        /// <param name="container">The container for the item.</param>
+        /// <returns>The selected data template.</returns>
         protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
         {
             var entry = (FolderEntryViewModel)item;
@@ -352,9 +465,14 @@ namespace PowerPad.WinUI.Components
         }
     }
 
+    /// <summary>
+    /// Represents the options available in the context menu.
+    /// </summary>
     public enum ContextMenuOptions
     {
+        /// <summary>Option to rename an entry.</summary>
         Rename,
+        /// <summary>Option to delete an entry.</summary>
         Delete
     }
 }

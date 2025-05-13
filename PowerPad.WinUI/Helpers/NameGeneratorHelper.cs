@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.Helpers
 {
+    /// <summary>
+    /// Provides helper methods for generating names for folders and documents, 
+    /// as well as AI-based name generation for file content.
+    /// </summary>
     public static class NameGeneratorHelper
     {
         private const string NEW_FOLDER_NAME = "Nueva carpeta";
@@ -20,7 +24,7 @@ namespace PowerPad.WinUI.Helpers
 
         private static readonly Dictionary<DocumentType, string> NEW_DOCUMENT_NAMES = new()
         {
-            { DocumentType.Text, "Nueva nota" },
+            { DocumentType.Note, "Nueva nota" },
             { DocumentType.Chat, "Nuevo chat" }
         };
 
@@ -36,6 +40,11 @@ namespace PowerPad.WinUI.Helpers
             TopP = 1
         };
 
+        /// <summary>
+        /// Generates a name for a file based on its content using AI.
+        /// </summary>
+        /// <param name="fileContent">The content of the file for which a name is to be generated.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the generated name or null if generation fails.</returns>
         public static async Task<string?> Generate(string fileContent)
         {
             if (App.Get<SettingsViewModel>().IsAIAvailable == true)
@@ -47,7 +56,7 @@ namespace PowerPad.WinUI.Helpers
 
                 try
                 {
-                    await chatService.GetAgentResponse(fileContent, generateNameBuilder, NAME_GENERATOR_AGENT, null, null, cts.Token);
+                    await chatService.GetAgentSingleResponse(fileContent, generateNameBuilder, NAME_GENERATOR_AGENT, null, null, cts.Token);
 
                     var generatedName = generateNameBuilder.ToString().Trim();
 
@@ -61,17 +70,31 @@ namespace PowerPad.WinUI.Helpers
                 }
                 catch
                 {
-                    //TODO: Trace
+                    // Timeout or other exceptions, return null
                 }
             }
 
             return null;
         }
 
+        /// <summary>
+        /// Gets the default name for a new folder.
+        /// </summary>
+        /// <returns>The default name for a new folder.</returns>
         public static string NewFolderName() => NEW_FOLDER_NAME;
 
+        /// <summary>
+        /// Gets the default name for a new document of the specified type.
+        /// </summary>
+        /// <param name="type">The type of the document.</param>
+        /// <returns>The default name for the specified document type.</returns>
         public static string NewDocumentName(DocumentType type) => NEW_DOCUMENT_NAMES[type];
 
+        /// <summary>
+        /// Checks if the given name matches the pattern for new document names.
+        /// </summary>
+        /// <param name="name">The name to check.</param>
+        /// <returns>True if the name matches the pattern; otherwise, false.</returns>
         public static bool CheckNewNamePattern(string name)
         {
             var patterns = NEW_DOCUMENT_NAMES.Select(x => x.Value);

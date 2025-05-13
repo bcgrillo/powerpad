@@ -6,219 +6,305 @@
     xmlns:local="using:PowerPad.WinUI.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:PowerPad.WinUI.Components.Controls"
     xmlns:converters="using:PowerPad.WinUI.Converters"
-    xmlns:toolkitconverters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:tkconverters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
         <converters:FloatToDoubleConverter x:Key="FloatToDoubleConverter"/>
-        <toolkitconverters:StringFormatConverter x:Key="StringFormatConverter" />
+        <tkconverters:StringFormatConverter x:Key="StringFormatConverter" />
     </UserControl.Resources>
-    <Grid Padding="36,24,36,36" RowSpacing="36">
+    <Grid Padding="36,24,36,36" RowSpacing="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
             <TextBlock
                 Style="{StaticResource TitleTextBlockStyle}"
-                Text="Agente"/> 
+                Text="Agente"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Spacing="16" MaxWidth="1000" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-
-            <Grid ColumnSpacing="32">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Icono" />
-                    <Border 
-                        BorderThickness="1" 
-                        Height="100"
-                        Width="100"
-                        CornerRadius="50" 
-                        BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}">
-                        <ContentControl
-                            Content="{x:Bind _agent.IconElement}"
-                            HorizontalAlignment="Left"/>
-                    </Border>
-                    <Button
-                        Content="Seleccionar"
-                        Click="SaveButton_Click"/>
-                </StackPanel>
-
-                <StackPanel Spacing="16" Grid.Column="1">
-                    <TextBox
-                        Header="Nombre"
-                        Text="{x:Bind _agent.Name, Mode=TwoWay}"/>
-                    <TextBox
-                        Header="Descripción"
-                        Text="{x:Bind _agent.Prompt, Mode=TwoWay}"
-                        AcceptsReturn="True"
-                        Height="150"
-                        TextWrapping="Wrap"/>
-                </StackPanel>
-            </Grid>
-
-
-
-            <ToggleSwitch
-                Margin="0,0,0,-16"
-                OnContent="No incluir parámetro adiccional para la acción"
-                OffContent="Incluir parámetro adiccional para la acción" />
-
-            <Grid ColumnSpacing="16"
-                Padding="16"
-                BorderThickness="1"
-                BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}"
-                CornerRadius="5"
-                Margin="0,0,0,8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-                <TextBox
-                    Header="Nombre"
-                    Text="{x:Bind _agent.PromptParameterName, Mode=TwoWay}"/>
-                <TextBox
-                    Grid.Column="1"
-                    Header="Descripción"
-                    Text="{x:Bind _agent.PromptParameterDescription, Mode=TwoWay}"
-                    Height="60"
-                    TextWrapping="Wrap"/>
-            </Grid>
-                
-             <Grid ColumnSpacing="16">
-                 <Grid.ColumnDefinitions>
-                     <ColumnDefinition Width="*" />
-                     <ColumnDefinition Width="auto" />
-                 </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
-                        <Run Text="Modelo" />
-                        <Run Text="(Si no está disponible se usará el modelo por defecto)"
-                             Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-                </TextBlock>
-                <ComboBox
-                    Grid.Column="1"
-                    SelectedItem="{x:Bind _agent.AIModel, Mode=TwoWay}">
-                    Ollama 3.23
-                </ComboBox>
-             </Grid>
-
-            <ToggleSwitch
-                Margin="0,0,0,-16"
-                OnContent="Enviar parámetros personalizados">
-                <ToggleSwitch.OffContent>
-                    <TextBlock>
-                        <Run Text="No enviar parámetros personalizados" />
-                        <Run Text="(Se enviarán parámetros por defecto)" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-                    </TextBlock>
-                </ToggleSwitch.OffContent>
-            </ToggleSwitch>
-
-            <Grid ColumnSpacing="8" RowSpacing="8"
-                Padding="16"
-                BorderThickness="1"
-                BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}"
-                CornerRadius="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="6*" />
-                    <ColumnDefinition Width="6*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                
+        <ScrollViewer x:Name="ScrollViewer"
+            Grid.Row="1" CanContentRenderOutsideBounds="False" SizeChanged="ScrollViewer_SizeChanged"
+                      VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid>
                 <StackPanel 
-                    Orientation="Horizontal" Spacing="8">
-                    <TextBlock 
-                        Text="Temperatura" 
-                        VerticalAlignment="Center" />
-                    <TextBlock 
-                        Text="(nivel de aleatoriedad)" 
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
-                        VerticalAlignment="Center" />
-                </StackPanel>
-                <Slider 
-                    Grid.Column="1" 
-                    Minimum="0" 
-                    Maximum="1" 
-                    StepFrequency="0.01" 
-                    IsThumbToolTipEnabled="False"
-                    Value="{x:Bind _agent.Temperature, Mode=TwoWay, Converter={StaticResource FloatToDoubleConverter}}"
-                    IsEnabled="{x:Bind IsEnabled}"/>
-                <TextBlock 
-                    Grid.Column="2" 
-                    VerticalAlignment="Center" 
-                    TextAlignment="Left"
-                    Width="28"
-                    Text="{x:Bind _agent.Temperature, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.00}'}" />
+                    x:Name="AgentForm"
+                    Spacing="8" 
+                    MaxWidth="1000" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Center">
 
-                <StackPanel 
-                    Grid.Row="1"
-                    Orientation="Horizontal" Spacing="8">
-                    <TextBlock 
-                        Text="Top P" 
-                        VerticalAlignment="Center" />
-                    <TextBlock 
-                        Text="(núcleo de palabras candidatas)" 
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
-                        VerticalAlignment="Center" />
-                </StackPanel>
-                <Slider 
-                    Grid.Row="1" 
-                    Grid.Column="1"
-                    Minimum="0" 
-                    Maximum="1" 
-                    StepFrequency="0.01" 
-                    IsThumbToolTipEnabled="False"
-                    Value="{x:Bind _agent.TopP, Mode=TwoWay, Converter={StaticResource FloatToDoubleConverter}}"
-                    IsEnabled="{x:Bind IsEnabled}"/>
-                <TextBlock 
-                    Grid.Row="1" 
-                    Grid.Column="2" 
-                    VerticalAlignment="Center" 
-                    TextAlignment="Left"
-                    Width="28"
-                    Text="{x:Bind _agent.TopP, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.00}'}" />
+                    <Grid ColumnSpacing="32">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Icono" />
+                            <Border 
+                                Height="70"
+                                HorizontalAlignment="Stretch"
+                                CornerRadius="10"
+                                Background="{ThemeResource ExpanderContentBackground}">
+                                <controls:AgentIconControl Size="48" AgentIcon="{x:Bind _agent.Icon, Mode=OneWay}" />
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button
+                                    x:Name="SelectImageButton"
+                                    Padding="6"
+                                    ToolTipService.ToolTip="Seleccionar imagen..."
+                                    BorderThickness="0"
+                                    Click="SelectImageButton_Click">
+                                    <FontIcon Glyph="&#xE8B9;" FontSize="18" />
+                                </Button>
+                                <Button
+                                    x:Name="RandomIconButton"
+                                    Padding="7"
+                                    BorderThickness="0"
+                                    ToolTipService.ToolTip="Generar"
+                                    Click="RandomIconButton_Click">
+                                    <FontIcon Glyph="&#xE72C;" FontSize="16" />
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
 
-                <TextBlock 
-                    Grid.Row="2" 
-                    Text="Número máximo de tokens generados" 
-                    VerticalAlignment="Center" />
-                <NumberBox 
-                    Grid.Row="2" 
-                    Grid.Column="1" 
-                    Grid.ColumnSpan="2" 
-                    SpinButtonPlacementMode="Inline"
-                    SmallChange="10"
-                    LargeChange="100"
-                    Minimum="10"
-                    Value="{x:Bind _agent.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
-                    IsEnabled="{x:Bind IsEnabled}"/>
+                        <StackPanel Spacing="16" Grid.Column="1">
+                            <TextBox x:Name="AgentNameTextBox"
+                                Header="Nombre"
+                                Text="{x:Bind _agent.Name, Mode=TwoWay}" />
+                            <TextBox x:Name="AgentPromptTextBox"
+                                Header="Descripción"
+                                Text="{x:Bind _agent.Prompt, Mode=TwoWay}"
+                                AcceptsReturn="True"
+                                Height="120"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
+                            <Run Text="Modelo" />
+                            <Run Text="(Si no está disponible se usará el modelo por defecto)"
+                         Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                        </TextBlock>
+                        <controls:ModelSelector x:Name="ModelSelector" SelectedModelChanged="ModelSelector_SelectedModelChanged" ShowDefaultOnButtonContent="True" Grid.Column="1" />
+                    </Grid>
+
+                    <Expander 
+                        x:Name="PromptParameterExpander"
+                        HorizontalAlignment="Stretch" 
+                        HorizontalContentAlignment="Stretch" 
+                        Background="Transparent" 
+                        BorderBrush="Transparent"
+                        Padding="0"
+                        IsExpanded="{x:Bind _agent.HasPromptParameter, Mode=OneTime}">
+                        <Expander.Resources>
+                            <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
+                            <Thickness x:Key="ExpanderChevronMargin">0</Thickness>
+                            <x:Double x:Key="ExpanderChevronButtonSize">0</x:Double>
+                            <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{ThemeResource ControlFillColorTransparent}" />
+                        </Expander.Resources>
+                        <Expander.Header>
+                            <ToggleSwitch
+                                x:Name="PromptParameterSwitch"
+                                Margin="-16,0,0,0"
+                                IsOn="{x:Bind _agent.HasPromptParameter, Mode=OneTime}"
+                                Toggled="PromptParameterSwitch_Toggled">
+                                <ToggleSwitch.OnContent>
+                                    <TextBlock Width="1000">
+                                        <Run Text="Incluir parámetro para el comportamiento del agente" />
+                                        <Run Text="(Solo disponible en notas)" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                    </TextBlock>
+                                </ToggleSwitch.OnContent>
+                                <ToggleSwitch.OffContent>
+                                    <TextBlock Width="1000">
+                                        <Run Text="No incluir parámetro para el comportamiento del agente" />
+                                        <Run Text="(Solo disponible en notas)" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                    </TextBlock>
+                                </ToggleSwitch.OffContent>
+                            </ToggleSwitch>
+                        </Expander.Header>
+                        <ContentControl x:Name="PromptParameterControls"
+                            IsEnabled="{x:Bind _agent.HasPromptParameter, Mode=OneTime}" HorizontalContentAlignment="Stretch">
+                            <Grid ColumnSpacing="16"
+                                Padding="16"
+                                Background="{ThemeResource ExpanderContentBackground}"
+                                CornerRadius="5"
+                                Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                Header="Nombre"
+                                Text="{x:Bind _agent.PromptParameterName, Mode=TwoWay}"/>
+                                <TextBox
+                                Grid.Column="1"
+                                Header="Descripción"
+                                Text="{x:Bind _agent.PromptParameterDescription, Mode=TwoWay}"
+                                Height="60"
+                                TextWrapping="Wrap"/>
+                            </Grid>
+                        </ContentControl>
+                    </Expander>
+
+                    <Expander 
+                        x:Name="AIParametersExpander"
+                        HorizontalAlignment="Stretch" 
+                        HorizontalContentAlignment="Stretch" 
+                        Background="Transparent" 
+                        BorderBrush="Transparent"
+                        Padding="0"
+                        IsExpanded="{x:Bind _agent.HasAIParameters, Mode=OneTime}">
+                        <Expander.Resources>
+                            <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
+                            <Thickness x:Key="ExpanderChevronMargin">0</Thickness>
+                            <x:Double x:Key="ExpanderChevronButtonSize">0</x:Double>
+                            <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{ThemeResource ControlFillColorTransparent}" />
+                        </Expander.Resources>
+                        <Expander.Header>
+                            <ToggleSwitch
+                                x:Name="AIParametersSwitch"
+                                Margin="-16,0,0,0"
+                                IsOn="{x:Bind _agent.HasAIParameters, Mode=OneTime}"
+                                Toggled="AIParametersSwitch_Toggled">
+                                <ToggleSwitch.OnContent>
+                                    <TextBlock Width="1000">
+                                        <Run Text="Enviar parámetros personalizados" />
+                                    </TextBlock>
+                                </ToggleSwitch.OnContent>
+                                <ToggleSwitch.OffContent>
+                                    <TextBlock Width="1000">
+                                        <Run Text="No enviar parámetros personalizados" />
+                                        <Run Text="(Se enviarán parámetros por defecto)" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                    </TextBlock>
+                                </ToggleSwitch.OffContent>
+                            </ToggleSwitch>
+                        </Expander.Header>
+                        <ContentControl x:Name="AIParametersControls"
+                            IsEnabled="{x:Bind _agent.HasAIParameters, Mode=OneTime}" HorizontalContentAlignment="Stretch">
+                            <Grid ColumnSpacing="16" RowSpacing="8"
+                                Padding="16"
+                                Background="{ThemeResource ExpanderContentBackground}"
+                                CornerRadius="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel 
+                                    Orientation="Horizontal" Spacing="8">
+                                    <controls:Label
+                                        Text="Temperatura" 
+                                        VerticalAlignment="Center" />
+                                    <controls:Label 
+                                        Text="(nivel de aleatoriedad)" 
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+                                <Slider 
+                                    Grid.Column="1" 
+                                    Minimum="0" 
+                                    Maximum="1" 
+                                    StepFrequency="0.01" 
+                                    IsThumbToolTipEnabled="False"
+                                    Value="{x:Bind _agent.Temperature, Mode=TwoWay, Converter={StaticResource FloatToDoubleConverter}}"
+                                    IsEnabled="{x:Bind IsEnabled}"/>
+                                <TextBlock 
+                                    Grid.Column="2" 
+                                    VerticalAlignment="Center" 
+                                    TextAlignment="Left"
+                                    Width="28"
+                                    Text="{x:Bind _agent.Temperature, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.00}'}" />
+
+                                <StackPanel 
+                                    Grid.Row="1"
+                                    Orientation="Horizontal" Spacing="8">
+                                    <controls:Label 
+                                        Text="Top P" 
+                                        VerticalAlignment="Center" />
+                                    <controls:Label 
+                                        Text="(núcleo de palabras candidatas)" 
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" 
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+                                <Slider 
+                                    Grid.Row="1" 
+                                    Grid.Column="1"
+                                    Minimum="0" 
+                                    Maximum="1" 
+                                    StepFrequency="0.01" 
+                                    IsThumbToolTipEnabled="False"
+                                    Value="{x:Bind _agent.TopP, Mode=TwoWay, Converter={StaticResource FloatToDoubleConverter}}"
+                                    IsEnabled="{x:Bind IsEnabled}"/>
+                                <TextBlock 
+                                    Grid.Row="1" 
+                                    Grid.Column="2" 
+                                    VerticalAlignment="Center" 
+                                    TextAlignment="Left"
+                                    Width="28"
+                                    Text="{x:Bind _agent.TopP, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.00}'}" />
+
+                                <controls:Label 
+                                    Grid.Row="2" 
+                                    Text="Número máximo de tokens generados" 
+                                    VerticalAlignment="Center" />
+                                <NumberBox 
+                                    Grid.Row="2" 
+                                    Grid.Column="1" 
+                                    Grid.ColumnSpan="2" 
+                                    SpinButtonPlacementMode="Inline"
+                                    SmallChange="10"
+                                    LargeChange="100"
+                                    Value="{x:Bind _agent.MaxOutputTokens, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
+                                    IsEnabled="{x:Bind IsEnabled}"/>
+                            </Grid>
+                        </ContentControl>
+                    </Expander>
+
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <ToggleSwitch
+                            OnContent="Mostrar en notas"
+                            OffContent="No mostrar en notas"
+                            IsOn="{x:Bind _agent.ShowInNotes, Mode=TwoWay}"/>
+                        <ToggleSwitch
+                            OnContent="Mostrar en chats"
+                            OffContent="No mostrar en chats"
+                            IsOn="{x:Bind _agent.ShowInChats, Mode=TwoWay}"
+                            HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </StackPanel>
             </Grid>
+        </ScrollViewer>
+        <StackPanel 
+            Grid.Row="2" Grid.ColumnSpan="6" Orientation="Horizontal" Spacing="16" HorizontalAlignment="Right">
+            <Button
+                x:Name="CancelButton"
+                IsEnabled="False"
+                Content="Cancelar"
+                Click="CancelButton_Click"
+                HorizontalAlignment="Right"/>
 
-            <ToggleSwitch
-                OnContent="Agente activado"
-                OffContent="Agente desactivado"
-                IsOn="{x:Bind _agent.Enabled, Mode=TwoWay}"/>
-
-            <StackPanel 
-                Grid.Row="10" Grid.ColumnSpan="6" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                <Button
-                    Content="Guardar"
-                    Click="SaveButton_Click"
-                    HorizontalAlignment="Right"/>
-
-                <Button
-                    Content="Cancelar"
-                    Click="CancelButton_Click"
-                    HorizontalAlignment="Right"/>
-            </StackPanel>
+            <Button
+                x:Name="SaveButton"
+                Style="{ThemeResource AccentButtonStyle}"
+                IsEnabled="False"
+                Content="Guardar"
+                Click="SaveButton_Click"
+                HorizontalAlignment="Right"/>
         </StackPanel>
     </Grid>
 </UserControl>
