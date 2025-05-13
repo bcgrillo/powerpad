@@ -78,8 +78,6 @@ namespace PowerPad.WinUI
         /// <summary>
         /// Handles the Loaded event of the NavigationView control.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void NavView_Loaded(object _, RoutedEventArgs __)
         {
             DispatcherQueue.TryEnqueue(async () =>
@@ -216,8 +214,6 @@ namespace PowerPad.WinUI
         /// <summary>
         /// Handles the click event of the ToggleMenu button.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void ToggleMenuBtn_Click(object _, RoutedEventArgs __)
         {
             (NavFrame.Content as IToggleMenuPage)?.ToggleNavigationVisibility();
@@ -228,8 +224,6 @@ namespace PowerPad.WinUI
         /// <summary>
         /// Minimizes the application window to the system tray.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void MinimizeToTray_Click(object _, RoutedEventArgs __)
         {
             TaskbarIcon.Visibility = Visibility.Visible;
@@ -239,8 +233,6 @@ namespace PowerPad.WinUI
         /// <summary>
         /// Restores the application window from the system tray.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void Show_Click(object _, RoutedEventArgs __)
         {
             TaskbarIcon.Visibility = Visibility.Collapsed;
@@ -250,8 +242,6 @@ namespace PowerPad.WinUI
         /// <summary>
         /// Exits the application.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void Exit_Click(object _, RoutedEventArgs __)
         {
             Application.Current.Exit();

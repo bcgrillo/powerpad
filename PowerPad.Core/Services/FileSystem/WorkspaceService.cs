@@ -255,6 +255,7 @@ namespace PowerPad.Core.Services.FileSystem
         /// <summary>
         /// Initializes the root folder and loads its contents recursively.
         /// </summary>
+        /// <param name="rootFolder">The path to the root folder.</param>
         private Root InitializeRootFolder(string rootFolder)
         {
             if (!Directory.Exists(_trashFolder)) Directory.CreateDirectory(_trashFolder);
@@ -271,6 +272,7 @@ namespace PowerPad.Core.Services.FileSystem
         /// <summary>
         /// Recursively retrieves all subfolders from the specified path.
         /// </summary>
+        /// <param name="path"> The path to search for subfolders.</param>
         private Collection<Folder> GetFoldersRecursive(string path)
         {
             Collection<Folder> folders = [];
@@ -288,12 +290,13 @@ namespace PowerPad.Core.Services.FileSystem
         }
 
         /// <summary>
-        /// Retrieves all documents from the specified directory.
+        /// Retrieves all documents from the specified path.
         /// </summary>
-        private static Collection<Document> GetDocuments(string directory)
+        /// <param name="path"> The path to search for documents.</param>
+        private static Collection<Document> GetDocuments(string path)
         {
             Collection<Document> documents = [];
-            foreach (var file in Directory.GetFiles(directory))
+            foreach (var file in Directory.GetFiles(path))
             {
                 var filename = Path.GetFileNameWithoutExtension(file);
                 var extension = Path.GetExtension(file);
@@ -309,6 +312,9 @@ namespace PowerPad.Core.Services.FileSystem
         /// <summary>
         /// Gets a new available path for a document, ensuring no name conflicts.
         /// </summary>
+        /// <param name="parent">The parent folder where the document resides.</param>
+        /// <param name="child">The document for which a new path is being generated.</param>
+        /// <param name="newName">The new name for the document, if provided.</param>
         private static string GetAvailableNewPath(Folder parent, Document child, string? newName = null)
         {
             if (newName is not null) child.Name = newName;
@@ -329,6 +335,9 @@ namespace PowerPad.Core.Services.FileSystem
         /// <summary>
         /// Gets a new available path for a folder, ensuring no name conflicts.
         /// </summary>
+        /// <param name="parent">The parent folder where the folder resides.</param>
+        /// <param name="child">The folder for which a new path is being generated.</param>
+        /// <param name="newName">The new name for the folder, if provided.</param>
         private static string GetAvailableNewPath(Folder parent, Folder child, string? newName = null)
         {
             if (newName is not null) child.Name = newName;

@@ -124,8 +124,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the click event for creating a new agent.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
             var newIcon = _agentsCollection.GenerateIcon();

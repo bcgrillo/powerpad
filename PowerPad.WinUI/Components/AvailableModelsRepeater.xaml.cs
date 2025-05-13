@@ -125,8 +125,6 @@ namespace PowerPad.WinUI.Components
         /// <summary>
         /// Handles the add models button click event.
         /// </summary>
-        /// <param name="_">The source of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void AddModelsButton_Click(object _, RoutedEventArgs __)
         {
             AddButtonClick?.Invoke(this, EventArgs.Empty);

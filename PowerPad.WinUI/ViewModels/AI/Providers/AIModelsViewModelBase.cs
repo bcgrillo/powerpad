@@ -222,8 +222,6 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
         /// <summary>
         /// Updates the state of the repeater functionality based on the provider availability.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         protected void UpdateRepeaterState(object? _, EventArgs __)
         {
             RepeaterEnabled = _settings.General.AvailableProviders.Contains(_modelProvider);

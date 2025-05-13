@@ -60,8 +60,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the size change event of the text editor to adjust padding based on scrollbar visibility.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments containing size change details (not used).</param>
         private void TextEditor_SizeChanged(object? _, SizeChangedEventArgs? __)
         {
             DispatcherQueue.TryEnqueue(() =>
@@ -114,8 +112,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the click event of the Undo button to revert the document content to the previous state.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void UndoButton_Click(object _, RoutedEventArgs __)
         {
             _document.NextContent = _document.Content;
@@ -126,8 +122,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the click event of the Redo button to restore the document content to the next state.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void RedoButton_Click(object _, RoutedEventArgs __)
         {
             _document.PreviousContent = _document.Content;
@@ -182,8 +176,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the Send button click event in the AgentControl to process and update the document content.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private async void AgentControl_SendButtonClicked(object _, RoutedEventArgs __)
         {
             var originalText = _document.Content ?? string.Empty;
@@ -223,8 +215,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the click event of the Save button to save the document as a new note.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void SaveBtn_Click(object _, RoutedEventArgs __)
         {
             App.MainWindow!.ShowNotes();
@@ -237,8 +227,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the click event of the Hide button to close the popup editor.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void HideBtn_Click(object _, RoutedEventArgs __)
         {
             CloseRequested?.Invoke(this, EventArgs.Empty);

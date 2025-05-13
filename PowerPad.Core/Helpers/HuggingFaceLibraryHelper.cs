@@ -82,11 +82,14 @@ namespace PowerPad.Core.Helpers
         /// <summary>
         /// Represents a model retrieved from the Hugging Face API.
         /// </summary>
+        /// <param name="Id">The unique identifier of the model.</param>
         private sealed record HuggingFaceModel(string Id);
 
         /// <summary>
         /// Represents a file associated with a model in the Hugging Face API.
         /// </summary>
+        /// <param name="Path">The file path of the model file.</param>
+        /// <param name="Size">The size of the model file in bytes.</param>
         private sealed record HuggingFaceFile(string Path, long Size);
     }
 }

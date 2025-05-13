@@ -258,6 +258,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the event when chat options are changed in the chat control.
         /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs">">The event arguments containing the new chat options.</param>
         private void ChatControl_ChatOptionsChanged(object? _, ChatOptionsChangedEventArgs eventArgs)
         {
             if (_chat!.Model != eventArgs.SelectedModel
@@ -274,6 +276,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the event when the parameters visibility changes in the chat control.
         /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="parametersPanelVisible">Indicates whether the parameters panel is visible.</param>
         private void ChatControl_ParametersVisibilityChanged(object _, bool parametersPanelVisible)
         {
             if (Landing.Visibility == Visibility.Visible)
@@ -285,6 +289,8 @@ namespace PowerPad.WinUI.Components.Editors
         /// <summary>
         /// Handles the event when the copy button is clicked.
         /// </summary>
+        /// <param name="sender">The sender of the event (the copy button).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private async void CopyButton_Click(object sender, RoutedEventArgs __)
         {
             var message = (MessageViewModel)((HyperlinkButton)sender).Tag;

@@ -147,6 +147,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the click event for the send button.
         /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
         /// <param name="eventArgs">The event arguments for the click event.</param>
         private void SendBtn_Click(object _, RoutedEventArgs eventArgs)
         {
@@ -190,6 +191,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the key down event for the parameter input box.
         /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
         /// <param name="eventArgs">The key event arguments.</param>
         private void PromptParameterInputBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {

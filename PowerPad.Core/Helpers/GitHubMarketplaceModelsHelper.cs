@@ -70,11 +70,17 @@ namespace PowerPad.Core.Helpers
         /// <summary>
         /// Represents the response structure from the GitHub Marketplace API.
         /// </summary>
+        /// <param name="Results">The list of AI models returned from the search.</param>
         private sealed record GitHubMarketplaceResponse(List<GitHubModel> Results);
 
         /// <summary>
         /// Represents a single AI model entry in the GitHub Marketplace.
         /// </summary>
+        /// <param name="Name">The unique name of the model.</param>
+        /// <param name="Friendly_Name">An optional friendly name for the model.</param>
+        /// <param name="Id">The unique identifier of the model.</param>
+        /// <param name="Model_Url">The URL to access the model.</param>
+        /// <param name="Publisher">The publisher of the model.</param>
         private sealed record GitHubModel(string Name, string? Friendly_Name, string Id, string Model_Url, string Publisher);
     }
 }

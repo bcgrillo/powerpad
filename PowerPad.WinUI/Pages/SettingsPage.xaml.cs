@@ -75,8 +75,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Starts the Ollama service and tests its connection.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private async void StartOllama_Click(object _, RoutedEventArgs __)
         {
             try
@@ -99,8 +97,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Opens a dialog to install Ollama and tests connections based on the user's choice.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private async void InstallOllama_Click(object _, RoutedEventArgs __)
         {
             var ollamaInstallationDialog = await OllamaDownloadHelper.ShowAsync(Content.XamlRoot);
@@ -121,8 +117,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Stops the Ollama service and tests its connection.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private async void StopOllama_Click(object _, RoutedEventArgs __)
         {
             try
@@ -145,8 +139,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Tests the connection for the Ollama service.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private async void TestOllama(object? _, PropertyChangedEventArgs? __)
         {
             if (string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl)) return;
@@ -166,8 +158,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Tests the connection for the Azure AI service.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private async void TestAzureAI(object? _, PropertyChangedEventArgs? __)
         {
             if (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl)
@@ -188,8 +178,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Tests the connection for the OpenAI service.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private async void TestOpenAI(object? _, PropertyChangedEventArgs? __)
         {
             if (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl)
@@ -210,8 +198,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Updates the models menu based on the available providers and models.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void SetModelsMenu(object? _, EventArgs? __)
         {
             DefaultModelFlyoutMenu.Items.Clear();
@@ -279,8 +265,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the click event for the default model button.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void DefaultModelButton_Click(object _, RoutedEventArgs __)
         {
             if (_settings.Models.DefaultModel is not null)
@@ -294,8 +278,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Restarts the application to apply theme changes.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void ThemeInfoBarButton_Click(object _, RoutedEventArgs __)
         {
             var processStartInfo = new ProcessStartInfo
@@ -329,8 +311,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the toggled event for the Ollama models expander.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void OllamaModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
             if (!_settings.General.OllamaEnabled && string.IsNullOrEmpty(_settings.General.OllamaConfig.BaseUrl))
@@ -344,8 +324,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the toggled event for the Azure AI models expander.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void AzureAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
             if (!_settings.General.AzureAIEnabled && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key))
@@ -360,8 +338,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the toggled event for the OpenAI models expander.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void OpenAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
             if (!_settings.General.OpenAIEnabled && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key))

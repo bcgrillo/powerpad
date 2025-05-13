@@ -64,8 +64,6 @@ namespace PowerPad.WinUI
         /// <summary>
         /// Handles the close request event for the popup editor page.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void PopupEditorPage_CloseRequested(object _, EventArgs __) => Close();
 
         /// <summary>

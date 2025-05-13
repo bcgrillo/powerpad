@@ -134,8 +134,6 @@ namespace PowerPad.WinUI.Dialogs
         /// <summary>
         /// Handles the PrimaryButtonClick event to mark the dialog as accepted.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void ContentDialog_PrimaryButtonClick(ContentDialog _, ContentDialogButtonClickEventArgs __)
         {
             _accepted = true;

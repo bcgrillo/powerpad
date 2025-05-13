@@ -9,9 +9,6 @@ namespace PowerPad.WinUI.Helpers
     /// </summary>
     public static class PageLifeCycleHelper
     {
-        /// <summary>
-        /// A dictionary to track open pages by their type.
-        /// </summary>
         private static readonly Dictionary<Type, DisposablePage> _openPages = [];
 
         /// <summary>

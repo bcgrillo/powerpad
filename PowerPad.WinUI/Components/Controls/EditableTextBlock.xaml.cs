@@ -125,6 +125,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the KeyDown event for the integrated text box.
         /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="eventArgs"> The event arguments containing the key information.</param>
         private void IntegratedTextBox_KeyDown(object _, KeyRoutedEventArgs eventArgs)
         {
             if (_state.IsEditing)
@@ -166,6 +168,8 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles button click events for edit, confirm, and cancel actions.
         /// </summary>
+        /// <param name="sender">The sender of the event (the button that was clicked).</param>
+        /// <param name="__">The event arguments (not used).</param>
         private void Button_Click(object sender, RoutedEventArgs __)
         {
             if ((Button)sender == EditButton) EnterEditMode();
@@ -176,6 +180,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Masks the given value with asterisks for password mode.
         /// </summary>
+        /// <param name="value">The value to mask.</param>
         private static string MaskedValue(string? value)
         {
             if (string.IsNullOrEmpty(value)) return string.Empty;

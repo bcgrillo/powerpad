@@ -44,9 +44,9 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the selection change event in the navigation view.
         /// </summary>
-        /// <param name="__">The sender of the event (not used).</param>
+        /// <param name="_">The sender of the event (not used).</param>
         /// <param name="eventArgs">The event arguments containing the selected item.</param>
-        private void NavView_SelectionChanged(NavigationView __, NavigationViewSelectionChangedEventArgs eventArgs)
+        private void NavView_SelectionChanged(NavigationView _, NavigationViewSelectionChangedEventArgs eventArgs)
         {
             if (eventArgs.SelectedItem is null) return;
 
@@ -142,8 +142,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the loaded event of the navigation view.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void NavView_Loaded(object _, RoutedEventArgs __)
         {
             var firstItem = NavView.MenuItems.FirstOrDefault(mi => ((NavigationViewItem)mi).Visibility == Visibility.Visible) as NavigationViewItem;
@@ -158,8 +156,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the Add button click event to navigate to the Add Models page.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void AddButtonClick(object? _, EventArgs __)
         {
             ModelsMenuOption? modelsMenuOption = null;
@@ -190,8 +186,6 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the pointer pressed event to close the model information viewer.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void NavView_PointerPressed(object _, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs __)
         {
             _currentPage?.CloseModelInfoViewer();

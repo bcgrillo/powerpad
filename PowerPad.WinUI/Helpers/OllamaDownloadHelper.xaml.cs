@@ -261,8 +261,6 @@ namespace PowerPad.WinUI.Dialogs
         /// <summary>
         /// Handles the dialog closed event.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         private void ContentDialog_Closed(ContentDialog _, ContentDialogClosedEventArgs __)
         {
             _cts?.Dispose();

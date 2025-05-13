@@ -35,8 +35,6 @@ namespace PowerPad.WinUI.Pages.Providers
         /// <summary>
         /// Handles the click event for the search button.
         /// </summary>
-        /// <param name="_">The sender of the event (not used).</param>
-        /// <param name="__">The event arguments (not used).</param>
         protected void Search_Click(object _, RoutedEventArgs __) => Search();
 
         /// <summary>
