@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace PowerPad.WinUI.ViewModels.FileSystem
 {
+    /// <summary>
+    /// ViewModel for managing a document, including its status, saving, renaming, and name generation.
+    /// </summary>
     public partial class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
         private const int MIN_WORDS_GENERATE_NAME = 50;
@@ -22,8 +25,14 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         private DateTime _lastSaveTime;
         private bool _untitled;
 
+        /// <summary>
+        /// Gets the name of the document.
+        /// </summary>
         public string Name { get => _document.Name; }
 
+        /// <summary>
+        /// Gets or sets the status of the document.
+        /// </summary>
         public DocumentStatus Status
         {
             get => _document.Status!.Value;
@@ -39,22 +48,48 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the document can be saved.
+        /// </summary>
         public bool CanSave => Status != DocumentStatus.Saved;
 
+        /// <summary>
+        /// Gets the last save time of the document.
+        /// </summary>
         public DateTime LastSaveTime { get => _lastSaveTime; }
 
+        /// <summary>
+        /// Command to save the document.
+        /// </summary>
         public IAsyncRelayCommand SaveCommand { get; }
 
+        /// <summary>
+        /// Command to autosave the document.
+        /// </summary>
         public IAsyncRelayCommand AutosaveCommand { get; }
 
+        /// <summary>
+        /// Command to rename the document.
+        /// </summary>
         public IRelayCommand RenameCommand { get; }
 
+        /// <summary>
+        /// Gets or sets the previous content of the document.
+        /// </summary>
         [ObservableProperty]
         public partial string? PreviousContent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the next content of the document.
+        /// </summary>
         [ObservableProperty]
         public partial string? NextContent { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DocumentViewModel"/> class.
+        /// </summary>
+        /// <param name="document">The document to manage.</param>
+        /// <param name="editorControl">The editor control associated with the document.</param>
         public DocumentViewModel(Document document, IEditorContract editorControl)
         {
             _document = document;
@@ -73,6 +108,33 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             WeakReferenceMessenger.Default.Register(this);
         }
 
+
+        /// <summary>
+        /// Notifies that the document's name has changed.
+        /// </summary>
+        public void NameChanged()
+        {
+            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true });
+
+            OnPropertyChanged(nameof(Name));
+        }
+
+        /// <summary>
+        /// Handles the receipt of a <see cref="FolderEntryChanged"/> message.
+        /// </summary>
+        /// <param name="message">The message indicating a folder entry change.</param>
+        public void Receive(FolderEntryChanged message)
+        {
+            if (message.Value == _document && message.NameChanged)
+            {
+                _untitled = false;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        /// <summary>
+        /// Saves the document and updates its status.
+        /// </summary>
         private async Task Save()
         {
             await _documentService.SaveDocument(_document, _editorControl);
@@ -84,6 +146,9 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
         }
 
+        /// <summary>
+        /// Autosaves the document and updates its status.
+        /// </summary>
         private async Task Autosave()
         {
             await _documentService.AutosaveDocument(_document, _editorControl);
@@ -94,6 +159,10 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             if (_untitled && _editorControl.WordCount() >= MIN_WORDS_GENERATE_NAME) await GenerateName();
         }
 
+        /// <summary>
+        /// Renames the document to a new name.
+        /// </summary>
+        /// <param name="newName">The new name for the document.</param>
         private void Rename(string? newName)
         {
             _untitled = false;
@@ -107,6 +176,9 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             NameChanged();
         }
 
+        /// <summary>
+        /// Generates a new name for the document based on its content.
+        /// </summary>
         private async Task GenerateName()
         {
             _untitled = false;
@@ -123,22 +195,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
                 workspaceService.RenameDocument(_document, generatedName);
 
                 NameChanged();
-            }
-        }
-
-        public void NameChanged()
-        {
-            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_document) { NameChanged = true });
-
-            OnPropertyChanged(nameof(Name));
-        }
-
-        public void Receive(FolderEntryChanged message)
-        {
-            if (message.Value == _document && message.NameChanged)
-            {
-                _untitled = false;
-                OnPropertyChanged(nameof(Name));
             }
         }
     }

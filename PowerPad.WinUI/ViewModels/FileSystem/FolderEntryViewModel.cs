@@ -13,6 +13,9 @@ using System.Linq;
 
 namespace PowerPad.WinUI.ViewModels.FileSystem
 {
+    /// <summary>
+    /// ViewModel representing a folder or document entry in the file system.
+    /// </summary>
     public partial class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChanged>
     {
         private const string CLOSED_FOLDER_GLYPH = "\uE8B7";
@@ -22,34 +25,75 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         private readonly DocumentType? _documentType;
         private readonly FolderEntryViewModel? _parent;
 
+        /// <summary>
+        /// Gets the name of the folder or document.
+        /// </summary>
         public string Name { get => _entry.Name; }
 
+        /// <summary>
+        /// Gets or sets the glyph representing the folder or document.
+        /// </summary>
         [ObservableProperty]
         public partial string? Glyph { get; set; }
 
+        /// <summary>
+        /// Gets or sets the type of the entry (Folder or Document).
+        /// </summary>
         [ObservableProperty]
         public partial EntryType Type { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the folder is expanded.
+        /// </summary>
         [ObservableProperty]
         public partial bool IsExpanded { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the entry is selected.
+        /// </summary>
         [ObservableProperty]
         public partial bool IsSelected { get; set; }
 
+        /// <summary>
+        /// Gets the collection of child entries (folders or documents).
+        /// </summary>
         public ObservableCollection<FolderEntryViewModel> Children { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the entry is a folder.
+        /// </summary>
         public bool IsFolder => Type == EntryType.Folder;
 
+        /// <summary>
+        /// Gets the document type of the entry, if applicable.
+        /// </summary>
         public DocumentType? DocumentType => _documentType;
 
+        /// <summary>
+        /// Gets the underlying model entry.
+        /// </summary>
         public IFolderEntry ModelEntry => _entry;
 
+        /// <summary>
+        /// Gets the command to delete the entry.
+        /// </summary>
         public IRelayCommand DeleteCommand { get; }
 
+        /// <summary>
+        /// Gets the command to rename the entry.
+        /// </summary>
         public IRelayCommand RenameCommand { get; }
 
+        /// <summary>
+        /// Gets the position of the entry within its parent folder, if applicable.
+        /// </summary>
         public int? Position { get => _entry.Position; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FolderEntryViewModel"/> class for a folder.
+        /// </summary>
+        /// <param name="folder">The folder model.</param>
+        /// <param name="parent">The parent folder entry view model.</param>
         public FolderEntryViewModel(Folder folder, FolderEntryViewModel? parent)
         {
             _entry = folder;
@@ -85,6 +129,11 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             WeakReferenceMessenger.Default.Register(this);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FolderEntryViewModel"/> class for a document.
+        /// </summary>
+        /// <param name="document">The document model.</param>
+        /// <param name="parent">The parent folder entry view model.</param>
         public FolderEntryViewModel(Document document, FolderEntryViewModel? parent)
         {
             _entry = document;
@@ -106,6 +155,40 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             WeakReferenceMessenger.Default.Register(this);
         }
 
+        /// <summary>
+        /// Notifies that the name of the entry has changed.
+        /// </summary>
+        public void NameChanged()
+        {
+            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_entry) { NameChanged = true });
+
+            OnPropertyChanged(nameof(Name));
+        }
+
+        /// <summary>
+        /// Handles the receipt of a <see cref="FolderEntryChanged"/> message.
+        /// </summary>
+        /// <param name="message">The message indicating the folder entry change.</param>
+        public void Receive(FolderEntryChanged message)
+        {
+            if (message.Value == _entry && message.NameChanged)
+            {
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        /// <summary>
+        /// Updates the glyph when the expanded state of the folder changes.
+        /// </summary>
+        /// <param name="value">The new expanded state.</param>
+        partial void OnIsExpandedChanged(bool value)
+        {
+            if (IsFolder) Glyph = value ? OPEN_FOLDER_GLYPH : CLOSED_FOLDER_GLYPH;
+        }
+
+        /// <summary>
+        /// Deletes the folder or document entry.
+        /// </summary>
         private void Delete()
         {
             var workspaceService = App.Get<IWorkspaceService>();
@@ -123,6 +206,10 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             WeakReferenceMessenger.Default.Send(new FolderEntryDeleted(_entry));
         }
 
+        /// <summary>
+        /// Renames the folder or document entry.
+        /// </summary>
+        /// <param name="newName">The new name for the entry.</param>
         private void Rename(string? newName)
         {
             ArgumentException.ThrowIfNullOrEmpty(newName);
@@ -139,26 +226,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
             }
 
             NameChanged();
-        }
-
-        public void NameChanged()
-        {
-            WeakReferenceMessenger.Default.Send(new FolderEntryChanged(_entry) { NameChanged = true });
-
-            OnPropertyChanged(nameof(Name));
-        }
-
-        public void Receive(FolderEntryChanged message)
-        {
-            if (message.Value == _entry && message.NameChanged)
-            {
-                OnPropertyChanged(nameof(Name));
-            }
-        }
-
-        partial void OnIsExpandedChanged(bool value)
-        {
-            if (IsFolder) Glyph = value ? OPEN_FOLDER_GLYPH : CLOSED_FOLDER_GLYPH;
         }
     }
 }

@@ -10,17 +10,32 @@ using static PowerPad.WinUI.Configuration.ConfigConstants;
 
 namespace PowerPad.WinUI.ViewModels.Settings
 {
+    /// <summary>
+    /// ViewModel for managing application settings, including general settings and AI model configurations.
+    /// </summary>
     public partial class SettingsViewModel : ObservableObject
     {
         private readonly IConfigStore _configStore;
 
+        /// <summary>
+        /// Gets the general settings ViewModel.
+        /// </summary>
         public GeneralSettingsViewModel General { get; private init; }
 
+        /// <summary>
+        /// Gets the models settings ViewModel.
+        /// </summary>
         public ModelsSettingsViewModel Models { get; private init; }
 
+        /// <summary>
+        /// Indicates whether AI services are available.
+        /// </summary>
         [ObservableProperty]
         public partial bool? IsAIAvailable { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
+        /// </summary>
         public SettingsViewModel()
         {
             _configStore = App.Get<IConfigStore>();
@@ -31,15 +46,19 @@ namespace PowerPad.WinUI.ViewModels.Settings
             General.PropertyChanged += (s, e) => _configStore.Set(StoreKey.GeneralSettings, General);
             Models.PropertyChanged += (s, e) => _configStore.Set(StoreKey.ModelsSettings, Models);
 
-            General.ProviderAvailabilityChanged += UpdateAIAvaibility;
-            Models.ModelAvailabilityChanged += UpdateAIAvaibility;
+            General.ProviderAvailabilityChanged += UpdateAIAvailability;
+            Models.ModelAvailabilityChanged += UpdateAIAvailability;
 
             General.InitializeAIServices();
         }
 
+        /// <summary>
+        /// Tests the connections for all enabled AI services and updates their statuses.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task TestConnections()
         {
-            General.ProviderAvailabilityChanged -= UpdateAIAvaibility;
+            General.ProviderAvailabilityChanged -= UpdateAIAvailability;
 
             try
             {
@@ -63,13 +82,18 @@ namespace PowerPad.WinUI.ViewModels.Settings
             }
             finally
             {
-                UpdateAIAvaibility(null, null);
+                UpdateAIAvailability(null, null);
 
-                General.ProviderAvailabilityChanged += UpdateAIAvaibility;
+                General.ProviderAvailabilityChanged += UpdateAIAvailability;
             }
         }
 
-        private void UpdateAIAvaibility(object? _, EventArgs? __)
+        /// <summary>
+        /// Updates the availability of AI services based on the current configuration and enabled models.
+        /// </summary>
+        /// <param name="_">The sender of the event (not used).</param>
+        /// <param name="__">The event arguments (not used).</param>
+        private void UpdateAIAvailability(object? _, EventArgs? __)
         {
             var availableModels = Models.AvailableModels
                 .Where(m => General.AvailableProviders.Contains(m.ModelProvider) && m.Enabled);
