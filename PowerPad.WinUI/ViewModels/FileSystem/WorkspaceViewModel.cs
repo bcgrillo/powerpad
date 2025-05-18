@@ -34,6 +34,12 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         public ObservableCollection<string> RecentlyWorkspaces { get; }
 
         /// <summary>
+        /// Gets or sets the path of the currently opened document.
+        /// </summary>
+        [ObservableProperty]
+        public partial string? CurrentDocumentPath { get; set; }
+
+        /// <summary>
         /// Command to open a workspace.
         /// </summary>
         public IRelayCommand OpenWorkspaceCommand { get; }
@@ -47,12 +53,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         /// Command to create a new entry (folder or document) in the workspace.
         /// </summary>
         public IRelayCommand NewEntryCommand { get; }
-
-        /// <summary>
-        /// Gets or sets the path of the currently opened document.
-        /// </summary>
-        [ObservableProperty]
-        public partial string? CurrentDocumentPath { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkspaceViewModel"/> class.

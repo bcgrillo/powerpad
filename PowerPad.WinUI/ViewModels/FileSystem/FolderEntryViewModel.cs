@@ -75,6 +75,11 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         public IFolderEntry ModelEntry => _entry;
 
         /// <summary>
+        /// Gets the position of the entry within its parent folder, if applicable.
+        /// </summary>
+        public int? Position { get => _entry.Position; }
+
+        /// <summary>
         /// Gets the command to delete the entry.
         /// </summary>
         public IRelayCommand DeleteCommand { get; }
@@ -83,11 +88,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         /// Gets the command to rename the entry.
         /// </summary>
         public IRelayCommand RenameCommand { get; }
-
-        /// <summary>
-        /// Gets the position of the entry within its parent folder, if applicable.
-        /// </summary>
-        public int? Position { get => _entry.Position; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FolderEntryViewModel"/> class for a folder.

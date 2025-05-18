@@ -59,6 +59,18 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         public DateTime LastSaveTime { get => _lastSaveTime; }
 
         /// <summary>
+        /// Gets or sets the previous content of the document.
+        /// </summary>
+        [ObservableProperty]
+        public partial string? PreviousContent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the next content of the document.
+        /// </summary>
+        [ObservableProperty]
+        public partial string? NextContent { get; set; }
+
+        /// <summary>
         /// Command to save the document.
         /// </summary>
         public IAsyncRelayCommand SaveCommand { get; }
@@ -73,17 +85,6 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
         /// </summary>
         public IRelayCommand RenameCommand { get; }
 
-        /// <summary>
-        /// Gets or sets the previous content of the document.
-        /// </summary>
-        [ObservableProperty]
-        public partial string? PreviousContent { get; set; }
-
-        /// <summary>
-        /// Gets or sets the next content of the document.
-        /// </summary>
-        [ObservableProperty]
-        public partial string? NextContent { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentViewModel"/> class.
