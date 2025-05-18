@@ -75,7 +75,7 @@ namespace PowerPad.WinUI.ViewModels.Chat
         /// <summary>
         /// Removes the last message from the chat if there are more than one message.
         /// </summary>
-        public void RemoveLastMessage()
+        private void RemoveLastMessage()
         {
             if (Messages.Count > 1)
             {
@@ -87,7 +87,7 @@ namespace PowerPad.WinUI.ViewModels.Chat
         /// <summary>
         /// Clears all messages from the chat.
         /// </summary>
-        public void ClearMessages() => Messages.Clear();
+        private void ClearMessages() => Messages.Clear();
 
         /// <summary>
         /// Handles changes to the <see cref="Messages"/> collection and updates the <see cref="ChatError"/> property.

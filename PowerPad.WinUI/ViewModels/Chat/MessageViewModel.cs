@@ -29,7 +29,7 @@ namespace PowerPad.WinUI.ViewModels.Chat
         /// <summary>
         /// Gets or sets the role of the message sender (e.g., user, assistant).
         /// </summary>
-        public ChatRole Role { get; set; } = role;
+        public ChatRole Role { get; private init; } = role;
 
         /// <summary>
         /// Gets or sets the reasoning or explanation associated with the message.
@@ -56,14 +56,5 @@ namespace PowerPad.WinUI.ViewModels.Chat
         /// </summary>
         [ObservableProperty]
         public partial string? ErrorMessage { get; set; } = errorMessage;
-
-        /// <summary>
-        /// Returns a string representation of the message, including its timestamp and content.
-        /// </summary>
-        /// <returns>A string representation of the message.</returns>
-        public override string ToString()
-        {
-            return $"{DateTime} {Content}";
-        }
     }
 }
