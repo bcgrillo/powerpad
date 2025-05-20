@@ -15,7 +15,7 @@ namespace PowerPad.WinUI.Pages
     /// <summary>
     /// Represents a page for editing content in a popup editor.
     /// </summary>
-    public sealed partial class PopupEditorPage : Page
+    public partial class PopupEditorPage : Page
     {
         private readonly WorkspaceViewModel _workspace;
         private readonly DraftDocumentViewModel _document;

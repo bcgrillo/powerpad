@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using PowerPad.Core.Models.AI;
 using PowerPad.WinUI.Pages.Providers;
 using PowerPad.WinUI.ViewModels.AI;
@@ -186,7 +187,7 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the pointer pressed event to close the model information viewer.
         /// </summary>
-        private void NavView_PointerPressed(object _, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs __)
+        private void NavView_PointerPressed(object _, PointerRoutedEventArgs __)
         {
             _currentPage?.CloseModelInfoViewer();
         }

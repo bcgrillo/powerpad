@@ -6,7 +6,7 @@ namespace PowerPad.WinUI.Pages
     /// <summary>
     /// Represents the workspace page in the application, providing navigation and file management functionality.
     /// </summary>
-    internal partial class WorkspacePage : DisposablePage, IToggleMenuPage
+    public partial class WorkspacePage : DisposablePage, IToggleMenuPage
     {
         /// <summary>
         /// Gets the width of the navigation pane based on its visibility.

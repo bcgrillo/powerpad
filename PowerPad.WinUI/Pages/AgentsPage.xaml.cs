@@ -27,11 +27,6 @@ namespace PowerPad.WinUI.Pages
         public double NavigationWidth => AgentsMenu.Visibility == Visibility.Visible ? TreeView.ActualWidth : 0;
 
         /// <summary>
-        /// Occurs when the visibility of the navigation menu changes.
-        /// </summary>
-        public event EventHandler? NavigationVisibilityChanged;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AgentsPage"/> class.
         /// </summary>
         public AgentsPage()
@@ -49,8 +44,6 @@ namespace PowerPad.WinUI.Pages
         public void ToggleNavigationVisibility()
         {
             AgentsMenu.Visibility = AgentsMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-
-            NavigationVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

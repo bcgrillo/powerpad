@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using PowerPad.WinUI.Components;
+using PowerPad.WinUI.Components.Controls;
 using PowerPad.WinUI.ViewModels.AI.Providers;
 
 namespace PowerPad.WinUI.Pages.Providers
@@ -27,7 +28,7 @@ namespace PowerPad.WinUI.Pages.Providers
         /// </summary>
         /// <param name="_">The sender of the event (not used).</param>
         /// <param name="eventArgs">The event arguments containing visibility information.</param>
-        private void AIModelsRepeater_ModelInfoViewerVisibilityChanged(object _, Components.Controls.ModelInfoViewerVisibilityEventArgs eventArgs)
+        private void AIModelsRepeater_ModelInfoViewerVisibilityChanged(object _, ModelInfoViewerVisibilityEventArgs eventArgs)
         {
             RowHeader.Height = eventArgs.IsVisible
                 ? new(0, GridUnitType.Pixel)
