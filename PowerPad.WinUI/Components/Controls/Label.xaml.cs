@@ -47,7 +47,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Updates the foreground color of the Label based on its enabled state.
         /// </summary>
-        public void UpdateForeground()
+        private void UpdateForeground()
         {
             _previousForegroundBrush ??= TextBlock.Foreground;
 
