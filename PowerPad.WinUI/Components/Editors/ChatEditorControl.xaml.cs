@@ -1,3 +1,4 @@
+using Microsoft.Extensions.AI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -370,6 +371,42 @@ namespace PowerPad.WinUI.Components.Editors
             }
 
             ChatControl.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Selects the appropriate data template for chat messages based on their role.
+    /// </summary>
+    internal partial class ChatTemplateSelector : DataTemplateSelector
+    {
+        /// <summary>
+        /// Gets or sets the data template for user messages.
+        /// </summary>
+        public DataTemplate UserTemplate { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the data template for assistant messages.
+        /// </summary>
+        public DataTemplate AssistantTemplate { get; set; } = null!;
+
+        /// <summary>
+        /// Selects the appropriate data template based on the role of the message.
+        /// </summary>
+        /// <param name="item">The message to select a template for.</param>
+        /// <param name="container">The container for the data template.</param>
+        /// <returns>The selected data template.</returns>
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            MessageViewModel? selectedObject = item as MessageViewModel;
+
+            if (selectedObject?.Role == ChatRole.User)
+            {
+                return UserTemplate;
+            }
+            else
+            {
+                return AssistantTemplate;
+            }
         }
     }
 }

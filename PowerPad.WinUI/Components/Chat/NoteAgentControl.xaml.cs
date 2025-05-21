@@ -22,13 +22,12 @@ namespace PowerPad.WinUI.Components.Controls
         private readonly IChatService _chatService;
         private readonly SettingsViewModel _settings;
         private CancellationTokenSource? _cts;
+        private AgentViewModel? _selectedAgent;
 
         /// <summary>
         /// Event triggered when the send button is clicked.
         /// </summary>
         public event EventHandler<RoutedEventArgs>? SendButtonClicked;
-
-        private AgentViewModel? _selectedAgent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NoteAgentControl"/> class.

@@ -1,11 +1,9 @@
-using Microsoft.Extensions.AI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using PowerPad.Core.Models.FileSystem;
 using PowerPad.WinUI.Dialogs;
-using PowerPad.WinUI.ViewModels.Chat;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using System;
 using System.Text;
@@ -65,6 +63,18 @@ namespace PowerPad.WinUI.Components.Editors
             TextEditor.Focus(FocusState.Programmatic);
         }
 
+        /// <inheritdoc />
+        public override void AutoSave()
+        {
+            _document.AutosaveCommand.Execute(null);
+        }
+
+        /// <inheritdoc />
+        public override int WordCount()
+        {
+            return TextEditor.Text.Split(' ').Length;
+        }
+
         /// <summary>
         /// Handles the event when the editable text block is edited.
         /// </summary>
@@ -116,18 +126,6 @@ namespace PowerPad.WinUI.Components.Editors
             flyout.ShowAt((Button)sender);
             await Task.Delay(1000);
             flyout.Hide();
-        }
-
-        /// <inheritdoc />
-        public override void AutoSave()
-        {
-            _document.AutosaveCommand.Execute(null);
-        }
-
-        /// <inheritdoc />
-        public override int WordCount()
-        {
-            return TextEditor.Text.Split(' ').Length;
         }
 
         /// <summary>
@@ -249,42 +247,6 @@ namespace PowerPad.WinUI.Components.Editors
             }
 
             AgentControl.Dispose();
-        }
-    }
-
-    /// <summary>
-    /// Selects the appropriate data template for chat messages based on their role.
-    /// </summary>
-    internal partial class ChatTemplateSelector : DataTemplateSelector
-    {
-        /// <summary>
-        /// Gets or sets the data template for user messages.
-        /// </summary>
-        public DataTemplate UserTemplate { get; set; } = null!;
-
-        /// <summary>
-        /// Gets or sets the data template for assistant messages.
-        /// </summary>
-        public DataTemplate AssistantTemplate { get; set; } = null!;
-
-        /// <summary>
-        /// Selects the appropriate data template based on the role of the message.
-        /// </summary>
-        /// <param name="item">The message to select a template for.</param>
-        /// <param name="container">The container for the data template.</param>
-        /// <returns>The selected data template.</returns>
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
-        {
-            MessageViewModel? selectedObject = item as MessageViewModel;
-
-            if (selectedObject?.Role == ChatRole.User)
-            {
-                return UserTemplate;
-            }
-            else
-            {
-                return AssistantTemplate;
-            }
         }
     }
 }

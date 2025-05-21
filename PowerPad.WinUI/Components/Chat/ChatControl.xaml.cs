@@ -458,12 +458,12 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the click event of the close parameters button.
         /// </summary>
-        /// <param name="o">The sender of the event.</param>
+        /// <param name="sender">The sender of the event.</param>
         /// <param name="eventArgs">The event arguments.</param>
-        private void CloseParametersButton_Click(object o, RoutedEventArgs eventArgs)
+        private void CloseParametersButton_Click(object sender, RoutedEventArgs eventArgs)
         {
             ParametersButton.IsChecked = false;
-            ParametersButton_Click(o, eventArgs);
+            ParametersButton_Click(sender, eventArgs);
         }
 
         /// <summary>
@@ -482,9 +482,7 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the tick event of the loading animation timer, updating the assistant's loading message.
         /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event arguments.</param>
-        private void LoadingAnimationTimer_Tick(object? sender, object e)
+        private void LoadingAnimationTimer_Tick(object? _, object __)
         {
             if (_lastAssistantMessage is not null)
             {
