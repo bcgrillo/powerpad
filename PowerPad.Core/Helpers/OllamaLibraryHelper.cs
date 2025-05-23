@@ -52,17 +52,17 @@ namespace PowerPad.Core.Helpers
                 var auxDoc = new HtmlDocument();
                 auxDoc.LoadHtml(responseAux);
 
-                var tags = auxDoc.DocumentNode.SelectNodes("//a[contains(@class, 'group flex')]");
+                var tags = auxDoc.DocumentNode.SelectNodes("//div[contains(@class, 'hidden group')]");
                 if (tags is null) continue;
 
                 foreach (var tag in tags)
                 {
-                    var tagName = tag.SelectSingleNode(".//span[@class='group-hover:underline']")?.InnerText.Trim() ?? "";
-                    var tagSizeText = tag.SelectSingleNode(".//span[@class='text-xs text-neutral-400']")?.InnerText.Trim() ?? "";
+                    var tagName = tag.SelectSingleNode(".//a[contains(@class, 'group-hover:underline')]")?.InnerText.Trim() ?? "";
+                    var tagSizeText = tag.SelectSingleNode(".//p[@class='col-span-2 text-neutral-500']")?.InnerText.Trim() ?? "";
                     var tagSize = ConvertSizeToBytes(tagSizeText);
 
                     results.Add(new AIModel(
-                            $"{name}:{tagName}",
+                            tagName,
                             ModelProvider.Ollama,
                             GetModelUrl(name),
                             tagSize

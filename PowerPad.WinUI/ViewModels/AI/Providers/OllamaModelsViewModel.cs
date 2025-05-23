@@ -96,6 +96,8 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
         protected override async Task SearchModels(string? query)
         {
             Searching = true;
+            _searchCompleted = false;
+            OnPropertyChanged(nameof(SearchResultModelsEmpty));
 
             var resultModels = await _aiService.SearchModels(_modelProvider, query);
 
@@ -113,6 +115,8 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
             }));
 
             Searching = false;
+            _searchCompleted = true;
+            OnPropertyChanged(nameof(SearchResultModelsEmpty));
         }
 
         /// <summary>

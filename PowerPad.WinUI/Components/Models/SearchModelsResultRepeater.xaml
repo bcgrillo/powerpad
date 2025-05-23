@@ -28,7 +28,7 @@
             TargetType="x:Boolean"
             Value="{x:Bind SearchingFlag, Mode=OneWay}"
             Visibility="{x:Bind SearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-        <tkcontrols:Case Value="True">
+            <tkcontrols:Case Value="True">
                 <StackPanel
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

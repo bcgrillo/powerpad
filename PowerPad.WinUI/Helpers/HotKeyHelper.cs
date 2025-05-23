@@ -79,6 +79,28 @@ namespace PowerPad.WinUI.Helpers
         }
 
         /// <summary>
+        /// Simulates the Ctrl+C keyboard shortcut.
+        /// </summary>
+        public static void SimulateCtrlC()
+        {
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_C, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_C, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+        }
+
+        /// <summary>
+        /// Simulates the Ctrl+V keyboard shortcut.
+        /// </summary>
+        public static void SimulateCtrlV()
+        {
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_V, 0, KEYEVENTF_KEYDOWN, 0);
+            PInvoke.keybd_event(VK_V, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+            PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
+        }
+
+        /// <summary>
         /// Handles window messages and processes hotkey events.
         /// </summary>
         /// <param name="_">The sender of the event (not used).</param>
@@ -109,28 +131,6 @@ namespace PowerPad.WinUI.Helpers
 
                 _popupWindow.ShowPopup();
             }
-        }
-
-        /// <summary>
-        /// Simulates the Ctrl+C keyboard shortcut.
-        /// </summary>
-        public static void SimulateCtrlC()
-        {
-            PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
-            PInvoke.keybd_event(VK_C, 0, KEYEVENTF_KEYDOWN, 0);
-            PInvoke.keybd_event(VK_C, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
-            PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
-        }
-
-        /// <summary>
-        /// Simulates the Ctrl+V keyboard shortcut.
-        /// </summary>
-        public static void SimulateCtrlV()
-        {
-            PInvoke.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, 0);
-            PInvoke.keybd_event(VK_V, 0, KEYEVENTF_KEYDOWN, 0);
-            PInvoke.keybd_event(VK_V, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
-            PInvoke.keybd_event(VK_CONTROL, 0, KEYBD_EVENT_FLAGS.KEYEVENTF_KEYUP, 0);
         }
     }
 }

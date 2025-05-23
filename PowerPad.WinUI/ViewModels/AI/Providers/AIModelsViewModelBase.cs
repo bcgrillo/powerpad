@@ -18,7 +18,7 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
     /// </summary>
     public abstract partial class AIModelsViewModelBase : ObservableObject, IDisposable
     {
-        private bool _searchCompleted;
+        protected bool _searchCompleted;
 
         /// <summary>
         /// The AI service used for searching and managing models.

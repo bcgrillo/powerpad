@@ -30,7 +30,7 @@ namespace PowerPad.Core.Helpers
 
             var results = new List<AIModel>();
 
-            foreach (var modelId in searchResults.Select(m => m.Id).Take(MAX_RESULTS))
+            foreach (var modelId in searchResults.OrderByDescending(m => m.Likes).Select(m => m.Id).Take(MAX_RESULTS))
             {
                 var modelDetailsUrl = $"{HUGGINGFACE_MODEL_URL}{modelId}/tree/main";
                 var modelFiles = await httpClient.GetFromJsonAsync<List<HuggingFaceFile>>(modelDetailsUrl);
@@ -83,7 +83,7 @@ namespace PowerPad.Core.Helpers
         /// Represents a model retrieved from the Hugging Face API.
         /// </summary>
         /// <param name="Id">The unique identifier of the model.</param>
-        private sealed record HuggingFaceModel(string Id);
+        private sealed record HuggingFaceModel(string Id, int Likes);
 
         /// <summary>
         /// Represents a file associated with a model in the Hugging Face API.
