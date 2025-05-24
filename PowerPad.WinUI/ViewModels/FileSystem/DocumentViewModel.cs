@@ -172,9 +172,14 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
             var workspaceService = App.Get<IWorkspaceService>();
 
-            workspaceService.RenameDocument(_document, newName);
-
-            NameChanged();
+            try
+            {
+                workspaceService.RenameDocument(_document, newName);
+            }
+            finally
+            {
+                NameChanged();
+            }
         }
 
         /// <summary>

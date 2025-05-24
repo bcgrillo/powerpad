@@ -83,6 +83,7 @@ namespace PowerPad.Core.Helpers
         /// Represents a model retrieved from the Hugging Face API.
         /// </summary>
         /// <param name="Id">The unique identifier of the model.</param>
+        /// <param name="Likes">The number of likes the model has received.</param>
         private sealed record HuggingFaceModel(string Id, int Likes);
 
         /// <summary>

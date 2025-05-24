@@ -64,7 +64,11 @@ namespace PowerPad.WinUI.Components.Editors
                 {
                     SaveButton_Click(null, null);
                 }
-                else if (result == ContentDialogResult.None)
+                else if (result == ContentDialogResult.Secondary)
+                {
+                    CancelButtonAction();
+                }
+                else
                 {
                     return false;
                 }
@@ -139,20 +143,25 @@ namespace PowerPad.WinUI.Components.Editors
 
             if (result == ContentDialogResult.Primary)
             {
-                _agent.SetRecord(_originalAgent.GetRecord());
-                _agent.Icon = _originalAgent.Icon;
-                _agent.ShowInNotes = _originalAgent.ShowInNotes;
-                _agent.ShowInChats = _originalAgent.ShowInChats;
-
-                PromptParameterExpander.IsExpanded = _agent.HasPromptParameter;
-                PromptParameterControls.IsEnabled = _agent.HasPromptParameter;
-
-                PromptParameterExpander.IsExpanded = _agent.HasAIParameters;
-                PromptParameterControls.IsEnabled = _agent.HasAIParameters;
-
-                SaveButton.IsEnabled = false;
-                CancelButton.IsEnabled = false;
+                CancelButtonAction();
             }
+        }
+
+        private void CancelButtonAction()
+        {
+            _agent.SetRecord(_originalAgent.GetRecord());
+            _agent.Icon = _originalAgent.Icon;
+            _agent.ShowInNotes = _originalAgent.ShowInNotes;
+            _agent.ShowInChats = _originalAgent.ShowInChats;
+
+            PromptParameterExpander.IsExpanded = _agent.HasPromptParameter;
+            PromptParameterControls.IsEnabled = _agent.HasPromptParameter;
+
+            PromptParameterExpander.IsExpanded = _agent.HasAIParameters;
+            PromptParameterControls.IsEnabled = _agent.HasAIParameters;
+
+            SaveButton.IsEnabled = false;
+            CancelButton.IsEnabled = false;
         }
 
         /// <summary>

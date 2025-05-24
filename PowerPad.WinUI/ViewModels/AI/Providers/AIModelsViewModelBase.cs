@@ -18,6 +18,9 @@ namespace PowerPad.WinUI.ViewModels.AI.Providers
     /// </summary>
     public abstract partial class AIModelsViewModelBase : ObservableObject, IDisposable
     {
+        /// <summary>
+        /// Indicates whether the search operation has been completed.
+        /// </summary>
         protected bool _searchCompleted;
 
         /// <summary>

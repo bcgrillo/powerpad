@@ -117,23 +117,35 @@ namespace PowerPad.WinUI.Pages
         /// <summary>
         /// Handles the click event for creating a new agent.
         /// </summary>
-        private void NewAgentButton_Click(object _, RoutedEventArgs __)
+        private async void NewAgentButton_Click(object _, RoutedEventArgs __)
         {
-            var newIcon = _agentsCollection.GenerateIcon();
-            var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente amable y resolutivo." }, newIcon);
+            bool cancel = false;
 
-            _agentsCollection.Agents.Add(newAgent);
-
-            DispatcherQueue.TryEnqueue(() =>
+            if (_editorControl is not null)
             {
-                TreeView.SelectedItem = newAgent;
+                var result = await _editorControl.ConfirmClose();
 
-                var container = (TreeViewItem)TreeView.ContainerFromItem(newAgent);
-                container?.StartBringIntoView(new BringIntoViewOptions
+                if (!result) cancel = true;
+            }
+
+            if (!cancel)
+            {
+                var newIcon = _agentsCollection.GenerateIcon();
+                var newAgent = new AgentViewModel(new Agent { Name = "Nuevo agente", Prompt = "Eres un agente amable y resolutivo." }, newIcon);
+
+                _agentsCollection.Agents.Add(newAgent);
+
+                DispatcherQueue.TryEnqueue(() =>
                 {
-                    AnimationDesired = true
+                    TreeView.SelectedItem = newAgent;
+
+                    var container = (TreeViewItem)TreeView.ContainerFromItem(newAgent);
+                    container?.StartBringIntoView(new BringIntoViewOptions
+                    {
+                        AnimationDesired = true
+                    });
                 });
-            });
+            }
         }
 
         /// <summary>

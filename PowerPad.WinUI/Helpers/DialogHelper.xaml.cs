@@ -74,7 +74,11 @@ namespace PowerPad.WinUI.Dialogs
                 d.Message.Text = message;
             });
 
-            if (showCancel) inputDialog.CloseButtonText = "Cancelar";
+            if (showCancel)
+            {
+                inputDialog.CloseButtonText = "Cancelar";
+                inputDialog.DefaultButton = ContentDialogButton.None;
+            }
 
             return await inputDialog.ShowAsync();
         }

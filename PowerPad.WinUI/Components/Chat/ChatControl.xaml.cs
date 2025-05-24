@@ -151,6 +151,7 @@ namespace PowerPad.WinUI.Components.Controls
                     SendButton.Visibility = Visibility.Collapsed;
                     StopButton.Visibility = Visibility.Visible;
                     ChatInputBox.IsReadOnly = true;
+                    AgentToggleButton.IsEnabled = false;
                     ModelSelector.IsEnabled = false;
                     AgentSelector.IsEnabled = false;
                     ParametersButton.IsEnabled = false;
@@ -170,48 +171,54 @@ namespace PowerPad.WinUI.Components.Controls
 
                     await foreach (var update in responseUpdates)
                     {
-                        messageBuffer.Append(update.Text);
-                        var messageBufferString = messageBuffer.ToString();
-
-                        string? reasoning = null;
-                        string? content = null;
-                        bool loading = true;
-
-                        var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
-
-                        // Logic to parse and update reasoning and content from the message buffer
-                        if (thinkStartTag is not null)
+                        if (!_cts.IsCancellationRequested)
                         {
-                            var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
+                            messageBuffer.Append(update.Text);
+                            var messageBufferString = messageBuffer.ToString();
 
-                            var startIndex = messageBufferString.IndexOf(thinkStartTag) + thinkStartTag.Length;
+                            string? reasoning = null;
+                            string? content = null;
+                            bool loading = true;
 
-                            if (thinkEndTag is not null)
+                            var thinkStartTag = THINK_START_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
+
+                            // Logic to parse and update reasoning and content from the message buffer
+                            if (thinkStartTag is not null)
                             {
-                                var endIndex = messageBufferString.IndexOf(thinkEndTag, startIndex);
+                                var thinkEndTag = THINK_END_TAG.FirstOrDefault(tag => messageBufferString.Contains(tag));
 
-                                reasoning = messageBufferString[startIndex..endIndex].Trim().Replace("\n\n", "\n");
-                                content = messageBufferString[(endIndex + thinkEndTag.Length)..].Trim();
+                                var startIndex = messageBufferString.IndexOf(thinkStartTag) + thinkStartTag.Length;
 
-                                if (loading) loading = false;
+                                if (thinkEndTag is not null)
+                                {
+                                    var endIndex = messageBufferString.IndexOf(thinkEndTag, startIndex);
+
+                                    reasoning = messageBufferString[startIndex..endIndex].Trim().Replace("\n\n", "\n");
+                                    content = messageBufferString[(endIndex + thinkEndTag.Length)..].Trim();
+
+                                    if (loading) loading = false;
+                                }
+                                else
+                                {
+                                    reasoning = messageBufferString[startIndex..].Trim().Replace("\n\n", "\n");
+                                }
                             }
                             else
                             {
-                                reasoning = messageBufferString[startIndex..].Trim().Replace("\n\n", "\n");
+                                content = messageBufferString;
+                                if (loading) loading = false;
                             }
-                        }
-                        else
-                        {
-                            content = messageBufferString;
-                            if (loading) loading = false;
-                        }
 
-                        DispatcherQueue.TryEnqueue(() =>
-                        {
-                            _lastAssistantMessage.Reasoning = reasoning;
-                            _lastAssistantMessage.Content = content;
-                            _lastAssistantMessage.Loading = loading;
-                        });
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                if (!_cts.IsCancellationRequested)
+                                {
+                                    _lastAssistantMessage.Reasoning = reasoning;
+                                    _lastAssistantMessage.Content = content;
+                                    _lastAssistantMessage.Loading = loading;
+                                }
+                            });
+                        }
                     }
                 }
                 catch (TaskCanceledException)
@@ -232,7 +239,7 @@ namespace PowerPad.WinUI.Components.Controls
                     });
                 }
 
-                if (!_cts.IsCancellationRequested) FinalizeChat();
+                FinalizeChat();
             });
         }
 
@@ -339,9 +346,7 @@ namespace PowerPad.WinUI.Components.Controls
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (_lastAssistantMessage is not null
-                    && string.IsNullOrWhiteSpace(_lastAssistantMessage.Content)
-                    && string.IsNullOrWhiteSpace(_lastAssistantMessage.ErrorMessage))
+                if (_lastAssistantMessage is not null && _cts?.IsCancellationRequested == true)
                 {
                     _messageList!.Remove(_lastAssistantMessage);
                     _messageList!.Remove(_lastUserMessage!);
@@ -354,6 +359,7 @@ namespace PowerPad.WinUI.Components.Controls
                 StopButton.Visibility = Visibility.Collapsed;
                 SendButton.Visibility = Visibility.Visible;
                 ChatInputBox.IsReadOnly = false;
+                AgentToggleButton.IsEnabled = true;
                 ModelSelector.IsEnabled = true;
                 AgentSelector.IsEnabled = true;
                 ParametersButton.IsEnabled = true;
@@ -371,10 +377,9 @@ namespace PowerPad.WinUI.Components.Controls
         /// <summary>
         /// Handles the click event of the stop button, canceling the current chat session.
         /// </summary>
-        private void StopBtn_Click(object _, RoutedEventArgs __)
+        private async void StopBtn_Click(object _, RoutedEventArgs __)
         {
-            _cts!.Cancel();
-            FinalizeChat();
+            await _cts!.CancelAsync();
         }
 
         /// <summary>

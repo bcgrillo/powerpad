@@ -216,16 +216,21 @@ namespace PowerPad.WinUI.ViewModels.FileSystem
 
             var workspaceService = App.Get<IWorkspaceService>();
 
-            if (Type == EntryType.Document)
+            try
             {
-                workspaceService.RenameDocument((Document)_entry, newName);
+                if (Type == EntryType.Document)
+                {
+                    workspaceService.RenameDocument((Document)_entry, newName);
+                }
+                else
+                {
+                    workspaceService.RenameFolder((Folder)_entry, newName);
+                }
             }
-            else
+            finally
             {
-                workspaceService.RenameFolder((Folder)_entry, newName);
-            }
-
-            NameChanged();
+                NameChanged();
+            }           
         }
     }
 }

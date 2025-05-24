@@ -219,6 +219,11 @@ namespace PowerPad.Core.Services.FileSystem
         /// <inheritdoc />
         public void RenameDocument(Document document, string newName)
         {
+            if (newName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                throw new ArgumentException($"El nombre '{newName}' contiene caracteres inválidos.");
+            }
+
             var oldFullName = $"{document.Name}{document.Extension}";
             var oldPath = document.Path;
             var oldAutosavePath = document.AutosavePath;
@@ -235,6 +240,11 @@ namespace PowerPad.Core.Services.FileSystem
         /// <inheritdoc />
         public void RenameFolder(Folder folder, string newName)
         {
+            if (newName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                throw new ArgumentException($"El nombre '{newName}' contiene caracteres inválidos.");
+            }
+
             var oldName = folder.Name;
             var oldPath = folder.Path;
 
