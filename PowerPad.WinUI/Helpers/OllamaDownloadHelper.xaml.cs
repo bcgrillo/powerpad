@@ -179,15 +179,15 @@ namespace PowerPad.WinUI.Dialogs
                 }
                 else // Download completed
                 {
-                    var generalSettings = App.Get<SettingsViewModel>();
+                    var settings = App.Get<SettingsViewModel>();
 
                     Message.Text = "Comprobando...";
                     ProgressBar.Visibility = Visibility.Visible;
                     ProgressBar.IsIndeterminate = true;
                     IsEnabled = false;
 
-                    await generalSettings.TestConnections();
-                    if (generalSettings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
+                    await settings.TestConnections();
+                    if (settings.General.OllamaConfig.ServiceStatus == ServiceStatus.NotFound)
                     {
                         Message.Text = $"Parece que la instalación no se ha realizado correctamente.\nOllama no está disponible.";
 
