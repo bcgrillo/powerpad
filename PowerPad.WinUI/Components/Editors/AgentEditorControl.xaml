@@ -32,7 +32,7 @@
             <Grid>
                 <StackPanel 
                     x:Name="AgentForm"
-                    Spacing="8" 
+                    Spacing="16" 
                     MaxWidth="1000" 
                     HorizontalAlignment="Stretch" 
                     VerticalAlignment="Center">
@@ -79,7 +79,9 @@
                                 Header="Descripción"
                                 Text="{x:Bind _agent.Prompt, Mode=TwoWay}"
                                 AcceptsReturn="True"
-                                Height="120"
+                                MinHeight="80"
+                                MaxHeight="220"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 TextWrapping="Wrap" />
                         </StackPanel>
                     </Grid>
@@ -104,6 +106,7 @@
                         Background="Transparent" 
                         BorderBrush="Transparent"
                         Padding="0"
+                        Margin="0,-8"
                         IsExpanded="{x:Bind _agent.HasPromptParameter, Mode=OneTime}">
                         <Expander.Resources>
                             <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
@@ -162,6 +165,7 @@
                         Background="Transparent" 
                         BorderBrush="Transparent"
                         Padding="0"
+                        Margin="0,-8"
                         IsExpanded="{x:Bind _agent.HasAIParameters, Mode=OneTime}">
                         <Expander.Resources>
                             <Thickness x:Key="ExpanderHeaderBorderThickness">0</Thickness>
