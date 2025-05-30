@@ -1,0 +1,6 @@
+var namespace_power_pad_1_1_win_u_i_1_1_view_models_1_1_settings =
+[
+    [ "GeneralSettingsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_settings_1_1_general_settings_view_model.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_settings_1_1_general_settings_view_model" ],
+    [ "ModelsSettingsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_settings_1_1_models_settings_view_model.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_settings_1_1_models_settings_view_model" ],
+    [ "SettingsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_settings_1_1_settings_view_model.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_settings_1_1_settings_view_model" ]
+];

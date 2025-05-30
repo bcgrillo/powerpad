@@ -1,0 +1,4 @@
+var class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_open_a_i_models_view_model =
+[
+    [ "OpenAIModelsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_open_a_i_models_view_model.html#a26b797ae4996448ac41e28f5d059f89c", null ]
+];
