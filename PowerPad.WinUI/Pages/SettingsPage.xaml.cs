@@ -326,9 +326,10 @@ namespace PowerPad.WinUI.Pages
         /// </summary>
         private void AzureAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.AzureAIEnabled && string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key))
+            if (!_settings.General.AzureAIEnabled && (string.IsNullOrEmpty(_settings.General.AzureAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.AzureAIConfig.Key)))
             {
                 AzureAIModelsExpander.IsExpanded = true;
+                AzureAIDisclaimer.Visibility = Visibility.Visible;
                 AzureAIUrlTextBox.Focus(FocusState.Keyboard);
                 AzureAIUrlTextBox.EnterEditMode();
                 AzureAIKeyTextBox.EnterEditMode();
@@ -340,9 +341,10 @@ namespace PowerPad.WinUI.Pages
         /// </summary>
         private void OpenAIModelsExpander_Toggled(object _, RoutedEventArgs __)
         {
-            if (!_settings.General.OpenAIEnabled && string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key))
+            if (!_settings.General.OpenAIEnabled && (string.IsNullOrEmpty(_settings.General.OpenAIConfig.BaseUrl) || string.IsNullOrEmpty(_settings.General.OpenAIConfig.Key)))
             {
                 OpenAIModelsExpander.IsExpanded = true;
+                OpenAIDisclaimer.Visibility = Visibility.Visible;
                 OpenAIUrlTextBox.Focus(FocusState.Keyboard);
                 OpenAIUrlTextBox.EnterEditMode();
                 OpenAIKeyTextBox.EnterEditMode();
@@ -375,6 +377,14 @@ namespace PowerPad.WinUI.Pages
             if (config == OllamaRetryButton) TestOllama(null, null);
             else if (config == AzureAIRetryButton) TestAzureAI(null, null);
             else if (config == OpenAIRetryButton) TestOpenAI(null, null);
+        }
+
+        private void DisclaimerButton_Click(object sender, RoutedEventArgs __)
+        {
+            var config = (Button)sender!;
+
+            if (config == AzureAIDisclaimerButton) AzureAIDisclaimer.Visibility = Visibility.Collapsed;
+            else if (config == OpenAIDisclaimerButton) OpenAIDisclaimer.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

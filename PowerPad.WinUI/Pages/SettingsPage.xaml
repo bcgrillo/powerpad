@@ -48,6 +48,9 @@
             <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
             <Setter Property="Background" Value="{ThemeResource InfoBarErrorSeverityBackgroundBrush}" />
         </Style>
+        <Style x:Key="InfoBarWarningCard" BasedOn="{StaticResource InfoBarSettingCard}" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource InfoBarWarningSeverityBackgroundBrush}" />
+        </Style>
     </local:DisposablePage.Resources>
     <Grid Margin="0,0,0,2">
         <Grid.RowDefinitions>
@@ -220,30 +223,55 @@
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.AzureAIEnabled, Mode=TwoWay}" Toggled="AzureAIModelsExpander_Toggled" />
                             </StackPanel>
                             <tkcontrols:SettingsExpander.ItemsHeader>
-                                <Border 
-                                    Style="{StaticResource InfoBarSettingCard}"
-                                    Visibility="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
-                                    <Grid Margin="-58,0,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="58" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
-                                        <TextBlock 
-                                            Grid.Column="1" 
-                                            Text="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}" 
-                                            VerticalAlignment="Center"
-                                            IsTextSelectionEnabled="True"
-                                            TextWrapping="Wrap" />
-                                        <Button Margin="16,0,0,0" Grid.Column="2" x:Name="AzureAIRetryButton" Click="RetryButton_Click">
-                                            <StackPanel Orientation="Horizontal">
-                                                <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
-                                                <TextBlock>Reintentar</TextBlock>
-                                            </StackPanel>
-                                        </Button>
-                                    </Grid>
-                                </Border>
+                                <StackPanel>
+                                    <Border x:Name="AzureAIDisclaimer"
+                                        Style="{StaticResource InfoBarWarningCard}"
+                                        Visibility="Collapsed">
+                                        <Grid Margin="-58,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="58" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xE7BA;" Foreground="{ThemeResource InfoBarWarningSeverityIconBackground}" />
+                                            <TextBlock 
+                                                Grid.Column="1" 
+                                                Text="Si utilizas modelos en línea tus conversaciones o notas se enviarán al servicio, aunque seguirán almacenándose en local." 
+                                                VerticalAlignment="Center"
+                                                IsTextSelectionEnabled="True"
+                                                TextWrapping="Wrap" />
+                                            <Button Margin="16,0,0,0" Grid.Column="2" x:Name="AzureAIDisclaimerButton" Click="DisclaimerButton_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock>De acuerdo</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                    <Border 
+                                        Style="{StaticResource InfoBarSettingCard}"
+                                        Visibility="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
+                                        <Grid Margin="-58,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="58" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
+                                            <TextBlock 
+                                                Grid.Column="1" 
+                                                Text="{x:Bind _settings.General.AzureAIConfig.ErrorMessage, Mode=OneWay}" 
+                                                VerticalAlignment="Center"
+                                                IsTextSelectionEnabled="True"
+                                                TextWrapping="Wrap" />
+                                            <Button Margin="16,0,0,0" Grid.Column="2" x:Name="AzureAIRetryButton" Click="RetryButton_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
+                                                    <TextBlock>Reintentar</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
                             </tkcontrols:SettingsExpander.ItemsHeader>
                             <tkcontrols:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
@@ -306,30 +334,55 @@
                                 <ToggleSwitch IsOn="{x:Bind _settings.General.OpenAIEnabled, Mode=TwoWay}" Toggled="OpenAIModelsExpander_Toggled" />
                             </StackPanel>
                             <tkcontrols:SettingsExpander.ItemsHeader>
-                                <Border 
-                                    Style="{StaticResource InfoBarSettingCard}"
-                                    Visibility="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
-                                    <Grid Margin="-58,0,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="58" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            Text="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}"
-                                            VerticalAlignment="Center"
-                                            IsTextSelectionEnabled="True"
-                                            TextWrapping="Wrap" />
-                                        <Button Margin="16,0,0,0" Grid.Column="2" x:Name="OpenAIRetryButton" Click="RetryButton_Click">
-                                            <StackPanel Orientation="Horizontal">
-                                                <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
-                                                <TextBlock>Reintentar</TextBlock>
-                                            </StackPanel>
-                                        </Button>
-                                    </Grid>
-                                </Border>
+                                <StackPanel>
+                                    <Border x:Name="OpenAIDisclaimer"
+                                        Style="{StaticResource InfoBarWarningCard}"
+                                        Visibility="Collapsed">
+                                        <Grid Margin="-58,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="58" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xE7BA;" Foreground="{ThemeResource InfoBarWarningSeverityIconBackground}" />
+                                            <TextBlock 
+                                                Grid.Column="1" 
+                                                Text="Si utilizas modelos en línea tus conversaciones o notas se enviarán al servicio, aunque seguirán almacenándose en local." 
+                                                VerticalAlignment="Center"
+                                                IsTextSelectionEnabled="True"
+                                                TextWrapping="Wrap" />
+                                            <Button Margin="16,0,0,0" Grid.Column="2" x:Name="OpenAIDisclaimerButton" Click="DisclaimerButton_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock>De acuerdo</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                    <Border 
+                                        Style="{StaticResource InfoBarSettingCard}"
+                                        Visibility="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay, Converter={StaticResource StringVisibilityConverter}}">
+                                        <Grid Margin="-58,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="58" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xEB90;" Foreground="{ThemeResource InfoBarErrorSeverityIconBackground}" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Text="{x:Bind _settings.General.OpenAIConfig.ErrorMessage, Mode=OneWay}"
+                                                VerticalAlignment="Center"
+                                                IsTextSelectionEnabled="True"
+                                                TextWrapping="Wrap" />
+                                            <Button Margin="16,0,0,0" Grid.Column="2" x:Name="OpenAIRetryButton" Click="RetryButton_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <FontIcon Glyph="&#xE777;" FontSize="14" Margin="0,0,8,0" />
+                                                    <TextBlock>Reintentar</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
                             </tkcontrols:SettingsExpander.ItemsHeader>
                             <tkcontrols:SettingsExpander.Items>
                                 <Border Style="{StaticResource FullRowSettingCard}">
