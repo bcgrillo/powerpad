@@ -39,17 +39,17 @@ date: 30 de junio de 2025
 
 # 11. Interfaz Gráfica (parte 1)
 ![[11. Interfaz Gráfica (parte 1)]]
-![[12. Interfaz Gráfica (parte 2)]]
-![[13. Interfaz Gráfica (parte 3)]]
+![[11. Interfaz Gráfica (parte 2)]]
+![[11. Interfaz Gráfica (parte 3)]]
 
-# 14. Ejemplos de Uso y Flujos de Trabajo
-![[14. Ejemplos de Uso y Flujos de Trabajo]]
+# 12. Ejemplos de Uso y Flujos de Trabajo
+![[12. Ejemplos de Uso y Flujos de Trabajo]]
 
-# 15. Código Fuente de la Solución
-![[15. Código Fuente de la Solución]]
+# 13. Código Fuente de la Solución
+![[13. Código Fuente de la Solución]]
 
-# 16. Impactos Sociales, Ambientales y Éticos
-![[16. Impactos Sociales, Ambientales y Éticos]]
+# 14. Impactos Sociales, Ambientales y Éticos
+![[14. Impactos Sociales, Ambientales y Éticos]]
 
-# 17. Conclusiones y Trabajos Futuros
-![[17. Conclusiones y Trabajos Futuros]]
+# 15. Conclusiones y Trabajos Futuros
+![[15. Conclusiones y Trabajos Futuros]]
