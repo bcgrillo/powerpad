@@ -1,6 +1,6 @@
 $outputFile = "PanDoc/MemoriaPowerPad.docx"
-$memoriaPath = "Memoria.md"
-$tempPath = "Memoria_temp.md"
+$memoriaPath = "_ Memoria.md"
+$tempPath = "_ Memoria_temp.md"
 
 cd ..
 
@@ -36,7 +36,7 @@ $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, {
 Set-Content -Path $tempPath -Value $content -Encoding utf8
 
 
-pandoc $tempPath --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl --filter mermaid-filter.cmd -o $outputFile --reference-doc=PanDoc/Templates/article.docx
+pandoc $tempPath --toc --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl --filter mermaid-filter.cmd -o $outputFile --reference-doc=PanDoc/Templates/article.docx
 
 Remove-Item $tempPath
 

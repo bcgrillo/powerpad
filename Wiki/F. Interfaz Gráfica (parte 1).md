@@ -1,6 +1,6 @@
 La sección dedicada a la Interfaz Gráfica de PowerPad tiene como objetivo ofrecer una visión detallada de todos los elementos visuales que conforman la experiencia de usuario de la aplicación. Aquí describiremos y detallaremos de manera estructurada las distintas ventanas, páginas, componentes y controles personalizados que se han desarrollado para facilitar la interacción con el usuario. Además, se destacan los aspectos clave de diseño y usabilidad que guían la disposición y funcionalidad de cada elemento, así como las decisiones tomadas para lograr una interfaz moderna, intuitiva y coherente con los objetivos del proyecto. Esta sección sirve como guía para comprender cómo se organiza visualmente PowerPad y cómo cada parte contribuye al flujo de trabajo general y a la integración de las capacidades de inteligencia artificial.
 
-## 10.1. Ventanas
+## F.1. Ventanas
 
 #### MainWindow
 ![image](./Pictures/Pasted-image-20250523212051.png)
@@ -185,9 +185,9 @@ public sealed partial class PopupWindow : WindowEx
 - La clase `MainWindow` hereda de `WindowEx`, una extensión personalizada de la ventana estándar que proporciona soporte adicional para características avanzadas de interfaz de usuario, como la integración con el fondo acrílico, la personalización de la barra de título y otras mejoras visuales específicas de la plataforma WinUI.
 - Solo contiene la página `PopupEditorPage`, que se detallará en otro apartado.
 
-## 10.2 Páginas
+## F.2 Páginas
 
-### 10.2.1. Páginas principales
+### F.2.1. Páginas principales
 
 #### WorkspacePage
 
@@ -631,7 +631,7 @@ public partial class SettingsPage : DisposablePage
 - El menú de modelo por defecto se actualiza dinámicamente según la disponibilidad de proveedores y modelos.
 - El reinicio de la aplicación es necesario para aplicar cambios de tema, y se gestiona de forma automática desde la interfaz.
 
-### 10.2.2. Páginas de gestión de modelos
+### F.2.2. Páginas de gestión de modelos
 
 #### AIModelsPageBase
 **Descripción general:**
@@ -756,7 +756,7 @@ Al igual que `OllamaModelsPage`, las páginas `HuggingFaceModelsPage`, `GitHubMo
 ![image](./Pictures/Pasted-image-20250523220648.png)
 ![image](./Pictures/Pasted-image-20250523220657.png)
 
-### 10.2.3. Páginas para añadir nuevos modelos
+### F.2.3. Páginas para añadir nuevos modelos
 #### AIAddModelPageBase
 **Descripción general:**
 Clase base abstracta para páginas que permiten agregar modelos de IA. Proporciona funcionalidad común para buscar y añadir modelos, gestionando la interacción con el ViewModel de modelos de IA y la configuración global de la aplicación. Incluye métodos para buscar y añadir modelos, que serán utilizados desde las implementaciones específicas.
@@ -883,7 +883,7 @@ Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitH
 ![image](./Pictures/Pasted-image-20250524001245.png)
 ![image](./Pictures/Pasted-image-20250524001303.png)
 
-### 10.2.4. Página de edición emergente
+### F.2.4. Página de edición emergente
 
 #### PopupEditorPage
 

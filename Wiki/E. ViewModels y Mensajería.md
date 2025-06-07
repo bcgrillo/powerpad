@@ -1,7 +1,7 @@
-## 9.1. ViewModels
+## E.1. ViewModels
 En el contexto de la **arquitectura MVVM**, los **ViewModels** constituyen una pieza central al actuar como puente entre la interfaz de usuario y la lógica de negocio. Su función principal es gestionar el estado, la lógica y los comandos necesarios para que la vista interactúe de forma desacoplada con los modelos de datos y los servicios subyacentes. En PowerPad, los ViewModels permiten mantener una interfaz reactiva y coherente, facilitando la actualización automática de la UI y simplificando la gestión de eventos y acciones del usuario. En este apartado se revisan los ViewModels implementados en la aplicación, describiendo su papel y cómo contribuyen a la estructura y funcionamiento general del software.
 
-### 9.1.1 Gestión de conversaciones
+### E.1.1 Gestión de conversaciones
 
 #### ChatViewModel
 **Descripción general:**
@@ -92,7 +92,7 @@ public class MessageViewModel : ObservableObject
 - Las propiedades `Loading` y `LoadingMessage` están decoradas con `[JsonIgnore]`, por lo que no se serializan ni deserializan en operaciones JSON.
  
 
-### 9.1.2 Gestión de modelos y parámetros
+### E.1.2 Gestión de modelos y parámetros
 
 #### AIModelViewModel
 **Descripción general:**
@@ -449,7 +449,7 @@ public class OpenAIModelsViewModel : AIModelsViewModelBase
 
 - Este ViewModel sirve como especialización para el proveedor OpenAI, permitiendo su identificación y gestión diferenciada respecto a otros proveedores de modelos IA.
 
-### 9.1.3 Gestión de agentes
+### E.1.3 Gestión de agentes
 
 ##### AgentViewModel
 **Descripción general:**
@@ -609,7 +609,7 @@ public class AgentsCollectionViewModel : ObservableObject
 
 - La colección `Agents` se inicializa y persiste automáticamente en el almacén de configuración (`IConfigStore`).
 
-### 9.1.4. Gestión del espacio de trabajo
+### E.1.4. Gestión del espacio de trabajo
 
 #### FolderEntryViewModel
 **Descripción general:**
@@ -871,7 +871,7 @@ public class DraftDocumentViewModel : ObservableObject
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-### 9.1.5. Gestión de la configuración
+### E.1.5. Gestión de la configuración
 
 #### AIServiceConfigViewModel
 **Descripción general:**
@@ -1109,7 +1109,7 @@ public class ModelsSettingsViewModel : ObservableObject
 
 - El ViewModel mantiene la sincronización con el servicio de chat (`IChatService`) al cambiar modelos o parámetros.
 
-## 9.4 Mensajes de comunicación
+## E.4 Mensajes de comunicación
 De forma complementaria a los ViewModels, la mensajería permiten la comunicación desacoplada entre componentes que no están relacionados directamente, permitiendo que ViewModels o controles del interfaz respondan de forma coordinada a cambios en el modelo. Ambos elementos permiten que el interfaz sea dinámico y reactivo, mejorando la experiencia del usuario.
 
 #### FolderEntryCreated

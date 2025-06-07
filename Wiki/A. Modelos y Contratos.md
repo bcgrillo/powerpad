@@ -1,8 +1,8 @@
 En este capítulo se describen en detalle algunos de los elementos fundamentales que articulan el núcleo de PowerPad, la definición de los modelos y contratos (interfaces) principales, así como las algunos enumerados. Estos elementos constituyen la base sobre la que se construyen los servicios y la lógica de negocio del núcleo.
 
-## 5.1. Definición de modelos
+## A.1. Definición de modelos
 
-### 5.1.1. Servicios de IA
+### A.1.1. Servicios de IA
 
 #### AIModel
 **Descripción general:**
@@ -139,7 +139,7 @@ public readonly record struct TestConnectionResult
 - `Status`: Estado de la conexión con el servicio.
 - `ErrorMessage`: Mensaje de error opcional si la prueba de conexión falla.
 
-### 5.1.2. Gestión del espacio de trabajo
+### A.1.2. Gestión del espacio de trabajo
 
 #### Document
 **Descripción general:**
@@ -242,7 +242,7 @@ public class Root(string path) : Folder(string.Empty)
 
 - `Path`: Obtiene la ruta de la carpeta raíz.
 
-### 5.1.3. Gestión de la configuración
+### A.1.3. Gestión de la configuración
 
 #### ConfigEntry
 **Descripción general:**  
@@ -275,9 +275,9 @@ internal record ConfigEntry
 - `ConfigEntry(object? value, bool dirty)`
 - `T? GetValue<T>(JsonSerializerContext context)`
 
-## 5.2. Contratos e interfaces principales
+## A.2. Contratos e interfaces principales
 
-### 5.2.1 Servicios de IA
+### A.2.1 Servicios de IA
 #### IAIService
 **Descripción general:**  
 La interfaz `IAIService` define el contrato que deben implementar los servicios de inteligencia artificial en PowerPad, permitiendo la integración de diferentes proveedores y modelos de IA. Incluye métodos para obtener modelos, obtener el cliente de chat y gestionar la configuración del servicio.
@@ -368,7 +368,7 @@ internal interface IChatOptions
 -   `TopP`: Controla el tamaño del muestreo de tokens.
 -   `MaxOutputTokens`: Máximo de tokens permitidos en la respuesta.
 
-### 5.2.2 Gestión del espacio de trabajo
+### A.2.2 Gestión del espacio de trabajo
 #### IWorkspaceService
 **Descripción general:**  
 Interfaz que proporciona métodos para gestionar y manipular el espacio de trabajo, incluyendo operaciones sobre carpetas y documentos como mover, crear, eliminar, renombrar y establecer su posición.
@@ -500,7 +500,7 @@ public interface IEditorContract
 - `void SetContent(string content)`: Establece el contenido del editor.
 - `int WordCount()`: Calcula el número de palabras en el contenido del editor.
 
-### 5.2.3 Gestión de la configuración
+### A.2.3 Gestión de la configuración
 #### IConfigStore
 **Descripción general:**
 Interfaz que define métodos para almacenar y recuperar valores de configuración mediante claves enumeradas.
@@ -539,7 +539,7 @@ public interface IConfigStoreService
 - `IConfigStore GetConfigStore(string configFolder)`: Recupera o crea un almacén de configuración para la carpeta especificada.
 - `Task StoreConfigs()`: Guarda todas las configuraciones en sus respectivos archivos de manera asíncrona.
 
-## 5.3. Enumeraciones
+## A.3. Enumeraciones
 
 #### ModelProvider
 **Descripción general:**  

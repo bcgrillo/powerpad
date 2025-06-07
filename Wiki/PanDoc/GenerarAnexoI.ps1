@@ -1,0 +1,43 @@
+$outputFile = "PanDoc/AnexoI.docx"
+$memoriaPath = "_ Anexo I.md"
+$tempPath = "_ Anexo I_temp.md"
+
+cd ..
+
+if (Test-Path $outputFile) {
+    try {
+        Remove-Item $outputFile -ErrorAction Stop
+    } catch {
+        Write-Error "No se puede borrar el archivo existente. Deteniendo el script."
+	cd PanDoc
+        exit
+    }
+}
+
+# Lee el contenido de Memoria.md en UTF-8
+$content = Get-Content -Path $memoriaPath -Raw -Encoding utf8
+
+# Funcion de reemplazo
+$pattern = '!\[\[(.+?)\]\]'
+$content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, {
+    param($match)
+    $fileName = "$($match.Groups[1].Value).md"
+    $filePath = $fileName
+    if (Test-Path $filePath) {
+        # Leemos el archivo y nos aseguramos de quitar saltos de línea finales extra
+        (Get-Content -Path $filePath -Raw -Encoding utf8).TrimEnd()
+    }
+    else {
+        $match.Value
+    }
+})
+
+# Escribe el resultado en el archivo temporal en UTF-8
+Set-Content -Path $tempPath -Value $content -Encoding utf8
+
+
+pandoc $tempPath --toc --filter mermaid-filter.cmd -o $outputFile --reference-doc=PanDoc/Templates/article.docx
+
+Remove-Item $tempPath
+
+cd PanDoc
