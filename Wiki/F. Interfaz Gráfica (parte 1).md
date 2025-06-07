@@ -4,10 +4,13 @@ La sección dedicada a la Interfaz Gráfica de PowerPad tiene como objetivo ofre
 
 #### MainWindow
 
-![image](./Pictures/Pasted-image-20250523212051.png)
-![image](./Pictures/Pasted-image-20250523220017.png)
-![image](./Pictures/Pasted-image-20250523211959.png)
-![image](./Pictures/Pasted-image-20250523215911.png)
+![Ventana principal: Tema claro y fondo transparente](./Pictures/Pasted-image-20250523212051.png)
+
+![Ventana principal: Tema claro y fondo opaco](./Pictures/Pasted-image-20250523220017.png)
+
+![Ventana principal: Tema oscuro y fondo transparente](./Pictures/Pasted-image-20250523211959.png)
+
+![Ventana principal: Tema oscuro y fondo opaco](./Pictures/Pasted-image-20250523215911.png)
 
 **Descripción general:**
 
@@ -135,10 +138,13 @@ public partial class MainWindow : WindowEx
 
 #### PopupWindow
 
-![image](./Pictures/Pasted-image-20250523212157.png)
-![image](./Pictures/Pasted-image-20250523220134.png)
-![image](./Pictures/Pasted-image-20250523212427.png)
-![image](./Pictures/Pasted-image-20250523220220.png)
+![Ventana emergente: Tema claro y fondo transparente](./Pictures/Pasted-image-20250523212157.png)
+
+![Ventana emergente: Tema claro y fondo opaco](./Pictures/Pasted-image-20250523220134.png)
+
+![Ventana emergente: Tema oscuro y fondo transparente](./Pictures/Pasted-image-20250523212427.png)
+
+![Ventana emergente: Tema oscuro y fondo opaco](./Pictures/Pasted-image-20250523220220.png)
 
 **Descripción general:**
 
@@ -198,7 +204,7 @@ public sealed partial class PopupWindow : WindowEx
 
 #### WorkspacePage
 
-![image](./Pictures/Pasted-image-20250523220427.png)
+![Página del área de trabajo](./Pictures/Pasted-image-20250523220427.png)
 
 **Descripción general:**
 
@@ -261,7 +267,7 @@ public partial class WorkspacePage : DisposablePage, IToggleMenuPage
 
 **Descripción general:**
 
-![image](./Pictures/Pasted-image-20250523220443.png)
+![Página de gestión de modelos](./Pictures/Pasted-image-20250523220443.png)
 
 La clase `ModelsPage` representa una página dentro de la aplicación PowerPad dedicada a la gestión y navegación entre diferentes proveedores de modelos de IA y sus respectivas opciones (ver modelos disponibles o añadir nuevos modelos). Utiliza un control `NavigationView` para mostrar los distintos proveedores y opciones, y un `Frame` para cargar dinámicamente las páginas correspondientes según la selección del usuario. Gestiona la visibilidad y navegación del panel lateral, así como la interacción con las páginas hijas especializadas en cada proveedor de modelos.
 
@@ -362,7 +368,7 @@ public partial class ModelsPage : DisposablePage, IToggleMenuPage
 
 #### AgentsPage
 
-![image](./Pictures/Pasted-image-20250523220458.png)
+![Página de gestión de agentes](./Pictures/Pasted-image-20250523220458.png)
 
 **Descripción general:**
 
@@ -484,7 +490,7 @@ public partial class AgentsPage : DisposablePage, IToggleMenuPage
 
 #### SettingsPage
 
-![image](./Pictures/Pasted-image-20250523220511.png)
+![Página de configuración](./Pictures/Pasted-image-20250523220511.png)
 
 **Descripción general:**
 
@@ -698,7 +704,7 @@ public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
 
 #### OllamaModelsPage
 
-![image](./Pictures/Pasted-image-20250523220623.png)
+![Página de gestión de modelos de Ollama](./Pictures/Pasted-image-20250523220623.png)
 
 **Descripción general:**
 
@@ -778,9 +784,11 @@ public partial class OllamaModelsPage : AIModelsPageBase
 
 Al igual que `OllamaModelsPage`, las páginas `HuggingFaceModelsPage`, `GitHubModelsPage` y `OpenAIModelsPage` heredan de `AIModelsPageBase` y realizan una implementación muy similar a la descrita en el punto anterior, pero enfocada a su respectivo proveedor.
 
-![image](./Pictures/Pasted-image-20250523220639.png)
-![image](./Pictures/Pasted-image-20250523220648.png)
-![image](./Pictures/Pasted-image-20250523220657.png)
+![Página de gestión de modelos de Hugging Face](./Pictures/Pasted-image-20250523220639.png)
+
+![Página de gestión de modelos de GitHub Models](./Pictures/Pasted-image-20250523220648.png)
+
+![Página de gestión de modelos de OpenAI](./Pictures/Pasted-image-20250523220657.png)
 
 ### F.2.3. Páginas para añadir nuevos modelos
 
@@ -829,7 +837,7 @@ public abstract class AIAddModelPageBase() : DisposablePage, IModelProviderPage
 
 #### OllamaAddModelPage
 
-![image](./Pictures/Pasted-image-20250523222615.png)
+![Página de búsqueda de modelos en la biblioteca de Ollama](./Pictures/Pasted-image-20250523222615.png)
 
 **Descripción general:**
 
@@ -913,15 +921,17 @@ public partial class OllamaAddModelPage : AIAddModelPageBase
 
 Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitHubAddModelPage` y `OpenAIAddModelPage` heredan de `AIAddModelPageBase` y realizan una implementación muy similar a la descrita en el punto anterior, pero enfocada a su respectivo proveedor.
 
-![image](./Pictures/Pasted-image-20250524001228.png)
-![image](./Pictures/Pasted-image-20250524001245.png)
-![image](./Pictures/Pasted-image-20250524001303.png)
+![Página de búsqueda de modelos en GitHub Models](./Pictures/Pasted-image-20250524001228.png)
+
+![Página de búsqueda de modelos en Hugging Face](./Pictures/Pasted-image-20250524001245.png)
+
+![Página de búsqueda de modelos en OpenAI](./Pictures/Pasted-image-20250524001303.png)
 
 ### F.2.4. Página de edición emergente
 
 #### PopupEditorPage
 
-![image](./Pictures/Pasted-image-20250523212157.png)
+![Página de edición integrada en la ventana emergente](./Pictures/Pasted-image-20250523212157.png)
 
 **Descripción general:**
 

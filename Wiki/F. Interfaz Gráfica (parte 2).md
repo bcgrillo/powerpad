@@ -6,7 +6,7 @@ Para la implementación de las distintas funcionalidades de PowerPad se han desa
 
 #### WorkspaceControl
 
-![image](./Pictures/Pasted-image-20250524003019.png)
+![Control de gestión del espacio de trabajo](./Pictures/Pasted-image-20250524003019.png)
 
 **Descripción general:**
 
@@ -155,7 +155,7 @@ public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreat
 
 #### EditorManager
 
-![image](./Pictures/Pasted-image-20250524003800.png)
+![Control de gestión de los editores](./Pictures/Pasted-image-20250524003800.png)
 
 **Descripción general:**
 
@@ -305,10 +305,13 @@ public abstract class EditorControl : UserControl, IEditorContract, IDisposable
 
 #### ChatEditorControl
 
-![image](./Pictures/Pasted-image-20250524004009.png)
-![image](./Pictures/Pasted-image-20250524004504.png)
-![image](./Pictures/Pasted-image-20250524155656.png)
-![image](./Pictures/Pasted-image-20250524155936.png)
+![Control de conversaciones: Inicio](./Pictures/Pasted-image-20250524004009.png)
+
+![Control de conversaciones: Conversación en curso](./Pictures/Pasted-image-20250524004504.png)
+
+![Pensamiento oculto (solo algunos modelos)](./Pictures/Pasted-image-20250524155656.png)
+
+![Mostrando pensamiento (solo algunos modelos)](./Pictures/Pasted-image-20250524155936.png)
 
 **Descripción general:**
 
@@ -452,7 +455,7 @@ public partial class ChatEditorControl : EditorControl
 
 #### TextEditorControl
 
-![image](./Pictures/Pasted-image-20250524004752.png)
+![Control de edición de textos](./Pictures/Pasted-image-20250524004752.png)
 
 **Descripción general:**
 
@@ -559,7 +562,7 @@ public partial class TextEditorControl : EditorControl
 
 #### AgentEditorControl
 
-![image](./Pictures/Pasted-image-20250524004913.png)
+![Control de edición de agentes](./Pictures/Pasted-image-20250524004913.png)
 
 **Descripción general:**
 
@@ -707,8 +710,9 @@ public partial class AgentEditorControl : UserControl, IDisposable
 
 #### AvailableModelsRepeater
 
-![image](./Pictures/Pasted-image-20250524005928.png)
-![image](./Pictures/Pasted-image-20250524010300.png)
+![Repetidor de modelos disponibles](./Pictures/Pasted-image-20250524005928.png)
+
+![Aviso cuando no hay modelos disponibles](./Pictures/Pasted-image-20250524010300.png)
 
 **Descripción general:**
 
@@ -840,9 +844,9 @@ public partial class AvailableModelsRepeater : UserControl
 
 #### SearchModelsResultRepeater
 
-![image](./Pictures/Pasted-image-20250524010021.png)
+![Repetidor de modelos encontrados en búsqueda](./Pictures/Pasted-image-20250524010021.png)
 
-![image](./Pictures/Pasted-image-20250524010331.png)
+![Aviso cuando no se han encontrado modelos](./Pictures/Pasted-image-20250524010331.png)
 
 **Descripción general:**
 
@@ -965,10 +969,13 @@ public partial class SearchModelsResultRepeater : UserControl
 
 #### ModelInfoViewer
 
-![image](./Pictures/Pasted-image-20250524010712.png)
-![image](./Pictures/Pasted-image-20250524010608.png)
-![image](./Pictures/Pasted-image-20250524010632.png)
-![image](./Pictures/Pasted-image-20250524010435.png)
+![Visor de información mostrando modelo de la biblioteca de Ollama.com](./Pictures/Pasted-image-20250524010712.png)
+
+![Visor de información mostrando modelo de Hugging Face](./Pictures/Pasted-image-20250524010608.png)
+
+![Visor de información mostrando modelo del marketplace de GitHub Models](./Pictures/Pasted-image-20250524010632.png)
+
+![Visor de información mostrando modelo de OpenAI](./Pictures/Pasted-image-20250524010435.png)
 
 **Descripción general:**
 
@@ -1056,9 +1063,11 @@ public partial class ModelInfoViewer : UserControl
 
 #### ChatControl
 
-![image](./Pictures/Pasted-image-20250524104412.png)
-![image](./Pictures/Pasted-image-20250524104430.png)
-![image](./Pictures/Pasted-image-20250524104651.png)
+![Control de interacción conversacional](./Pictures/Pasted-image-20250524104412.png)
+
+![Agente activado](./Pictures/Pasted-image-20250524104430.png)
+
+![Ajustes establecidos](./Pictures/Pasted-image-20250524104651.png)
 
 **Descripción general:**
 
@@ -1255,8 +1264,9 @@ public partial class ChatControl : UserControl, IDisposable
 
 #### ChatControlParameters
 
-![image](./Pictures/Pasted-image-20250524104745.png)
-![image](./Pictures/Pasted-image-20250524104922.png)
+![Control de parámetros: Activo](./Pictures/Pasted-image-20250524104745.png)
+
+![Control de parámetros: Inactivo](./Pictures/Pasted-image-20250524104922.png)
 
 **Descripción general:**
 
@@ -1322,9 +1332,11 @@ public partial class ChatControlParameters : UserControl
 
 #### NoteAgentControl
 
-![image](./Pictures/Pasted-image-20250524113039.png)
-![image](./Pictures/Pasted-image-20250524113059.png)
-![image](./Pictures/Pasted-image-20250524113122.png)
+![Control de interacción con notas](./Pictures/Pasted-image-20250524113039.png)
+
+![Agente de edición sin parámetro](./Pictures/Pasted-image-20250524113059.png)
+
+![Agente de edición con parámetro](./Pictures/Pasted-image-20250524113122.png)
 
 **Descripción general:**
 
@@ -1444,7 +1456,7 @@ public partial class NoteAgentControl : UserControl, IDisposable
 
 #### IntegratedTextBox
 
-![image](./Pictures/Pasted-image-20250524114549.png)
+![Límites ocultos del control TextBox integrado](./Pictures/Pasted-image-20250524114549.png)
 
 **Descripción general:**
 
@@ -1480,13 +1492,17 @@ public class IntegratedTextBox : TextBox
 
 #### EditableTextBlock
 
-![image](./Pictures/Pasted-image-20250524123059.png)
-![image](./Pictures/Pasted-image-20250524123117.png)
-![image](./Pictures/Pasted-image-20250524123132.png)
+![Ejemplo 1 control de texto editable](./Pictures/Pasted-image-20250524123059.png)
 
-![image](./Pictures/Pasted-image-20250524161220.png)
-![image](./Pictures/Pasted-image-20250524161140.png)
-![image](./Pictures/Pasted-image-20250524161106.png)
+![Ejemplo 1 control de texto editable: Cursor sobre el control](./Pictures/Pasted-image-20250524123117.png)
+
+![Ejemplo 1 control de texto editable: Edición habilitada](./Pictures/Pasted-image-20250524123132.png)
+
+![Ejemplo 2 control de texto editable](./Pictures/Pasted-image-20250524161220.png)
+
+![Ejemplo 2 control de texto editable: Cursor sobre el control](./Pictures/Pasted-image-20250524161140.png)
+
+![Ejemplo 2 control de texto editable: Edición habilitada](./Pictures/Pasted-image-20250524161106.png)
 
 **Descripción general:**
 
@@ -1617,8 +1633,9 @@ public partial class EditableTextBlock : UserControl
 
 #### Label
 
-![image](./Pictures/Pasted-image-20250524124009.png)
-![image](./Pictures/Pasted-image-20250524124031.png)
+![Control de etiqueta: Habilitado](./Pictures/Pasted-image-20250524124009.png)
+
+![Control de etiqueta: Deshabilitado](./Pictures/Pasted-image-20250524124031.png)
 
 **Descripción general:**
 
@@ -1681,8 +1698,9 @@ public partial class Label : UserControl
 
 #### ModelSelector
 
-![image](./Pictures/Pasted-image-20250524124239.png)
-![image](./Pictures/Pasted-image-20250524160805.png)
+![Selector de modelos en conversación](./Pictures/Pasted-image-20250524124239.png)
+
+![Selector de modelos en edición de agentes](./Pictures/Pasted-image-20250524160805.png)
 
 **Descripción general:**
 
@@ -1794,8 +1812,9 @@ public sealed partial class ModelSelector : UserControl, IDisposable
 
 #### AgentSelector
 
-![image](./Pictures/Pasted-image-20250524124412.png)
-![image](./Pictures/Pasted-image-20250524160304.png)
+![Selector de agentes en conversación](./Pictures/Pasted-image-20250524124412.png)
+
+![Selector de agentes en edición de notas](./Pictures/Pasted-image-20250524160304.png)
 
 **Descripción general:**
 
@@ -1898,10 +1917,10 @@ public sealed partial class AgentSelector : UserControl, IDisposable
 
 #### ButtonIcon
 
-![image](./Pictures/Pasted-image-20250524130207.png)
-![image](./Pictures/Pasted-image-20250524130214.png)
-![image](./Pictures/Pasted-image-20250524153223.png)
-![image](./Pictures/Pasted-image-20250524153233.png)
+![](./Pictures/Pasted-image-20250524130207.png) ![](./Pictures/Pasted-image-20250524130214.png) 
+![](./Pictures/Pasted-image-20250524153223.png) ![](./Pictures/Pasted-image-20250524153233.png)
+
+_Representación visual de un icono de botón SVG habilitado y deshabilitado_
 
 **Descripción general:**
 
@@ -1957,9 +1976,11 @@ public partial class ButtonIcon : UserControl
 
 #### AgentIconControl
 
-![image](./Pictures/Pasted-image-20250524132713.png)
-![image](./Pictures/Pasted-image-20250524133333.png)
-![image](./Pictures/Pasted-image-20250524152214.png)
+![Iconos de agente en selector](./Pictures/Pasted-image-20250524132713.png)
+
+![Icono de agente en editor de agente: Modo glifo](./Pictures/Pasted-image-20250524133333.png)
+
+![Icono de agente en editor de agente: Modo imagen](./Pictures/Pasted-image-20250524152214.png)
 
 **Descripción general:**
 

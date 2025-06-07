@@ -81,9 +81,11 @@ Los helpers son un conjunto de clases estáticas que agrupan funcionalidades con
 
 #### DialogHelper
 
-![image](./Pictures/Pasted-image-20250524140207.png)
-![image](./Pictures/Pasted-image-20250524145004.png)
-![image](./Pictures/Pasted-image-20250524161529.png)
+![Diálogo: Modo confirmación](./Pictures/Pasted-image-20250524140207.png)
+
+![Diálogo: Modo alerta](./Pictures/Pasted-image-20250524145004.png)
+
+![Diálogo: Modo entrada de texto](./Pictures/Pasted-image-20250524161529.png)
 
 **Descripción general:**
 
@@ -163,11 +165,15 @@ public partial class DialogHelper : ContentDialog
 
 #### OllamaDownloadHelper
 
-![image](./Pictures/Pasted-image-20250524150303.png)
-![image](./Pictures/Pasted-image-20250524150402.png)
-![image](./Pictures/Pasted-image-20250524151653.png)
-![image](./Pictures/Pasted-image-20250524151506.png)
-![image](./Pictures/Pasted-image-20250524151603.png)
+![Diálogo de descarga e instalación de Ollama: Paso 1](./Pictures/Pasted-image-20250524150303.png)
+
+![Diálogo de descarga e instalación de Ollama: Paso 2](./Pictures/Pasted-image-20250524150402.png)
+
+![Diálogo de descarga e instalación de Ollama: Paso 3](./Pictures/Pasted-image-20250524151653.png)
+
+![Diálogo de descarga e instalación de Ollama: Paso 4](./Pictures/Pasted-image-20250524151506.png)
+
+![Diálogo de descarga e instalación de Ollama: Paso 5](./Pictures/Pasted-image-20250524151603.png)
 
 **Descripción general:**
 
