@@ -8,10 +8,12 @@ Para la implementación de las distintas funcionalidades de PowerPad se han desa
 
 ![image](./Pictures/Pasted-image-20250524003019.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `WorkspaceControl` es un control de usuario que proporciona la interfaz visual y lógica para gestionar y navegar por el espacio de trabajo de la aplicación. Permite visualizar, crear, renombrar y eliminar carpetas, chats y notas, así como cambiar entre diferentes espacios de trabajo. Utiliza una vista de tipo árbol (TreeView) para mostrar la estructura de carpetas y documentos, y expone eventos para notificar cuando un elemento es invocado. Utiliza el `WorkspaceViewModel` para la gestión de datos y comandos.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.WorkspaceControl">
     <Grid>
@@ -51,7 +53,8 @@ Para la implementación de las distintas funcionalidades de PowerPad se han desa
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreated>, IRecipient<FolderEntryChanged>
 {
@@ -59,14 +62,14 @@ public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreat
     private static readonly object _lock = new();
     private readonly WorkspaceViewModel _workspace;
     private readonly List<MenuFlyoutItem> _menuFlyoutItems;
-    
+
     public event EventHandler<WorkspaceControlItemInvokedEventArgs>? ItemInvoked;
 
     public WorkspaceControl() { ... }
     public static void SetActiveInstance(WorkspaceControl instance) { ... }
     public void Receive(FolderEntryCreated message) { ... }
     public void Receive(FolderEntryChanged message) { ... }
-    
+
     private void UpdateWorkspacesMenu() { ... }
     private void TreeView_ItemInvoked( ... ) { ... }
     private void TreeView_DragItemsCompleted( ... ) { ... }
@@ -154,10 +157,12 @@ public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreat
 
 ![image](./Pictures/Pasted-image-20250524003800.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `EditorManager` es un control de usuario que actúa como gestor principal de los editores en la aplicación PowerPad. Su función es administrar la visualización y gestión de editores para documentos tipo chat y notas, permitiendo abrir, cerrar y alternar entre diferentes documentos. Además, gestiona la instancia activa del editor, responde a eventos de eliminación de documentos y realiza auto-guardado periódico de los editores abiertos. Se integra con el sistema de mensajería para reaccionar ante cambios en los modelos subyacentes.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.EditorManager">
     <Grid>
@@ -186,12 +191,13 @@ public partial class WorkspaceControl : UserControl, IRecipient<FolderEntryCreat
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
 {
     private const long AUTO_SAVE_INTERVAL = 3000;
-    
+
     private static EditorManager? _activeInstance = null;
     private static readonly object _lock = new();
     private readonly WorkspaceViewModel _workspace;
@@ -202,7 +208,7 @@ public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
     public static void SetActiveInstance(EditorManager instance) { ... }
     public void OpenFile(FolderEntryViewModel? document) { ... }
     public void Receive(FolderEntryDeleted message) { ... }
-    
+
     private void NewChatButton_Click( ... ) { ... }
     private void NewNoteButton_Click( ... ) { ... }
     private void UserControl_Unloaded( ... ) { ... }
@@ -255,10 +261,13 @@ public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
 ### F.3.2 Editores
 
 #### EditorControl
+
 **Descripción general:**
+
 Clase base abstracta para controles de editor en una aplicación WinUI3. Proporciona la funcionalidad central y define el contrato para la gestión de contenido, el estado del editor y la liberación de recursos. Es utilizada como base para implementar editores concretos que gestionan texto o notas, integrando capacidades de guardado, seguimiento de cambios y control de foco.
 
 **Código simplificado:**
+
 ```csharp
 public abstract class EditorControl : UserControl, IEditorContract, IDisposable
 {
@@ -300,10 +309,13 @@ public abstract class EditorControl : UserControl, IEditorContract, IDisposable
 ![image](./Pictures/Pasted-image-20250524004504.png)
 ![image](./Pictures/Pasted-image-20250524155656.png)
 ![image](./Pictures/Pasted-image-20250524155936.png)
-**Descripción general:**  
+
+**Descripción general:**
+
 `ChatEditorControl` es un control personalizado de WinUI3 que implementa la edición y visualización de documentos de chat en la aplicación PowerPad. Permite gestionar conversaciones con modelos de IA, mostrando mensajes de usuario y asistente, y proporciona funcionalidades como edición del nombre del documento, eliminación de mensajes, copiado de contenido, y control de parámetros del modelo IA. Se integra con los ViewModels de documento y chat para mantener la lógica desacoplada de la interfaz.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <local:EditorControl
     x:Class="PowerPad.WinUI.Components.Editors.ChatEditorControl">
@@ -352,23 +364,24 @@ public abstract class EditorControl : UserControl, IEditorContract, IDisposable
 </local:EditorControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class ChatEditorControl : EditorControl
 {
     private DocumentViewModel _document;
     private ChatViewModel? _chat;
-    
+
     public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
     public override DateTime LastSaveTime { get => _document.LastSaveTime; }
-    
+
     public ChatEditorControl(Document document) { ... }
     public override string GetContent(bool plainText = false) { ... }
     public override void SetContent(string content) { ... }
     public override void SetFocus() { ... }
     public override void AutoSave() { ... }
     public override int WordCount() { ... }
-    
+
     private void EditableTextBlock_Edited( ... ) { ... }
     private void InvertedListView_Loaded( ... ) { ... }
     private T? FindElement<T>(DependencyObject element) where T : DependencyObject { ... }
@@ -441,10 +454,12 @@ public partial class ChatEditorControl : EditorControl
 
 ![image](./Pictures/Pasted-image-20250524004752.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `TextEditorControl` es un control personalizado para la edición de texto en la aplicación PowerPad. Permite editar, copiar, deshacer, rehacer y guardar notas, así como interactuar con un agente de IA para modificar o enriquecer el contenido textual. Incorpora funcionalidades de gestión de documentos, integración con el portapapeles y soporte para comandos y estados del documento.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <local:EditorControl x:Class="PowerPad.WinUI.Components.Editors.TextEditorControl">
     <Grid>
@@ -472,22 +487,23 @@ public partial class ChatEditorControl : EditorControl
 </local:EditorControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class TextEditorControl : EditorControl
 {
     private DocumentViewModel _document;
-    
+
     public override bool IsDirty { get => _document.Status == DocumentStatus.Dirty; }
     public override DateTime LastSaveTime { get => _document.LastSaveTime; }
-    
+
     public TextEditorControl(Document document) { ... }
     public override string GetContent(bool plainText = false) { ... }
     public override void SetContent(string content) { ... }
     public override void SetFocus() { ... }
 	public override void AutoSave() { ... }
     public override int WordCount() { ... }
-    
+
 	private void EditableTextBlock_Edited( ... ) { ... }
     private async void CopyBtn_Click( ... ) { ... }
     private async void AgentControl_SendButtonClicked( ... ) { ... }
@@ -545,10 +561,12 @@ public partial class TextEditorControl : EditorControl
 
 ![image](./Pictures/Pasted-image-20250524004913.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `AgentEditorControl` es un control de usuario utilizado para editar las propiedades y configuraciones de un agente de IA dentro de la aplicación PowerPad. Permite modificar el nombre, icono, modelo de IA, parámetros personalizados y visibilidad del agente en notas y chats, proporcionando una interfaz visual avanzada y validaciones para la edición segura de agentes.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 Debido a la complejidad del componente, se incluye solamente un extracto de ejemplo con algunos controles de usuario.
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Editors.AgentEditorControl">
@@ -596,7 +614,8 @@ Debido a la complejidad del componente, se incluye solamente un extracto de ejem
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class AgentEditorControl : UserControl, IDisposable
 {
@@ -608,7 +627,7 @@ public partial class AgentEditorControl : UserControl, IDisposable
 
     public AgentEditorControl(AgentViewModel agent, XamlRoot xamlRoot) { ... }
     public async Task<bool> ConfirmClose() { ... }
-    
+
     private async void SelectImageButton_Click( ... ) { ... }
     private void RandomIconButton_Click( ... ) { ... }
     private void Agent_PropertyChanged( ... ) { ... }
@@ -691,10 +710,12 @@ public partial class AgentEditorControl : UserControl, IDisposable
 ![image](./Pictures/Pasted-image-20250524005928.png)
 ![image](./Pictures/Pasted-image-20250524010300.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `AvailableModelsRepeater` es un control de usuario diseñado para mostrar y gestionar una lista de modelos de IA disponibles en la aplicación. Permite visualizar los modelos, acceder a información detallada, activar/desactivar modelos, eliminarlos, establecer uno como predeterminado y añadir nuevos modelos.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.AvailableModelsRepeater">
     <Grid>
@@ -743,26 +764,27 @@ public partial class AgentEditorControl : UserControl, IDisposable
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class AvailableModelsRepeater : UserControl
 {
     public ObservableCollection<AIModelViewModel> Models { get; set; }
     public static readonly DependencyProperty ModelsProperty =
         DependencyProperty.Register(...);
-        
+
     public bool ModelsEmpty { get; set; }
     public static readonly DependencyProperty ModelsEmptyProperty =
         DependencyProperty.Register(...);
-        
+
     public event EventHandler<AIModelClickEventArgs>? DeleteClick;
     public event EventHandler<AIModelClickEventArgs>? SetDefaultClick;
     public event EventHandler? AddButtonClick;
     public event EventHandler<ModelInfoViewerVisibilityEventArgs>? ModelInfoViewerVisibilityChanged;
-    
+
     public AvailableModelsRepeater() { this.InitializeComponent(); }
     public void CloseModelInfoViewer() => ModelInfoViewer.Hide();
-    
+
     private void OnDeleteClick( ... ) { ... }
     private void OnSetDefaultClick( ... ) { ... }
     private void HyperlinkButton_Click( ... ) { ... }
@@ -822,10 +844,12 @@ public partial class AvailableModelsRepeater : UserControl
 
 ![image](./Pictures/Pasted-image-20250524010331.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `SearchModelsResultRepeater` es un control de usuario diseñado para mostrar una lista de modelos de IA resultados de una búsqueda y permitir la interacción con cada resultado (como añadirlo o consultar información adicional). Presenta diferentes estados visuales según si se está buscando, si la búsqueda no arroja resultados o si hay modelos disponibles.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.SearchModelsResultRepeater">
     <Grid>
@@ -867,7 +891,8 @@ public partial class AvailableModelsRepeater : UserControl
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class SearchModelsResultRepeater : UserControl
 {
@@ -888,7 +913,7 @@ public partial class SearchModelsResultRepeater : UserControl
 
     public SearchModelsResultRepeater() { ... }
     public void CloseModelInfoViewer() { ... }
-    
+
     private void OnAddModelClick( ... ) { ... }
     private void HyperlinkButton_Click( ... ) { ... }
     private void ModelInfoViewer_VisibilityChanged( ... ) { ... }
@@ -945,10 +970,12 @@ public partial class SearchModelsResultRepeater : UserControl
 ![image](./Pictures/Pasted-image-20250524010632.png)
 ![image](./Pictures/Pasted-image-20250524010435.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `ModelInfoViewer` es un control de usuario diseñado para mostrar información detallada sobre un modelo de IA dentro de la aplicación. Presenta una interfaz visual que incluye un título, controles de navegación y un visor web (`WebView2`) para mostrar contenido externo relacionado con el modelo. Permite abrir la información en el navegador predeterminado y gestiona la visibilidad del control, mostrando un indicador de carga mientras se inicializa el contenido web. Es utilizado para proporcionar al usuario detalles adicionales sobre los modelos de IA manejados en PowerPad.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.ModelInfoViewer">
     <Grid>
@@ -970,14 +997,15 @@ public partial class SearchModelsResultRepeater : UserControl
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class ModelInfoViewer : UserControl
 {
     public event EventHandler<ModelInfoViewerVisibilityEventArgs>? VisibilityChanged;
-    
+
     public ModelInfoViewer() { ... }
-    
+
     private void WebView_CoreWebView2Initialized(WebView2 _, CoreWebView2InitializedEventArgs __) { ... }
     public void Show(string title, string url) { ... }
     public void Hide() { ... }
@@ -1033,9 +1061,11 @@ public partial class ModelInfoViewer : UserControl
 ![image](./Pictures/Pasted-image-20250524104651.png)
 
 **Descripción general:**
+
 `ChatControl` es un control de usuario diseñado para gestionar interacciones de chat con modelos de inteligencia artificial en PowerPad. Permite seleccionar modelos y agentes de IA, configurar parámetros personalizados, enviar mensajes y visualizar respuestas en tiempo real. El control implementa lógica para alternar entre agentes y modelos, gestionar la visibilidad de paneles de parámetros, controlar el flujo de mensajes y manejar eventos relacionados con la interacción del usuario y la configuración del chat.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.ChatControl">
 	<StackPanel>
@@ -1087,13 +1117,14 @@ public partial class ModelInfoViewer : UserControl
 ```
 
 **Código simplificado:**
+
 ```csharp
 public partial class ChatControl : UserControl, IDisposable
 {
     private const double LOADING_ANIMATION_INTERVAL = 200;
     private static readonly string[] THINK_START_TAG = ["<think>", "<thought>"];
     private static readonly string[] THINK_END_TAG = ["</think>", "</thought>"];
-    
+
     private readonly IChatService _chatService;
     private readonly SettingsViewModel _settings;
     private readonly DispatcherTimer _loadingAnimationTimer;
@@ -1108,16 +1139,16 @@ public partial class ChatControl : UserControl, IDisposable
     private bool _sendParameters;
     private AgentViewModel? _selectedAgent;
     private bool _useAgents;
-    
+
     public event EventHandler<RoutedEventArgs>? SendButtonClicked;
     public event EventHandler<ChatOptionsChangedEventArgs>? ChatOptionsChanged;
     public event EventHandler<bool>? ParametersVisibilityChanged;
-    
+
     public ChatControl() { ... }
     public void InitializeParameters(AIModelViewModel? model, AIParametersViewModel? parameters, Guid? agentId) { ... }
     public void SetFocus() { ... }
     public void StartStreamingChat(ICollection<MessageViewModel> messageList, Action? endAction) { ... }
-    
+
     private void OnEnabledChanged( ... ) { ... }
     private void SelectedModel_Changed( ... ) { ... }
     private void SelectedAgent_Changed( ... ) { ... }
@@ -1227,10 +1258,12 @@ public partial class ChatControl : UserControl, IDisposable
 ![image](./Pictures/Pasted-image-20250524104745.png)
 ![image](./Pictures/Pasted-image-20250524104922.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 Este control de usuario (`ChatControlParameters`) permite configurar los parámetros principales de interacción con modelos de IA en la interfaz de chat. Proporciona controles visuales para ajustar instrucciones del sistema, temperatura, Top P, número máximo de tokens generados y tamaño máximo de la conversación, facilitando la personalización del comportamiento del modelo IA por parte del usuario. Está diseñado para integrarse en aplicaciones WinUI3 siguiendo el patrón MVVM.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.ChatControlParameters">
     <StackPanel>
@@ -1257,14 +1290,15 @@ Este control de usuario (`ChatControlParameters`) permite configurar los paráme
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class ChatControlParameters : UserControl
 {
     public AIParametersViewModel Parameters{ get; set; }
     public static readonly DependencyProperty ParametersProperty =
         DependencyProperty.Register(...);
-        
+
     public ChatControlParameters() { ... }
 }
 ```
@@ -1292,10 +1326,12 @@ public partial class ChatControlParameters : UserControl
 ![image](./Pictures/Pasted-image-20250524113059.png)
 ![image](./Pictures/Pasted-image-20250524113122.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `NoteAgentControl` es un control de usuario (UserControl) diseñado para gestionar la interacción con agentes de inteligencia artificial en el contexto de edición de notas. Permite seleccionar un agente, enviarle instrucciones o parámetros, visualizar el progreso de la operación y mostrar mensajes informativos o de error. El control adapta su interfaz según la disponibilidad de modelos IA y el estado de la operación, integrándose con el patrón MVVM y servicios de la aplicación.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.NoteAgentControl">
 	<StackPanel>
@@ -1329,7 +1365,8 @@ public partial class ChatControlParameters : UserControl
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class NoteAgentControl : UserControl, IDisposable
 {
@@ -1337,13 +1374,13 @@ public partial class NoteAgentControl : UserControl, IDisposable
     private readonly SettingsViewModel _settings;
     private CancellationTokenSource? _cts;
     private AgentViewModel? _selectedAgent;
-    
+
     public event EventHandler<RoutedEventArgs>? SendButtonClicked;
 
     public NoteAgentControl() { ... }
     public void SetFocus() { ... }
     public async Task StartAgentAction(string input, StringBuilder output, Action<Exception> exceptionAction) { ... }
-    
+
     private void UpdateVisibility() { ... }
     private void SelectedAgent_Changed( ... ) { ... }
     private void UpdateParameterInputBox() { ... }
@@ -1409,20 +1446,23 @@ public partial class NoteAgentControl : UserControl, IDisposable
 
 ![image](./Pictures/Pasted-image-20250524114549.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `IntegratedTextBox` es un control personalizado que extiende el control `TextBox` de WinUI3. Su objetivo principal es proporcionar una caja de texto sin bordes ni fondo, de modo que queda integrada en su elemento contenedor. Permite forzar el color del texto mediante una propiedad de dependencia y actualiza automáticamente el color del texto según el estado del control (habilitado, solo lectura, deshabilitado). Además, ajusta estilos visuales para eliminar bordes y fondos, y desactiva la corrección ortográfica.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 No aplica.
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public class IntegratedTextBox : TextBox
 {
     public Brush? ForcedForeground { get; set; }
     public static readonly DependencyProperty ForcedForegroundProperty =
         DependencyProperty.Register(...);
-    
+
     public IntegratedTextBox() { ... }
     private void UpdateForeground( ... ) { ... }
 }
@@ -1448,10 +1488,12 @@ public class IntegratedTextBox : TextBox
 ![image](./Pictures/Pasted-image-20250524161140.png)
 ![image](./Pictures/Pasted-image-20250524161106.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `EditableTextBlock` es un control personalizado de WinUI3 que permite mostrar y editar texto de manera interactiva, con soporte para modo de contraseña (enmascarado), texto de marcador de posición (placeholder), y confirmación de cambios al perder el foco. Incluye botones para editar, confirmar y cancelar, y gestiona visualmente el estado de edición y la apariencia del borde.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.EditableTextBlock">
     <Grid>
@@ -1472,7 +1514,8 @@ public class IntegratedTextBox : TextBox
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class EditableTextBlock : UserControl
 {
@@ -1504,7 +1547,7 @@ public partial class EditableTextBlock : UserControl
 
     public EditableTextBlock() { ... }
     public void EnterEditMode() { ... }
-    
+
     private void IntegratedTextBox_KeyDown( ... ) { ... }
     private void IntegratedTextBox_LostFocus( ... ) { ... }
     private void Confirm() { ... }
@@ -1577,28 +1620,31 @@ public partial class EditableTextBlock : UserControl
 ![image](./Pictures/Pasted-image-20250524124009.png)
 ![image](./Pictures/Pasted-image-20250524124031.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 Este control personalizado `Label` es un componente visual reutilizable para aplicaciones WinUI3, que muestra texto y ajusta dinámicamente el color del texto (Foreground) dependiendo de si el control está habilitado o deshabilitado. Está diseñado para integrarse en interfaces y proporciona una experiencia visual coherente con el estado de habilitación del control.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.Label">
     <TextBlock x:Name="TextBlock" Text="{x:Bind Text, Mode=OneWay}"/>
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class Label : UserControl
 {
     private Brush? _previousForegroundBrush;
-    
+
     public string? Text { get; set;}
     public static readonly DependencyProperty TextProperty =
         DependencyProperty.Register(...);
-        
+
     public Label() { this.InitializeComponent(); }
-    
+
     private void Label_IsEnabledChanged( ... ) => UpdateForeground();
     private void Label_Loaded( ... ) => UpdateForeground();
     private void UpdateForeground() { ... }
@@ -1638,10 +1684,12 @@ public partial class Label : UserControl
 ![image](./Pictures/Pasted-image-20250524124239.png)
 ![image](./Pictures/Pasted-image-20250524160805.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 El control `ModelSelector` es un control reutilizable que permite seleccionar un modelo de IA desde un menú desplegable (flyout). Está diseñado para integrarse en PowerPad y facilitar la gestión visual y lógica de la selección de modelos, mostrando el modelo actual y permitiendo cambiarlo dinámicamente. El control se conecta a los ViewModels de configuración y modelos, actualizando su interfaz en respuesta a cambios en la disponibilidad de proveedores o modelos, y permite mostrar el modelo por defecto como opción principal.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.ModelSelector">
     <Grid>
@@ -1660,27 +1708,28 @@ El control `ModelSelector` es un control reutilizable que permite seleccionar un
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public sealed partial class ModelSelector : UserControl, IDisposable
 {
     private const double DEBOURCE_INTERVAL = 200;
-    
+
     private readonly SettingsViewModel _settings;
     private readonly DispatcherTimer _debounceTimer;
-    
+
     public bool ShowDefaultOnButtonContent { get; set; }
     public static readonly DependencyProperty ShowDefaultOnButtonContentProperty =
         DependencyProperty.Register(...);
-        
+
     public AIModelViewModel? SelectedModel { get; private set; }
-    
+
     public event EventHandler? SelectedModelChanged;
-    
+
     public ModelSelector() { ... }
     public void Initialize(AIModelViewModel? model) { ... }
     public void UpdateEnabledLayout(bool newValue) { ... }
-    
+
     private void Select(AIModelViewModel? model) { ... }
     private void UpdateCheckedItemMenu() { ... }
     private void DebounceTimer_Tick( ... ) ( ... )
@@ -1747,10 +1796,13 @@ public sealed partial class ModelSelector : UserControl, IDisposable
 
 ![image](./Pictures/Pasted-image-20250524124412.png)
 ![image](./Pictures/Pasted-image-20250524160304.png)
-**Descripción general:**  
+
+**Descripción general:**
+
 El control `AgentSelector` es un componente visual reutilizable que permite al usuario seleccionar un agente de IA disponible, filtrando la lista de agentes según el tipo de documento (nota o chat). Presenta un botón desplegable que muestra los agentes disponibles en un menú tipo flyout, permitiendo seleccionar uno y reflejando la selección tanto visualmente como a nivel de datos. Está diseñado para integrarse en el interfaz y facilitar la interacción con los agentes en conversaciones y edición de notas.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.AgentSelector">
     <Grid>
@@ -1769,21 +1821,22 @@ El control `AgentSelector` es un componente visual reutilizable que permite al u
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public sealed partial class AgentSelector : UserControl, IDisposable
 {
     private readonly AgentsCollectionViewModel _agentsCollection;
     private bool _selectFirstAgent;
-    
+
     public DocumentType DocumentType { get; set; }
     public static readonly DependencyProperty DocumentTypeProperty =
         DependencyProperty.Register(...);
-        
+
     public AgentViewModel? SelectedAgent { get; private set; }
-    
+
     public event EventHandler? SelectedAgentChanged;
-    
+
     public AgentSelector() { ... }
     public void Initialize(AgentViewModel? agent, bool selectFirstAgent = false) { ... }
     public void ShowMenu() { ... }
@@ -1850,10 +1903,12 @@ public sealed partial class AgentSelector : UserControl, IDisposable
 ![image](./Pictures/Pasted-image-20250524153223.png)
 ![image](./Pictures/Pasted-image-20250524153233.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 El control `ButtonIcon` es un UserControl personalizado que muestra un icono configurable y ajusta su opacidad automáticamente según su estado habilitado o deshabilitado. Es útil para representar botones visuales con iconografía en formato SVG en interfaces WinUI3, ya que, por defecto, el color de una imagen SVG no se modifica al habilitar o deshabilitar el control que la contiene, lo que no es consistente con el comportamiento de otros elementos o iconos basados en fuentes.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.ButtonIcon">
     <Grid>
@@ -1862,17 +1917,18 @@ El control `ButtonIcon` es un UserControl personalizado que muestra un icono con
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class ButtonIcon : UserControl
 {
     private readonly float ENABLED_OPACITY = 0.9f;
     private readonly float DISABLED_OPACITY = 0.5f;
-    
+
     public ImageSource? Source { get; set; }
     public static readonly DependencyProperty SourceProperty =
         DependencyProperty.Register(...);
-        
+
     public ButtonIcon() { ... }
     public void UpdateEnabledLayout(bool newValue) => Opacity = newValue ? ENABLED_OPACITY : DISABLED_OPACITY;
 }
@@ -1905,10 +1961,12 @@ public partial class ButtonIcon : UserControl
 ![image](./Pictures/Pasted-image-20250524133333.png)
 ![image](./Pictures/Pasted-image-20250524152214.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `AgentIconControl` es un control personalizado de usuario diseñado para mostrar el icono de un agente, el cual puede representarse mediante una imagen en Base64 o un glifo de fuente. El control ajusta dinámicamente su contenido y tamaño según las propiedades establecidas, permitiendo una visualización flexible y coherente de iconos en la interfaz de usuario.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <UserControl x:Class="PowerPad.WinUI.Components.Controls.AgentIconControl">
     <Grid>
@@ -1918,7 +1976,8 @@ public partial class ButtonIcon : UserControl
 </UserControl>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class AgentIconControl : UserControl
 {

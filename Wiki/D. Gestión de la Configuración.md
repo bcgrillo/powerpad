@@ -3,10 +3,13 @@ Este capítulo aborda en detalle los mecanismos implementados en PowerPad para l
 ## D.1 Implementaciones
 
 #### ConfigStoreService
-**Descripción general:**  
+
+**Descripción general:**
+
 La clase `ConfigStoreService` implementa la interfaz `IConfigStoreService` y se encarga de gestionar múltiples almacenes de configuración (`ConfigStore`). Además, realiza el guardado periódico de las configuraciones utilizando un temporizador y asegura que los datos se almacenen antes de que el proceso finalice. Utiliza un contexto de serialización JSON para manejar la persistencia de los datos de configuración.
 
 **Código simplificado:**
+
 ```csharp
 public class ConfigStoreService : IConfigStoreService
 {
@@ -39,10 +42,13 @@ public class ConfigStoreService : IConfigStoreService
 - El campo `_timer` se mantiene como referencia privada para evitar que el recolector de basura lo elimine y para asegurar el funcionamiento del temporizador.
 
 #### ConfigStore
+
 **Descripción general:**
+
 La clase `ConfigStore` proporciona funcionalidades para gestionar el almacenamiento y recuperación de configuraciones en archivos JSON. Permite guardar, obtener y cargar configuraciones de manera segura y concurrente, utilizando un diccionario en memoria y persistiendo los cambios en archivos dentro de una carpeta específica. Implementa la interfaz `IConfigStore`.
 
 **Código simplificado:**
+
 ```csharp
 public class ConfigStore : IConfigStore
 {

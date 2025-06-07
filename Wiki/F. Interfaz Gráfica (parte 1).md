@@ -3,15 +3,18 @@ La sección dedicada a la Interfaz Gráfica de PowerPad tiene como objetivo ofre
 ## F.1. Ventanas
 
 #### MainWindow
+
 ![image](./Pictures/Pasted-image-20250523212051.png)
 ![image](./Pictures/Pasted-image-20250523220017.png)
 ![image](./Pictures/Pasted-image-20250523211959.png)
 ![image](./Pictures/Pasted-image-20250523215911.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 La clase `MainWindow` representa la ventana principal de la aplicación PowerPad. Su propósito es gestionar la navegación entre diferentes páginas (Workspace, Modelos, Agentes y Configuración), controlar la apariencia visual (incluyendo el fondo acrílico y la barra de título), y manejar la integración con la bandeja del sistema (minimizar/restaurar). Además, responde a eventos de configuración y estado de servicios de IA, mostrando avisos visuales de error y permitiendo la interacción con el menú lateral de navegación.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <wuiex:WindowEx x:Class="PowerPad.WinUI.MainWindow">
     <Page x:Name="MainPage">
@@ -50,7 +53,8 @@ La clase `MainWindow` representa la ventana principal de la aplicación PowerPad
 </wuiex:WindowEx>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class MainWindow : WindowEx
 {
@@ -136,17 +140,20 @@ public partial class MainWindow : WindowEx
 ![image](./Pictures/Pasted-image-20250523212427.png)
 ![image](./Pictures/Pasted-image-20250523220220.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `PopupWindow` representa una ventana emergente personalizada dentro de la aplicación PowerPad. Su propósito es mostrar un editor de notas asistido por IA en una ventana flotante, con integración de configuraciones visuales (tema, fondo acrílico) y comportamiento personalizado (centrado, siempre visible y no redimensionable).
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <wuiex:WindowEx x:Class="PowerPad.WinUI.PopupWindow">
     <local:PopupEditorPage x:Name="PopupEditorPage" />
 </wuiex:WindowEx>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public sealed partial class PopupWindow : WindowEx
 {
@@ -193,14 +200,16 @@ public sealed partial class PopupWindow : WindowEx
 
 ![image](./Pictures/Pasted-image-20250523220427.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `WorkspacePage` representa la página principal del área de trabajo en la aplicación. Su propósito es proporcionar una interfaz para la navegación y gestión de archivos, permitiendo al usuario interactuar con el sistema de archivos y editar documentos con ayuda de IA. Utiliza controles personalizados para la navegación y edición.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <local:DisposablePage x:Class="PowerPad.WinUI.Pages.WorkspacePage">
     <Grid>
-        <components:WorkspaceControl 
+        <components:WorkspaceControl
 	        x:Name="WorkspaceControl"
 			ItemInvoked="WorkspaceControl_ItemInvoked" />
         <Border Grid.Row="1" Grid.Column="1">
@@ -210,15 +219,16 @@ public sealed partial class PopupWindow : WindowEx
 </local:DisposablePage>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class WorkspacePage : DisposablePage, IToggleMenuPage
 {
     public double NavigationWidth => ... WorkspaceControl.ActualWidth;
-    
+
     public WorkspacePage() { ... }
     public void ToggleNavigationVisibility() { ... }
-    
+
     private void WorkspaceControl_ItemInvoked( ... ) { ... }
     protected override void Dispose(bool disposing) { ... }
 }
@@ -248,13 +258,15 @@ public partial class WorkspacePage : DisposablePage, IToggleMenuPage
 - La clase hereda de `DisposablePage` y cumple con la interfaz `IToggleMenuPage`.
 
 #### ModelsPage
-**Descripción general:**  
+
+**Descripción general:**
 
 ![image](./Pictures/Pasted-image-20250523220443.png)
 
 La clase `ModelsPage` representa una página dentro de la aplicación PowerPad dedicada a la gestión y navegación entre diferentes proveedores de modelos de IA y sus respectivas opciones (ver modelos disponibles o añadir nuevos modelos). Utiliza un control `NavigationView` para mostrar los distintos proveedores y opciones, y un `Frame` para cargar dinámicamente las páginas correspondientes según la selección del usuario. Gestiona la visibilidad y navegación del panel lateral, así como la interacción con las páginas hijas especializadas en cada proveedor de modelos.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <local:DisposablePage
     x:Class="PowerPad.WinUI.Pages.ModelsPage">
@@ -288,19 +300,20 @@ La clase `ModelsPage` representa una página dentro de la aplicación PowerPad d
 </local:DisposablePage>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class ModelsPage : DisposablePage, IToggleMenuPage
 {
     private readonly SettingsViewModel _settings;
     private IModelProviderPage? _currentPage;
     private bool _runSearch;
-    
+
     public double NavigationWidth => ... NavView.OpenPaneLength;
-    
+
     public ModelsPage() { ... }
     public void ToggleNavigationVisibility() { ... }
-    
+
     private void NavView_SelectionChanged( ... ) { ... }
     private void NavigateToPage(ModelsMenuOption menuOption) { ... }
     private void NavView_Loaded( ... ) { ... }
@@ -351,10 +364,12 @@ public partial class ModelsPage : DisposablePage, IToggleMenuPage
 
 ![image](./Pictures/Pasted-image-20250523220458.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 La clase `AgentsPage` representa una página dentro de la aplicación dedicada a la gestión de agentes de IA. Permite visualizar, crear, editar, renombrar y eliminar agentes, mostrando una lista jerárquica de agentes en un menú lateral y un área principal para la edición o visualización de información relevante. Integra el ViewModel de colección de agentes y controles personalizados para la interacción.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <local:DisposablePage x:Class="PowerPad.WinUI.Pages.AgentsPage">
     <Grid>
@@ -394,7 +409,8 @@ La clase `AgentsPage` representa una página dentro de la aplicación dedicada a
 </local:DisposablePage>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class AgentsPage : DisposablePage, IToggleMenuPage
 {
@@ -402,12 +418,12 @@ public partial class AgentsPage : DisposablePage, IToggleMenuPage
     private bool _undoSelectionChange = false;
     private AgentViewModel? _selectedAgent;
     private AgentEditorControl? _editorControl;
-    
+
     public double NavigationWidth => ... TreeView.ActualWidth;
-    
+
     public AgentsPage() { ... }
     public void ToggleNavigationVisibility() { ... }
-    
+
     private async void TreeView_SelectionChanged( ... ) { ... }
     private void UpdateLandingVisibility(bool showLanding) { ... }
     private void NewAgentButton_Click( ... ) { ... }
@@ -470,10 +486,12 @@ public partial class AgentsPage : DisposablePage, IToggleMenuPage
 
 ![image](./Pictures/Pasted-image-20250523220511.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 La clase `SettingsPage` representa la página de configuración de la aplicación PowerPad. Permite a los usuarios gestionar y personalizar los servicios de IA (Ollama, Azure AI, OpenAI), parámetros de modelos, agentes, apariencia (tema) y otras opciones generales. La página enlaza la interfaz visual con el `SettingsViewModel` para reflejar y modificar el estado de la configuración de la aplicación. Incluye controles para habilitar/deshabilitar servicios, editar URLs y claves, seleccionar modelos por defecto, ajustar parámetros de IA, cambiar el tema visual y ver información sobre la aplicación.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 Debido a la complejidad de la página, se incluye solamente un extracto de ejemplo con un bloque de configuración.
 ```xml
 <local:DisposablePage x:Class="PowerPad.WinUI.Pages.SettingsPage">
@@ -535,7 +553,8 @@ Debido a la complejidad de la página, se incluye solamente un extracto de ejemp
 </local:DisposablePage>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class SettingsPage : DisposablePage
 {
@@ -634,19 +653,22 @@ public partial class SettingsPage : DisposablePage
 ### F.2.2. Páginas de gestión de modelos
 
 #### AIModelsPageBase
+
 **Descripción general:**
+
 Clase base abstracta para las páginas que gestionan los modelos de IA. Proporciona funcionalidad común para el manejo de modelos de inteligencia artificial, incluyendo comandos para establecer el modelo por defecto, eliminar modelos y gestionar eventos relacionados con la interfaz de usuario, que serán utilizados desde las implementaciones específicas.
 
 **Código simplificado:**
+
 ```csharp
 public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
 {
     protected SettingsViewModel _settings;
     protected AIModelsViewModelBase _modelsViewModel;
-    
+
     public event EventHandler? AddButtonClick;
     public abstract void CloseModelInfoViewer();
-    
+
     protected void SetDefault_Click( ... ) { ... }
     protected void Delete_Click( ... ) { ... }
     protected void AvailableModelsRepeater_AddButtonClick( ... ) { ... }
@@ -678,10 +700,12 @@ public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
 
 ![image](./Pictures/Pasted-image-20250523220623.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `OllamaModelsPage` es una página de la aplicación PowerPad dedicada a la gestión de modelos de IA de Ollama. Hereda de `AIModelsPageBase` y proporciona una interfaz visual para visualizar, actualizar, eliminar y establecer modelos predeterminados de Ollama, así como para mostrar el estado del servicio Ollama. Está integrada con varios convertidores y componentes personalizados para la interacción con los modelos de IA.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <local:AIModelsPageBase
     x:Class="PowerPad.WinUI.Pages.Providers.OllamaModelsPage">
@@ -711,15 +735,16 @@ public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
 </local:AIModelsPageBase>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class OllamaModelsPage : AIModelsPageBase
 {
     private OllamaModelsViewModel OllamaModelsViewModel => _modelsViewModel;
-    
+
     public OllamaModelsPage() : base(new OllamaModelsViewModel()) { ... }
     public override void CloseModelInfoViewer() { ... }
-    
+
     private void AIModelsRepeater_ModelInfoViewerVisibilityChanged( ... ) { ... }
 }
 ```
@@ -750,6 +775,7 @@ public partial class OllamaModelsPage : AIModelsPageBase
 - `void AIModelsRepeater_ModelInfoViewerVisibilityChanged(Components.Controls.ModelInfoViewerVisibilityEventArgs eventArgs)`: Método privado que gestiona el cambio de visibilidad del visor de información del modelo. Ajusta la altura de la fila de cabecera (`RowHeader`) para mostrar el visor en página completa.
 
 #### Otros proveedores: Hugging Face, GitHub Models y OpenAI
+
 Al igual que `OllamaModelsPage`, las páginas `HuggingFaceModelsPage`, `GitHubModelsPage` y `OpenAIModelsPage` heredan de `AIModelsPageBase` y realizan una implementación muy similar a la descrita en el punto anterior, pero enfocada a su respectivo proveedor.
 
 ![image](./Pictures/Pasted-image-20250523220639.png)
@@ -757,11 +783,15 @@ Al igual que `OllamaModelsPage`, las páginas `HuggingFaceModelsPage`, `GitHubMo
 ![image](./Pictures/Pasted-image-20250523220657.png)
 
 ### F.2.3. Páginas para añadir nuevos modelos
+
 #### AIAddModelPageBase
+
 **Descripción general:**
+
 Clase base abstracta para páginas que permiten agregar modelos de IA. Proporciona funcionalidad común para buscar y añadir modelos, gestionando la interacción con el ViewModel de modelos de IA y la configuración global de la aplicación. Incluye métodos para buscar y añadir modelos, que serán utilizados desde las implementaciones específicas.
 
 **Código simplificado:**
+
 ```csharp
 public abstract class AIAddModelPageBase() : DisposablePage, IModelProviderPage
 {
@@ -801,10 +831,12 @@ public abstract class AIAddModelPageBase() : DisposablePage, IModelProviderPage
 
 ![image](./Pictures/Pasted-image-20250523222615.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `OllamaAddModelPage` es una página de la aplicación PowerPad.WinUI que permite buscar y agregar modelos de IA desde la biblioteca de Ollama. Utiliza el patrón MVVM y hereda de `AIAddModelPageBase`. Proporciona una interfaz para buscar modelos, mostrar resultados y gestionar la visibilidad de información detallada sobre los modelos. La página está diseñada para integrarse con la configuración y el estado del servicio Ollama, mostrando advertencias si el servicio no está disponible.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <local:AIAddModelPageBase
     x:Class="PowerPad.WinUI.Pages.Providers.OllamaAddModelPage">
@@ -835,15 +867,16 @@ ModelInfoViewerVisibilityChanged="SearchModelsResultRepeater_ModelInfoViewerVisi
 </local:AIAddModelPageBase>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class OllamaAddModelPage : AIAddModelPageBase
 {
     public OllamaAddModelPage() : base(new OllamaModelsViewModel()) { this.InitializeComponent(); }
-    
+
     public override void Search() { ... }
     public override void CloseModelInfoViewer() { ... }
-    
+
     protected override TextBox GetSearchTextBox() { ... }
     private void SearchModelsResultRepeater_ModelInfoViewerVisibilityChanged( ... ) { ... }
 }
@@ -877,6 +910,7 @@ public partial class OllamaAddModelPage : AIAddModelPageBase
 - El método `SearchModelsResultRepeater_ModelInfoViewerVisibilityChanged` es privado y se encarga de mostrar u ocultar el encabezado de la página dependiendo de si el visor de información del modelo está visible.
 
 #### Otros proveedores: Hugging Face, GitHub Models y OpenAI
+
 Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitHubAddModelPage` y `OpenAIAddModelPage` heredan de `AIAddModelPageBase` y realizan una implementación muy similar a la descrita en el punto anterior, pero enfocada a su respectivo proveedor.
 
 ![image](./Pictures/Pasted-image-20250524001228.png)
@@ -889,10 +923,12 @@ Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitH
 
 ![image](./Pictures/Pasted-image-20250523212157.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `PopupEditorPage` es la página de la aplicación que proporciona una interfaz emergente para la edición de notas o textos. Permite crear, editar, copiar, deshacer/rehacer cambios y aplicar el contenido editado, integrando además un control de agente IA para asistencia inteligente en la edición.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <Page x:Class="PowerPad.WinUI.Pages.PopupEditorPage">
     <Grid>
@@ -920,20 +956,21 @@ Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitH
 </Page>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class PopupEditorPage : Page
 {
     private readonly WorkspaceViewModel _workspace;
     private readonly DocumentViewModel _document;
-    
+
     public Border TitleBar => BorderTitleBar;
     public event EventHandler? CloseRequested;
-    
+
     public PopupEditorPage() { ... }
     public void SetContent(string newContent) { ... }
     public void SetFocus() => AgentControl.SetFocus();
-    
+
     private void TextEditor_SizeChanged( ... ) { ... }
     private T? FindElement<T>(DependencyObject element) where T : DependencyObject { ... }
     private void UndoButton_Click( ... ) { ... }

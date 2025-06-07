@@ -1,13 +1,17 @@
 ## E.1. ViewModels
+
 En el contexto de la **arquitectura MVVM**, los **ViewModels** constituyen una pieza central al actuar como puente entre la interfaz de usuario y la lógica de negocio. Su función principal es gestionar el estado, la lógica y los comandos necesarios para que la vista interactúe de forma desacoplada con los modelos de datos y los servicios subyacentes. En PowerPad, los ViewModels permiten mantener una interfaz reactiva y coherente, facilitando la actualización automática de la UI y simplificando la gestión de eventos y acciones del usuario. En este apartado se revisan los ViewModels implementados en la aplicación, describiendo su papel y cómo contribuyen a la estructura y funcionamiento general del software.
 
 ### E.1.1 Gestión de conversaciones
 
 #### ChatViewModel
+
 **Descripción general:**
+
 `ChatViewModel` es un ViewModel encargado de gestionar la funcionalidad de chat, incluyendo la colección de mensajes, los parámetros de IA, el modelo de IA asociado y los comandos para manipular los mensajes. Supervisa los cambios en los mensajes y actualiza el estado de error del chat según corresponda.
 
 **Código simplificado:**
+
 ```csharp
 public class ChatViewModel : ObservableObject
 {
@@ -53,10 +57,13 @@ public class ChatViewModel : ObservableObject
 - La colección `Messages` se inicializa con un manejador de eventos para detectar cambios y actualizar el estado de error del chat automáticamente.
 
 #### MessageViewModel
+
 **Descripción general:**
+
 La clase `MessageViewModel` representa un mensaje dentro del chat, incluyendo su contenido, fecha y hora de creación, el rol del remitente, razonamientos opcionales, mensajes de error y estados de carga. Es utilizada para modelar cada mensaje en la interfaz de usuario de un chat, permitiendo el enlace de propiedades y la notificación de cambios.
 
 **Código simplificado:**
+
 ```csharp
 public class MessageViewModel : ObservableObject
 {
@@ -90,15 +97,18 @@ public class MessageViewModel : ObservableObject
 **Notas adicionales:**
 
 - Las propiedades `Loading` y `LoadingMessage` están decoradas con `[JsonIgnore]`, por lo que no se serializan ni deserializan en operaciones JSON.
- 
+
 
 ### E.1.2 Gestión de modelos y parámetros
 
 #### AIModelViewModel
+
 **Descripción general:**
+
 ViewModel que representa y gestiona el estado de un modelo de inteligencia artificial (AIModel) en la aplicación. Permite controlar su disponibilidad, habilitación, descarga, progreso y errores asociados, además de exponer información relevante del modelo para la interfaz de usuario.
 
 **Código simplificado:**
+
 ```csharp
 public class AIModelViewModel : ObservableObject
 {
@@ -117,14 +127,14 @@ public class AIModelViewModel : ObservableObject
     public long? Size => _aiModel.Size;
     public string? DisplayName => _aiModel.DisplayName;
     public bool CanAdd => !Available && !Downloading && !IsSizeTooLargeForExecution;
-    
+
     public AIModel GetRecord() => _aiModel;
     public string CardName => DisplayName ?? Name;
     public override bool Equals(object? obj) { ... }
     public override int GetHashCode() { ... }
     public static bool operator ==( ... ) { ... }
     public static bool operator !=( ... ) { ... }
-    
+
     public void OnAvailableChanged(bool value) { ... }
     public void OnDownloadingChanged(bool value) { ... }
     public void UpdateDownloadProgress(double progress) { ... }
@@ -179,10 +189,13 @@ public class AIModelViewModel : ObservableObject
 - Posee un constructor específico para deserialización decorado con `[JsonConstructor]`.
 
 #### AIParameterViewModel
+
 **Descripción general:**
+
 Clase ViewModel para gestionar los parámetros de IA, proporcionando enlace de datos y notificación de cambios. Permite encapsular y modificar los parámetros de IA de manera reactiva, facilitando la interacción con la interfaz de usuario.
 
 **Código simplificado:**
+
 ```csharp
 public class AIParametersViewModel : ObservableObject
 {
@@ -242,10 +255,13 @@ public class AIParametersViewModel : ObservableObject
 - Posee un constructor específico para deserialización decorado con `[JsonConstructor]`.
 
 #### AIModelsViewModelBase
+
 **Descripción general:**
+
 Clase base abstracta para la gestión de modelos de IA en la aplicación. Proporciona funcionalidad para filtrar, buscar, añadir y eliminar modelos, así como gestionar el estado de disponibilidad de los proveedores de modelos de IA. Está diseñada para ser utilizada en el patrón MVVM a través de observables y comandos, facilitando la interacción con los modelos de IA desde la interfaz.
 
 **Código simplificado:**
+
 ```csharp
 public abstract class AIModelsViewModelBase : ObservableObject, IDisposable
 {
@@ -317,11 +333,15 @@ public abstract class AIModelsViewModelBase : ObservableObject, IDisposable
 **Notas adicionales:**
 
 - La clase gestiona suscripciones a eventos de cambio en la configuración y la colección de modelos, y se encarga de desuscribirse correctamente al ser liberada.
+
 #### OllamaModelsViewModel
+
 **Descripción general:**
+
 `OllamaModelsViewModel` es un ViewModel especializado en la gestión de modelos de IA del proveedor Ollama. Permite refrescar la lista de modelos disponibles, buscar modelos, añadir y eliminar modelos, todo ello integrándose con un servicio Ollama y gestionando el estado de los modelos en la aplicación. Hereda de `AIModelsViewModelBase`.
 
 **Código simplificado:**
+
 ```csharp
 public class OllamaModelsViewModel : AIModelsViewModelBase
 {
@@ -330,7 +350,7 @@ public class OllamaModelsViewModel : AIModelsViewModelBase
 
     public OllamaModelsViewModel() : this(ModelProvider.Ollama) { ... }
     protected OllamaModelsViewModel(ModelProvider modelProvider) : base(modelProvider) { ... }
-    
+
     protected async Task RefreshModels() { ... }
     protected override async Task SearchModels(string? query) { ... }
     protected override async Task AddModel(AIModelViewModel? aiModel) { ... }
@@ -366,10 +386,13 @@ public class OllamaModelsViewModel : AIModelsViewModelBase
 
 
 #### HuggingFaceModelsViewModel
-**Descripción general:**  
+
+**Descripción general:**
+
 ViewModel especializado en la gestión de modelos de IA de Hugging Face. Hereda de `OllamaModelsViewModel` y configura el proveedor de modelos como Hugging Face, permitiendo así funcionalidades específicas para este tipo de modelos dentro de la aplicación.
 
 **Código simplificado:**
+
 ```csharp
 public class HuggingFaceModelsViewModel : OllamaModelsViewModel
 {
@@ -394,10 +417,13 @@ public class HuggingFaceModelsViewModel : OllamaModelsViewModel
 - Este ViewModel sirve como especialización para el proveedor Hugging Face, permitiendo su identificación y gestión diferenciada respecto a otros proveedores de modelos IA.
 
 #### GitHubModelsViewModel
-**Descripción general:**  
+
+**Descripción general:**
+
 ViewModel especializado en la gestión de modelos de IA de GitHub Models. Hereda de `AIModelsViewModelBase` y configura el proveedor de modelos como GitHub, permitiendo así funcionalidades específicas para este tipo de modelos dentro de la aplicación.
 
 **Código simplificado:**
+
 ```csharp
 public class GitHubModelsViewModel : AIModelsViewModelBase
 {
@@ -422,10 +448,13 @@ public class GitHubModelsViewModel : AIModelsViewModelBase
 - Este ViewModel sirve como especialización para el proveedor GitHub Models, permitiendo su identificación y gestión diferenciada respecto a otros proveedores de modelos IA.
 
 #### OpenAIModelsViewModel
-**Descripción general:**  
+
+**Descripción general:**
+
 ViewModel especializado en la gestión de modelos de IA de OpenAI. Hereda de `AIModelsViewModelBase` y configura el proveedor de modelos como OpenAI, permitiendo así funcionalidades específicas para este tipo de modelos dentro de la aplicación.
 
 **Código simplificado:**
+
 ```csharp
 public class OpenAIModelsViewModel : AIModelsViewModelBase
 {
@@ -452,10 +481,13 @@ public class OpenAIModelsViewModel : AIModelsViewModelBase
 ### E.1.3 Gestión de agentes
 
 ##### AgentViewModel
+
 **Descripción general:**
+
 Se trata de un ViewModel que representa a un agente de IA, encapsulando sus propiedades configurables y comportamientos asociados. Permite la edición y visualización de los parámetros del agente, su icono, visibilidad en distintas áreas de la aplicación y facilita la integración con el patrón MVVM. Gestiona la serialización/deserialización, notificación de cambios y operaciones de copia.
 
 **Código simplificado:**
+
 ```csharp
 public class AgentViewModel : ObservableObject
 {
@@ -549,10 +581,13 @@ public class AgentViewModel : ObservableObject
 - Posee un constructor específico para deserialización decorado con `[JsonConstructor]`.
 
 #### AgentsCollectionViewModel
+
 **Descripción general:**
+
 Se trata del ViewModel encargado de gestionar la colección de agentes (`AgentViewModel`) en la aplicación. Se encarga de inicializar, exponer y mantener sincronizada la colección de agentes, así como de notificar cambios relevantes mediante eventos. Además, proporciona utilidades para obtener agentes por identificador y generar iconos aleatorios para los agentes, adaptados al tema de la aplicación. Gestiona la persistencia de la colección en el almacén de configuración.
 
 **Código simplificado:**
+
 ```csharp
 public class AgentsCollectionViewModel : ObservableObject
 {
@@ -568,7 +603,7 @@ public class AgentsCollectionViewModel : ObservableObject
     public AgentsCollectionViewModel() { ... }
     public AgentViewModel? GetAgent(Guid id) { ... }
     public AgentIcon GenerateIcon() { ... }
-    
+
     private void CollectionChangedHandler( ... ) { ... }
     private void CollectionPropertyChangedHandler( ... ) { ... }
     private void SaveAgents() { ... }
@@ -612,10 +647,13 @@ public class AgentsCollectionViewModel : ObservableObject
 ### E.1.4. Gestión del espacio de trabajo
 
 #### FolderEntryViewModel
+
 **Descripción general:**
+
 Este ViewModel representa una entrada del sistema de archivos, ya sea una carpeta o un documento, dentro de la aplicación. Gestiona el estado visual (selección, expansión, símbolo), la jerarquía de carpetas/documentos, y expone comandos para eliminar y renombrar entradas. Además, responde a mensajes de cambios en las entradas mediante el patrón Messenger y notifica cambios de propiedades para la interfaz de usuario.
 
 **Código simplificado:**
+
 ```csharp
 public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChanged>
 {
@@ -635,17 +673,17 @@ public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChan
     public DocumentType? DocumentType => _documentType;
     public IFolderEntry ModelEntry => _entry;
     public int? Position { get => _entry.Position; }
-    
+
     public IRelayCommand DeleteCommand { get; }
     public IRelayCommand RenameCommand { get; }
 
     public FolderEntryViewModel(Folder folder, FolderEntryViewModel? parent) { ... }
     public FolderEntryViewModel(Document document, FolderEntryViewModel? parent) { ... }
-    
+
     public void NameChanged() { ... }
     public void Receive(FolderEntryChanged message) { ... }
     public void OnIsExpandedChanged(bool value) { ... }
-    
+
     private void Delete() { ... }
     private void Rename(string? newName) { ... }
 }
@@ -699,28 +737,31 @@ public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChan
 
 - Utiliza el patrón Messenger para sincronizar cambios de nombre y eliminación entre diferentes instancias del ViewModel.
 #### WorkspaceViewModel
+
 **Descripción general:**
+
 Es el ViewModel encargado de gestionar el espacio de trabajo de la aplicación, incluyendo la administración de carpetas, documentos y la lista de espacios de trabajo abiertos recientemente. Facilita la interacción entre la interfaz de usuario y los servicios de gestión de archivos y configuración, permitiendo operaciones como mover, crear y abrir entradas (carpetas o documentos) dentro del espacio de trabajo.
 
 **Código simplificado:**
+
 ```csharp
 public class WorkspaceViewModel : ObservableObject
 {
     private const int MAX_RECENTLY_WORKSPACES = 5;
-    
+
     private readonly IWorkspaceService _workspaceService;
     private readonly IConfigStore _appConfigStore;
 
     public FolderEntryViewModel Root { get; set; }
     public ObservableCollection<string> RecentlyWorkspaces { get; }
     public string? CurrentDocumentPath { get; set; }
-    
+
     public IRelayCommand OpenWorkspaceCommand { get; }
     public IRelayCommand MoveEntryCommand { get; }
     public IRelayCommand NewEntryCommand { get; }
 
     public WorkspaceViewModel() { ... }
-    
+
     public void OnCurrentDocumentPathChanged(string? oldValue, string? newValue) { ... }
     private void MoveEntry(MoveEntryParameters? parameters) { ... }
     private void NewEntry(NewEntryParameters? parameters) { ... }
@@ -763,10 +804,13 @@ public class WorkspaceViewModel : ObservableObject
 - Utiliza el patrón Messenger para notificar la creación de nuevas entradas.
 
 #### DocumentViewModel
+
 **Descripción general:**
+
 `DocumentViewModel` es un ViewModel encargado de gestionar un documento en la aplicación, incluyendo su estado, guardado, renombrado y generación automática de nombres. Facilita la interacción entre la vista y el modelo de documento, gestionando comandos y notificando cambios relevantes. Implementa el patrón MVVM y utiliza mensajería para comunicar cambios en el nombre del documento. También contiene la lógica para invocar la generación automática de nombre.
 
 **Código simplificado:**
+
 ```csharp
 public class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged>
 {
@@ -790,10 +834,10 @@ public class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged
     public IRelayCommand RenameCommand { get; }
 
     public DocumentViewModel(Document document, IEditorContract editorControl) { ... }
-    
+
     public void NameChanged() { ... }
     public void Receive(FolderEntryChanged message) { ... }
-    
+
     private async Task Save() { ... }
     private async Task Autosave() { ... }
     private void Rename(string? newName) { ... }
@@ -849,9 +893,11 @@ public class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged
 #### DraftDocumentViewModel
 
 **Descripción general:**
+
 ViewModel que representa un documento borrador, gestionando su contenido actual y permitiendo la navegación entre versiones previas y siguientes del contenido. Similar a `DocumentViewModel` pero simplificado para su gestión sin persistencia en la ventana de edición rápida.
 
 **Código simplificado:**
+
 ```csharp
 public class DraftDocumentViewModel : ObservableObject
 {
@@ -874,10 +920,13 @@ public class DraftDocumentViewModel : ObservableObject
 ### E.1.5. Gestión de la configuración
 
 #### AIServiceConfigViewModel
+
 **Descripción general:**
+
 ViewModel encargado de gestionar la configuración de un servicio de IA, incluyendo la URL base, la clave de API y el estado de conexión. Permite notificar cambios de configuración y estado, así como probar la conexión con el servicio de IA. Es utilizado en la capa de presentación para enlazar la configuración editable y su estado en la interfaz de usuario.
 
 **Código simplificado:**
+
 ```csharp
 public class AIServiceConfigViewModel : ObservableObject
 {
@@ -934,22 +983,25 @@ public class AIServiceConfigViewModel : ObservableObject
 - Posee un constructor específico para deserialización decorado con `[JsonConstructor]`.
 
 #### SettingsViewModel
+
 **Descripción general:**
+
 ViewModel responsable de gestionar la configuración de la aplicación, incluyendo tanto los ajustes generales como la configuración de modelos de IA. Permite comprobar la disponibilidad de los servicios de IA y sincroniza los cambios de configuración con el almacén de configuración.
 
 **Código simplificado:**
+
 ```csharp
 public class SettingsViewModel : ObservableObject
 {
     private readonly IConfigStore _configStore;
-    
+
     public GeneralSettingsViewModel General { get; private init; }
     public ModelsSettingsViewModel Models { get; private init; }
     public bool? IsAIAvailable { get; set; }
 
     public SettingsViewModel() { ... }
     public async Task TestConnections() { ... }
-    
+
     private void UpdateAIAvailability( ... ) { ... }
 }
 ```
@@ -981,10 +1033,13 @@ public class SettingsViewModel : ObservableObject
 - Durante su construcción se realiza la carga de la configuración general y de modelos a partir del almacén de configuración, y se suscribe a los eventos necesarios para la sincronización y actualización de disponibilidad de IA.
 
 #### GeneralSettingsViewModel
+
 **Descripción general:**
+
 ViewModel encargado de gestionar la configuración general de la aplicación, incluyendo la activación y configuración de servicios de IA (Ollama, AzureAI, OpenAI), preferencias de interfaz de usuario y otros ajustes globales. Permite la inicialización y control dinámico de los servicios de IA, así como la gestión de los proveedores de modelos disponibles.
 
 **Código simplificado:**
+
 ```csharp
 public class GeneralSettingsViewModel : ObservableObject
 {
@@ -1000,17 +1055,17 @@ public class GeneralSettingsViewModel : ObservableObject
     public bool AcrylicBackground { get; set; }
     public string? AgentPrompt { get; set; }
     public bool EnableHotKeys { get; set; }
-    
+
     public event EventHandler? ProviderAvailabilityChanged;
     public event EventHandler? ServiceEnablementChanged;
-    
+
     public void InitializeAIServices() { ... }
     public void OnAcrylicBackgroundChanging(bool value) { ... }
     public void OnEnableHotKeysChanging(bool value) { ... }
     public void OnOllamaEnabledChanged(bool value) { ... }
     public void OnAzureAIEnabledChanged(bool value) { ... }
     public void OnOpenAIEnabledChanged(bool value) { ... }
-    
+
     private void ServiceStatusChanged( ... ) { ... }
     private void ServiceConfigChanged( ... ) { ... }
     private void AvailableProvidersCollectionChangedHandler( ... ) { ... }
@@ -1060,10 +1115,13 @@ public class GeneralSettingsViewModel : ObservableObject
 - La inicialización de las propiedades `OllamaConfig`, `AzureAIConfig` y `OpenAIConfig` suscribe automáticamente los eventos de cambio de estado y configuración de cada servicio.
 
 #### ModelsSettingsViewModel
+
 **Descripción general:**
+
 Es el ViewModel encargado de almacenar y gestionar la configuración de los modelos de IA en la aplicación. Permite seleccionar el modelo por defecto, definir parámetros predeterminados, controlar si se envían estos parámetros y gestionar la colección de modelos disponibles. Notifica cambios relevantes a través de eventos y mantiene sincronización con el servicio de chat.
 
 **Código simplificado:**
+
 ```csharp
 public class ModelsSettingsViewModel : ObservableObject
 {
@@ -1110,13 +1168,17 @@ public class ModelsSettingsViewModel : ObservableObject
 - El ViewModel mantiene la sincronización con el servicio de chat (`IChatService`) al cambiar modelos o parámetros.
 
 ## E.4 Mensajes de comunicación
+
 De forma complementaria a los ViewModels, la mensajería permiten la comunicación desacoplada entre componentes que no están relacionados directamente, permitiendo que ViewModels o controles del interfaz respondan de forma coordinada a cambios en el modelo. Ambos elementos permiten que el interfaz sea dinámico y reactivo, mejorando la experiencia del usuario.
 
 #### FolderEntryCreated
+
 **Descripción general:**
+
 Clase que representa un mensaje utilizado para notificar la creación de una nueva entrada de carpeta. Se emplea para comunicar a otras partes de la aplicación que se ha creado una nueva instancia de FolderEntryViewModel.
 
 **Código simplificado:**
+
 ```csharp
 public class FolderEntryCreated : ValueChangedMessage<FolderEntryViewModel>
 {
@@ -1137,10 +1199,13 @@ public class FolderEntryCreated : ValueChangedMessage<FolderEntryViewModel>
 - Esta clase es inmutable y se utiliza exclusivamente como contenedor de datos para el sistema de mensajería.
 
 #### FolderEntryChanged
-**Descripción general:**  
+
+**Descripción general:**
+
 Representa un mensaje que indica que una entrada de carpeta ha sido modificada. Se utiliza para notificar cambios en una instancia de `IFolderEntry`, permitiendo especificar si el nombre de la entrada ha cambiado.
 
 **Código simplificado:**
+
 ```csharp
 public class FolderEntryChanged : ValueChangedMessage<IFolderEntry>
 {
@@ -1163,10 +1228,13 @@ public class FolderEntryChanged : ValueChangedMessage<IFolderEntry>
 - El uso del booleano `NameChanged` está pensado para posibles ampliaciones donde se notifiquen otros cambios distintos al nombre.
 
 #### FolderEntryDeleted
+
 **Descripción general:**
+
 Clase que representa un mensaje utilizado para notificar que una entrada de carpeta ha sido eliminada. Se emplea para informar sobre cambios en la colección de entradas de carpetas, transmitiendo la entrada eliminada como valor.
 
 **Código simplificado:**
+
 ```csharp
 public class FolderEntryDeleted : ValueChangedMessage<IFolderEntry>
 {

@@ -1,4 +1,5 @@
 ## F.4. Conversores
+
 En WinUI, los conversores son clases cuya utilidad es servir de intermediario en los enlaces de datos con la interfaz (`Data Binding`), permitiendo especificar la lógica de conversión entre el valor del modelo y el tipo de la propiedad de destino a la que se pretende enlazar. Esta conversión puede ser unidireccional o bidireccional, permitiendo en este último caso actualizar el modelo a partir del valor establecido en la propiedad.
 
 ### F.4.1 Conversores numéricos
@@ -73,7 +74,9 @@ En WinUI, los conversores son clases cuya utilidad es servir de intermediario en
 - `ConvertBack`: No implementado; lanza `NotImplementedException`.
 
 ## F.5. Helpers
+
 Los helpers son un conjunto de clases estáticas que agrupan funcionalidades con un propósito específico, como la conversión de imágenes a codificación Base64 o la gestión de combinaciones de teclas en el sistema operativo (`HotKeys`). En este apartado también se incluyen las clases helper encargadas de generar diálogos útiles y reutilizables dentro de PowerPad.
+
 ### F.5.1 Diálogos
 
 #### DialogHelper
@@ -82,10 +85,12 @@ Los helpers son un conjunto de clases estáticas que agrupan funcionalidades con
 ![image](./Pictures/Pasted-image-20250524145004.png)
 ![image](./Pictures/Pasted-image-20250524161529.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `DialogHelper` es una clase auxiliar que extiende `ContentDialog` y proporciona una interfaz reutilizable para mostrar diferentes tipos de diálogos en la aplicación, como cuadros de entrada, confirmación y alertas. Su objetivo es centralizar y simplificar la creación y gestión de diálogos modales, permitiendo personalizar títulos, mensajes, botones y comportamientos según el contexto. Se utiliza para interactuar con el usuario en operaciones que requieren confirmación, entrada de datos o notificación de eventos importantes.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <ContentDialog
     x:Class="PowerPad.WinUI.Dialogs.DialogHelper"
@@ -100,7 +105,8 @@ Los helpers son un conjunto de clases estáticas que agrupan funcionalidades con
 </ContentDialog>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class DialogHelper : ContentDialog
 {
@@ -108,13 +114,13 @@ public partial class DialogHelper : ContentDialog
     private const string LABEL_CANCEL = "Cancelar";
     private const string LABEL_YES = "Sí";
     private const string LABEL_NO = "No";
-    
+
     private bool _accepted;
-    
+
     public static async Task<string?> Input( ... ) { ... }
     public static async Task<ContentDialogResult> Confirm( ... ) { ... }
     public static async Task Alert( ... ) { ... }
-    
+
     private DialogHelper(Action<DialogHelper> formatter) { ... }
     private void TextBox_KeyDown( ... ) { ... }
     private void ContentDialog_PrimaryButtonClick( ... ) { ... }
@@ -163,10 +169,12 @@ public partial class DialogHelper : ContentDialog
 ![image](./Pictures/Pasted-image-20250524151506.png)
 ![image](./Pictures/Pasted-image-20250524151603.png)
 
-**Descripción general:**  
+**Descripción general:**
+
 `OllamaDownloadHelper` es un cuadro de diálogo especializado en gestionar la descarga e instalación de la aplicación Ollama. Se utiliza en la aplicación PowerPad para asistir al usuario cuando Ollama no está presente en el sistema, permitiendo descargar el instalador, mostrar el progreso, manejar errores y verificar la instalación. Una vez finalizado permite al usuario ir a la configuración de modelos.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <ContentDialog
     x:Class="PowerPad.WinUI.Dialogs.OllamaDownloadHelper"
@@ -185,13 +193,14 @@ public partial class DialogHelper : ContentDialog
 </ContentDialog>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class OllamaDownloadHelper : ContentDialog
 {
     private const string OLLAMA_DOWNLOAD_URL = "https://ollama.com/download/OllamaSetup.exe";
     private const int BUFFER_SIZE = 8192;
-    
+
     private readonly string _tempFilePath;
     private readonly FileSizeToFriendlyStringConverter _fileSizeConverter;
     private CancellationTokenSource? _cts;
@@ -201,7 +210,7 @@ public partial class OllamaDownloadHelper : ContentDialog
     private bool _installationCompleted;
 
     public static async Task<ContentDialogResult> ShowAsync(XamlRoot xamlRoot) { ... }
-    
+
     private OllamaDownloadHelper(XamlRoot xamlRoot) { ... }
     private void Reset() { ... }
     private async void OnPrimaryButtonClick(object _, ContentDialogButtonClickEventArgs eventArgs) { ... }
@@ -251,15 +260,17 @@ public partial class OllamaDownloadHelper : ContentDialog
 - El flujo contempla la comprobación del estado del servicio Ollama tras la instalación y permite reintentar la instalación si no se detecta correctamente o ir a la configuración de modelos en el caso de que se haya completado con éxito.
 
 ### F.5.2 Utilidades
+
 En este apartado incluiremos las principales clases de utilidad de PowerPad.
+
 #### BackdropHelper
 
-
-
 **Descripción general:**
+
 Clase estática que proporciona métodos auxiliares para gestionar y configurar el fondo del sistema (`System Backdrop`) en la aplicación PowerPad. Permite aplicar efectos acrílicos al fondo de la ventana principal y gestionar su configuración y liberación de recursos.
 
 **Código simplificado:**
+
 ```csharp
 public static class BackdropHelper
 {
@@ -287,10 +298,13 @@ public static class BackdropHelper
 - El método `DisposeController` debe llamarse para liberar recursos cuando el fondo acrílico ya no sea necesario.
 
 #### EditorManagerHelper
+
 **Descripción general:**
+
 Clase estática auxiliar que proporciona métodos para la gestión de instancias de editores en la aplicación, incluyendo el guardado automático y la limpieza de editores inactivos. Facilita la administración centralizada de los editores asociados a los documentos, optimizando recursos y asegurando la persistencia de los cambios.
 
 **Código simplificado:**
+
 ```csharp
 public static class EditorManagerHelper
 {
@@ -312,10 +326,13 @@ public static class EditorManagerHelper
 - El método `AutoSaveEditors` realiza tanto el guardado automático como la limpieza de recursos, eliminando y liberando editores inactivos para optimizar el uso de memoria.
 
 #### NameGeneratorHelper
+
 **Descripción general:**
+
 La clase estática `NameGeneratorHelper` proporciona métodos auxiliares para la generación de nombres de carpetas y documentos, así como para la generación de nombres basada en IA a partir del contenido de archivos. Está diseñada para facilitar la creación de nombres predeterminados y personalizados de forma automática y consistente.
 
 **Código simplificado:**
+
 ```csharp
 public static class NameGeneratorHelper
 {
@@ -365,10 +382,13 @@ public static class NameGeneratorHelper
 - La clase estática no requiere instanciación y está pensada para ser utilizada directamente desde cualquier parte de la aplicación.
 
 #### HotKeyHelper
+
 **Descripción general:**
+
 La clase estática `HotKeyHelper` proporciona métodos auxiliares para registrar, desregistrar y manejar combinaciones de teclas globales (hotkeys) en PowerPad. Permite asociar atajos de teclado (como `Ctrl+Shift+C` y `Ctrl+Shift+Espacio`) a una ventana específica, detectar su activación y ejecutar acciones como simular combinaciones de teclas o mostrar ventanas emergentes.
 
 **Código simplificado:**
+
 ```csharp
 public static class HotKeyHelper
 {
@@ -387,7 +407,7 @@ public static class HotKeyHelper
     public static void Register(Window window, bool register) { ... }
 	public static void SimulateCtrlC() { ... }
     public static void SimulateCtrlV() { ... }
-        
+
     private static async void OnWindowMessageReceived(object? _, WindowMessageEventArgs eventArgs) { ... }
 }
 ```
@@ -421,10 +441,13 @@ public static class HotKeyHelper
 - El método `OnWindowMessageReceived` es asíncrono y puede interactuar con el portapapeles y la interfaz de usuario.
 
 #### Base64ImageHelper
+
 **Descripción general:**
+
 La clase estática `Base64ImageHelper` proporciona métodos auxiliares para la codificación y decodificación de imágenes en formato Base64, facilitando la conversión entre cadenas Base64 e imágenes (`BitmapImage`) y la selección de imágenes desde el sistema de archivos para convertirlas a Base64. Se utiliza principalmente para elegir y mostrar los iconos personalizados de los agentes.
 
 **Código simplificado:**
+
 ```csharp
 public static class Base64ImageHelper
 {
@@ -454,10 +477,13 @@ public static class Base64ImageHelper
 ## F.6 Clase principal de aplicación
 
 #### App
-**Descripción general:**  
+
+**Descripción general:**
+
 La clase `App` representa la clase principal de una aplicación WinUI3. En PowerPad es responsable de la inicialización de servicios, la configuración de la inyección de dependencias, el almacenamiento de configuración de la aplicación y la gestión de la ventana principal. Además, define los recursos globales de la aplicación, incluyendo estilos y diccionarios de recursos.
 
-**Estructura visual simplificada:**  
+**Estructura visual simplificada:**
+
 ```xml
 <Application xmlns:local="using:PowerPad.WinUI">
     <Application.Resources>
@@ -471,16 +497,17 @@ La clase `App` representa la clase principal de una aplicación WinUI3. En Power
 </Application>
 ```
 
-**Código simplificado:**  
+**Código simplificado:**
+
 ```csharp
 public partial class App : Application
 {
     private static IServiceProvider _serviceProvider;
     private static IConfigStore _appConfigStore;
     private static MainWindow _window;
-    
+
     public App() { ... }
-    
+
     protected override void OnLaunched(LaunchActivatedEventArgs args) { ... }
     private static void InitializeServiceCollection() { ... }
     private static void InitializeMainWindow() { ... }
@@ -495,7 +522,8 @@ public partial class App : Application
 - `ResourceDictionary.MergedDictionaries`: Colección de diccionarios de recursos combinados.
 - `ResourceDictionary Source="Styles/GeneralStyles.xaml"`: Diccionario de estilos personalizados.
 
-**ViewModels:** 
+**ViewModels:**
+
 No los utiliza, pero sí inicializa a partir de la configuración almacenada los siguientes ViewModel:
 
 - `SettingsViewModel`: ViewModel para la configuración general de la aplicación.

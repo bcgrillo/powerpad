@@ -3,10 +3,13 @@ Este capítulo está dedicado a los servicios de inteligencia artificial que for
 ## B.1. Implementaciones
 
 #### OllamaService
+
 **Descripción general:**
+
 La clase `OllamaService` proporciona una implementación de los servicios de IA relacionados con Ollama, cumpliendo los contratos definidos por las interfaces `IAIService` e `IOllamaService`. Permite la gestión de modelos de IA, la inicialización, conexión, búsqueda, descarga, eliminación y control de procesos Ollama, así como la integración con modelos de Hugging Face cuando corresponda.
 
 **Código simplificado:**
+
 ```csharp
 public class OllamaService : IAIService, IOllamaService
 {
@@ -72,10 +75,13 @@ public class OllamaService : IAIService, IOllamaService
 - El correcto funcionamiento depende de la configuración previa (`AIServiceConfig`) y la presencia de los procesos/ejecutables necesarios en el entorno del sistema operativo.
 
 #### AzureAIService
+
 **Descripción general:**
+
 La clase `AzureAIService` implementa la interfaz `IAIService` y proporciona una integración para interactuar con servicios de inteligencia artificial de Azure. Permite inicializar la configuración del servicio, probar la conexión, obtener clientes de chat y buscar modelos de IA disponibles.
 
 **Código simplificado:**
+
 ```csharp
 public class AzureAIService : IAIService
 {
@@ -114,10 +120,13 @@ public class AzureAIService : IAIService
 - `ChatCompletionsClient GetClient()`: Recupera o inicializa el cliente de Azure AI. Lanza una excepción si la configuración es inválida o la inicialización falla.
 
 #### OpenAIService
+
 **Descripción general:**
+
 Implementación de la interfaz IAIService para interactuar con la API de OpenAI. Proporciona métodos para inicializar el servicio, probar la conexión, gestionar clientes de chat y buscar modelos de IA compatibles, asegurando la correcta configuración y filtrado de modelos según criterios específicos.
 
 **Código simplificado:**
+
 ```csharp
 public class OpenAIService : IAIService
 {
@@ -172,16 +181,19 @@ public class OpenAIService : IAIService
 - Los modelos de razonamiento tienen parámetros restringidos por limitaciones propias de la API de OpenAI.
 
 #### ChatService
+
 **Descripción general:**
+
 La clase `ChatService` implementa la interfaz `IChatService` y proporciona la lógica necesaria para interactuar con modelos de inteligencia artificial y agentes conversacionales. Permite gestionar modelos y parámetros por defecto, obtener respuestas de chat y agentes, y preparar los parámetros requeridos para cada interacción, incluyendo el filtrado de contenido especial en las respuestas.
 
 **Código simplificado:**
+
 ```csharp
 public class ChatService : IChatService
 {
     private static readonly string[] THINK_START_TAG = ["<think>", "<thought>"];
     private static readonly string[] THINK_END_TAG = ["</think>", "</thought>"];
-    
+
     private AIModel? _defaultModel;
     private AIParameters? _defaultParameters;
     private readonly IReadOnlyDictionary<ModelProvider, IAIService> _aiServices;
@@ -191,7 +203,7 @@ public class ChatService : IChatService
     public IAsyncEnumerable<ChatResponseUpdate> GetChatResponse(IList<ChatMessage> messages, AIModel? model = null, AIParameters? parameters = null, CancellationToken cancellationToken = default) { ... }
     public IAsyncEnumerable<ChatResponseUpdate> GetAgentResponse(IList<ChatMessage> messages, Agent agent, CancellationToken cancellationToken = default) { ... }
     public async Task GetAgentSingleResponse(string input, StringBuilder output, Agent agent, string? promptParameterValue, string? agentPrompt, CancellationToken cancellationToken = default) { ... }
-    
+
     private IChatClient ChatClient(AIModel model, out IEnumerable<string>? notAllowedParameters) { ... }
     private (IChatClient...) PrepareChatParameters(IList<ChatMessage> messages, AIModel? model, AIParameters? parameters) { ... }
     private (IChatClient...) PrepareAgentParameters(IList<ChatMessage> messages, Agent agent) { ... }
@@ -230,13 +242,17 @@ public class ChatService : IChatService
 (Diagrama de Microsoft?)
 
 ## B.2. Búsqueda de Modelos
+
 En esta sección se describe el mecanismo de búsqueda de modelos de inteligencia artificial dentro de PowerPad. Se explican las herramientas y utilidades desarrolladas para facilitar la localización, consulta y administración de modelos provenientes de la biblioteca de Ollama.com, o del API de Hugging Face o de GitHub Marketplace.
 
 #### OllamaLibraryHelper
+
 **Descripción general:**
+
 La clase estática `OllamaLibraryHelper` proporciona métodos auxiliares para interactuar con la biblioteca de modelos de inteligencia artificial de Ollama. Permite buscar modelos AI en la web de Ollama y generar URLs directas a modelos específicos. Además, incluye utilidades internas para el manejo de tamaños de modelos.
 
 **Código simplificado:**
+
 ```csharp
 public static class OllamaLibraryHelper
 {
@@ -274,10 +290,13 @@ public static class OllamaLibraryHelper
 - El método `Search` excluye modelos que sean únicamente de tipo "embedding" y evita duplicados por nombre.
 
 #### HuggingFaceLibraryHelper
+
 **Descripción general:**
+
 La clase estática `HuggingFaceLibraryHelper` proporciona métodos auxiliares para interactuar con la API de Hugging Face, permitiendo buscar modelos y obtener detalles de los mismos. Facilita la integración con Hugging Face para recuperar modelos compatibles con ciertas extensiones y obtener información relevante para su uso en aplicaciones de inteligencia artificial.
 
 **Código simplificado:**
+
 ```csharp
 public static class HuggingFaceLibraryHelper
 {
@@ -290,7 +309,7 @@ public static class HuggingFaceLibraryHelper
     public static async Task<IEnumerable<AIModel>> Search(string? query) { ... }
     public static string GetModelUrl(string modelName) { ... }
     private static string ExtractTagFromFileName(string filePath) { ... }
-    
+
     private sealed record HuggingFaceModel(string Id);
     private sealed record HuggingFaceFile(string Path, long Size);
 }
@@ -322,10 +341,13 @@ public static class HuggingFaceLibraryHelper
 - El método `Search` devuelve solamente modelos con capacidad de conversación a través del filtro `conversational`.
 
 #### GitHubMarketplaceModelsHelper
+
 **Descripción general:**
+
 Clase auxiliar estática para interactuar con el Marketplace de GitHub y buscar modelos de IA. Proporciona métodos para consultar y filtrar modelos según criterios específicos, excluyendo modelos restringidos y limitando la cantidad de resultados.
 
 **Código simplificado:**
+
 ```csharp
 public static class GitHubMarketplaceModelsHelper
 {

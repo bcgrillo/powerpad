@@ -1,17 +1,20 @@
 Este apartado se centra en presentar las principales implementaciones que hacen posible la organización y manipulación de documentos dentro de PowerPad. En concreto, se describen los servicios de gestión de documento, del espacio de trabajo y de ordenación de archivos, explicando su función y su papel dentro del sistema. El objetivo es mostrar de forma concisa cómo se ha resuelto técnicamente la gestión de documentos y el espacio de trabajo en la aplicación, facilitando así la comprensión de la estructura interna y la lógica que soporta estas operaciones.
 
 ## C.1. Convenciones
+
 **Descripción general:**
+
 La clase estática `Conventions` proporciona constantes y métodos utilitarios para manejar convenciones comunes para la gestión del espacio de trabajo, como extensiones de archivos y nombres de carpetas especiales.
 
 **Código simplificado:**
+
 ```csharp
 public static class Conventions
 {
     public const string AUTO_SAVE_EXTENSION = ".autosave";
     public const string TRASH_FOLDER_NAME = ".trash";
     public const string ORDER_FILE_NAME = ".order";
-    
+
     public static string AutosavePath(string path) { ... }
 }
 ```
@@ -29,10 +32,13 @@ public static class Conventions
 ## C.2. Implementaciones
 
 #### WorkspaceService
+
 **Descripción general:**
+
 La clase `WorkspaceService` implementa la interfaz `IWorkspaceService` y se encarga de gestionar las operaciones principales sobre un espacio de trabajo, como mover, crear, eliminar, renombrar y organizar carpetas y documentos. Utiliza un servicio de orden (`IOrderService`) para mantener el orden de los elementos y gestiona una carpeta de papelera para los elementos eliminados.
 
 **Código simplificado:**
+
 ```csharp
 public class WorkspaceService : IWorkspaceService
 {
@@ -96,10 +102,13 @@ public class WorkspaceService : IWorkspaceService
 - El servicio depende de `IOrderService` para mantener el orden de carpetas y documentos tras cada operación.
 
 #### OrderService
+
 **Descripción general:**
+
 La clase `OrderService` implementa la interfaz `IOrderService` y se encarga de gestionar el orden de las entradas (carpetas y documentos) dentro de carpetas, permitiendo cargar, actualizar y guardar el orden de los elementos cuando se crean, eliminan, renombran o mueven. Utiliza serialización JSON para persistir el orden en archivos asociados a cada carpeta.
 
 **Código simplificado:**
+
 ```csharp
 public class OrderService : IOrderService
 {
@@ -138,10 +147,13 @@ public class OrderService : IOrderService
 - Se utiliza el nombre del archivo `ORDER_FILE_NAME` definido en la clase `Conventions`.
 
 #### DocumentService
+
 **Descripción general:**
+
 Implementación de la interfaz `IDocumentService` para gestionar operaciones relacionadas con documentos, como cargar, guardar y autoguardar documentos en el sistema de archivos. Utiliza un contrato de editor para manipular el contenido del documento y actualiza el estado del documento según la operación realizada.
 
 **Código simplificado:**
+
 ```csharp
 public class DocumentService : IDocumentService
 {
