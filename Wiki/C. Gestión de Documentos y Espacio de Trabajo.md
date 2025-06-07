@@ -2,11 +2,11 @@ Este apartado se centra en presentar las principales implementaciones que hacen 
 
 ## C.1. Convenciones
 
-**Descripción general:**
+##### Descripción general:
 
 La clase estática `Conventions` proporciona constantes y métodos utilitarios para manejar convenciones comunes para la gestión del espacio de trabajo, como extensiones de archivos y nombres de carpetas especiales.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public static class Conventions
@@ -19,13 +19,13 @@ public static class Conventions
 }
 ```
 
-**Constantes:**
+##### Constantes:
 
 - `AUTO_SAVE_EXTENSION`: Extensión de archivo utilizada para archivos guardados automáticamente (".autosave").
 - `TRASH_FOLDER_NAME`: Nombre de la carpeta utilizada para almacenar archivos eliminados (".trash").
 - `ORDER_FILE_NAME`: Nombre del archivo utilizado para almacenar información de orden (".order").
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `AutosavePath(string path)`: Genera la ruta de archivo de auto-guardado agregando la extensión correspondiente al path base proporcionado.
 
@@ -33,11 +33,11 @@ public static class Conventions
 
 #### WorkspaceService
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `WorkspaceService` implementa la interfaz `IWorkspaceService` y se encarga de gestionar las operaciones principales sobre un espacio de trabajo, como mover, crear, eliminar, renombrar y organizar carpetas y documentos. Utiliza un servicio de orden (`IOrderService`) para mantener el orden de los elementos y gestiona una carpeta de papelera para los elementos eliminados.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class WorkspaceService : IWorkspaceService
@@ -70,11 +70,11 @@ public class WorkspaceService : IWorkspaceService
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Root`: Carpeta raíz del espacio de trabajo gestionado por el servicio.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `MoveDocument(Document document, Folder targetFolder, int targetPosition)`: Mueve un documento a otra carpeta y posición.
 - `MoveFolder(Folder folder, Folder targetFolder, int targetPosition)`: Mueve una carpeta a otra carpeta y posición.
@@ -88,7 +88,7 @@ public class WorkspaceService : IWorkspaceService
 - `RenameFolder(Folder folder, string newName)`: Renombra una carpeta.
 - `OpenWorkspace(string rootFolder)`: Abre un espacio de trabajo en la ruta especificada.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `InitializeRootFolder(string rootFolder)`: Inicializa la carpeta raíz y carga su contenido recursivamente.
 - `GetFoldersRecursive(string path)`: Obtiene todas las subcarpetas de una ruta de forma recursiva.
@@ -96,18 +96,18 @@ public class WorkspaceService : IWorkspaceService
 - `GetAvailableNewPath(Folder parent, Document child, string? newName = null)`: Obtiene una ruta disponible para un documento, evitando conflictos de nombres.
 - `GetAvailableNewPath(Folder parent, Folder child, string? newName = null)`: Obtiene una ruta disponible para una carpeta, evitando conflictos de nombres.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El servicio utiliza una carpeta especial de papelera para almacenar los elementos eliminados, evitando su eliminación permanente inmediata.
 - El servicio depende de `IOrderService` para mantener el orden de carpetas y documentos tras cada operación.
 
 #### OrderService
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `OrderService` implementa la interfaz `IOrderService` y se encarga de gestionar el orden de las entradas (carpetas y documentos) dentro de carpetas, permitiendo cargar, actualizar y guardar el orden de los elementos cuando se crean, eliminan, renombran o mueven. Utiliza serialización JSON para persistir el orden en archivos asociados a cada carpeta.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class OrderService : IOrderService
@@ -125,11 +125,11 @@ public class OrderService : IOrderService
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `_context`: Contexto de serialización JSON utilizado para leer y escribir el orden de las entradas.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `LoadOrderRecursive(Folder root)`: Carga recursivamente el orden de las entradas en la carpeta raíz y todas sus subcarpetas.
 - `UpdateOrderAfterCreation(Folder parentFolder, string newEntryName)`: Actualiza el orden tras la creación de una nueva entrada, añadiéndola al final.
@@ -137,22 +137,22 @@ public class OrderService : IOrderService
 - `UpdateOrderAfterRename(Folder parentFolder, string entryOldName, string entryNewName)`: Actualiza el orden tras renombrar una entrada, reemplazando el nombre antiguo por el nuevo.
 - `UpdateOrderAfterMove(Folder sourceFolder, Folder? targetFolder, string movedEntryName, int newPosition)`: Actualiza el orden tras mover una entrada entre carpetas o dentro de la misma, ajustando su posición.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `LoadOrder(Folder parentFolder)`: Carga el orden de las entradas de una carpeta desde archivo, inicializándolo si no existe, y sincroniza con los elementos actuales.
 - `SaveOrder(Folder parentFolder, List<string> order)`: Guarda el orden de las entradas de una carpeta en un archivo y actualiza la propiedad correspondiente.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Se utiliza el nombre del archivo `ORDER_FILE_NAME` definido en la clase `Conventions`.
 
 #### DocumentService
 
-**Descripción general:**
+##### Descripción general:
 
 Implementación de la interfaz `IDocumentService` para gestionar operaciones relacionadas con documentos, como cargar, guardar y autoguardar documentos en el sistema de archivos. Utiliza un contrato de editor para manipular el contenido del documento y actualiza el estado del documento según la operación realizada.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class DocumentService : IDocumentService
@@ -163,7 +163,7 @@ public class DocumentService : IDocumentService
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void LoadDocument(Document document, IEditorContract editor)`: Carga el contenido del documento en el editor, priorizando la versión autoguardada si existe, y actualiza el estado del documento.
 - `Task AutosaveDocument(Document document, IEditorContract editor)`: Guarda de forma asíncrona el contenido actual del editor en la ruta de autoguardado y actualiza el estado del documento a autoguardado.

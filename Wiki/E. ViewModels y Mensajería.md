@@ -6,11 +6,11 @@ En el contexto de la **arquitectura MVVM**, los **ViewModels** constituyen una p
 
 #### ChatViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 `ChatViewModel` es un ViewModel encargado de gestionar la funcionalidad de chat, incluyendo la colección de mensajes, los parámetros de IA, el modelo de IA asociado y los comandos para manipular los mensajes. Supervisa los cambios en los mensajes y actualiza el estado de error del chat según corresponda.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class ChatViewModel : ObservableObject
@@ -31,7 +31,7 @@ public class ChatViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Model`: Modelo de IA asociado al chat.
 - `Parameters`: Parámetros de IA utilizados para configurar el comportamiento del chat.
@@ -39,30 +39,30 @@ public class ChatViewModel : ObservableObject
 - `ChatError`: Indica si existe un error en el chat.
 - `Messages`: Colección observable de mensajes en el chat. Se inicializa con un manejador para supervisar cambios.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - `RemoveLastMessageCommand`: Comando para eliminar el último mensaje del chat.
 - `ClearMessagesCommand`: Comando para limpiar todos los mensajes del chat.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `MessageCollectionChangedHandler(NotifyCollectionChangedEventArgs eventArgs)`: Maneja los cambios en la colección de mensajes y actualiza la propiedad `ChatError` según el tipo de cambio realizado.
 
-**Nota importante:**
+##### Nota importante:
 
 - La colección `Messages` se inicializa con un manejador de eventos para detectar cambios y actualizar el estado de error del chat automáticamente.
 
 #### MessageViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `MessageViewModel` representa un mensaje dentro del chat, incluyendo su contenido, fecha y hora de creación, el rol del remitente, razonamientos opcionales, mensajes de error y estados de carga. Es utilizada para modelar cada mensaje en la interfaz de usuario de un chat, permitiendo el enlace de propiedades y la notificación de cambios.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class MessageViewModel : ObservableObject
@@ -77,7 +77,7 @@ public class MessageViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Content`: Contenido del mensaje.
 - `Reasoning`: Razonamiento o explicación asociada al mensaje.
@@ -85,16 +85,16 @@ public class MessageViewModel : ObservableObject
 - `LoadingMessage`: Mensaje mostrado durante el estado de carga.
 - `ErrorMessage`: Mensaje de error si el mensaje tuvo algún problema.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `DateTime`: Fecha y hora de creación del mensaje (solo lectura).
 - `Role`: Rol del remitente del mensaje (solo lectura).
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Las propiedades `Loading` y `LoadingMessage` están decoradas con `[JsonIgnore]`, por lo que no se serializan ni deserializan en operaciones JSON.
 
@@ -103,11 +103,11 @@ public class MessageViewModel : ObservableObject
 
 #### AIModelViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel que representa y gestiona el estado de un modelo de inteligencia artificial (AIModel) en la aplicación. Permite controlar su disponibilidad, habilitación, descarga, progreso y errores asociados, además de exponer información relevante del modelo para la interfaz de usuario.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class AIModelViewModel : ObservableObject
@@ -142,7 +142,7 @@ public class AIModelViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Enabled`: Indica si el modelo de IA está habilitado.
 - `Available`: Indica si el modelo de IA está disponible para su uso.
@@ -150,7 +150,7 @@ public class AIModelViewModel : ObservableObject
 - `Progress`: Progreso de la descarga del modelo de IA.
 - `DownloadError`: Indica si ha habido un error durante la descarga.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_aiModel`: Modelo `AIModel` subyacente.
 - `Name`: Nombre único del modelo de IA.
@@ -163,11 +163,11 @@ public class AIModelViewModel : ObservableObject
 - `CanAdd`: Indica si el modelo puede ser añadido (no disponible, no descargando y tamaño permitido).
 - `CardName`: Devuelve el nombre para mostrar o, en su defecto, el nombre único.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables y en algunas propiedades públicas modificadas explícitamente.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `AIModel GetRecord()`: Recupera el registro subyacente del modelo de IA.
 - `override bool Equals(object? obj)`: Determina si el objeto especificado es igual al actual.
@@ -177,12 +177,12 @@ public class AIModelViewModel : ObservableObject
 - `void UpdateDownloadProgress(double progress)`: Actualiza el progreso de descarga del modelo de IA.
 - `void SetDownloadError()`: Establece el estado de error de descarga a verdadero.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void OnAvailableChanged(bool value)`: Notifica el cambio de la propiedad `Available` y actualiza `CanAdd`.
 - `void OnDownloadingChanged(bool value)`: Notifica el cambio de la propiedad `Downloading` y actualiza `CanAdd`.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Algunas propiedades están marcadas con `[JsonIgnore]` para evitar su persistencia.
 - La clase implementa operadores de igualdad y desigualdad para facilitar la comparación entre instancias teniendo en cuenta los valores del modelo subyacente.
@@ -190,11 +190,11 @@ public class AIModelViewModel : ObservableObject
 
 #### AIParameterViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 Clase ViewModel para gestionar los parámetros de IA, proporcionando enlace de datos y notificación de cambios. Permite encapsular y modificar los parámetros de IA de manera reactiva, facilitando la interacción con la interfaz de usuario.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class AIParametersViewModel : ObservableObject
@@ -222,11 +222,11 @@ public class AIParametersViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - No hay propiedades marcadas explícitamente con `[ObservableProperty]`.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_aiParameters`: Modelo `AIParameters` subyacente.
 - `SystemPrompt`: Indica el prompt del sistema que sirve como instrucción inicial para la IA.
@@ -235,11 +235,11 @@ public class AIParametersViewModel : ObservableObject
 - `MaxOutputTokens`: Número máximo de tokens permitidos en la respuesta de salida.
 - `MaxConversationLength`: Longitud máxima de una conversación en número de mensajes.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en algunas propiedades públicas modificadas explícitamente.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `AIParameters GetRecord()`: Devuelve el registro subyacente de parámetros de IA.
 - `void SetRecord(AIParameters parameters)`: Actualiza el ViewModel con un nuevo registro de parámetros de IA.
@@ -249,18 +249,18 @@ public class AIParametersViewModel : ObservableObject
 - `static bool operator !=(AIParametersViewModel? left, AIParametersViewModel? right)`: Determina si dos instancias no son iguales (sobrecarga del operador de desigualdad).
 - `AIParametersViewModel Copy()`: Crea una copia superficial de la instancia actual duplicando el modelo subyacente.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - La clase implementa operadores de igualdad y desigualdad para facilitar la comparación entre instancias teniendo en cuenta los valores del modelo subyacente.
 - Posee un constructor específico para deserialización decorado con `[JsonConstructor]`.
 
 #### AIModelsViewModelBase
 
-**Descripción general:**
+##### Descripción general:
 
 Clase base abstracta para la gestión de modelos de IA en la aplicación. Proporciona funcionalidad para filtrar, buscar, añadir y eliminar modelos, así como gestionar el estado de disponibilidad de los proveedores de modelos de IA. Está diseñada para ser utilizada en el patrón MVVM a través de observables y comandos, facilitando la interacción con los modelos de IA desde la interfaz.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public abstract class AIModelsViewModelBase : ObservableObject, IDisposable
@@ -293,13 +293,13 @@ public abstract class AIModelsViewModelBase : ObservableObject, IDisposable
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `FilteredModels`: Colección de modelos de IA filtrados según el proveedor actual.
 - `SearchResultModels`: Colección de modelos de IA resultado de una búsqueda.
 - `Searching`: Indica si se está realizando una operación de búsqueda de modelos.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `FilteredModelsEmpty`: Indica si la colección de modelos filtrados está vacía.
 - `SearchResultModelsEmpty`: Indica si la colección de resultados de búsqueda está vacía tras completarse la búsqueda.
@@ -309,38 +309,38 @@ public abstract class AIModelsViewModelBase : ObservableObject, IDisposable
 - `_modelProvider`: Proveedor de los modelos de IA (protegido).
 - `_searchCompleted`: Indica si una búsqueda iniciada ha finalizado (privado).
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - `SetDefaultModelCommand`: Comando para establecer un modelo de IA como predeterminado.
 - `RemoveModelCommand`: Comando asíncrono para eliminar un modelo de IA.
 - `AddModelCommand`: Comando asíncrono para añadir un modelo de IA.
 - `SearchModelCommand`: Comando asíncrono para buscar modelos de IA.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `Dispose()`: Libera los recursos utilizados por la clase.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `FilterModels(NotifyCollectionChangedEventArgs eventArgs)`: Filtra los modelos según el proveedor y actualiza la colección filtrada.
 - `UpdateRepeaterState()`: Actualiza el estado de la funcionalidad de repetidor según la disponibilidad del proveedor.
 - `Dispose(bool disposing)`: Libera los recursos utilizados por la clase (virtual y protegido).
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - La clase gestiona suscripciones a eventos de cambio en la configuración y la colección de modelos, y se encarga de desuscribirse correctamente al ser liberada.
 
 #### OllamaModelsViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 `OllamaModelsViewModel` es un ViewModel especializado en la gestión de modelos de IA del proveedor Ollama. Permite refrescar la lista de modelos disponibles, buscar modelos, añadir y eliminar modelos, todo ello integrándose con un servicio Ollama y gestionando el estado de los modelos en la aplicación. Hereda de `AIModelsViewModelBase`.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class OllamaModelsViewModel : AIModelsViewModelBase
@@ -358,40 +358,40 @@ public class OllamaModelsViewModel : AIModelsViewModelBase
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - No se declaran propiedades con `[ObservableProperty]` en esta clase, pero hereda de `AIModelsViewModelBase`, que contiene propiedades observables relevantes.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_ollamaService;`: Servicio para interactuar con Ollama.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject` (a través de la jerarquía), notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - `RefreshModelsCommand`: Comando asíncrono para actualizar la lista de modelos disponibles utilizando el servicio de Ollama.
 
-**Métodos sobrecargados:**
+##### Métodos sobrecargados:
 
 - `protected override async Task SearchModels(string? query)`: Busca modelos de IA según la consulta proporcionada y las características del equipo, deshabilitando las descargas de aquellos modelos que por tamaño no pueden ser ejecutados en el equipo local.
 - `protected override async Task AddModel(AIModelViewModel? aiModel)`: Añade un modelo de IA a la colección de modelos disponibles, gestionando la descarga.
 - `protected override async Task RemoveModel(AIModelViewModel? aiModel)`: Elimina un modelo de IA de la colección, cancelando la descarga si está en curso o eliminándolo físicamente a través del servicio.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - La lógica de actualización y búsqueda de modelos está orientada a mantener sincronizada la colección local con el estado real del servicio Ollama.
 
 
 #### HuggingFaceModelsViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel especializado en la gestión de modelos de IA de Hugging Face. Hereda de `OllamaModelsViewModel` y configura el proveedor de modelos como Hugging Face, permitiendo así funcionalidades específicas para este tipo de modelos dentro de la aplicación.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class HuggingFaceModelsViewModel : OllamaModelsViewModel
@@ -400,29 +400,29 @@ public class HuggingFaceModelsViewModel : OllamaModelsViewModel
 }
 ```
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - Hereda todas las propiedades públicas y privadas de `OllamaModelsViewModel`.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject` (a través de la jerarquía), notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - Hereda los comandos expuestos por `OllamaModelsViewModel`.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Este ViewModel sirve como especialización para el proveedor Hugging Face, permitiendo su identificación y gestión diferenciada respecto a otros proveedores de modelos IA.
 
 #### GitHubModelsViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel especializado en la gestión de modelos de IA de GitHub Models. Hereda de `AIModelsViewModelBase` y configura el proveedor de modelos como GitHub, permitiendo así funcionalidades específicas para este tipo de modelos dentro de la aplicación.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class GitHubModelsViewModel : AIModelsViewModelBase
@@ -431,29 +431,29 @@ public class GitHubModelsViewModel : AIModelsViewModelBase
 }
 ```
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - Hereda todas las propiedades públicas y privadas de `AIModelsViewModelBase`.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject` (a través de la jerarquía), notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - Hereda los comandos expuestos por `AIModelsViewModelBase`.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Este ViewModel sirve como especialización para el proveedor GitHub Models, permitiendo su identificación y gestión diferenciada respecto a otros proveedores de modelos IA.
 
 #### OpenAIModelsViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel especializado en la gestión de modelos de IA de OpenAI. Hereda de `AIModelsViewModelBase` y configura el proveedor de modelos como OpenAI, permitiendo así funcionalidades específicas para este tipo de modelos dentro de la aplicación.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class OpenAIModelsViewModel : AIModelsViewModelBase
@@ -462,31 +462,31 @@ public class OpenAIModelsViewModel : AIModelsViewModelBase
 }
 ```
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - Hereda todas las propiedades públicas y privadas de `AIModelsViewModelBase`.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject` (a través de la jerarquía), notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - Hereda los comandos expuestos por `AIModelsViewModelBase`.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Este ViewModel sirve como especialización para el proveedor OpenAI, permitiendo su identificación y gestión diferenciada respecto a otros proveedores de modelos IA.
 
 ### E.1.3 Gestión de agentes
 
-##### AgentViewModel
+#### AgentViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 Se trata de un ViewModel que representa a un agente de IA, encapsulando sus propiedades configurables y comportamientos asociados. Permite la edición y visualización de los parámetros del agente, su icono, visibilidad en distintas áreas de la aplicación y facilita la integración con el patrón MVVM. Gestiona la serialización/deserialización, notificación de cambios y operaciones de copia.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class AgentViewModel : ObservableObject
@@ -533,14 +533,14 @@ public class AgentViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Icon`: Icono asociado al agente.
 - `ShowInNotes`: Indica si el agente se muestra en la sección de notas.
 - `ShowInChats`: Indica si el agente se muestra en la sección de chats.
 - `IsSelected`: Indica si el agente está seleccionado actualmente.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_agent`: Modelo `Agent` subyacente.
 - `Id`: Identificador único del agente.
@@ -556,11 +556,11 @@ public class AgentViewModel : ObservableObject
 - `HasPromptParameter`: Indica si el agente tiene un parámetro de prompt (calculado).
 - `HasAIParameters`: Indica si el agente tiene parámetros de IA configurados (calculado).
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `Agent GetRecord()`: Devuelve el registro subyacente del agente.
 - `void SetRecord(Agent agent)`: Actualiza las propiedades del agente con los valores del registro proporcionado.
@@ -570,11 +570,11 @@ public class AgentViewModel : ObservableObject
 - `static bool operator !=(AgentViewModel? left, AgentViewModel? right)`: Determina si dos instancias no son iguales (sobrecarga del operador de desigualdad).
 - `AgentViewModel Copy()`: Crea una copia superficial de la instancia actual duplicando el modelo subyacente.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void OnIconChanged(AgentIcon oldValue, AgentIcon newValue)`: Se ejecuta cuando cambia el icono, actualizando la representación visual y notificando el cambio de propiedad.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Algunas propiedades están marcadas con `[JsonIgnore]` para evitar su persistencia.
 - La clase implementa operadores de igualdad y desigualdad para facilitar la comparación entre instancias teniendo en cuenta los valores del modelo subyacente.
@@ -582,11 +582,11 @@ public class AgentViewModel : ObservableObject
 
 #### AgentsCollectionViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 Se trata del ViewModel encargado de gestionar la colección de agentes (`AgentViewModel`) en la aplicación. Se encarga de inicializar, exponer y mantener sincronizada la colección de agentes, así como de notificar cambios relevantes mediante eventos. Además, proporciona utilidades para obtener agentes por identificador y generar iconos aleatorios para los agentes, adaptados al tema de la aplicación. Gestiona la persistencia de la colección en el almacén de configuración.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class AgentsCollectionViewModel : ObservableObject
@@ -610,37 +610,37 @@ public class AgentsCollectionViewModel : ObservableObject
 }
 ```
 
-**Constantes:**
+##### Constantes:
 
 - `RANDOM_GLYPHS`: Array de símbolos en formato unicode para iconos de agentes.
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Agents`: Colección observable de agentes gestionados por el ViewModel.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_settings`: Referencia al ViewModel de configuración de la aplicación.
 - `_configStore`: Referencia al almacén de configuración para persistencia.
 - `_currentGlyphIndex`: Índice actual para seleccionar el símbolo aleatorio.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `AgentViewModel? GetAgent(Guid id)`: Devuelve el agente cuyo identificador coincide con el proporcionado, si existe.
 - `AgentIcon GenerateIcon()`: Genera un icono aleatorio para un agente, adaptando el color al tema de la aplicación.
 
-**Eventos:**
+##### Eventos:
 
 - `AgentsAvailabilityChanged`: Evento que se dispara cuando cambia la disponibilidad de los agentes (por cambios en la colección o en sus propiedades).
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `CollectionChangedHandler(NotifyCollectionChangedEventArgs eventArgs)`: Gestiona los cambios en la colección de agentes (altas, bajas), suscribiendo/desuscribiendo a eventos y notificando cambios.
 - `CollectionPropertyChangedHandler(PropertyChangedEventArgs eventArgs)`: Gestiona los cambios en las propiedades de los agentes individuales, notificando y persistiendo los cambios.
 - `SaveAgents()`: Guarda la colección actual de agentes en el almacén de configuración.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - La colección `Agents` se inicializa y persiste automáticamente en el almacén de configuración (`IConfigStore`).
 
@@ -648,11 +648,11 @@ public class AgentsCollectionViewModel : ObservableObject
 
 #### FolderEntryViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 Este ViewModel representa una entrada del sistema de archivos, ya sea una carpeta o un documento, dentro de la aplicación. Gestiona el estado visual (selección, expansión, símbolo), la jerarquía de carpetas/documentos, y expone comandos para eliminar y renombrar entradas. Además, responde a mensajes de cambios en las entradas mediante el patrón Messenger y notifica cambios de propiedades para la interfaz de usuario.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChanged>
@@ -689,12 +689,12 @@ public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChan
 }
 ```
 
-**Constantes:**
+##### Constantes:
 
 - `CLOSED_FOLDER_GLYPH`: Símbolo unicode para carpeta cerrada (`"\uE8B7"`).
 - `OPEN_FOLDER_GLYPH`: Símbolo unicode para carpeta abierta (`"\uE838"`).
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Glyph`: Símbolo que representa visualmente la carpeta o documento.
 - `Type`: Tipo de entrada (carpeta o documento).
@@ -702,7 +702,7 @@ public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChan
 - `IsSelected`: Indica si la entrada está seleccionada.
 - `Children`: Colección de entradas hijas (solo para carpetas).
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_entry`: Modelo `IFolderEntry` subyacente.
 - `_documentType`: Tipo de documento privado, si aplica.
@@ -713,36 +713,36 @@ public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChan
 - `ModelEntry`: Propiedad pública para el modelo subyacente `_entry`.
 - `Position`: Posición de la entrada dentro de su carpeta.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - `DeleteCommand`: Elimina la entrada (carpeta o documento).
 - `RenameCommand`: Renombra la entrada.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void NameChanged()`: Notifica que el nombre de la entrada ha cambiado.
 - `void Receive(FolderEntryChanged message)`: Maneja la recepción de mensajes de cambio en la entrada.
 - `void OnIsExpandedChanged(bool value)`: Actualiza el símbolo cuando cambia el estado expandido de la carpeta.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void Delete()`: Lógica para eliminar la entrada y notificar el cambio.
 - `void Rename(string? newName)`: Lógica para renombrar la entrada y notificar el cambio.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Utiliza el patrón Messenger para sincronizar cambios de nombre y eliminación entre diferentes instancias del ViewModel.
 #### WorkspaceViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 Es el ViewModel encargado de gestionar el espacio de trabajo de la aplicación, incluyendo la administración de carpetas, documentos y la lista de espacios de trabajo abiertos recientemente. Facilita la interacción entre la interfaz de usuario y los servicios de gestión de archivos y configuración, permitiendo operaciones como mover, crear y abrir entradas (carpetas o documentos) dentro del espacio de trabajo.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class WorkspaceViewModel : ObservableObject
@@ -769,47 +769,47 @@ public class WorkspaceViewModel : ObservableObject
 }
 ```
 
-**Constantes:**
+##### Constantes:
 
 - `MAX_RECENTLY_WORKSPACES`: Numero máximo de espacios de trabajo recientes (5).
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Root`: Representa la entrada raíz (carpeta principal) del espacio de trabajo.
 - `RecentlyWorkspaces`: Colección de rutas de los espacios de trabajo abiertos recientemente.
 - `CurrentDocumentPath`: Ruta del documento actualmente abierto.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_workspaceService`: Servicio privado para la gestión del espacio de trabajo.
 - `_appConfigStore`: Servicio privado para la gestión de la configuración persistente.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - `OpenWorkspaceCommand`: Permite abrir un espacio de trabajo a partir de una ruta.
 - `MoveEntryCommand`: Permite mover una entrada a otra ubicación dentro del espacio de trabajo.
 - `NewEntryCommand`: Permite crear una nueva entrada (carpeta o documento).
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void OnCurrentDocumentPathChanged(string? oldValue, string? newValue)`: Actualiza la configuración persistida cuando cambia la ruta del documento actual.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - La clase utiliza servicios inyectados para la gestión del espacio de trabajo y la configuración persistente.
 - Utiliza el patrón Messenger para notificar la creación de nuevas entradas.
 
 #### DocumentViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 `DocumentViewModel` es un ViewModel encargado de gestionar un documento en la aplicación, incluyendo su estado, guardado, renombrado y generación automática de nombres. Facilita la interacción entre la vista y el modelo de documento, gestionando comandos y notificando cambios relevantes. Implementa el patrón MVVM y utiliza mensajería para comunicar cambios en el nombre del documento. También contiene la lógica para invocar la generación automática de nombre.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged>
@@ -845,17 +845,17 @@ public class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged
 }
 ```
 
-**Constantes:**
+##### Constantes:
 
 - `MIN_WORDS_GENERATE_NAME`: Número mínimo de palabras requeridas en el documento para habilitar la generación automática de nombre. Valor: 50.
 - `SAMPLE_LENGHT_GENERATE_NAME`: Longitud máxima de caracteres del contenido que se toma como muestra para generar el nombre automático. Valor: 500.
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `PreviousContent`: Contenido anterior del documento, permite navegación o deshacer cambios.
 - `NextContent`: Contenido siguiente del documento, permite rehacer cambios.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_documentService`: Servicio para operaciones sobre documentos (guardar, cargar, etc.).
 - `_document`: Instancia del documento gestionado (modelo subyacente).
@@ -866,37 +866,37 @@ public class DocumentViewModel : ObservableObject, IRecipient<FolderEntryChanged
 - `CanSave`: Indica si el documento puede ser guardado.
 - `LastSaveTime`: Fecha y hora de la última vez que se guardó el documento.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Comandos:**
+##### Comandos:
 
 - `SaveCommand`: Comando asíncrono para guardar el documento.
 - `AutosaveCommand`: Comando asíncrono para autoguardado del documento.
 - `RenameCommand`: Comando para renombrar el documento.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `NameChanged()`: Notifica que el nombre del documento ha cambiado y actualiza la propiedad correspondiente.
 - `Receive(FolderEntryChanged message)`: Maneja la recepción de mensajes de cambio en el documento, actualizando el nombre si procede.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `GenerateName()`: Genera un nombre automático para el documento basado en su contenido.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El nombre del documento puede ser generado automáticamente si cumple ciertos criterios de contenido (al menos 50 palabras). Para ello se invoca a `NameGeneratorHelper`.
 - Utiliza el patrón Messenger para sincronizar cambios de nombre y eliminación entre diferentes instancias del ViewModel.
 
 #### DraftDocumentViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel que representa un documento borrador, gestionando su contenido actual y permitiendo la navegación entre versiones previas y siguientes del contenido. Similar a `DocumentViewModel` pero simplificado para su gestión sin persistencia en la ventana de edición rápida.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class DraftDocumentViewModel : ObservableObject
@@ -907,13 +907,13 @@ public class DraftDocumentViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `Content`: Contenido actual del documento borrador.
 - `PreviousContent`: Contenido anterior del documento borrador, útil para deshacer cambios o navegar hacia atrás.
 - `NextContent`: Contenido siguiente del documento borrador, útil para rehacer cambios o navegar hacia adelante.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
@@ -921,11 +921,11 @@ public class DraftDocumentViewModel : ObservableObject
 
 #### AIServiceConfigViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel encargado de gestionar la configuración de un servicio de IA, incluyendo la URL base, la clave de API y el estado de conexión. Permite notificar cambios de configuración y estado, así como probar la conexión con el servicio de IA. Es utilizado en la capa de presentación para enlazar la configuración editable y su estado en la interfaz de usuario.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class AIServiceConfigViewModel : ObservableObject
@@ -952,11 +952,11 @@ public class AIServiceConfigViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - No hay propiedades marcadas explícitamente con `[ObservableProperty]`.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_aiServiceConfig`: Instancia interna que almacena la configuración real.
 - `BaseUrl`: URL base del servicio de IA.
@@ -964,31 +964,31 @@ public class AIServiceConfigViewModel : ObservableObject
 - `ServiceStatus`: Estado actual del servicio de IA (no serializable).
 - `ErrorMessage`: Mensaje de error relacionado con el servicio de IA (no serializable).
 
-**Eventos:**
+##### Eventos:
 
 - `ConfigChanged`: Se dispara cuando cambian las propiedades de configuración.
 - `StatusChanged`: Se dispara cuando cambia el estado del servicio o el mensaje de error.
 - Al heredar de `ObservableObject`, notifica cambios en algunas propiedades públicas modificadas explícitamente.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `AIServiceConfig GetRecord()`: Devuelve la configuración actual del servicio de IA.
 - `Task TestConnection(IAIService aiService)`: Prueba la conexión con el servicio de IA y actualiza el estado y mensaje de error.
 - `void ResetStatus()`: Restablece el estado del servicio a desconocido y limpia el mensaje de error.
 - `void SetErrorStatus(string message)`: Establece el estado del servicio como error y asigna un mensaje de error.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Las propiedades `ServiceStatus` y `ErrorMessage` están marcadas con `[JsonIgnore]` para evitar su persistencia.
 - Posee un constructor específico para deserialización decorado con `[JsonConstructor]`.
 
 #### SettingsViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel responsable de gestionar la configuración de la aplicación, incluyendo tanto los ajustes generales como la configuración de modelos de IA. Permite comprobar la disponibilidad de los servicios de IA y sincroniza los cambios de configuración con el almacén de configuración.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class SettingsViewModel : ObservableObject
@@ -1006,39 +1006,39 @@ public class SettingsViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `IsAIAvailable`: Indica si los servicios de IA están disponibles actualmente en función de la configuración y los modelos habilitados.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_configStore`: Referencia al almacén de configuración utilizado para persistir los cambios.
 - `General`: ViewModel de configuración general de la aplicación.
 - `Models`: ViewModel de configuración de modelos de IA.
 
-**Eventos:**
+##### Eventos:
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `Task TestConnections()`: Prueba la conexión de todos los servicios de IA habilitados y actualiza su estado.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void UpdateAIAvailability()`: Actualiza la propiedad `IsAIAvailable` y el modelo por defecto según la disponibilidad de los modelos y proveedores de IA configurados.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Durante su construcción se realiza la carga de la configuración general y de modelos a partir del almacén de configuración, y se suscribe a los eventos necesarios para la sincronización y actualización de disponibilidad de IA.
 
 #### GeneralSettingsViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 ViewModel encargado de gestionar la configuración general de la aplicación, incluyendo la activación y configuración de servicios de IA (Ollama, AzureAI, OpenAI), preferencias de interfaz de usuario y otros ajustes globales. Permite la inicialización y control dinámico de los servicios de IA, así como la gestión de los proveedores de modelos disponibles.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class GeneralSettingsViewModel : ObservableObject
@@ -1073,7 +1073,7 @@ public class GeneralSettingsViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `OllamaEnabled`: Indica si el servicio de IA Ollama está habilitado.
 - `AzureAIEnabled`: Indica si el servicio de IA Azure está habilitado.
@@ -1088,17 +1088,17 @@ public class GeneralSettingsViewModel : ObservableObject
 - `AgentPrompt`: Texto del prompt del agente.
 - `EnableHotKeys`: Indica si los atajos de teclado están habilitados.
 
-**Eventos:**
+##### Eventos:
 
 - `ProviderAvailabilityChanged`: Se dispara cuando cambia la disponibilidad de proveedores.
 - `ServiceEnablementChanged`: Se dispara cuando cambia el estado de habilitación de un servicio.
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `InitializeAIServices()`: Inicializa los servicios de IA según su configuración y estado de habilitación.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `OnAcrylicBackgroundChanging(bool value)`: Gestiona cambios en el fondo de la interfaz.
 - `OnEnableHotKeysChanging(bool value)`: Gestiona la activación de atajos de teclado.
@@ -1110,17 +1110,17 @@ public class GeneralSettingsViewModel : ObservableObject
 - `SetServiceConfig(bool enabled, AIServiceConfigViewModel config, ModelProvider modelProvider, bool keyIsRequired)`: Configura un servicio de IA según su configuración.
 - `AvailableProvidersCollectionChangedHandler(NotifyCollectionChangedEventArgs eventArgs)`: Gestiona los cambios en la colección de proveedores disponibles y notifica.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - La inicialización de las propiedades `OllamaConfig`, `AzureAIConfig` y `OpenAIConfig` suscribe automáticamente los eventos de cambio de estado y configuración de cada servicio.
 
 #### ModelsSettingsViewModel
 
-**Descripción general:**
+##### Descripción general:
 
 Es el ViewModel encargado de almacenar y gestionar la configuración de los modelos de IA en la aplicación. Permite seleccionar el modelo por defecto, definir parámetros predeterminados, controlar si se envían estos parámetros y gestionar la colección de modelos disponibles. Notifica cambios relevantes a través de eventos y mantiene sincronización con el servicio de chat.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class ModelsSettingsViewModel : ObservableObject
@@ -1142,20 +1142,20 @@ public class ModelsSettingsViewModel : ObservableObject
 }
 ```
 
-**Propiedades observables:**
+##### Propiedades observables:
 
 - `DefaultModel`: Modelo de IA seleccionado como predeterminado.
 - `SendDefaultParameters`: Indica si se deben enviar los parámetros predeterminados al servicio de chat.
 - `DefaultParameters`: Parámetros predeterminados para el modelo de IA.
 - `AvailableModels`: Colección de modelos de IA disponibles.
 
-**Eventos:**
+##### Eventos:
 
 - `ModelAvailabilityChanged`: Se dispara cuando cambia la disponibilidad de modelos.
 - `DefaultModelChanged`: Se dispara cuando cambia el modelo predeterminado.
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `OnDefaultModelChanged(AIModelViewModel? value)`: Se ejecuta cuando cambia el modelo predeterminado; actualiza el servicio de chat y lanza el evento correspondiente.
 - `OnSendDefaultParametersChanged(bool value)`: Se ejecuta al cambiar la propiedad `SendDefaultParameters`; actualiza los parámetros en el servicio de chat.
@@ -1163,7 +1163,7 @@ public class ModelsSettingsViewModel : ObservableObject
 - `AvailableModelsCollectionChangedHandler(NotifyCollectionChangedEventArgs eventArgs)`: Gestiona los cambios en la colección de modelos disponibles, suscribiendo o desuscribiendo a eventos de cambio de propiedad y notificando la disponibilidad.
 - `AvailableModelsCollectionPropertyChangedHandler(PropertyChangedEventArgs eventArgs)`: Gestiona los cambios de propiedades dentro de los modelos disponibles, notificando si cambia la propiedad `Enabled`.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El ViewModel mantiene la sincronización con el servicio de chat (`IChatService`) al cambiar modelos o parámetros.
 
@@ -1173,11 +1173,11 @@ De forma complementaria a los ViewModels, la mensajería permiten la comunicaci�
 
 #### FolderEntryCreated
 
-**Descripción general:**
+##### Descripción general:
 
 Clase que representa un mensaje utilizado para notificar la creación de una nueva entrada de carpeta. Se emplea para comunicar a otras partes de la aplicación que se ha creado una nueva instancia de FolderEntryViewModel.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class FolderEntryCreated : ValueChangedMessage<FolderEntryViewModel>
@@ -1186,25 +1186,25 @@ public class FolderEntryCreated : ValueChangedMessage<FolderEntryViewModel>
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Value`: (heredada de `ValueChangedMessage<T>`) Contiene la instancia de `FolderEntryViewModel` que ha sido creada.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `FolderEntryCreated(FolderEntryViewModel value)`: Constructor que inicializa el mensaje con la entrada de carpeta creada.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Esta clase es inmutable y se utiliza exclusivamente como contenedor de datos para el sistema de mensajería.
 
 #### FolderEntryChanged
 
-**Descripción general:**
+##### Descripción general:
 
 Representa un mensaje que indica que una entrada de carpeta ha sido modificada. Se utiliza para notificar cambios en una instancia de `IFolderEntry`, permitiendo especificar si el nombre de la entrada ha cambiado.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class FolderEntryChanged : ValueChangedMessage<IFolderEntry>
@@ -1214,26 +1214,26 @@ public class FolderEntryChanged : ValueChangedMessage<IFolderEntry>
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `NameChanged`: Indica si el nombre de la entrada de carpeta ha cambiado.
 - `Value`: (heredada de `ValueChangedMessage<T>`) Contiene la instancia de `IFolderEntry` que ha sido modificada.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `FolderEntryChanged(IFolderEntry value)`: Constructor que inicializa el mensaje con la entrada de carpeta modificada.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El uso del booleano `NameChanged` está pensado para posibles ampliaciones donde se notifiquen otros cambios distintos al nombre.
 
 #### FolderEntryDeleted
 
-**Descripción general:**
+##### Descripción general:
 
 Clase que representa un mensaje utilizado para notificar que una entrada de carpeta ha sido eliminada. Se emplea para informar sobre cambios en la colección de entradas de carpetas, transmitiendo la entrada eliminada como valor.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class FolderEntryDeleted : ValueChangedMessage<IFolderEntry>
@@ -1242,10 +1242,10 @@ public class FolderEntryDeleted : ValueChangedMessage<IFolderEntry>
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Value`: (heredada de `ValueChangedMessage<T>`) Contiene la instancia de `IFolderEntry` que ha sido eliminada.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `FolderEntryDeleted(IFolderEntry value)`: Constructor que inicializa el mensaje con la entrada de carpeta eliminada.

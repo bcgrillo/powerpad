@@ -6,11 +6,11 @@ En este capítulo se describen en detalle algunos de los elementos fundamentales
 
 #### AIModel
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `AIModel` representa un modelo de inteligencia artificial junto con sus metadatos relevantes, como el proveedor, nombre, URL informativa, tamaño y nombre para mostrar. Es fundamental para identificar y gestionar los modelos AI disponibles en la aplicación.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public record AIModel
@@ -23,7 +23,7 @@ public record AIModel
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 -   `Name`: Nombre del modelo.
 -   `ModelProvider`: Proveedor del modelo (Ollama, Hugging Face, etc.).
@@ -35,11 +35,11 @@ Posee un constructor principal que incluye todos las propiedades, siendo obligat
 
 #### AIParameters
 
-**Descripción general:**
+##### Descripción general:
 
 `AIParameters` define los parámetros configurables que afectan el comportamiento de los modelos AI en el sistema, como el prompt del sistema, la aleatoriedad (temperature), el tamaño del muestreo (top-p), el límite de tokens y la longitud máxima de conversación. Implementa la interfaz `IChatOptions`.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public record AIParameters : IChatOptions
@@ -52,7 +52,7 @@ public record AIParameters : IChatOptions
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 -   `SystemPrompt`: Instrucción inicial para la IA.
 -   `Temperature`: Controla la aleatoriedad de las respuestas.
@@ -62,11 +62,11 @@ public record AIParameters : IChatOptions
 
 #### Agent
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `Agent` representa un agente de IA con parámetros y configuraciones específicas, incluyendo nombre, prompt, modelo AI asociado y parámetros de comportamiento. Hereda de `AgentParameters` e implementa la interfaz `IChatOptions` indirectamente.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public record Agent() : AgentParameters
@@ -96,7 +96,7 @@ public record AgentParameters : IChatOptions
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 -   `Name`: Nombre del agente.
 -   `Prompt`: Prompt utilizado por el agente.
@@ -106,17 +106,17 @@ public record AgentParameters : IChatOptions
 -   `TopP`: Controla el tamaño del muestreo de tokens (heredada).
 -   `MaxOutputTokens`: Máximo de tokens permitidos en la respuesta (heredada).
 
-**Método relevante:**
+##### Método relevante:
 
 -   `GetParameters(AIParameters? defaultParameters)`: Devuelve los parámetros de chat del agente, usando valores por defecto si no están definidos.
 
 #### AIServiceConfig
 
-**Descripción general:**
+##### Descripción general:
 
 `AIServiceConfig` encapsula la configuración necesaria para conectar y autenticar servicios de IA externos, como la URL base y la clave API.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public record AIServiceConfig
@@ -126,18 +126,18 @@ public record AIServiceConfig
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 -   `BaseUrl`: URL base del servicio AI.
 -   `Key`: Clave API para el acceso al servicio.
 
 #### TestConnectionResult
 
-**Descripción general:**
+##### Descripción general:
 
 Representa el resultado de probar la conexión con el servicio de IA, incluyendo el estado de la conexión y un mensaje de error opcional si la prueba falla.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public readonly record struct TestConnectionResult
@@ -147,7 +147,7 @@ public readonly record struct TestConnectionResult
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Status`: Estado de la conexión con el servicio.
 - `ErrorMessage`: Mensaje de error opcional si la prueba de conexión falla.
@@ -156,11 +156,11 @@ public readonly record struct TestConnectionResult
 
 #### Document
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `Document` representa un documento individual dentro del sistema de archivos virtual de PowerPad. Incluye información sobre el contenido, metadatos, estado de edición y referencias a su ubicación dentro de la estructura de carpetas.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class Document : IFolderEntry
@@ -176,7 +176,7 @@ public class Document : IFolderEntry
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Name`: Nombre del documento.
 - `Extension`: Extensión del archivo del documento.
@@ -189,11 +189,11 @@ public class Document : IFolderEntry
 
 #### Folder
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `Folder` representa una carpeta en el sistema de archivos, la cual puede contener otras carpetas y documentos. Permite gestionar la jerarquía, el acceso y el orden de sus elementos internos.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class Folder(string name) : IFolderEntry
@@ -219,7 +219,7 @@ public class Folder(string name) : IFolderEntry
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Name`: Nombre de la carpeta.
 - `Type`: Tipo de entrada, siempre `EntryType.Folder`.
@@ -231,11 +231,11 @@ public class Folder(string name) : IFolderEntry
 - `Position`: Posición de la carpeta dentro de su carpeta padre.
 - `Order`: Lista que define el orden de los elementos dentro de la carpeta.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `int? PositionOf(string entryName)`: Obtiene la posición de una entrada por su nombre dentro de la carpeta.
 
-**Métodos internos relevantes:**
+##### Métodos internos relevantes:
 
 - `void AddFolder(Folder folder)`: Agrega una subcarpeta.
 - `void AddDocument(Document document)`: Agrega un documento.
@@ -246,11 +246,11 @@ public class Folder(string name) : IFolderEntry
 
 #### Root
 
-**Descripción general:**
+##### Descripción general:
 
 Representa la carpeta raíz en el sistema de archivos. La carpeta raíz tiene una ruta fija y no posee una carpeta padre.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class Root(string path) : Folder(string.Empty)
@@ -260,7 +260,7 @@ public class Root(string path) : Folder(string.Empty)
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Path`: Obtiene la ruta de la carpeta raíz.
 
@@ -268,11 +268,11 @@ public class Root(string path) : Folder(string.Empty)
 
 #### ConfigEntry
 
-**Descripción general:**
+##### Descripción general:
 
 Representa una entrada de configuración que almacena su valor serializado y su estado (modificado o no).
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 internal record ConfigEntry
@@ -288,13 +288,13 @@ internal record ConfigEntry
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `_serializedValue`: Valor serializado de la entrada de configuración.
 - `Value`: Obtiene el valor deserializado de la entrada de configuración.
 - `Dirty`: Indica si la entrada de configuración ha sido modificada.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `ConfigEntry(string serializedValue, bool dirty)`
 - `ConfigEntry(object? value, bool dirty)`
@@ -306,11 +306,11 @@ internal record ConfigEntry
 
 #### IAIService
 
-**Descripción general:**
+##### Descripción general:
 
 La interfaz `IAIService` define el contrato que deben implementar los servicios de inteligencia artificial en PowerPad, permitiendo la integración de diferentes proveedores y modelos de IA. Incluye métodos para obtener modelos, obtener el cliente de chat y gestionar la configuración del servicio.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IAIService
@@ -322,7 +322,7 @@ public interface IAIService
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void Initialize(AIServiceConfig? config)`: Inicializa el servicio de IA con la configuración especificada.
 - `Task<TestConnectionResult> TestConnection()`: Prueba la conexión con el servicio de IA.
@@ -331,11 +331,11 @@ public interface IAIService
 
 #### IOllamaService
 
-**Descripción general:**
+##### Descripción general:
 
 Define el contrato para la gestión de servicios de Ollama, incluyendo la administración de modelos y operaciones del ciclo de vida del servicio.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IOllamaService
@@ -348,7 +348,7 @@ public interface IOllamaService
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `Task Start()`: Inicia el servicio Ollama.
 - `Task Stop()`: Detiene el servicio Ollama.
@@ -358,11 +358,11 @@ public interface IOllamaService
 
 #### IChatService
 
-**Descripción general:**
+##### Descripción general:
 
 Interfaz que define el contrato para un servicio de chat que interactúa con modelos y agentes de IA, proporcionando métodos para configurar modelos y parámetros por defecto, y para obtener respuestas de chat y agentes de forma asincrónica.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IChatService
@@ -375,7 +375,7 @@ public interface IChatService
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `SetDefaultModel(AIModel? defaultModel)`: Establece el modelo de IA predeterminado para el servicio de chat.
 - `SetDefaultParameters(AIParameters? defaultParameters)`: Establece los parámetros predeterminados para el servicio de chat.
@@ -385,11 +385,11 @@ public interface IChatService
 
 #### IChatOptions
 
-**Descripción general:**
+##### Descripción general:
 
 La interfaz `IChatOptions` define las opciones de configuración para el comportamiento del chat, permitiendo ajustar parámetros como la aleatoriedad de las respuestas, la probabilidad acumulada para el muestreo de tokens y el número máximo de tokens en la respuesta.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 internal interface IChatOptions
@@ -400,7 +400,7 @@ internal interface IChatOptions
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 -   `Temperature`: Controla la aleatoriedad de las respuestas.
 -   `TopP`: Controla el tamaño del muestreo de tokens.
@@ -410,11 +410,11 @@ internal interface IChatOptions
 
 #### IWorkspaceService
 
-**Descripción general:**
+##### Descripción general:
 
 Interfaz que proporciona métodos para gestionar y manipular el espacio de trabajo, incluyendo operaciones sobre carpetas y documentos como mover, crear, eliminar, renombrar y establecer su posición.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IWorkspaceService
@@ -434,11 +434,11 @@ public interface IWorkspaceService
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Root`: Obtiene la carpeta raíz del espacio de trabajo.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void MoveDocument(Document document, Folder targetFolder, int targetPosition)`
 - `void MoveFolder(Folder folder, Folder targetFolder, int targetPosition)`
@@ -454,11 +454,11 @@ public interface IWorkspaceService
 
 #### IOrderService
 
-**Descripción general:**
+##### Descripción general:
 
 Interfaz que proporciona métodos para gestionar y actualizar el orden de las entradas (carpetas y documentos) dentro de una carpeta, permitiendo operaciones como carga, creación, eliminación, renombrado y movimiento de entradas.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IOrderService
@@ -471,7 +471,7 @@ public interface IOrderService
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void LoadOrderRecursive(Folder root)`: Aplica el orden de las entradas de forma recursiva para la carpeta raíz y sus subcarpetas.
 - `void UpdateOrderAfterCreation(Folder parentFolder, string newEntryName)`: Actualiza el orden tras la creación de una nueva entrada en la carpeta especificada.
@@ -481,11 +481,11 @@ public interface IOrderService
 
 #### IDocumentService
 
-**Descripción general:**
+##### Descripción general:
 
 Interfaz que proporciona métodos para gestionar y manipular documentos en el sistema de archivos, incluyendo la carga, guardado y autoguardado de documentos en editores.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IDocumentService
@@ -496,7 +496,7 @@ public interface IDocumentService
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void LoadDocument(Document document, IEditorContract editor)`: Carga el contenido de un documento en el editor.
 - `Task AutosaveDocument(Document document, IEditorContract editor)`: Realiza el autoguardado del documento en su ruta de autoguardado.
@@ -504,11 +504,11 @@ public interface IDocumentService
 
 #### IFolderEntry
 
-**Descripción general:**
+##### Descripción general:
 
 La interfaz `IFolderEntry` representa una entrada dentro de una carpeta del sistema de archivos virtual, permitiendo la abstracción de documentos y carpetas.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IFolderEntry
@@ -522,7 +522,7 @@ public interface IFolderEntry
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `Name`: Obtiene el nombre de la carpeta o documento.
 - `Path`: Obtiene la ruta completa de la carpeta o documento.
@@ -533,11 +533,11 @@ public interface IFolderEntry
 
 #### IEditorContract
 
-**Descripción general:**
+##### Descripción general:
 
 La interfaz `IEditorContract` define el contrato que debe cumplir cualquier editor de documentos en PowerPad, permitiendo operaciones de carga, guardado y manipulación del contenido.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IEditorContract
@@ -548,7 +548,7 @@ public interface IEditorContract
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `string GetContent(bool plainText = false)`: Recupera el contenido del editor, opcionalmente como texto plano.
 - `void SetContent(string content)`: Establece el contenido del editor.
@@ -558,11 +558,11 @@ public interface IEditorContract
 
 #### IConfigStore
 
-**Descripción general:**
+##### Descripción general:
 
 Interfaz que define métodos para almacenar y recuperar valores de configuración mediante claves enumeradas.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IConfigStore
@@ -573,7 +573,7 @@ public interface IConfigStore
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void Set<T>(Enum key, T config)`: Establece un valor de configuración para la clave especificada.
 - `T Get<T>(Enum key)`: Recupera un valor de configuración para la clave especificada.
@@ -581,11 +581,11 @@ public interface IConfigStore
 
 #### IConfigStoreService
 
-**Descripción general:**
+##### Descripción general:
 
 Interfaz que proporciona métodos para gestionar almacenes de configuración y guardar configuraciones.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public interface IConfigStoreService
@@ -595,7 +595,7 @@ public interface IConfigStoreService
 }
 ```
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `IConfigStore GetConfigStore(string configFolder)`: Recupera o crea un almacén de configuración para la carpeta especificada.
 - `Task StoreConfigs()`: Guarda todas las configuraciones en sus respectivos archivos de manera asíncrona.
@@ -604,11 +604,11 @@ public interface IConfigStoreService
 
 #### ModelProvider
 
-**Descripción general:**
+##### Descripción general:
 
 La enumeración `ModelProvider` define los proveedores de modelos de inteligencia artificial soportados por PowerPad.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public enum ModelProvider
@@ -622,11 +622,11 @@ public enum ModelProvider
 
 #### ServiceStatus
 
-**Descripción general:**
+##### Descripción general:
 
 La enumeración `ServiceStatus` que representa los posibles estados de un servicio de inteligencia artificial.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public enum ServiceStatus
@@ -642,11 +642,11 @@ public enum ServiceStatus
 ```
 #### EntryType
 
-**Descripción general:**
+##### Descripción general:
 
 La enumeración `EntryType` especifica el tipo de entrada en el sistema de archivos virtual, pudiendo ser una carpeta o un documento.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public enum EntryType

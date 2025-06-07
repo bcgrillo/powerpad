@@ -12,11 +12,11 @@ La sección dedicada a la Interfaz Gráfica de PowerPad tiene como objetivo ofre
 
 ![Ventana principal: Tema oscuro y fondo opaco](./Pictures/Pasted-image-20250523215911.png)
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `MainWindow` representa la ventana principal de la aplicación PowerPad. Su propósito es gestionar la navegación entre diferentes páginas (Workspace, Modelos, Agentes y Configuración), controlar la apariencia visual (incluyendo el fondo acrílico y la barra de título), y manejar la integración con la bandeja del sistema (minimizar/restaurar). Además, responde a eventos de configuración y estado de servicios de IA, mostrando avisos visuales de error y permitiendo la interacción con el menú lateral de navegación.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <wuiex:WindowEx x:Class="PowerPad.WinUI.MainWindow">
@@ -56,7 +56,7 @@ La clase `MainWindow` representa la ventana principal de la aplicación PowerPad
 </wuiex:WindowEx>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class MainWindow : WindowEx
@@ -89,7 +89,7 @@ public partial class MainWindow : WindowEx
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `AppIcon`: Elemento visual que contiene el icono de la aplicación.
 - `NavView`: NavigationView principal para la navegación entre páginas.
@@ -102,22 +102,22 @@ public partial class MainWindow : WindowEx
 - `MinimizeToTray`: Botón para minimizar la ventana a la bandeja del sistema.
 - `TaskbarIcon`: Icono en la bandeja del sistema, con menú contextual para restaurar o salir.
 
-**ViewModels:**
+##### ViewModels:
 
 - `_settings`: Instancia de `SettingsViewModel` que gestiona la configuración general, modelos y servicios de IA.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_navigation`: Diccionario que asocia nombres de páginas con sus tipos para la navegación.
 - `_activePageName`: Nombre de la página actualmente activa.
 - `_activeToggleMenuPage`: Referencia a la página activa que implementa `IToggleMenuPage`.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void SetBackdrop(bool value)`: Establece el efecto de fondo acrílico para la ventana principal según la configuración y el tema de la aplicación.
 - `void ShowNotes()`: Muestra la ventana principal y selecciona la página de notas en la navegación. Se utiliza para visualizar una nueva nota creada desde la ventana emergente.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void NavView_Loaded()`: Maneja el evento de carga del control NavigationView. Inicializa la selección de menú, suscribe eventos de cambio de estado de servicios de IA y realiza pruebas de conexión. Si es necesario, muestra el diálogo de instalación de Ollama y actualiza los elementos del menú de navegación.
 - `void UpdateNavMenuItems()`: Actualiza la habilitación de los elementos del menú de navegación y la visibilidad del indicador de error en función del estado de los servicios de IA configurados.
@@ -130,7 +130,7 @@ public partial class MainWindow : WindowEx
 - `void Show_Click(RoutedEventArgs eventArgs)`: Restaura la ventana principal desde la bandeja del sistema y oculta el icono de la bandeja.
 - `void Exit_Click(RoutedEventArgs eventArgs)`: Cierra la aplicación.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El evento `Closed` de la ventana principal almacena la configuración y realiza el guardado automático de editores antes de liberar recursos relacionados con el fondo acrílico.
 - El menú de navegación y los elementos visuales se adaptan dinámicamente según la disponibilidad de servicios de IA y la configuración del usuario.
@@ -146,11 +146,11 @@ public partial class MainWindow : WindowEx
 
 ![Ventana emergente: Tema oscuro y fondo opaco](./Pictures/Pasted-image-20250523220220.png)
 
-**Descripción general:**
+##### Descripción general:
 
 `PopupWindow` representa una ventana emergente personalizada dentro de la aplicación PowerPad. Su propósito es mostrar un editor de notas asistido por IA en una ventana flotante, con integración de configuraciones visuales (tema, fondo acrílico) y comportamiento personalizado (centrado, siempre visible y no redimensionable).
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <wuiex:WindowEx x:Class="PowerPad.WinUI.PopupWindow">
@@ -158,7 +158,7 @@ public partial class MainWindow : WindowEx
 </wuiex:WindowEx>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public sealed partial class PopupWindow : WindowEx
@@ -174,25 +174,25 @@ public sealed partial class PopupWindow : WindowEx
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `PopupEditorPage`: Página de edición emergente que contiene la interfaz de edición y gestiona el evento de solicitud de cierre.
 
-**ViewModels:**
+##### ViewModels:
 
 - `_settings`: Instancia de `SettingsViewModel` que gestiona la configuración general, modelos y servicios de IA.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void ShowPopup()`: Muestra la ventana emergente, la centra en la pantalla, la establece como siempre visible encima de otras ventanas y enfoca el editor.
 - `void SetContent(string newContent)`: Establece el contenido del editor emergente con el texto proporcionado.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void PopupEditorPage_CloseRequested()`: Maneja la solicitud de cierre del editor emergente, cerrando la ventana. Es relevante ya que el cierre se solicita desde un control de la página dentro de la ventana, al tratarse de una ventana que no posee los botones habituales de Windows para minimizar, maximizar y cierre.
 - `void PopupWindow_Closed(WindowEventArgs eventArgs)`: Maneja el evento de cierre de la ventana emergente, marcando el evento como gestionado, desactiva el modo "siempre visible" y oculta la ventana.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - La ventana utiliza un fondo acrílico y tema configurable, al igual que la ventana principal.
 - La clase `MainWindow` hereda de `WindowEx`, una extensión personalizada de la ventana estándar que proporciona soporte adicional para características avanzadas de interfaz de usuario, como la integración con el fondo acrílico, la personalización de la barra de título y otras mejoras visuales específicas de la plataforma WinUI.
@@ -206,11 +206,11 @@ public sealed partial class PopupWindow : WindowEx
 
 ![Página del área de trabajo](./Pictures/Pasted-image-20250523220427.png)
 
-**Descripción general:**
+##### Descripción general:
 
 `WorkspacePage` representa la página principal del área de trabajo en la aplicación. Su propósito es proporcionar una interfaz para la navegación y gestión de archivos, permitiendo al usuario interactuar con el sistema de archivos y editar documentos con ayuda de IA. Utiliza controles personalizados para la navegación y edición.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <local:DisposablePage x:Class="PowerPad.WinUI.Pages.WorkspacePage">
@@ -225,7 +225,7 @@ public sealed partial class PopupWindow : WindowEx
 </local:DisposablePage>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class WorkspacePage : DisposablePage, IToggleMenuPage
@@ -240,38 +240,38 @@ public partial class WorkspacePage : DisposablePage, IToggleMenuPage
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `WorkspaceControl`: Control personalizado para la navegación y gestión de archivos en el área de trabajo. Permite seleccionar y abrir archivos.
 - `EditorManager`: Control personalizado encargado de la gestión de los editores y de su ciclo de vida.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `NavigationWidth`: Devuelve el ancho del panel de navegación dependiendo de su visibilidad.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void ToggleNavigationVisibility()`: Alterna la visibilidad del panel de navegación, mostrando u ocultando el control de espacio de trabajo según su estado actual.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `double NavigationWidth`: Propiedad que obtiene el ancho del panel de navegación en función de su visibilidad. Si el panel está visible, devuelve su ancho real; si está oculto, devuelve 0.
 - `void WorkspaceControl_ItemInvoked(WorkspaceControlItemInvokedEventArgs eventArgs)`: Maneja el evento cuando se invoca un elemento en el control de espacio de trabajo, abriendo el archivo seleccionado en el administrador de editores.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El método `WorkspaceControl_ItemInvoked` es privado y se asocia al evento `ItemInvoked` del control visual de espacio de trabajo.
 - La clase hereda de `DisposablePage` y cumple con la interfaz `IToggleMenuPage`.
 
 #### ModelsPage
 
-**Descripción general:**
+##### Descripción general:
 
 ![Página de gestión de modelos](./Pictures/Pasted-image-20250523220443.png)
 
 La clase `ModelsPage` representa una página dentro de la aplicación PowerPad dedicada a la gestión y navegación entre diferentes proveedores de modelos de IA y sus respectivas opciones (ver modelos disponibles o añadir nuevos modelos). Utiliza un control `NavigationView` para mostrar los distintos proveedores y opciones, y un `Frame` para cargar dinámicamente las páginas correspondientes según la selección del usuario. Gestiona la visibilidad y navegación del panel lateral, así como la interacción con las páginas hijas especializadas en cada proveedor de modelos.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <local:DisposablePage
@@ -306,7 +306,7 @@ La clase `ModelsPage` representa una página dentro de la aplicación PowerPad d
 </local:DisposablePage>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class ModelsPage : DisposablePage, IToggleMenuPage
@@ -329,7 +329,7 @@ public partial class ModelsPage : DisposablePage, IToggleMenuPage
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `NavView`: Control principal de navegación lateral (`NavigationView`) que contiene los menús de los proveedores de modelos y sus opciones.
 - `NavFrame`: Contenedor (`Frame`) donde se navegan y muestran las páginas correspondientes a la opción seleccionada.
@@ -338,21 +338,21 @@ public partial class ModelsPage : DisposablePage, IToggleMenuPage
 - `GitHubMenuItem`: Elemento de menú para el proveedor GitHub.
 - `OpenAIMenuItem`: Elemento de menú para el proveedor OpenAI.
 
-**ViewModels:**
+##### ViewModels:
 
 - `_settings`: Instancia de `SettingsViewModel` que gestiona la configuración general, modelos y servicios de IA.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_currentPage`: Referencia a la página actualmente cargada en el `NavFrame` (`IModelProviderPage`), utilizada para gestionar el ciclo de vida y eventos de la página activa.
 - `_runSearch`: Indicador booleano para determinar si debe ejecutarse una búsqueda automática al navegar a la página de añadir modelos.
 - `NavigationWidth`: Propiedad que obtiene el ancho del panel de navegación en función de su visibilidad. Si el panel está visible, devuelve su ancho real; si está oculto, devuelve 0.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void ToggleNavigationVisibility()`: Alterna la visibilidad del panel de navegación, mostrando u ocultando el control de espacio de trabajo según su estado actual.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void NavView_SelectionChanged(NavigationViewSelectionChangedEventArgs eventArgs)`: Gestiona el evento de cambio de selección en el NavigationView, navegando a la página correspondiente o expandiendo el elemento seleccionado.
 - `void NavigateToPage(ModelsMenuOption menuOption)`: Navega a la página adecuada según la opción de menú seleccionada, gestionando la suscripción a eventos y la búsqueda automática si corresponde.
@@ -361,7 +361,7 @@ public partial class ModelsPage : DisposablePage, IToggleMenuPage
 - `void NavView_PointerPressed()`: Gestiona el evento PointerPressed para cerrar el visor de información del modelo activo.
 - `protected override void Dispose(bool disposing)`: Libera los recursos utilizados por la página, anulando suscripciones y eliminando la instancia de la página actual si es necesario.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El método Dispose asegura la correcta liberación de recursos y la desvinculación de eventos para evitar fugas de memoria.
 - El comportamiento de navegación y visibilidad de los elementos del menú depende de la configuración de la aplicación y del estado de los proveedores de modelos habilitados.
@@ -370,11 +370,11 @@ public partial class ModelsPage : DisposablePage, IToggleMenuPage
 
 ![Página de gestión de agentes](./Pictures/Pasted-image-20250523220458.png)
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `AgentsPage` representa una página dentro de la aplicación dedicada a la gestión de agentes de IA. Permite visualizar, crear, editar, renombrar y eliminar agentes, mostrando una lista jerárquica de agentes en un menú lateral y un área principal para la edición o visualización de información relevante. Integra el ViewModel de colección de agentes y controles personalizados para la interacción.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <local:DisposablePage x:Class="PowerPad.WinUI.Pages.AgentsPage">
@@ -415,7 +415,7 @@ La clase `AgentsPage` representa una página dentro de la aplicación dedicada a
 </local:DisposablePage>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class AgentsPage : DisposablePage, IToggleMenuPage
@@ -441,7 +441,7 @@ public partial class AgentsPage : DisposablePage, IToggleMenuPage
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `AgentsMenu`: Grid que contiene el menú lateral de agentes.
 - `TreeView`: Árbol de agentes, permite seleccionar y organizar agentes.
@@ -457,22 +457,22 @@ public partial class AgentsPage : DisposablePage, IToggleMenuPage
 - `FontIcon`: Iconos visuales en botones y menús.
 - `ScrollViewer`: Permite el desplazamiento vertical y horizontal del árbol de agentes.
 
-**ViewModels:**
+##### ViewModels:
 
 - `_agentsCollection`: Instancia de `AgentsCollectionViewModel`, contiene la colección de agentes y lógica asociada.
 - `_selectedAgent`: Instancia de `AgentViewModel`, representa el agente actualmente seleccionado.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_undoSelectionChange`: Indica si se debe deshacer un cambio de selección en el TreeView.
 - `_editorControl`: Control de edición del agente actualmente seleccionado.
 - `NavigationWidth`: Propiedad que obtiene el ancho del panel de navegación en función de su visibilidad. Si el panel está visible, devuelve su ancho real; si está oculto, devuelve 0.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void ToggleNavigationVisibility()`: Alterna la visibilidad del panel de navegación, mostrando u ocultando el control de espacio de trabajo según su estado actual.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `async void TreeView_SelectionChanged(TreeViewSelectionChangedEventArgs eventArgs)`: Gestiona el evento de cambio de selección en el `TreeView`, permitiendo confirmar el cierre del editor, actualizar la selección y mostrar el editor o la página de bienvenida según corresponda.
 - `void UpdateLandingVisibility(bool showLanding)`: Actualiza la visibilidad entre la página de bienvenida y el contenido del editor de agente.
@@ -483,7 +483,7 @@ public partial class AgentsPage : DisposablePage, IToggleMenuPage
 - `void TreeViewItem_DropCompleted(UIElement sender)`: Gestiona el evento de finalización de arrastre de un elemento en el `TreeView`, lo que permite ordenar los agentes en la lista.
 - `protected override void Dispose(bool disposing)`: Libera recursos utilizados. En esta implementación, no realiza ninguna acción.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El control visual principal es un menú de agentes con un `TreeView` para listar, seleccionar, renombrar y eliminar agentes, así como un área de edición y una página de bienvenida.
 - El control de edición de agentes (`AgentEditorControl`) se instancia y elimina dinámicamente según la selección del usuario.
@@ -492,11 +492,11 @@ public partial class AgentsPage : DisposablePage, IToggleMenuPage
 
 ![Página de configuración](./Pictures/Pasted-image-20250523220511.png)
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `SettingsPage` representa la página de configuración de la aplicación PowerPad. Permite a los usuarios gestionar y personalizar los servicios de IA (Ollama, Azure AI, OpenAI), parámetros de modelos, agentes, apariencia (tema) y otras opciones generales. La página enlaza la interfaz visual con el `SettingsViewModel` para reflejar y modificar el estado de la configuración de la aplicación. Incluye controles para habilitar/deshabilitar servicios, editar URLs y claves, seleccionar modelos por defecto, ajustar parámetros de IA, cambiar el tema visual y ver información sobre la aplicación.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 Debido a la complejidad de la página, se incluye solamente un extracto de ejemplo con un bloque de configuración.
 ```xml
@@ -559,7 +559,7 @@ Debido a la complejidad de la página, se incluye solamente un extracto de ejemp
 </local:DisposablePage>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class SettingsPage : DisposablePage
@@ -590,7 +590,7 @@ public partial class SettingsPage : DisposablePage
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `ModelsScrollViewer`: ScrollViewer que contiene todo el contenido desplazable de la página.
 - `OllamaModelsExpander`: Expander para la configuración del servicio Ollama.
@@ -618,20 +618,20 @@ public partial class SettingsPage : DisposablePage
 - `DarkThemeRadioButton`: RadioButton para seleccionar tema oscuro.
 - `SystemThemeRadioButton`: RadioButton para seleccionar el tema del sistema.
 
-**ViewModels:**
+##### ViewModels:
 
 - `_settings`: Instancia de `SettingsViewModel` que gestiona la configuración general, modelos y servicios de IA.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `_defaultCursor`: Cursor por defecto de la página, usado para restaurar el cursor tras operaciones asíncronas.
 - `_originalTheme`: Tema original de la aplicación al cargar la página, para detectar cambios y mostrar la barra de reinicio.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `Dispose(bool disposing)`: Libera los recursos utilizados por la clase `SettingsPage`, eliminando los manejadores de eventos asociados a la configuración y modelos.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `StartOllama_Click()`: Inicia el servicio Ollama y prueba la conexión con el mismo. Muestra un cursor de espera durante la operación.
 - `InstallOllama_Click()`: Abre un diálogo para instalar Ollama y prueba las conexiones según la elección del usuario. Deshabilita Ollama si el usuario cancela.
@@ -650,7 +650,7 @@ public partial class SettingsPage : DisposablePage
 - `TestEnabledService()`: Prueba el servicio habilitado correspondiente cuando cambia su configuración.
 - `RetryButton_Click()`: Gestiona el evento de clic en los botones de reintento para probar la conexión de los servicios Ollama, Azure AI u OpenAI.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - Los métodos de prueba de conexión muestran un cursor de espera para mejorar la experiencia de usuario.
 - El menú de modelo por defecto se actualiza dinámicamente según la disponibilidad de proveedores y modelos.
@@ -660,11 +660,11 @@ public partial class SettingsPage : DisposablePage
 
 #### AIModelsPageBase
 
-**Descripción general:**
+##### Descripción general:
 
 Clase base abstracta para las páginas que gestionan los modelos de IA. Proporciona funcionalidad común para el manejo de modelos de inteligencia artificial, incluyendo comandos para establecer el modelo por defecto, eliminar modelos y gestionar eventos relacionados con la interfaz de usuario, que serán utilizados desde las implementaciones específicas.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
@@ -682,20 +682,20 @@ public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
 }
 ```
 
-**ViewModels:**
+##### ViewModels:
 
 - `_settings`: Instancia de `SettingsViewModel` que gestiona la configuración general, modelos y servicios de IA.
 - `_modelsViewModel`: Instancia de `AIModelsViewModelBase` utilizada para gestionar los modelos de IA.
 
-**Eventos:**
+##### Eventos:
 
 - `AddButtonClick`: Evento que se dispara cuando se hace clic en el botón de agregar modelo.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `CloseModelInfoViewer()`: Método abstracto que debe implementar la lógica para cerrar el visor de información del modelo de IA.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `SetDefault_Click(AIModelClickEventArgs eventArgs)`: Maneja el evento de clic para establecer un modelo de IA como predeterminado.
 - `Delete_Click(AIModelClickEventArgs eventArgs)`: Maneja el evento de clic para eliminar un modelo de IA.
@@ -706,11 +706,11 @@ public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
 
 ![Página de gestión de modelos de Ollama](./Pictures/Pasted-image-20250523220623.png)
 
-**Descripción general:**
+##### Descripción general:
 
 `OllamaModelsPage` es una página de la aplicación PowerPad dedicada a la gestión de modelos de IA de Ollama. Hereda de `AIModelsPageBase` y proporciona una interfaz visual para visualizar, actualizar, eliminar y establecer modelos predeterminados de Ollama, así como para mostrar el estado del servicio Ollama. Está integrada con varios convertidores y componentes personalizados para la interacción con los modelos de IA.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <local:AIModelsPageBase
@@ -741,7 +741,7 @@ public abstract class AIModelsPageBase() : DisposablePage, IModelProviderPage
 </local:AIModelsPageBase>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class OllamaModelsPage : AIModelsPageBase
@@ -755,7 +755,7 @@ public partial class OllamaModelsPage : AIModelsPageBase
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `RowHeader`: Fila de encabezado en el Grid principal.
 - `Image`: Muestra el logotipo de Ollama.
@@ -768,15 +768,15 @@ public partial class OllamaModelsPage : AIModelsPageBase
 - `muxc:InfoBar`: Barra de información que advierte si Ollama no está disponible.
 - `components:AvailableModelsRepeater`: Control personalizado que lista los modelos disponibles, permite eliminarlos, establecerlos como predeterminados y añadir nuevos.
 
-**ViewModels:**
+##### ViewModels:
 
 - `_modelsViewModel`: ViewModel base para la gestión de modelos, instancia de `OllamaModelsViewModel` en este contexto, y expuesto como propiedad privada de nombre `OllamaModelsViewModel`.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `override void CloseModelInfoViewer()`: Cierra el visor de información del modelo en la interfaz, delegando la acción al componente visual correspondiente.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void AIModelsRepeater_ModelInfoViewerVisibilityChanged(Components.Controls.ModelInfoViewerVisibilityEventArgs eventArgs)`: Método privado que gestiona el cambio de visibilidad del visor de información del modelo. Ajusta la altura de la fila de cabecera (`RowHeader`) para mostrar el visor en página completa.
 
@@ -794,11 +794,11 @@ Al igual que `OllamaModelsPage`, las páginas `HuggingFaceModelsPage`, `GitHubMo
 
 #### AIAddModelPageBase
 
-**Descripción general:**
+##### Descripción general:
 
 Clase base abstracta para páginas que permiten agregar modelos de IA. Proporciona funcionalidad común para buscar y añadir modelos, gestionando la interacción con el ViewModel de modelos de IA y la configuración global de la aplicación. Incluye métodos para buscar y añadir modelos, que serán utilizados desde las implementaciones específicas.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public abstract class AIAddModelPageBase() : DisposablePage, IModelProviderPage
@@ -817,17 +817,17 @@ public abstract class AIAddModelPageBase() : DisposablePage, IModelProviderPage
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `_settings`: Instancia de `SettingsViewModel` que gestiona la configuración general, modelos y servicios de IA.
 - `_modelsViewModel`: Instancia de `AIModelsViewModelBase` utilizada para gestionar los modelos de IA.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `Search()`: Ejecuta la búsqueda de modelos utilizando el texto del cuadro de búsqueda.
 - `CloseModelInfoViewer()`: Cierra el visor de información del modelo (debe ser implementado por clases derivadas).
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `Search_Click()`: Maneja el evento de clic en el botón de búsqueda y ejecuta la búsqueda.
 - `Search_KeyDown(KeyRoutedEventArgs eventArgs)`: Maneja el evento de pulsación de tecla en el cuadro de búsqueda; ejecuta la búsqueda si se presiona Enter.
@@ -839,11 +839,11 @@ public abstract class AIAddModelPageBase() : DisposablePage, IModelProviderPage
 
 ![Página de búsqueda de modelos en la biblioteca de Ollama](./Pictures/Pasted-image-20250523222615.png)
 
-**Descripción general:**
+##### Descripción general:
 
 `OllamaAddModelPage` es una página de la aplicación PowerPad.WinUI que permite buscar y agregar modelos de IA desde la biblioteca de Ollama. Utiliza el patrón MVVM y hereda de `AIAddModelPageBase`. Proporciona una interfaz para buscar modelos, mostrar resultados y gestionar la visibilidad de información detallada sobre los modelos. La página está diseñada para integrarse con la configuración y el estado del servicio Ollama, mostrando advertencias si el servicio no está disponible.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <local:AIAddModelPageBase
@@ -875,7 +875,7 @@ ModelInfoViewerVisibilityChanged="SearchModelsResultRepeater_ModelInfoViewerVisi
 </local:AIAddModelPageBase>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class OllamaAddModelPage : AIAddModelPageBase
@@ -890,7 +890,7 @@ public partial class OllamaAddModelPage : AIAddModelPageBase
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `SearchTextBox`: Caja de texto para introducir el nombre del modelo a buscar.
 - `SearchModelsResultRepeater`: Control personalizado para mostrar los resultados de búsqueda de modelos y gestionar acciones relacionadas.
@@ -901,18 +901,18 @@ public partial class OllamaAddModelPage : AIAddModelPageBase
 - `Button`: Botón para ejecutar la búsqueda, con icono de lupa.
 - `FontIcon`: Icono de búsqueda dentro del botón.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `OllamaAddModelPage()`: Inicializa una nueva instancia de la clase `OllamaAddModelPage`, configurando el ViewModel correspondiente y los componentes visuales.
 - `override void Search()`: Realiza la búsqueda de modelos en la biblioteca de Ollama, ajustando previamente la altura de la fila del encabezado.
 - `override void CloseModelInfoViewer()`: Cierra el visor de información del modelo en la lista de resultados de búsqueda.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `override TextBox GetSearchTextBox()`: Devuelve la referencia al `TextBox` utilizado para la búsqueda de modelos.
 - `void AIModelsRepeater_ModelInfoViewerVisibilityChanged(Components.Controls.ModelInfoViewerVisibilityEventArgs eventArgs)`: Método privado que gestiona el cambio de visibilidad del visor de información del modelo. Ajusta la altura de la fila de cabecera (`RowHeader`) para mostrar el visor en página completa.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El control visual utiliza convertidores para habilitar/deshabilitar la búsqueda según el estado del servicio Ollama.
 - El método `SearchModelsResultRepeater_ModelInfoViewerVisibilityChanged` es privado y se encarga de mostrar u ocultar el encabezado de la página dependiendo de si el visor de información del modelo está visible.
@@ -933,11 +933,11 @@ Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitH
 
 ![Página de edición integrada en la ventana emergente](./Pictures/Pasted-image-20250523212157.png)
 
-**Descripción general:**
+##### Descripción general:
 
 `PopupEditorPage` es la página de la aplicación que proporciona una interfaz emergente para la edición de notas o textos. Permite crear, editar, copiar, deshacer/rehacer cambios y aplicar el contenido editado, integrando además un control de agente IA para asistencia inteligente en la edición.
 
-**Estructura visual simplificada:**
+##### Estructura visual simplificada:
 
 ```xml
 <Page x:Class="PowerPad.WinUI.Pages.PopupEditorPage">
@@ -966,7 +966,7 @@ Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitH
 </Page>
 ```
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public partial class PopupEditorPage : Page
@@ -993,7 +993,7 @@ public partial class PopupEditorPage : Page
 }
 ```
 
-**Elementos visuales:**
+##### Elementos visuales:
 
 - `SaveBtn`: Botón para guardar el contenido como una nueva nota.
 - `CopyBtn`: Botón para copiar el contenido actual al portapapeles.
@@ -1005,25 +1005,25 @@ public partial class PopupEditorPage : Page
 - `TextEditor`: Control de texto para editar el contenido.
 - `AgentControl`: Control integrado para interacción con un agente IA, permitiendo enviar texto y recibir ediciones automáticas.
 
-**ViewModels:**
+##### ViewModels:
 
 - `_workspace`: Instancia de `WorkspaceViewModel` utilizada para la gestión global del espacio de trabajo y la creación de nuevas notas.
 - `_document`: Instancia de `DocumentViewModel` que representa el documento en edición, con soporte para historial de cambios (deshacer/rehacer) y contenido actual.
 
-**Otras propiedades:**
+##### Otras propiedades:
 
 - `TitleBar`: Propiedad pública que expone el elemento visual de la barra de título (`BorderTitleBar`, lo requiere la ventana para las acciones de mover).
 
-**Eventos:**
+##### Eventos:
 
 - `CloseRequested`: Evento público que se dispara cuando se solicita cerrar el editor emergente.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `void SetContent(string newContent)`: Establece el contenido del documento y limpia el historial de deshacer/rehacer.
 - `void SetFocus()`: Establece el foco en el control de agente (AgentControl).
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `void TextEditor_SizeChanged()`: Ajusta el relleno del editor de texto en función de la visibilidad de la barra de desplazamiento vertical.
 - `T? FindElement<T>(DependencyObject element) where T : DependencyObject`: Busca un elemento hijo de un tipo específico dentro del árbol visual.
@@ -1035,7 +1035,7 @@ public partial class PopupEditorPage : Page
 - `void SaveBtn_Click()`: Guarda el documento como una nueva nota, cierra el editor emergente y muestra la ventana principal si no está visible.
 - `void HideBtn_Click()`: Cierra el editor emergente.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El historial de deshacer/rehacer se gestiona mediante las propiedades `PreviousContent` y `NextContent` del documento.
 - Es la única página mostrada en la ventana `PopupWindow`.

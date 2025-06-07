@@ -4,11 +4,11 @@ Este capítulo aborda en detalle los mecanismos implementados en PowerPad para l
 
 #### ConfigStoreService
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `ConfigStoreService` implementa la interfaz `IConfigStoreService` y se encarga de gestionar múltiples almacenes de configuración (`ConfigStore`). Además, realiza el guardado periódico de las configuraciones utilizando un temporizador y asegura que los datos se almacenen antes de que el proceso finalice. Utiliza un contexto de serialización JSON para manejar la persistencia de los datos de configuración.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class ConfigStoreService : IConfigStoreService
@@ -24,30 +24,30 @@ public class ConfigStoreService : IConfigStoreService
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `_context`: Contexto de serialización JSON utilizado para la serialización y deserialización de configuraciones.
 - `_configStores`: Diccionario que almacena las instancias de `ConfigStore` asociadas a cada carpeta de configuración.
 - `_timer`: Temporizador que dispara el guardado periódico de las configuraciones.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `ConfigStoreService(JsonSerializerContext context)`: Constructor que inicializa el servicio, el temporizador y suscriptores de eventos.
 - `IConfigStore GetConfigStore(string configFolder)`: Obtiene o crea un almacén de configuración para la carpeta especificada.
 - `Task StoreConfigs()`: Guarda de manera asíncrona todas las configuraciones gestionadas por el servicio.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El método `StoreConfigs` se ejecuta automáticamente de forma periódica y también cuando el proceso está a punto de finalizar, asegurando la persistencia de los datos.
 - El campo `_timer` se mantiene como referencia privada para evitar que el recolector de basura lo elimine y para asegurar el funcionamiento del temporizador.
 
 #### ConfigStore
 
-**Descripción general:**
+##### Descripción general:
 
 La clase `ConfigStore` proporciona funcionalidades para gestionar el almacenamiento y recuperación de configuraciones en archivos JSON. Permite guardar, obtener y cargar configuraciones de manera segura y concurrente, utilizando un diccionario en memoria y persistiendo los cambios en archivos dentro de una carpeta específica. Implementa la interfaz `IConfigStore`.
 
-**Código simplificado:**
+##### Código simplificado:
 
 ```csharp
 public class ConfigStore : IConfigStore
@@ -67,25 +67,25 @@ public class ConfigStore : IConfigStore
 }
 ```
 
-**Propiedades principales:**
+##### Propiedades principales:
 
 - `_configFolder`: Ruta de la carpeta donde se almacenan los archivos de configuración.
 - `_store`: Diccionario en memoria que almacena las entradas de configuración.
 - `_semaphore`: Semáforo para controlar el acceso concurrente durante la operación de guardado.
 - `_context`: Contexto de serialización JSON utilizado para serializar y deserializar las configuraciones.
 
-**Métodos públicos:**
+##### Métodos públicos:
 
 - `Set<T>(Enum key, T config)`: Establece o actualiza una configuración en memoria asociada a una clave.
 - `TryGet<T>(Enum key)`: Intenta obtener una configuración por clave, devolviendo el valor o `default` si no existe o hay error.
 - `Get<T>(Enum key)`: Obtiene una configuración por clave; lanza excepción si no existe.
 
-**Otros métodos relevantes:**
+##### Otros métodos relevantes:
 
 - `Load()`: Método privado que carga todas las configuraciones desde los archivos JSON de la carpeta al diccionario en memoria.
 - `Save()`: Método interno y asíncrono que guarda todas las configuraciones modificadas (propiedad `Dirty`) en sus respectivos archivos JSON.
 
-**Notas adicionales:**
+##### Notas adicionales:
 
 - El tipo de la configuración se determina durante su guardado u obtención, por ello, durante la carga inicial se utiliza un constructor `ConfigEntry` que recibe el objeto serializado y lo mantiene de esa forma hasta es solicitado, solo entonces lo deserializa.
 - El método interno `Save()` es llamado desde el `ConfigStoreService`.

@@ -4,8 +4,6 @@ subtitle: Documentación Técnica de la Solución
 author: Bruno Grillo
 date: 30 de junio de 2025
 ---
-**Anexo I. Documentación Técnica de la Solución**
-
 # Introducción
 
 Este documento contiene un resumen detallado de los elementos principales que componen la solución PowerPad, cubriendo tanto los componentes lógicos como los visuales. Su objetivo es proporcionar una visión estructurada y comprensible del diseño interno de la aplicación, facilitando su comprensión, mantenimiento y futuras ampliaciones.
@@ -32,7 +30,7 @@ Esta documentación técnica pretende servir tanto de referencia para otros desa
 # E. ViewModels y Mensajería
 ![[E. ViewModels y Mensajería]]
 
-# F. Interfaz Gráfica (parte 1)
+# F. Interfaz Gráfica
 ![[F. Interfaz Gráfica (parte 1)]]
 ![[F. Interfaz Gráfica (parte 2)]]
 ![[F. Interfaz Gráfica (parte 3)]]
