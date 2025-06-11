@@ -1,3 +1,5 @@
 .ignore
 .obsidian
 .vscode
+PanDoc/*.docx
+PanDoc/*.pdf
