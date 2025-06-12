@@ -4,7 +4,7 @@ subtitle: Memoria
 author: Bruno Grillo
 date: 30 de junio de 2025
 ---
-![[00. Notas Portada]]
+![[00. Notas portada]]
 
 ![[00. Resumen - Abstract]]
 
@@ -17,29 +17,32 @@ date: 30 de junio de 2025
 # 1. Introducción
 ![[01. Introducción]]
 
-# 2. Estado del Arte y Fundamentos Teóricos
-![[02. Estado del Arte y Fundamentos Teóricos]]
+# 2. Estado del arte y fundamentos teóricos
+![[02. Estado del arte y fundamentos teóricos]]
 
-# 3. Solución Propuesta
-![[03. Solución Propuesta]]
+# 3. Solución propuesta
+![[03. Solución propuesta]]
 
-# 4. Arquitectura de la Solución
-![[04. Arquitectura de la Solución]]
+# 4. Arquitectura de la solución
+![[04. Arquitectura de la solución]]
 
-# 5. Ejemplos de Uso y Flujos de Trabajo
-![[05. Ejemplos de Uso y Flujos de Trabajo]]
+# 5. Ejemplos de uso y flujos de trabajo
+![[05. Ejemplos de uso y flujos de trabajo]]
 
-# 6. Código Fuente de la Solución
-![[06. Código Fuente de la Solución]]
+# 6. Código fuente de la solución
+![[06. Código fuente de la solución]]
 
-# 7. Impactos Sociales, Ambientales y Éticos
-![[07. Impactos Sociales, Ambientales y Éticos]]
+# 7. Impactos sociales, ambientales y éticos
+![[07. Impactos sociales, ambientales y éticos]]
 
-# 8. Conclusiones y Trabajos Futuros
-![[08. Conclusiones y Trabajos Futuros]]
+# 8. Conclusiones y trabajos futuros
+![[08. Conclusiones y trabajos futuros]]
 
 # 9. Referencias
 (Mover aquí referencias)
 
-# 10. Anexos
+# 10. Glosario
+![[98. Glosario]]
+
+# 11. Anexos
 ![[99. Anexos]]
