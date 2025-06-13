@@ -32,6 +32,10 @@ $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, {
     }
 })
 
+# Reemplazo para imágenes con alt tipo "Figura X.Y."
+$figuraPattern = '!\[(Figura\s\d+\.\d+)(\.?)\s'
+$content = [System.Text.RegularExpressions.Regex]::Replace($content, $figuraPattern, '![**$1**$2 ')
+
 # Escribe el resultado en el archivo temporal en UTF-8
 Set-Content -Path $tempPath -Value $content -Encoding utf8
 

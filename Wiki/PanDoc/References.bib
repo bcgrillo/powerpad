@@ -48,7 +48,7 @@
 	url = {https://learn.microsoft.com/en-us/archive/blogs/johngossman/introduction-to-modelviewviewmodel-pattern-for-building-wpf-apps},
 	language = {en-us},
 	urldate = {2025-06-12},
-	author = {John, Gossman},
+	author = {Gossman, John},
 	month = oct,
 	year = {2005},
 }
@@ -94,7 +94,7 @@
 	abstract = {Machine generated contents note: I Robotic Paradigms 1 -- 1 From Teleoperation To Autonomy 13 -- 2 The Hierarchical Paradigm 41 -- 3 Biological Foundations of the Reactive Paradigm 67 -- 4 The Reactive Paradigm 105 -- 5 Designing a Reactive Implementation 155 -- 6 Common Sensing Techniquesfor Reactive Robots 195 -- 7 The Hybrid Deliberative/Reactive Paradigm 257 -- 8 Multi-agents 293 -- II Navigation 315 -- 9 Topological Path Planning 325 -- 10 Metric Path Planning 351 -- 11 Localization and Map Making 375 -- 12 On the Horizon 435},
 	language = {eng},
 	publisher = {MIT Press},
-	author = {Murphy, Robin and Murphy, Robin},
+	author = {Murphy, Robin R.},
 	year = {2000},
 }
 
@@ -102,7 +102,7 @@
 	title = {Historia de la IA: Frank Rosenblatt y el Mark I Perceptrón, el primer ordenador fabricado específicamente para crear redes neuronales en 1957},
 	url = {https://web.archive.org/web/20180722124753/https://data-speaks.luca-d3.com/2018/07/historia-de-la-ia-frank-rosenblatt-y-el.html},
 	urldate = {2025-06-12},
-	author = {Fran, Ramírez},
+	author = {Ramírez, Fran},
 	month = jul,
 	year = {2018},
 }
@@ -156,19 +156,6 @@
 	year = {2014},
 }
 
-@misc{attention_2023,
-	title = {Attention {Is} {All} {You} {Need}},
-	url = {http://arxiv.org/abs/1706.03762},
-	doi = {10.48550/arXiv.1706.03762},
-	abstract = {The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.},
-	urldate = {2025-06-09},
-	publisher = {arXiv},
-	author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, Lukasz and Polosukhin, Illia},
-	month = aug,
-	year = {2023},
-	note = {arXiv:1706.03762},
-	keywords = {Computer Science - Computation and Language, Computer Science - Machine Learning},
-}
 
 @misc{gpt-2_2024,
 	title = {{GPT}-2: 1.{5B} release},
@@ -303,15 +290,143 @@ A diferencia de modelos de la competencia como DALL-E, Stable Diffusion es de c�
 	urldate = {2025-06-12},
 }
 
-
-@misc{presence_penalty,
-	title = {Presence\_penalty and frequency\_penalty parameters},
-	url = {https://community.openai.com/t/presence-penalty-and-frequency-penalty-parameters/302813},
-	abstract = {The API docs indicate that the range of possible values for presence\_penalty and frequency\_penalty is from -2.0 to 2.0. Has anybody tried to use negative values for those coefficients?  I’m using GPT-4 for technical translations, so I actually do want repetitions: a certain word might occur multiple times in the source string, and that’s perfectly fine. But whenever I tried going negative with these coefficients, I got garbage results.},
-	language = {en},
+@misc{attention_2023,
+	title = {Attention {Is} {All} {You} {Need}},
+	url = {http://arxiv.org/abs/1706.03762},
+	doi = {10.48550/arXiv.1706.03762},
+	abstract = {The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.},
 	urldate = {2025-06-09},
-	journal = {OpenAI Developer Community},
-	month = jul,
+	publisher = {arXiv},
+	author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, Lukasz and Polosukhin, Illia},
+	month = aug,
+	year = {2023},
+	note = {arXiv:1706.03762},
+	keywords = {Computer Science - Computation and Language, Computer Science - Machine Learning},
+}
+
+@misc{tiktoken_encoding,
+	title = {How to count tokens with {Tiktoken} {\textbar} {OpenAI} {Cookbook}},
+	url = {https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken},
+	abstract = {Open-source examples and guides for building with the OpenAI API. Browse a collection of snippets, advanced techniques and walkthroughs. Share your own examples and guides.},
+	language = {en},
+	author = {Sanders, Ted},
+	urldate = {2025-06-13},
+	month = dec,
+	year = {2022},
+}
+
+@misc{espejel_getting_2022,
+	title = {Getting {Started} {With} {Embeddings}},
+	url = {https://huggingface.co/blog/getting-started-with-embeddings},
+	urldate = {2025-06-13},
+	author = {Espejel, Omar },
+	month = jun,
+	year = {2022},
+}
+
+@misc{nachane_few_2024,
+	title = {Few shot chain-of-thought driven reasoning to prompt {LLMs} for open ended medical question answering},
+	url = {http://arxiv.org/abs/2403.04890},
+	doi = {10.48550/arXiv.2403.04890},
+	urldate = {2025-06-13},
+	publisher = {arXiv},
+	author = {Nachane, Saeel Sandeep and Gramopadhye, Ojas and Chanda, Prateek and Ramakrishnan, Ganesh and Jadhav, Kshitij Sharad and Nandwani, Yatin and Raghu, Dinesh and Joshi, Sachindra},
+	month = oct,
+	year = {2024},
+	note = {arXiv:2403.04890},
+	keywords = {Computer Science - Computation and Language},
+}
+
+@misc{fine-tuning_hf,
+	title = {Fine-tuning},
+	url = {https://huggingface.co/docs/transformers/en/training},
+	abstract = {We’re on a journey to advance and democratize artificial intelligence through open source and open science.},
+	urldate = {2025-06-13},
+}
+
+@misc{ibm_attention_2024,
+	title = {¿{Qué} es un mecanismo de atención? {\textbar} {IBM}},
+	shorttitle = {¿{Qué} es un mecanismo de atención?},
+	url = {https://www.ibm.com/es-es/think/topics/attention-mechanism},
+	abstract = {Un mecanismo de atención es una técnica de machine learning que orienta a los modelos de deep learning, como los transformadores, para que se centren en las partes más relevantes de los datos de entrada.},
+	language = {es-es},
+	urldate = {2025-06-13},
+	month = dec,
+	year = {2024},
+}
+
+@misc{fig_2_1,
+	title = {Word embedding illustration},
+	url = {https://commons.wikimedia.org/wiki/File:Word_embedding_illustration.svg},
+	urldate = {2025-06-13},
+	author = {{Fschwarzentruber}},
+	month = mar,
+	year = {2025},
+}
+
+@misc{fig_2_2,
+	title = {Constructing {Transformers} {For} {Longer} {Sequences} with {Sparse} {Attention} {Methods}},
+	url = {https://research.google/blog/constructing-transformers-for-longer-sequences-with-sparse-attention-methods/},
+	language = {en},
+	urldate = {2025-06-13},
+	author = {Avinava, Dubey},
+}
+
+@book{jurafsky_speech_2009,
+	address = {Upper Saddle River, NJ},
+	edition = {2. ed. [Nachdr.]},
+	title = {Speech and language processing: an introduction to natural language processing, computational linguistics, and speech recognition},
+	isbn = {9780131873216},
+	shorttitle = {Speech and language processing},
+	language = {eng},
+	publisher = {Prentice Hall},
+	author = {Jurafsky, Dan and Martin, James H.},
+	year = {2009},
+}
+
+@misc{textsynth_completion,
+	title = {Text {Completion}},
+	url = {https://textsynth.com/completion.html},
+	urldate = {2025-06-13},
+}
+
+@misc{martineau_what_2021,
+	title = {What is {AI} inferencing?},
+	copyright = {© Copyright IBM Corp. 2021},
+	url = {https://research.ibm.com/blog/AI-inference-explained},
+	abstract = {Inferencing is how you run live data through a trained AI model to make a prediction or solve a task.},
+	language = {en-US},
+	urldate = {2025-06-13},
+	journal = {IBM Research},
+	author = {Martineau, Kim},
+	month = feb,
+	year = {2021},
+}
+
+@misc{templates_hf,
+	title = {Templates},
+	url = {https://huggingface.co/docs/transformers/main/chat_templating},
+	abstract = {We’re on a journey to advance and democratize artificial intelligence through open source and open science.},
+	urldate = {2025-06-13},
+}
+
+@misc{quantization_hf,
+	title = {Quantization},
+	url = {https://huggingface.co/docs/optimum/concept_guides/quantization},
+	abstract = {We’re on a journey to advance and democratize artificial intelligence through open source and open science.},
+	urldate = {2025-06-13},
+}
+
+@misc{bergmann_imb_2023,
+	title = {¿{Qué} es la destilación del conocimiento?},
+	shorttitle = {¿{Qué} es la destilación del conocimiento?},
+	url = {https://www.ibm.com/es-es/topics/knowledge-distillation},
+	abstract = {La destilación de conocimientos es una técnica de machine learning utilizada para transferir el aprendizaje de un gran \&quot;modelo profesor\&quot; preentrenado a un \&quot;modelo alumno\&quot; más pequeño.},
+	language = {es-es},
+	urldate = {2025-06-13},
+	journal = {IBM},
+	author = {Bergmann, Dave},
+	month = dec,
 	year = {2023},
 }
 
@@ -321,6 +436,7 @@ A diferencia de modelos de la competencia como DALL-E, Stable Diffusion es de c�
 	abstract = {GGUF (GPT-Generated Unified Format) is a file format designed to simplify the use and deployment of large language models (LLMs) and is designed to perform well on consumer-grade computer hardware.},
 	language = {en},
 	urldate = {2025-06-09},
+	author = {Mucci, Tim},
 	month = jul,
 	year = {2024},
 }

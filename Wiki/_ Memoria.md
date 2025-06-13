@@ -44,5 +44,8 @@ date: 30 de junio de 2025
 # 10. Glosario
 ![[98. Glosario]]
 
-# 11. Anexos
+# 11. Índice de figuras
+(Mover aquí el LOF)
+
+# 12. Anexos
 ![[99. Anexos]]

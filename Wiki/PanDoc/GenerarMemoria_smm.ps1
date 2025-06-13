@@ -32,10 +32,14 @@ $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, {
     }
 })
 
+# Reemplazo para imágenes con alt tipo "Figura X.Y."
+$figuraPattern = '!\[(Figura\s\d+\.\d+)(\.?)\s'
+$content = [System.Text.RegularExpressions.Regex]::Replace($content, $figuraPattern, '![**$1**$2 ')
+
 # Escribe el resultado en el archivo temporal en UTF-8
 Set-Content -Path $tempPath -Value $content -Encoding utf8
 
-pandoc $tempPath --toc --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl -o $outputFile --reference-doc=PanDoc/Templates/article.docx
+pandoc $tempPath --toc --lof --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl -o $outputFile --reference-doc=PanDoc/Templates/article.docx
 
 Remove-Item $tempPath
 
