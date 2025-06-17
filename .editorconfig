@@ -1,4 +1,6 @@
-﻿[*.cs]
+﻿end_of_line = lf
+
+[*.cs]
 
 # S1121: Assignments should not be made from within sub-expressions
 dotnet_diagnostic.S1121.severity = silent
@@ -6,8 +8,11 @@ dotnet_diagnostic.S1121.severity = silent
 # S1075: Refactor your code not to use hardcoded absolute paths or URIs.
 dotnet_diagnostic.S1075.severity = silent
 
-# S2325: Make instance method a static method. (IDE warning is better 
+# S2325: Make instance method a static method. (IDE warning is better
 dotnet_diagnostic.S2325.severity = silent
 
 # S3358: Extract this nested ternary operation into an independent statement.
 dotnet_diagnostic.S3358.severity = silent
+
+# MSTEST0026: Prefer adding an additional assertion that checks for null.
+dotnet_diagnostic.MSTEST0026.severity = silent
