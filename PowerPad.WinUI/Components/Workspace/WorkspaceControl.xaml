@@ -9,6 +9,7 @@
     xmlns:vmfilesystem="using:PowerPad.WinUI.ViewModels.FileSystem"
     xmlns:controls="using:PowerPad.WinUI.Components.Controls"
     xmlns:converters="using:PowerPad.WinUI.Converters"
+    xmlns:l="using:WinUI3Localizer"
     mc:Ignorable="d">
     <UserControl.Resources>
         <Style TargetType="SplitButton" x:Key="AccentSplitButtonStyle" BasedOn="{StaticResource SplitButtonRevealStyle}">
@@ -33,12 +34,12 @@
             </Grid.ColumnDefinitions>
             <TextBlock
                 Style="{StaticResource WSTitleStyle}"
-                Text="Workspace"/>
+                l:Uids.Uid="WorkspaceTitle" />
             <DropDownButton
                 x:Name="OpenWorkspaceBtn"
                 Grid.Column="1"
                 Height="30"
-                ToolTipService.ToolTip="Cambiar Workspace"
+                l:Uids.Uid="OpenWorkspaceBtn"
                 Margin="10,0,6,0"
                 Background="Transparent"
                 BorderThickness="0"
@@ -49,7 +50,7 @@
                 </DropDownButton.Content>
                 <DropDownButton.Flyout>
                     <MenuFlyout x:Name="WorkspaceMenu" Placement="BottomEdgeAlignedLeft">
-                        <MenuFlyoutItem Text="Seleccionar carpeta..." Click="OpenFolderFlyoutItem_Click"/>
+                        <MenuFlyoutItem l:Uids.Uid="OpenFolderFlyoutItem" Click="OpenFolderFlyoutItem_Click"/>
                         <MenuFlyoutSeparator/>
                     </MenuFlyout>
                 </DropDownButton.Flyout>
@@ -98,15 +99,15 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     Margin="0,1,0,0"
-                                    ToolTipService.ToolTip="Más opciones"
+                                    l:Uids.Uid="MoreOptionsBtn"
                                     Click="MoreButton_Click">
                                     <FontIcon Glyph="&#xE712;" />
                                 </Button>
                             </Grid>
                             <TreeViewItem.ContextFlyout>
                                 <MenuFlyout Placement="Bottom">
-                                    <MenuFlyoutItem Text="Renombrar" Click="RenameFlyoutItem_Click"/>
-                                    <MenuFlyoutItem Text="Eliminar" Click="DeleteFlyoutItem_Click"/>
+                                    <MenuFlyoutItem l:Uids.Uid="RenameFlyoutItem" Click="RenameFlyoutItem_Click"/>
+                                    <MenuFlyoutItem l:Uids.Uid="DeleteFlyoutItem" Click="DeleteFlyoutItem_Click"/>
                                 </MenuFlyout>
                             </TreeViewItem.ContextFlyout>
                         </TreeViewItem>
@@ -127,7 +128,7 @@
                 HorizontalAlignment="Stretch"
                 BorderThickness="0"
                 Click="NewChatButton_Click"
-                ToolTipService.ToolTip="Nuevo chat">
+                l:Uids.Uid="NewChatButton">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <FontIcon FontSize="16" Glyph="&#xE710;" />
                     <FontIcon FontSize="16" Glyph="&#xE8BD;" />
@@ -141,7 +142,7 @@
                 HorizontalAlignment="Stretch"
                 BorderThickness="0"
                 Click="NewNoteButton_Click"
-                ToolTipService.ToolTip="Nueva nota">
+                l:Uids.Uid="NewNoteButton">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <FontIcon FontSize="16" Glyph="&#xE710;" />
                     <FontIcon FontSize="16" Glyph="&#xE70B;" />
@@ -155,7 +156,7 @@
                 HorizontalAlignment="Stretch"
                 BorderThickness="0"
                 Click="NewFolderButton_Click"
-                ToolTipService.ToolTip="Nueva carpeta">
+                l:Uids.Uid="NewFolderButton">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <FontIcon FontSize="16" Glyph="&#xE710;" />
                     <FontIcon FontSize="16" Glyph="&#xE8B7;" />

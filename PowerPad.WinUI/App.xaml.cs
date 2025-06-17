@@ -7,6 +7,11 @@ using PowerPad.WinUI.ViewModels.Agents;
 using PowerPad.WinUI.ViewModels.FileSystem;
 using PowerPad.WinUI.ViewModels.Settings;
 using System;
+using System.IO;
+using System.Threading.Tasks;
+using Windows.Globalization;
+using Windows.Storage;
+using WinUI3Localizer;
 
 namespace PowerPad.WinUI
 {
@@ -15,20 +20,11 @@ namespace PowerPad.WinUI
     /// </summary>
     public partial class App : Application
     {
-        /// <summary>
-        /// The service provider for dependency injection.
-        /// </summary>
         private static IServiceProvider _serviceProvider = null!;
-
-        /// <summary>
-        /// The application configuration store.
-        /// </summary>
         private static IConfigStore _appConfigStore = null!;
-
-        /// <summary>
-        /// The main application window.
-        /// </summary>
         private static MainWindow _window = null!;
+
+        private ILocalizer Localizer { get; set; } = WinUI3Localizer.Localizer.Get();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="App"/> class.
@@ -47,8 +43,10 @@ namespace PowerPad.WinUI
         /// Handles the application launch event and initializes the main window.
         /// </summary>
         /// <param name="args">The launch activation arguments.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
+            await InitializeLocalizer();
+
             InitializeMainWindow();
         }
 
@@ -105,6 +103,62 @@ namespace PowerPad.WinUI
             {
                 return _serviceProvider.GetRequiredService<T>();
             }
+        }
+
+        /// <summary>
+        /// Initializes the localizer by creating necessary string resource files and setting up localization options.
+        /// </summary>
+        private async Task InitializeLocalizer()
+        {
+            // Initialize a "Strings" folder in the "LocalFolder" for the packaged app.
+            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            StorageFolder stringsFolder = await localFolder.CreateFolderAsync(
+              "Strings",
+               CreationCollisionOption.OpenIfExists);
+
+            // Create string resources file from app resources if doesn't exist.
+            string resourceFileName = "Resources.resw";
+            await CreateStringResourceFileIfNotExists(stringsFolder, "es-ES", resourceFileName);
+            await CreateStringResourceFileIfNotExists(stringsFolder, "en-GB", resourceFileName);
+
+            await new LocalizerBuilder()
+                .AddStringResourcesFolderForLanguageDictionaries(stringsFolder.Path)
+                .SetOptions(options =>
+                {
+                    options.DefaultLanguage = "en-GB";
+                })
+                .Build();
+        }
+
+        /// <summary>
+        /// Creates a string resource file in the specified language folder if it does not already exist.
+        /// </summary>
+        /// <param name="stringsFolder">The parent folder containing language-specific folders.</param>
+        /// <param name="language">The language code for the folder (e.g., "es-ES").</param>
+        /// <param name="resourceFileName">The name of the resource file to create.</param>
+        private static async Task CreateStringResourceFileIfNotExists(StorageFolder stringsFolder, string language, string resourceFileName)
+        {
+            StorageFolder languageFolder = await stringsFolder.CreateFolderAsync(
+                language,
+                CreationCollisionOption.OpenIfExists);
+
+            //if (await languageFolder.TryGetItemAsync(resourceFileName) is null)
+            //{
+                string resourceFilePath = Path.Combine(stringsFolder.Name, language, resourceFileName);
+                StorageFile resourceFile = await LoadStringResourcesFileFromAppResource(resourceFilePath);
+                _ = await resourceFile.CopyAsync(languageFolder, resourceFileName, NameCollisionOption.ReplaceExisting);
+            //}
+        }
+
+        /// <summary>
+        /// Loads a string resource file from the application's packaged resources.
+        /// </summary>
+        /// <param name="filePath">The relative file path within the application package.</param>
+        /// <returns>A <see cref="StorageFile"/> representing the loaded resource file.</returns>
+        private static async Task<StorageFile> LoadStringResourcesFileFromAppResource(string filePath)
+        {
+            Uri resourcesFileUri = new($"ms-appx:///{filePath}");
+            return await StorageFile.GetFileFromApplicationUriAsync(resourcesFileUri);
         }
     }
 }
