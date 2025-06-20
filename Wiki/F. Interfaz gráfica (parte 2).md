@@ -1818,7 +1818,7 @@ public sealed partial class ModelSelector : UserControl, IDisposable
 
 ##### Descripción general:
 
-El control `AgentSelector` es un componente visual reutilizable que permite al usuario seleccionar un agente de IA disponible, filtrando la lista de agentes según el tipo de documento (nota o chat). Presenta un botón desplegable que muestra los agentes disponibles en un menú tipo flyout, permitiendo seleccionar uno y reflejando la selección tanto visualmente como a nivel de datos. Está diseñado para integrarse en el interfaz y facilitar la interacción con los agentes en conversaciones y edición de notas.
+El control `AgentSelector` es un componente visual reutilizable que permite al usuario seleccionar un agente de IA disponible, filtrando la lista de agentes según el tipo de documento (nota o chat). Presenta un botón desplegable que muestra los agentes disponibles en un menú tipo flyout, permitiendo seleccionar uno y reflejando la selección tanto visualmente como a nivel de datos. Está diseñado para integrarse en la interfaz y facilitar la interacción con los agentes en conversaciones y edición de notas.
 
 ##### Estructura visual simplificada:
 

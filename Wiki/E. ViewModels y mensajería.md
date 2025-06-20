@@ -1169,7 +1169,7 @@ public class ModelsSettingsViewModel : ObservableObject
 
 ## E.4 Mensajes de comunicación
 
-De forma complementaria a los ViewModels, la mensajería permiten la comunicación desacoplada entre componentes que no están relacionados directamente, permitiendo que ViewModels o controles del interfaz respondan de forma coordinada a cambios en el modelo. Ambos elementos permiten que el interfaz sea dinámico y reactivo, mejorando la experiencia del usuario.
+De forma complementaria a los ViewModels, la mensajería permiten la comunicación desacoplada entre componentes que no están relacionados directamente, permitiendo que ViewModels o controles de la interfaz respondan de forma coordinada a cambios en el modelo. Ambos elementos permiten que la interfaz sea dinámica y reactiva, mejorando la experiencia del usuario.
 
 #### FolderEntryCreated
 

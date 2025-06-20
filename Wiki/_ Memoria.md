@@ -29,8 +29,8 @@ date: 30 de junio de 2025
 # 5. Ejemplos de uso y flujos de trabajo
 ![[05. Ejemplos de uso y flujos de trabajo]]
 
-# 6. Código fuente de la solución
-![[06. Código fuente de la solución]]
+# 6. Detalle de la implementación
+![[06. Detalle de la implementación]]
 
 # 7. Impactos sociales, ambientales y éticos
 ![[07. Impactos sociales, ambientales y éticos]]
