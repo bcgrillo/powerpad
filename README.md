@@ -1,3 +1,17 @@
+![Logo PowerPad](readme-logo.png)
+# PowerPad
+
+*Aplicación para la Gestión de Conversaciones y Notas con Inteligencia Artificial Local mediante Ollama*
+
+**Universidad Politécnica de Madrid**
+Escuela Técnica Superior de Ingeniería de Sistemas Informáticos
+
+**TRABAJO FIN DE GRADO EN INGENIERÍA DEL SOFTWARE**
+
+**Desarrollado por**: Bruno Camilo Grillo Cruz
+**Dirigido por**: Agustín Yagüe Panadero
+Madrid, 1 de Julio de 2025
+
 ## Resumen
 
 El presente trabajo se centra en el desarrollo de una aplicación de escritorio que permite la interacción con modelos de lenguaje de gran tamaño (LLMs) de forma local, combinando accesibilidad, personalización y eficiencia. La solución propuesta utiliza Ollama como motor de ejecución local, eliminando la dependencia de servicios en la nube, garantizando así privacidad y control sobre los datos almacenados.
@@ -10,7 +24,7 @@ En conclusión, este trabajo presenta una solución que integra la IA en el fluj
 
 ## Documentación
 
-Puedes encontrar la documentación completa del proyecto en el directorio /Wiki del repositorio.
+Puedes encontrar la documentación completa del proyecto en el directorio `/Wiki` de este repositorio.
 
 ## Licencia
 
