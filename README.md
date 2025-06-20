@@ -3,13 +3,13 @@
 
 *Aplicación para la Gestión de Conversaciones y Notas con Inteligencia Artificial Local mediante Ollama*
 
-**Universidad Politécnica de Madrid**
+**Universidad Politécnica de Madrid**\
 Escuela Técnica Superior de Ingeniería de Sistemas Informáticos
 
 **TRABAJO FIN DE GRADO EN INGENIERÍA DEL SOFTWARE**
 
-**Desarrollado por**: Bruno Camilo Grillo Cruz
-**Dirigido por**: Agustín Yagüe Panadero
+**Desarrollado por**: Bruno Camilo Grillo Cruz\
+**Dirigido por**: Agustín Yagüe Panadero\
 Madrid, 1 de Julio de 2025
 
 ## Resumen
