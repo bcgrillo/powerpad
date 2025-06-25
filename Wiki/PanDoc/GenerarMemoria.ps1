@@ -40,7 +40,7 @@ $content = [System.Text.RegularExpressions.Regex]::Replace($content, $figuraPatt
 Set-Content -Path $tempPath -Value $content -Encoding utf8
 
 
-pandoc $tempPath --toc --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl --filter mermaid-filter.cmd -o $outputFile --reference-doc=PanDoc/Templates/article.docx
+pandoc $tempPath --toc --lof --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl --filter mermaid-filter.cmd -o $outputFile --reference-doc=PanDoc/Templates/article.docx
 
 Remove-Item $tempPath
 
