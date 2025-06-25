@@ -4,7 +4,7 @@ subtitle: Memoria
 author: Bruno Grillo
 date: 30 de junio de 2025
 ---
-![[00. Notas portada]]
+![[x. Notas portada]]
 
 ![[00. Resumen - Abstract]]
 
@@ -32,9 +32,9 @@ date: 30 de junio de 2025
 # 9. Referencias
 (Mover aquí referencias)
 
-![[98. Glosario]]
+![[x. Glosario]]
 
 # 11. Índice de figuras
 (Mover aquí el LOF)
 
-![[99. Anexos]]
+![[x. Anexos]]
