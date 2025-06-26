@@ -640,6 +640,7 @@ public enum ServiceStatus
     NotFound
 }
 ```
+
 #### EntryType
 
 ##### Descripción general:

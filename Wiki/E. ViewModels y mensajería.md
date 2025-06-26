@@ -736,6 +736,7 @@ public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChan
 ##### Notas adicionales:
 
 - Utiliza el patrón Messenger para sincronizar cambios de nombre y eliminación entre diferentes instancias del ViewModel.
+
 #### WorkspaceViewModel
 
 ##### Descripción general:

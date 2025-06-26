@@ -16,7 +16,7 @@
     -   3.2 Principios y Ventajas del Enfoque Low Code
     -   3.3 Plataformas Low Code Actuales y Limitaciones
     -   3.4 IA Generativa en el Desarrollo de Software: Estudios y Casos
-¡4.  **Diseño del Marco de Trabajo Propuesto: GenCode Framework** (20 pag.)
+4.  **Diseño del Marco de Trabajo Propuesto: GenCode Framework** (20 pag.)
     -   4.1 Enfoque General del Marco
     -   4.2 Principios de Estandarización y Modularidad
     -   4.3 Definición de Componentes de Desarrollo (Entidades, Reglas de Negocio, etc)
