@@ -60,6 +60,7 @@
 | Mock                  | Objeto simulado usado en pruebas para reemplazar dependencias reales.                                                                                                               |
 | Model                 | Representa los datos y lógica de negocio en MVVM.                                                                                                                                   |
 | Modelo                | Sistema entrenado para realizar tareas de IA como generar texto o clasificar.                                                                                                       |
+| MSIX                  | Versión más segura y actualizada del instalador de Microsoft (MSI, _Microsoft Installer_).                                                                                          |
 | MVP                   | *Minimum Viable Product*. Producto inicial con  características suficientes para satisfacer a los primeros usuarios.                                                                |
 | MVVM                  | *Model-View-ViewModel*. Patrón de arquitectura que separa lógica, UI y enlace de datos.                                                                                             |
 | NLP                   | *Natural Language Processing*. Procesamiento del lenguaje natural; campo que estudia la interacción entre IA y texto.                                                               |
