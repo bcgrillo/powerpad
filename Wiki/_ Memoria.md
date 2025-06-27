@@ -29,12 +29,12 @@ date: 30 de junio de 2025
 
 ![[08. Conclusiones y trabajos futuros]]
 
-# 9. Referencias
+# Referencias
 (Mover aquí referencias)
 
 ![[x. Glosario]]
 
-# 11. Índice de figuras
+# Índice de figuras
 (Mover aquí el LOF)
 
 ![[x. Anexos]]

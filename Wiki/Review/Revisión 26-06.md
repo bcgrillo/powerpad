@@ -56,3 +56,7 @@
 - ~~Figura 5.24. Esquema de la información enviada al modelo de IA generativa~~
 - ~~Chatbot Arena (INCLUIR CITA ENLACE)~~
 - Preparar anexos
+	- Documentación Técnica
+	- Clonar repositorios a GitLab
+	- Subir instalador
+	- Subir documentación generada
