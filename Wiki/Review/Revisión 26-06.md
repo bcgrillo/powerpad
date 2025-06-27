@@ -1,23 +1,24 @@
 
-# 1. Introducción-review-v2
+# 1. Introducción
 
-- Retocar figura 1.2.
+- **Retocar figura 1.2.**
 
-# 2. Estado del arte y fundamentos teóricos-review-v2
+# 2. Estado del arte y fundamentos teóricos
 
 - ~~2.3.2 Herramientas de productividad de escritorio: Añadir citas~~
 
-# 4. Arquitectura de la solución-review-v2
+# 4. Arquitectura de la solución
 
 - ~~4.1.1 (AÑADIR CITAS EXPLICATIVAS)~~
 - ~~4.1.3 (CITA: STREAMING)~~
 - ~~4.1.4. (CITA SOBRE CODIGO AUTOGENERADO POR TOOLKIT MVVM)~~
+- **Añadir otras figuras en arquitectura**
 
-# 5. 
+# 5. Ejemplos de uso y flujos de trabajo
 
-- Revisar todos los pies de foto
+- ~~Revisar todos los pies de foto~~
 
-# 6. Detalle de la implementación-review-v2
+# 6. Detalle de la implementación
 
 - ~~6.1 **licencia GPL-3.0** (BUSCAR ENLACE CITA)~~
 - ~~6.1 Markdown (CITA ESPECIFICACION MARKDOWN).~~
@@ -30,13 +31,13 @@
 - ~~6.4.  **MSIX** (CITA FORMATO MSIX)~~
 - ~~6.4. **Microsoft Store** (CITA ENLACE MICROSOFT STORE) a futuro.~~
 
-# 07. Impactos sociales, ambientales y éticos-review-v2
+# 07. Impactos sociales, ambientales y éticos
 
 - ~~7.1.1 Un estudio reciente (CITA MÁS ABAJO)~~ 
 - ~~7.1.2.  (INCLUIR ALGUN ENLACE QUE JUSTIFIQUE ALGUNAS DE ESTAS AFIRMACIONES)~~
 - ~~Figura 7.1. Fuente: Información de Gemma 3 en Ollama.com CREAR ENLACE REF https://ollama.com/library/gemma3~~
 
-# 08. Conclusiones y trabajos futuros-review-v2
+# 08. Conclusiones y trabajos futuros
 
 - ~~8.3.1.  **Visual Studio** (CITA ENLACE HERRAMIENTA)~~
 - ~~8.3.1. MSTestv2 **(INCLUIR CITA)**~~
@@ -47,3 +48,11 @@
 - ~~8.3.5.  **Uno Platform** (INCLUIR CITA) p~~
 - ~~8.3.5. vía Skia (ENLACE)~~
 - ~~8.5.5. Microsoft Store (CITA ENLACE A MS STORE)~~
+
+# General
+
+- ~~Añadir descripciones a los bloques de código~~
+- ~~Revisar: Figura 2.11 Captura de distintos interfaces de aplicaciones conversacionales.~~
+- ~~Figura 5.24. Esquema de la información enviada al modelo de IA generativa~~
+- ~~Chatbot Arena (INCLUIR CITA ENLACE)~~
+- Preparar anexos
