@@ -1,8 +1,8 @@
-En este capítulo se describen en detalle algunos de los elementos fundamentales que articulan el núcleo de PowerPad, la definición de los modelos y contratos (interfaces) principales, así como las algunos enumerados. Estos elementos constituyen la base sobre la que se construyen los servicios y la lógica de negocio del núcleo.
-
 ## 1.1. Definición de modelos
 
 ### 1.1.1. Servicios de IA
+
+**Namespace:** `PowerPad.Core.Models.AI`
 
 #### AIModel
 
@@ -154,6 +154,8 @@ public readonly record struct TestConnectionResult
 
 ### 1.1.2. Gestión del espacio de trabajo
 
+**Namespace:** `PowerPad.Core.Models.FileSystem`
+
 #### Document
 
 ##### Descripción general:
@@ -266,6 +268,8 @@ public class Root(string path) : Folder(string.Empty)
 
 ### 1.1.3. Gestión de la configuración
 
+**Namespace:** `PowerPad.Core.Services.Config`
+
 #### ConfigEntry
 
 ##### Descripción general:
@@ -303,6 +307,8 @@ internal record ConfigEntry
 ## 1.2. Contratos e interfaces principales
 
 ### 1.2.1 Servicios de IA
+
+**Namespace:** `PowerPad.Core.Contracts`
 
 #### IAIService
 
@@ -407,6 +413,8 @@ internal interface IChatOptions
 -   `MaxOutputTokens`: Máximo de tokens permitidos en la respuesta.
 
 ### 1.2.2 Gestión del espacio de trabajo
+
+**Namespace:** `PowerPad.Core.Contracts`
 
 #### IWorkspaceService
 
@@ -556,6 +564,8 @@ public interface IEditorContract
 
 ### 1.2.3 Gestión de la configuración
 
+**Namespace:** `PowerPad.Core.Contracts`
+
 #### IConfigStore
 
 ##### Descripción general:
@@ -601,6 +611,8 @@ public interface IConfigStoreService
 - `Task StoreConfigs()`: Guarda todas las configuraciones en sus respectivos archivos de manera asíncrona.
 
 ## 1.3. Enumeraciones
+
+**Namespace:** `PowerPad.Core.Models`
 
 #### ModelProvider
 

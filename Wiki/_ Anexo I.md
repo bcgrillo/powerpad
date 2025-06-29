@@ -1,10 +1,10 @@
 ---
 title: Anexo I
-subtitle: Documentación Técnica de la Solución
+subtitle: Documentación técnica de la solución
 author: Bruno Grillo
 date: 30 de junio de 2025
 ---
-# Introducción
+# Objetivo
 
 Este documento contiene un resumen detallado de los elementos principales que componen la solución PowerPad, cubriendo tanto los componentes lógicos como los visuales. Su objetivo es proporcionar una visión estructurada y comprensible del diseño interno de la aplicación, facilitando su comprensión, mantenimiento y futuras ampliaciones.
 

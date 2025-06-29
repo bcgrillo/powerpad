@@ -1,8 +1,8 @@
 ## 5.3 Componentes
 
-Para la implementación de las distintas funcionalidades de PowerPad se han desarrollado varios componentes reutilizables que se analizarán en este apartado. Un componente reutilizable puede ser desde un control de usuario simple, como una caja de edición de texto personalizada, hasta grupos de varios controles que se reutilizan de forma conjunta.
-
 ### 5.3.1 Explorador del espacio de trabajo
+
+**Namespace:** `PowerPad.WinUI.Components`
 
 #### WorkspaceControl
 
@@ -259,6 +259,8 @@ public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
 - El control alterna entre una vista de bienvenida ("Landing") y el área de edición según si hay un documento abierto o no.
 
 ### 5.3.2 Editores
+
+**Namespace:** `PowerPad.WinUI.Components.Editors`
 
 #### EditorControl
 
@@ -708,6 +710,8 @@ public partial class AgentEditorControl : UserControl, IDisposable
 
 ### 5.3.3. Gestión de modelos
 
+**Namespace:** `PowerPad.WinUI.Components.Controls`
+
 #### AvailableModelsRepeater
 
 ![Repetidor de modelos disponibles](./Pictures/Pasted-image-20250524005928.png)
@@ -1060,6 +1064,8 @@ public partial class ModelInfoViewer : UserControl
 - Al intentar navegar a una nueva URL desde el WebView2, la navegación se cancela y la URL se abre en el navegador externo, evitando la navegación interna dentro del control.
 
 ### 5.3.4 Controles de IA
+
+**Namespace:** `PowerPad.WinUI.Components.Controls`
 
 #### ChatControl
 
@@ -1453,6 +1459,8 @@ public partial class NoteAgentControl : UserControl, IDisposable
 - El control gestiona la visibilidad y el estado de los elementos de la interfaz de usuario en función de la disponibilidad de agentes y la configuración seleccionada.
 
 ### 5.3.5 Controles individuales
+
+**Namespace:** `PowerPad.WinUI.Components.Controls`
 
 #### IntegratedTextBox
 

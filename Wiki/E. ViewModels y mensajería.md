@@ -1,8 +1,8 @@
 ## 4.1. ViewModels
 
-En el contexto de la **arquitectura MVVM**, los **ViewModels** constituyen una pieza central al actuar como puente entre la interfaz de usuario y la lógica de negocio. Su función principal es gestionar el estado, la lógica y los comandos necesarios para que la vista interactúe de forma desacoplada con los modelos de datos y los servicios subyacentes. En PowerPad, los ViewModels permiten mantener una interfaz reactiva y coherente, facilitando la actualización automática de la UI y simplificando la gestión de eventos y acciones del usuario. En este apartado se revisan los ViewModels implementados en la aplicación, describiendo su papel y cómo contribuyen a la estructura y funcionamiento general del software.
-
 ### 4.1.1 Gestión de conversaciones
+
+**Namespace:** `PowerPad.WinUI.ViewModels.Chat`
 
 #### ChatViewModel
 
@@ -100,6 +100,8 @@ public class MessageViewModel : ObservableObject
 
 
 ### 4.1.2 Gestión de modelos y parámetros
+
+**Namespace:** `PowerPad.WinUI.ViewModels.AI`
 
 #### AIModelViewModel
 
@@ -480,6 +482,8 @@ public class OpenAIModelsViewModel : AIModelsViewModelBase
 
 ### 4.1.3 Gestión de agentes
 
+**Namespace:** `PowerPad.WinUI.ViewModels.Agents`
+
 #### AgentViewModel
 
 ##### Descripción general:
@@ -645,6 +649,8 @@ public class AgentsCollectionViewModel : ObservableObject
 - La colección `Agents` se inicializa y persiste automáticamente en el almacén de configuración (`IConfigStore`).
 
 ### 4.1.4. Gestión del espacio de trabajo
+
+**Namespace:** `PowerPad.WinUI.ViewModels.FileSystem`
 
 #### FolderEntryViewModel
 
@@ -920,6 +926,8 @@ public class DraftDocumentViewModel : ObservableObject
 
 ### 4.1.5. Gestión de la configuración
 
+**Namespace:** `PowerPad.WinUI.ViewModels.Settings`
+
 #### AIServiceConfigViewModel
 
 ##### Descripción general:
@@ -1170,7 +1178,7 @@ public class ModelsSettingsViewModel : ObservableObject
 
 ## 4.4 Mensajes de comunicación
 
-De forma complementaria a los ViewModels, la mensajería permiten la comunicación desacoplada entre componentes que no están relacionados directamente, permitiendo que ViewModels o controles de la interfaz respondan de forma coordinada a cambios en el modelo. Ambos elementos permiten que la interfaz sea dinámica y reactiva, mejorando la experiencia del usuario.
+**Namespace:** `PowerPad.WinUI.Messages`
 
 #### FolderEntryCreated
 

@@ -1,6 +1,6 @@
-La sección dedicada a la Interfaz Gráfica de PowerPad tiene como objetivo ofrecer una visión detallada de todos los elementos visuales que conforman la experiencia de usuario de la aplicación. Aquí describiremos y detallaremos de manera estructurada las distintas ventanas, páginas, componentes y controles personalizados que se han desarrollado para facilitar la interacción con el usuario. Además, se destacan los aspectos clave de diseño y usabilidad que guían la disposición y funcionalidad de cada elemento, así como las decisiones tomadas para lograr una interfaz moderna, intuitiva y coherente con los objetivos del proyecto. Esta sección sirve como guía para comprender cómo se organiza visualmente PowerPad y cómo cada parte contribuye al flujo de trabajo general y a la integración de las capacidades de inteligencia artificial.
-
 ## 5.1. Ventanas
+
+**Namespace:** `PowerPad.WinUI`
 
 #### MainWindow
 
@@ -201,6 +201,8 @@ public sealed partial class PopupWindow : WindowEx
 ## 5.2 Páginas
 
 ### 5.2.1. Páginas principales
+
+**Namespace:** `PowerPad.WinUI.Pages`
 
 #### WorkspacePage
 
@@ -658,6 +660,8 @@ public partial class SettingsPage : DisposablePage
 
 ### 5.2.2. Páginas de gestión de modelos
 
+**Namespace:** `PowerPad.WinUI.Pages.Providers`
+
 #### AIModelsPageBase
 
 ##### Descripción general:
@@ -791,6 +795,8 @@ Al igual que `OllamaModelsPage`, las páginas `HuggingFaceModelsPage`, `GitHubMo
 ![Página de gestión de modelos de OpenAI](./Pictures/Pasted-image-20250523220657.png)
 
 ### 5.2.3. Páginas para añadir nuevos modelos
+
+**Namespace:** `PowerPad.WinUI.Pages.Providers`
 
 #### AIAddModelPageBase
 
@@ -928,6 +934,8 @@ Al igual que `OllamaAddModelPage`, las páginas `HuggingFaceAddModelPage`, `GitH
 ![Página de búsqueda de modelos en OpenAI](./Pictures/Pasted-image-20250524001303.png)
 
 ### 5.2.4. Página de edición emergente
+
+**Namespace:** `PowerPad.WinUI.Pages`
 
 #### PopupEditorPage
 

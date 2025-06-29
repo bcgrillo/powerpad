@@ -36,7 +36,7 @@ $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, {
 Set-Content -Path $tempPath -Value $content -Encoding utf8
 
 
-pandoc $tempPath --toc --top-level-division=chapter -o $outputFile --reference-doc=PanDoc/Templates/article.docx
+pandoc $tempPath --toc --top-level-division=chapter -o $outputFile --reference-doc=PanDoc/Templates/templateAnexo.docx
 
 Remove-Item $tempPath
 

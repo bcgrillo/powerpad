@@ -1,6 +1,6 @@
-Este capítulo está dedicado a los servicios de inteligencia artificial que forman el núcleo de las capacidades avanzadas de PowerPad. En esta sección se describe cómo la aplicación integra y gestiona distintos proveedores de IA, como Ollama, Azure AI y OpenAI, permitiendo al usuario interactuar con modelos de lenguaje de manera flexible y personalizada. Se detallan las implementaciones específicas de cada servicio, los mecanismos para la gestión y búsqueda de modelos, así como la gestión de las conversaciones.
-
 ## 2.1. Implementaciones
+
+**Namespace:** `PowerPad.Core.Services.AI`
 
 #### OllamaService
 
@@ -241,7 +241,7 @@ public class ChatService : IChatService
 
 ## 2.2. Búsqueda de Modelos
 
-En esta sección se describe el mecanismo de búsqueda de modelos de inteligencia artificial dentro de PowerPad. Se explican las herramientas y utilidades desarrolladas para facilitar la localización, consulta y administración de modelos provenientes de la biblioteca de Ollama.com, o del API de Hugging Face o de GitHub Marketplace.
+**Namespace:** `PowerPad.Core.Helpers`
 
 #### OllamaLibraryHelper
 
