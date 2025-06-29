@@ -39,8 +39,19 @@ $content = [System.Text.RegularExpressions.Regex]::Replace($content, $figuraPatt
 # Escribe el resultado en el archivo temporal en UTF-8
 Set-Content -Path $tempPath -Value $content -Encoding utf8
 
-pandoc $tempPath --toc --lof --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl -o $outputFile --reference-doc=PanDoc/Templates/article.docx
+pandoc $tempPath --toc --lof --citeproc --bibliography=PanDoc/References.bib --csl PanDoc/Templates/ieee-with-url.csl --top-level-division=chapter -o $outputFile --reference-doc=PanDoc/Templates/article.docx
 
 Remove-Item $tempPath
+
+
+$word = New-Object -ComObject Word.Application
+$word.Visible = $false
+$doc = $word.Documents.Open((Resolve-Path $outputFile).Path)
+$selection = $word.Selection
+$selection.InsertFile((Resolve-Path "PanDoc/Templates/portada.docx").Path)
+$doc.Save()
+$doc.Close()
+$word.Quit()
+
 
 cd PanDoc

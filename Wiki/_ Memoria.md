@@ -4,8 +4,6 @@ subtitle: Memoria
 author: Bruno Grillo
 date: 30 de junio de 2025
 ---
-![[x. Notas portada]]
-
 ![[00. Resumen - Abstract]]
 
 ![[00. Agradecimientos]]

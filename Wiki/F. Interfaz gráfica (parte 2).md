@@ -1,8 +1,8 @@
-## F.3 Componentes
+## 5.3 Componentes
 
 Para la implementación de las distintas funcionalidades de PowerPad se han desarrollado varios componentes reutilizables que se analizarán en este apartado. Un componente reutilizable puede ser desde un control de usuario simple, como una caja de edición de texto personalizada, hasta grupos de varios controles que se reutilizan de forma conjunta.
 
-### F.3.1 Explorador del espacio de trabajo
+### 5.3.1 Explorador del espacio de trabajo
 
 #### WorkspaceControl
 
@@ -258,7 +258,7 @@ public partial class EditorManager : UserControl, IRecipient<FolderEntryDeleted>
 - El control utiliza un temporizador (`DispatcherTimer`) para realizar auto-guardado periódico de los editores abiertos a través del helper `EditorManagerHelper`.
 - El control alterna entre una vista de bienvenida ("Landing") y el área de edición según si hay un documento abierto o no.
 
-### F.3.2 Editores
+### 5.3.2 Editores
 
 #### EditorControl
 
@@ -706,7 +706,7 @@ public partial class AgentEditorControl : UserControl, IDisposable
 - Los diálogos de confirmación para guardar o cancelar cambios utilizan el helper `DialogHelper` y el `XamlRoot` proporcionado para el posicionamiento adecuado en la interfaz.
 - El control crea una copia del agente para que la edición se pueda revertir o confirmar al finalizar la edición.
 
-### F.3.3. Gestión de modelos
+### 5.3.3. Gestión de modelos
 
 #### AvailableModelsRepeater
 
@@ -1059,7 +1059,7 @@ public partial class ModelInfoViewer : UserControl
 
 - Al intentar navegar a una nueva URL desde el WebView2, la navegación se cancela y la URL se abre en el navegador externo, evitando la navegación interna dentro del control.
 
-### F.3.4 Controles de IA
+### 5.3.4 Controles de IA
 
 #### ChatControl
 
@@ -1452,7 +1452,7 @@ public partial class NoteAgentControl : UserControl, IDisposable
 
 - El control gestiona la visibilidad y el estado de los elementos de la interfaz de usuario en función de la disponibilidad de agentes y la configuración seleccionada.
 
-### F.3.5 Controles individuales
+### 5.3.5 Controles individuales
 
 #### IntegratedTextBox
 

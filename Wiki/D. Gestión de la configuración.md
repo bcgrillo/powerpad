@@ -1,6 +1,6 @@
 Este capítulo aborda en detalle los mecanismos implementados en PowerPad para la gestión de la configuración de la aplicación y su persistencia. En este apartado se describen tanto la estructura y el almacenamiento de las opciones de configuración como las técnicas utilizadas para asegurar la integridad y la actualización de estos datos a lo largo del ciclo de vida de la aplicación.
 
-## D.1 Implementaciones
+## 4.1 Implementaciones
 
 #### ConfigStoreService
 

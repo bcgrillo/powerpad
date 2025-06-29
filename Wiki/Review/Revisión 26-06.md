@@ -31,13 +31,13 @@
 - ~~6.4.  **MSIX** (CITA FORMATO MSIX)~~
 - ~~6.4. **Microsoft Store** (CITA ENLACE MICROSOFT STORE) a futuro.~~
 
-# 07. Impactos sociales, ambientales y éticos
+# 7. Impactos sociales, ambientales y éticos
 
 - ~~7.1.1 Un estudio reciente (CITA MÁS ABAJO)~~ 
 - ~~7.1.2.  (INCLUIR ALGUN ENLACE QUE JUSTIFIQUE ALGUNAS DE ESTAS AFIRMACIONES)~~
 - ~~Figura 7.1. Fuente: Información de Gemma 3 en Ollama.com CREAR ENLACE REF https://ollama.com/library/gemma3~~
 
-# 08. Conclusiones y trabajos futuros
+# 8. Conclusiones y trabajos futuros
 
 - ~~8.3.1.  **Visual Studio** (CITA ENLACE HERRAMIENTA)~~
 - ~~8.3.1. MSTestv2 **(INCLUIR CITA)**~~
@@ -60,3 +60,5 @@
 	- Clonar repositorios a GitLab
 	- Subir instalador
 	- Subir documentación generada
+- ~~Portada definitiva~~
+- ~~Encabezado de página~~

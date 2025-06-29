@@ -1,14 +1,14 @@
 # Anexos
 
-#### **Anexo I**: Documentación Técnica de la Solución
+#### **Anexo I**: Documentación técnica de la solución
 
 - Disponible en: https://gitlab.etsisi.upm.es/bj0666/powerpad/wiki/attachments/Doc1.pdf
 
-#### **Anexo II**: Documentación Generada por Código
+#### **Anexo II**: Documentación generada por código
 
 - Disponible en: https://gitlab.etsisi.upm.es/bj0666/powerpad/wiki/attachments/Doxygen/
 
-#### **Anexo III**: Código Fuente
+#### **Anexo III**: Código fuente
 
 - Disponible en: https://gitlab.etsisi.upm.es/bj0666/powerpad/src/
 - Rama principal: `main`

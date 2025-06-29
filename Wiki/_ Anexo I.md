@@ -15,22 +15,22 @@ Esta documentación técnica pretende servir tanto de referencia para otros desa
 # Índice
 (Mover aquí el TOC)
 
-# A. Modelos y contratos
+# 1. Modelos y contratos
 ![[A. Modelos y contratos]]
 
-# B. Servicios de inteligencia artificial
+# 2. Servicios de inteligencia artificial
 ![[B. Servicios de inteligencia artificial]]
 
-# C. Gestión de documentos y espacio de trabajo
+# 3. Gestión de documentos y espacio de trabajo
 ![[C. Gestión de documentos y espacio de trabajo]]
 
-# D. Gestión de la configuración
+# 4. Gestión de la configuración
 ![[D. Gestión de la configuración]]
 
-# E. *ViewModels* y mensajería
+# 4. *ViewModels* y mensajería
 ![[E. ViewModels y mensajería]]
 
-# F. Interfaz gráfica
+# 5. Interfaz gráfica
 ![[F. Interfaz gráfica (parte 1)]]
 ![[F. Interfaz gráfica (parte 2)]]
 ![[F. Interfaz gráfica (parte 3)]]
