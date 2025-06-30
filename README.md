@@ -1,7 +1,7 @@
 ![Logo PowerPad](readme-logo.png)
 # PowerPad
 
-*Aplicación para la Gestión de Conversaciones y Notas con Inteligencia Artificial Local mediante Ollama*
+*Aplicación para la gestión de conversaciones y notas con inteligencia artificial local mediante Ollama*
 
 **Universidad Politécnica de Madrid**\
 Escuela Técnica Superior de Ingeniería de Sistemas Informáticos
