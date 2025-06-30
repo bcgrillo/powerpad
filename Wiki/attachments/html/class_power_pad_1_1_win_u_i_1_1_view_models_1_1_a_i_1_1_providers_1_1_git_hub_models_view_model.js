@@ -1,4 +1,0 @@
-var class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_git_hub_models_view_model =
-[
-    [ "GitHubModelsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_git_hub_models_view_model.html#a801623b3b389982cd7e3c506909c1c1e", null ]
-];

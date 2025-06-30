@@ -1,4 +1,0 @@
-var class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_hugging_face_models_view_model =
-[
-    [ "HuggingFaceModelsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_hugging_face_models_view_model.html#ae0d95c2c2643ae09547a2d00a5f9a2ec", null ]
-];

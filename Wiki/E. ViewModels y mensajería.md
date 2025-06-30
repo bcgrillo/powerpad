@@ -1,8 +1,8 @@
-## E.1. ViewModels
+## 4.1. ViewModels
 
-En el contexto de la **arquitectura MVVM**, los **ViewModels** constituyen una pieza central al actuar como puente entre la interfaz de usuario y la lógica de negocio. Su función principal es gestionar el estado, la lógica y los comandos necesarios para que la vista interactúe de forma desacoplada con los modelos de datos y los servicios subyacentes. En PowerPad, los ViewModels permiten mantener una interfaz reactiva y coherente, facilitando la actualización automática de la UI y simplificando la gestión de eventos y acciones del usuario. En este apartado se revisan los ViewModels implementados en la aplicación, describiendo su papel y cómo contribuyen a la estructura y funcionamiento general del software.
+### 4.1.1 Gestión de conversaciones
 
-### E.1.1 Gestión de conversaciones
+**Namespace:** `PowerPad.WinUI.ViewModels.Chat`
 
 #### ChatViewModel
 
@@ -99,7 +99,9 @@ public class MessageViewModel : ObservableObject
 - Las propiedades `Loading` y `LoadingMessage` están decoradas con `[JsonIgnore]`, por lo que no se serializan ni deserializan en operaciones JSON.
 
 
-### E.1.2 Gestión de modelos y parámetros
+### 4.1.2 Gestión de modelos y parámetros
+
+**Namespace:** `PowerPad.WinUI.ViewModels.AI`
 
 #### AIModelViewModel
 
@@ -478,7 +480,9 @@ public class OpenAIModelsViewModel : AIModelsViewModelBase
 
 - Este ViewModel sirve como especialización para el proveedor OpenAI, permitiendo su identificación y gestión diferenciada respecto a otros proveedores de modelos IA.
 
-### E.1.3 Gestión de agentes
+### 4.1.3 Gestión de agentes
+
+**Namespace:** `PowerPad.WinUI.ViewModels.Agents`
 
 #### AgentViewModel
 
@@ -644,7 +648,9 @@ public class AgentsCollectionViewModel : ObservableObject
 
 - La colección `Agents` se inicializa y persiste automáticamente en el almacén de configuración (`IConfigStore`).
 
-### E.1.4. Gestión del espacio de trabajo
+### 4.1.4. Gestión del espacio de trabajo
+
+**Namespace:** `PowerPad.WinUI.ViewModels.FileSystem`
 
 #### FolderEntryViewModel
 
@@ -736,6 +742,7 @@ public class FolderEntryViewModel : ObservableObject, IRecipient<FolderEntryChan
 ##### Notas adicionales:
 
 - Utiliza el patrón Messenger para sincronizar cambios de nombre y eliminación entre diferentes instancias del ViewModel.
+
 #### WorkspaceViewModel
 
 ##### Descripción general:
@@ -917,7 +924,9 @@ public class DraftDocumentViewModel : ObservableObject
 
 - Al heredar de `ObservableObject`, notifica cambios en todas las propiedades observables.
 
-### E.1.5. Gestión de la configuración
+### 4.1.5. Gestión de la configuración
+
+**Namespace:** `PowerPad.WinUI.ViewModels.Settings`
 
 #### AIServiceConfigViewModel
 
@@ -1167,9 +1176,9 @@ public class ModelsSettingsViewModel : ObservableObject
 
 - El ViewModel mantiene la sincronización con el servicio de chat (`IChatService`) al cambiar modelos o parámetros.
 
-## E.4 Mensajes de comunicación
+## 4.4 Mensajes de comunicación
 
-De forma complementaria a los ViewModels, la mensajería permiten la comunicación desacoplada entre componentes que no están relacionados directamente, permitiendo que ViewModels o controles del interfaz respondan de forma coordinada a cambios en el modelo. Ambos elementos permiten que el interfaz sea dinámico y reactivo, mejorando la experiencia del usuario.
+**Namespace:** `PowerPad.WinUI.Messages`
 
 #### FolderEntryCreated
 

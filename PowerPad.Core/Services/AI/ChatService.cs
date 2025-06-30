@@ -11,13 +11,11 @@ namespace PowerPad.Core.Services.AI
     /// </summary>
     public interface IChatService
     {
-
         /// <summary>
         /// Sets the default AI model to be used by the chat service.
         /// </summary>
         /// <param name="defaultModel">The AI model to set as the default. Can be null.</param>
         void SetDefaultModel(AIModel? defaultModel);
-
 
         /// <summary>
         /// Sets the default parameters for the chat service.

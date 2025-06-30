@@ -1,8 +1,8 @@
-## F.4. Conversores
+## 5.4. Conversores
 
-En WinUI, los conversores son clases cuya utilidad es servir de intermediario en los enlaces de datos con la interfaz (`Data Binding`), permitiendo especificar la lógica de conversión entre el valor del modelo y el tipo de la propiedad de destino a la que se pretende enlazar. Esta conversión puede ser unidireccional o bidireccional, permitiendo en este último caso actualizar el modelo a partir del valor establecido en la propiedad.
+**Namespace:** `PowerPad.WinUI.Converters`
 
-### F.4.1 Conversores numéricos
+### 5.4.1 Conversores numéricos
 
 #### IntToDoubleConverter:
 
@@ -16,7 +16,7 @@ En WinUI, los conversores son clases cuya utilidad es servir de intermediario en
 - `Convert`: Transforma un `float` a `double`; retorna 0.0 si el valor no es `float`.
 - `ConvertBack`: Transforma un `double` a `float`; retorna 0.0f si el valor no es `double`.
 
-### F.4.2 Conversores de ServiceStatus
+### 5.4.2 Conversores de ServiceStatus
 
 #### ServiceStatusToColorBrushConverter:
 
@@ -59,7 +59,7 @@ En WinUI, los conversores son clases cuya utilidad es servir de intermediario en
 - **Parámetro `parameter`**: Estado `ServiceStatus` (como cadena) con el que comparar el valor.
 - `ConvertBack`: No implementado; lanza `NotImplementedException`.
 
-### F.4.2 Otros conversores
+### 5.4.2 Otros conversores
 
 #### AIModelToSourceConverter:
 
@@ -73,11 +73,11 @@ En WinUI, los conversores son clases cuya utilidad es servir de intermediario en
 - `Convert`: Devuelve `FontWeights.SemiBold` si el valor es `true`; en caso contrario, `FontWeights.Normal`.
 - `ConvertBack`: No implementado; lanza `NotImplementedException`.
 
-## F.5. Helpers
+## 5.5. Helpers
 
-Los helpers son un conjunto de clases estáticas que agrupan funcionalidades con un propósito específico, como la conversión de imágenes a codificación Base64 o la gestión de combinaciones de teclas en el sistema operativo (`HotKeys`). En este apartado también se incluyen las clases helper encargadas de generar diálogos útiles y reutilizables dentro de PowerPad.
+**Namespace:** `PowerPad.WinUI.Helpers`
 
-### F.5.1 Diálogos
+### 5.5.1 Diálogos
 
 #### DialogHelper
 
@@ -265,9 +265,7 @@ public partial class OllamaDownloadHelper : ContentDialog
 - El archivo temporal descargado se elimina en caso de cancelación o tras la instalación exitosa, si es posible.
 - El flujo contempla la comprobación del estado del servicio Ollama tras la instalación y permite reintentar la instalación si no se detecta correctamente o ir a la configuración de modelos en el caso de que se haya completado con éxito.
 
-### F.5.2 Utilidades
-
-En este apartado incluiremos las principales clases de utilidad de PowerPad.
+### 5.5.2 Utilidades
 
 #### BackdropHelper
 
@@ -480,7 +478,9 @@ public static class Base64ImageHelper
 - El redimensionamiento de imágenes se realiza para asegurar que la imagen resultante tenga un tamaño máximo definido por `DEFAULT_SIZE`.
 - El método `LoadImageFromBase64` puede lanzar excepciones si la cadena Base64 no es válida o si ocurre un error durante la creación de la imagen.
 
-## F.6 Clase principal de aplicación
+## 5.6 Clase principal de aplicación
+
+**Namespace:** `PowerPad.WinUI`
 
 #### App
 

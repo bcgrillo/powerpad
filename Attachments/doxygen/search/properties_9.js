@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['lastsavetime_0',['LastSaveTime',['../class_power_pad_1_1_win_u_i_1_1_components_1_1_editors_1_1_chat_editor_control.html#a5dbe176640d9a5c037947c64222facc6',1,'PowerPad.WinUI.Components.Editors.ChatEditorControl.LastSaveTime'],['../class_power_pad_1_1_win_u_i_1_1_components_1_1_editors_1_1_editor_control.html#a65632c66aba189255999bb38e448b23f',1,'PowerPad.WinUI.Components.Editors.EditorControl.LastSaveTime'],['../class_power_pad_1_1_win_u_i_1_1_components_1_1_editors_1_1_text_editor_control.html#a7a954439248d8b96caa780088ac9a335',1,'PowerPad.WinUI.Components.Editors.TextEditorControl.LastSaveTime'],['../class_power_pad_1_1_win_u_i_1_1_view_models_1_1_file_system_1_1_document_view_model.html#ab884c04a1165864643aa426d76c4488f',1,'PowerPad.WinUI.ViewModels.FileSystem.DocumentViewModel.LastSaveTime']]]
+];

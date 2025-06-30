@@ -1,8 +1,8 @@
-En este capítulo se describen en detalle algunos de los elementos fundamentales que articulan el núcleo de PowerPad, la definición de los modelos y contratos (interfaces) principales, así como las algunos enumerados. Estos elementos constituyen la base sobre la que se construyen los servicios y la lógica de negocio del núcleo.
+## 1.1. Definición de modelos
 
-## A.1. Definición de modelos
+### 1.1.1. Servicios de IA
 
-### A.1.1. Servicios de IA
+**Namespace:** `PowerPad.Core.Models.AI`
 
 #### AIModel
 
@@ -152,7 +152,9 @@ public readonly record struct TestConnectionResult
 - `Status`: Estado de la conexión con el servicio.
 - `ErrorMessage`: Mensaje de error opcional si la prueba de conexión falla.
 
-### A.1.2. Gestión del espacio de trabajo
+### 1.1.2. Gestión del espacio de trabajo
+
+**Namespace:** `PowerPad.Core.Models.FileSystem`
 
 #### Document
 
@@ -264,7 +266,9 @@ public class Root(string path) : Folder(string.Empty)
 
 - `Path`: Obtiene la ruta de la carpeta raíz.
 
-### A.1.3. Gestión de la configuración
+### 1.1.3. Gestión de la configuración
+
+**Namespace:** `PowerPad.Core.Services.Config`
 
 #### ConfigEntry
 
@@ -300,9 +304,11 @@ internal record ConfigEntry
 - `ConfigEntry(object? value, bool dirty)`
 - `T? GetValue<T>(JsonSerializerContext context)`
 
-## A.2. Contratos e interfaces principales
+## 1.2. Contratos e interfaces principales
 
-### A.2.1 Servicios de IA
+### 1.2.1 Servicios de IA
+
+**Namespace:** `PowerPad.Core.Contracts`
 
 #### IAIService
 
@@ -406,7 +412,9 @@ internal interface IChatOptions
 -   `TopP`: Controla el tamaño del muestreo de tokens.
 -   `MaxOutputTokens`: Máximo de tokens permitidos en la respuesta.
 
-### A.2.2 Gestión del espacio de trabajo
+### 1.2.2 Gestión del espacio de trabajo
+
+**Namespace:** `PowerPad.Core.Contracts`
 
 #### IWorkspaceService
 
@@ -554,7 +562,9 @@ public interface IEditorContract
 - `void SetContent(string content)`: Establece el contenido del editor.
 - `int WordCount()`: Calcula el número de palabras en el contenido del editor.
 
-### A.2.3 Gestión de la configuración
+### 1.2.3 Gestión de la configuración
+
+**Namespace:** `PowerPad.Core.Contracts`
 
 #### IConfigStore
 
@@ -600,7 +610,9 @@ public interface IConfigStoreService
 - `IConfigStore GetConfigStore(string configFolder)`: Recupera o crea un almacén de configuración para la carpeta especificada.
 - `Task StoreConfigs()`: Guarda todas las configuraciones en sus respectivos archivos de manera asíncrona.
 
-## A.3. Enumeraciones
+## 1.3. Enumeraciones
+
+**Namespace:** `PowerPad.Core.Models`
 
 #### ModelProvider
 
@@ -640,6 +652,7 @@ public enum ServiceStatus
     NotFound
 }
 ```
+
 #### EntryType
 
 ##### Descripción general:

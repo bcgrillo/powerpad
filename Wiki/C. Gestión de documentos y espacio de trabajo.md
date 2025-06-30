@@ -1,6 +1,6 @@
-Este apartado se centra en presentar las principales implementaciones que hacen posible la organización y manipulación de documentos dentro de PowerPad. En concreto, se describen los servicios de gestión de documento, del espacio de trabajo y de ordenación de archivos, explicando su función y su papel dentro del sistema. El objetivo es mostrar de forma concisa cómo se ha resuelto técnicamente la gestión de documentos y el espacio de trabajo en la aplicación, facilitando así la comprensión de la estructura interna y la lógica que soporta estas operaciones.
+## 3.1. Convenciones
 
-## C.1. Convenciones
+**Namespace:** `PowerPad.Core.Services`
 
 ##### Descripción general:
 
@@ -29,7 +29,9 @@ public static class Conventions
 
 - `AutosavePath(string path)`: Genera la ruta de archivo de auto-guardado agregando la extensión correspondiente al path base proporcionado.
 
-## C.2. Implementaciones
+## 3.2. Implementaciones
+
+**Namespace:** `PowerPad.Core.Services.FileSystem`
 
 #### WorkspaceService
 
