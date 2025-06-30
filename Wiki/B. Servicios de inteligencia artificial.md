@@ -239,7 +239,7 @@ public class ChatService : IChatService
 - El filtrado de contenido entre etiquetas `<think>` o `<thought>` en las respuestas únicas de los agentes asegura que la salida no contenga información interna o de razonamiento del modelo, mostrando solo la respuesta relevante para el usuario para aquellos escenarios no conversacionales (como la edición de notas).
 - Esta implementación aprovecha los beneficios de las abstracciones incluidas en la biblioteca de `Microsoft.Extensions.IA`, implementadas en las bibliotecas de `OllamaSharp`, `AzureAIInference` y `OpenAI` para .NET. De modo que no accede a ninguna funcionalidad específica de los proveedores, utilizando solamente la interfaz abstracta `Microsoft.Extensions.IA.IChatClient` para la interacción con los modelos.
 
-## 2.2. Búsqueda de Modelos
+## 2.2. Búsqueda de modelos
 
 **Namespace:** `PowerPad.Core.Helpers`
 
