@@ -15,6 +15,7 @@
 **Pasos finales**
 
 1. Incluir anexos
+	1. Revisar formato miniaturas anexos
 2. Actualizar número de páginas en índice (cuidado con numeración primeras secciones)
 3. Actualizar número de páginas en índice de figuras
 
