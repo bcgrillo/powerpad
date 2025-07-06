@@ -24,6 +24,7 @@
 - Dirección repositorio Git: https://gitlab.etsisi.upm.es/bj0666/powerpad.git
 - Rama `main` (principal): https://gitlab.etsisi.upm.es/bj0666/powerpad/-/tree/main/
 - Rama `next` (con ejemplos de pruebas unitarias y localización): https://gitlab.etsisi.upm.es/bj0666/powerpad/-/tree/next/
+
 #### **Anexo IV**: Instalador
 
 ![](./Pictures/Captura-de-pantalla-2025-05-24-165123.png)
