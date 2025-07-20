@@ -1,7 +1,7 @@
 
 # 1. Introducción
 
-- **Retocar figura 1.2.**
+- ~~**Retocar figura 1.2.**~~
 
 # 2. Estado del arte y fundamentos teóricos
 
@@ -55,10 +55,10 @@
 - ~~Revisar: Figura 2.11 Captura de distintos interfaces de aplicaciones conversacionales.~~
 - ~~Figura 5.24. Esquema de la información enviada al modelo de IA generativa~~
 - ~~Chatbot Arena (INCLUIR CITA ENLACE)~~
-- Preparar anexos
-	- Documentación Técnica
-	- Clonar repositorios a GitLab
-	- Subir instalador
-	- Subir documentación generada
+- ~~Preparar anexos~~
+	- ~~Documentación Técnica~~
+	- ~~Clonar repositorios a GitLab~~
+	- ~~Subir instalador~~
+	- ~~Subir documentación generada~~
 - ~~Portada definitiva~~
 - ~~Encabezado de página~~
