@@ -18,7 +18,7 @@ namespace PowerPad.WinUI.Dialogs
     public partial class OllamaDownloadHelper : ContentDialog
     {
         private const string OLLAMA_DOWNLOAD_URL = "https://ollama.com/download/OllamaSetup.exe";
-        private const int BUFFER_SIZE = 8192;
+        private const int BUFFER_SIZE = 65536; // 64 KB
 
         private readonly string _tempFilePath;
         private readonly FileSizeToFriendlyStringConverter _fileSizeConverter;
@@ -108,6 +108,7 @@ namespace PowerPad.WinUI.Dialogs
 
                             // Get file size
                             using var httpClient = new HttpClient();
+
                             var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, OLLAMA_DOWNLOAD_URL));
                             response.EnsureSuccessStatusCode();
                             var fileSize = response.Content.Headers.ContentLength ?? 0L;
@@ -228,7 +229,11 @@ namespace PowerPad.WinUI.Dialogs
         {
             var cancellationToken = _cts?.Token ?? default;
 
-            using var httpClient = new HttpClient();
+            using var httpClient = new HttpClient(new SocketsHttpHandler
+            {
+                MaxConnectionsPerServer = 6, // Allow multiple simultaneous connections
+                EnableMultipleHttp2Connections = true
+            });
             using var response = await httpClient.GetAsync(OLLAMA_DOWNLOAD_URL, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             response.EnsureSuccessStatusCode();

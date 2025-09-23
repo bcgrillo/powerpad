@@ -161,7 +161,8 @@ namespace PowerPad.Core.Services.AI
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = "ollama app.exe",
+                FileName = "ollama",
+                Arguments = "serve",
                 UseShellExecute = true,
                 CreateNoWindow = true
             };
