@@ -10,7 +10,7 @@ Escuela Técnica Superior de Ingeniería de Sistemas Informáticos
 
 **Desarrollado por**: Bruno Camilo Grillo Cruz\
 **Dirigido por**: Agustín Yagüe Panadero\
-Madrid, 1 de Julio de 2025
+Madrid, 24 de Julio de 2025
 
 ## Resumen
 
