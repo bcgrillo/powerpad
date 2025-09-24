@@ -1,8 +1,0 @@
-var namespace_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers =
-[
-    [ "AIModelsViewModelBase", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_a_i_models_view_model_base.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_a_i_models_view_model_base" ],
-    [ "GitHubModelsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_git_hub_models_view_model.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_git_hub_models_view_model" ],
-    [ "HuggingFaceModelsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_hugging_face_models_view_model.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_hugging_face_models_view_model" ],
-    [ "OllamaModelsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_ollama_models_view_model.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_ollama_models_view_model" ],
-    [ "OpenAIModelsViewModel", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_open_a_i_models_view_model.html", "class_power_pad_1_1_win_u_i_1_1_view_models_1_1_a_i_1_1_providers_1_1_open_a_i_models_view_model" ]
-];
